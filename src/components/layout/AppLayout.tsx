@@ -1,7 +1,8 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/src/components/ui/button'
+import { Badge } from '@/src/components/ui/badge'
 import { ArrowLeft, Heart, MessageCircle, TrendingUp, Calendar, Settings, Home, BarChart3, Map, Users, Building2, BookOpen, UserCheck, LogOut } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 

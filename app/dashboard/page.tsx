@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Progress } from '@/components/ui/progress'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Progress } from '@/src/components/ui/progress'
+import { AppLayout } from '@/src/components/layout/AppLayout'
 import { 
   Heart, 
   Zap, 
@@ -31,11 +31,11 @@ import {
   PulseHighlight,
   FloatingNotification,
   RippleButton
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 import {
   DailyNarrativeSnippet,
   CharacterRelationshipTracker
-} from '@/components/ui/narrative-elements'
+} from '@/src/components/ui/narrative-elements'
 
 // ゲーム化されたユーザーデータ
 const userData = {
