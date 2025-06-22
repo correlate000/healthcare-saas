@@ -48,25 +48,50 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Only register service worker in production
-              if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js')
-                    .then(function(registration) {
-                      console.log('SW registered: ', registration);
-                    })
-                    .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
-                    });
-                });
-              } else {
-                console.log('Service Worker disabled in development');
-                // Clear any existing service workers in development
+              // Force disable service worker in development
+              const isDevelopment = location.hostname === 'localhost' || 
+                                  location.hostname === '127.0.0.1' || 
+                                  location.port === '3002';
+              
+              if (isDevelopment) {
+                console.log('🚫 Service Worker: Disabled in development');
+                
+                // Clear all existing service workers and caches
                 if ('serviceWorker' in navigator) {
                   navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    console.log('🧹 Clearing', registrations.length, 'service workers');
                     for(let registration of registrations) {
-                      registration.unregister();
+                      registration.unregister().then(success => {
+                        console.log('✅ Unregistered SW:', success);
+                      });
                     }
+                  });
+                  
+                  // Clear all caches
+                  if ('caches' in window) {
+                    caches.keys().then(function(cacheNames) {
+                      console.log('🗑️ Clearing', cacheNames.length, 'caches');
+                      return Promise.all(
+                        cacheNames.map(function(cacheName) {
+                          return caches.delete(cacheName).then(success => {
+                            console.log('✅ Deleted cache:', cacheName, success);
+                          });
+                        })
+                      );
+                    });
+                  }
+                }
+              } else {
+                // Only register service worker in production
+                if ('serviceWorker' in navigator) {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js')
+                      .then(function(registration) {
+                        console.log('✅ SW registered: ', registration);
+                      })
+                      .catch(function(registrationError) {
+                        console.log('❌ SW registration failed: ', registrationError);
+                      });
                   });
                 }
               }

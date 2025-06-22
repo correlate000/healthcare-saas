@@ -1,81 +1,95 @@
-const CACHE_NAME = 'mindcare-v1.0.0'
-const urlsToCache = [
-  '/',
-  '/dashboard',
-  '/checkin',
-  '/chat',
-  '/analytics',
-  '/booking',
-  '/settings',
-  '/offline',
-  '/manifest.json'
-]
-
-// Install event - cache resources
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching app shell')
-        return cache.addAll(urlsToCache)
-      })
-      .catch((error) => {
-        console.error('Service Worker: Cache failed', error)
-      })
-  )
-})
-
-// Activate event - clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache', cacheName)
-            return caches.delete(cacheName)
-          }
-        })
-      )
-    })
-  )
-})
-
-// Fetch event - network first, cache as fallback (disabled for debugging)
-self.addEventListener('fetch', (event) => {
-  // Skip service worker for development - always fetch from network
-  if (process.env.NODE_ENV === 'development') {
+// Development mode check - disable service worker completely in development
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port === '3002') {
+  console.log('Service Worker: Disabled in development environment')
+  // Self-destruct and prevent any caching
+  self.addEventListener('install', () => {
+    self.skipWaiting()
+  })
+  self.addEventListener('activate', () => {
+    self.registration.unregister()
+  })
+  self.addEventListener('fetch', (event) => {
+    // Pass through all requests without caching
     return
-  }
-  
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Clone and cache successful responses
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone()
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache)
-            })
-        }
-        return response
-      })
-      .catch(() => {
-        // Only use cache as fallback, and only for specific requests
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response
-            }
-            // Return offline page only for navigation requests as last resort
-            if (event.request.destination === 'document') {
-              return caches.match('/offline')
+  })
+} else {
+  // Production service worker code
+  const CACHE_NAME = 'mindcare-v1.0.0'
+  const urlsToCache = [
+    '/',
+    '/dashboard',
+    '/checkin',
+    '/chat',
+    '/analytics',
+    '/booking',
+    '/settings',
+    '/offline',
+    '/manifest.json'
+  ]
+
+  // Install event - cache resources
+  self.addEventListener('install', (event) => {
+    event.waitUntil(
+      caches.open(CACHE_NAME)
+        .then((cache) => {
+          console.log('Service Worker: Caching app shell')
+          return cache.addAll(urlsToCache)
+        })
+        .catch((error) => {
+          console.error('Service Worker: Cache failed', error)
+        })
+    )
+  })
+
+  // Activate event - clean up old caches
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      caches.keys().then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Service Worker: Deleting old cache', cacheName)
+              return caches.delete(cacheName)
             }
           })
+        )
       })
-  )
-})
+    )
+  })
+}
+
+// Fetch event - only for production
+if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.port !== '3002') {
+  self.addEventListener('fetch', (event) => {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          // Clone and cache successful responses
+          if (response && response.status === 200 && response.type === 'basic') {
+            const responseToCache = response.clone()
+            caches.open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(event.request, responseToCache)
+              })
+          }
+          return response
+        })
+        .catch(() => {
+          // Only use cache as fallback, and only for specific requests
+          return caches.match(event.request)
+            .then((response) => {
+              if (response) {
+                return response
+              }
+              // Return offline page only for navigation requests as last resort
+              if (event.request.destination === 'document') {
+                return caches.match('/offline')
+              }
+            })
+        })
+    )
+  })
+}
 
 // Background sync for check-ins
 self.addEventListener('sync', (event) => {
