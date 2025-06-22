@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Progress } from '@/src/components/ui/progress'
+import { AppLayout } from '@/src/components/layout/AppLayout'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Building2, 
@@ -28,7 +28,7 @@ import {
   RippleButton,
   TaskCompleteAnimation,
   FloatingNotification 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 interface SetupData {
   company: {

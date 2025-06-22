@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Input } from '@/src/components/ui/input'
+import { Label } from '@/src/components/ui/label'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Badge } from '@/src/components/ui/badge'
+import { Switch } from '@/src/components/ui/switch'
 import { 
   User, 
   Mail, 

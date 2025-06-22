@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { Button } from '@/src/components/ui/button'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { AppLayout } from '@/src/components/layout/AppLayout'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Smartphone,
@@ -31,7 +31,7 @@ import {
   RippleButton,
   TaskCompleteAnimation,
   FloatingNotification 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 interface WidgetOption {
   id: string

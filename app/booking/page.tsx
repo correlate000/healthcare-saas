@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Badge } from '@/src/components/ui/badge'
 import { 
   Calendar, 
   Clock, 
@@ -25,7 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { 
   FloatingNotification,
   RippleButton 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 // サンプル専門家データ
 const specialists = [

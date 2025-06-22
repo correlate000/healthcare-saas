@@ -1,18 +1,18 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Input } from '@/components/ui/input'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Input } from '@/src/components/ui/input'
 import { Send, Heart, Smile, Star, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   CharacterReaction,
   FloatingNotification,
   RippleButton 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 // AIキャラクターデータ
 const characters = {

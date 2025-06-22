@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/src/components/ui/button'
+import { Input } from '@/src/components/ui/input'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { Checkbox } from '@/src/components/ui/checkbox'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Heart,
@@ -28,7 +28,7 @@ import {
   Chrome,
   Apple
 } from 'lucide-react'
-import { RippleButton, FloatingNotification } from '@/components/ui/micro-interactions'
+import { RippleButton, FloatingNotification } from '@/src/components/ui/micro-interactions'
 
 interface AuthForm {
   email: string

@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Switch } from '@/src/components/ui/switch'
+import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Badge } from '@/src/components/ui/badge'
 import { 
   User, 
   Bell, 
@@ -32,7 +32,7 @@ import { motion } from 'framer-motion'
 import { 
   FloatingNotification,
   RippleButton 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 // ユーザー設定データ
 const userSettings = {

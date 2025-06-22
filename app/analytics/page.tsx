@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Progress } from '@/src/components/ui/progress'
 import { 
   TrendingUp, 
   Heart, 
@@ -23,7 +23,7 @@ import { motion } from 'framer-motion'
 import { 
   CountUpAnimation,
   PulseHighlight 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 // サンプル分析データ
 const analyticsData = {

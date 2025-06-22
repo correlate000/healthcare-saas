@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent } from '@/src/components/ui/card'
+import { Button } from '@/src/components/ui/button'
+import { Progress } from '@/src/components/ui/progress'
 import { 
   Heart, 
   Smile, 
@@ -28,7 +28,7 @@ import {
   CharacterReaction,
   FloatingNotification,
   RippleButton 
-} from '@/components/ui/micro-interactions'
+} from '@/src/components/ui/micro-interactions'
 
 // 気分選択肢
 const moodOptions = [
