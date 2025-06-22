@@ -41,31 +41,34 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - network first, cache as fallback (disabled for debugging)
 self.addEventListener('fetch', (event) => {
+  // Skip service worker for development - always fetch from network
+  if (process.env.NODE_ENV === 'development') {
+    return
+  }
+  
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request)
+        // Clone and cache successful responses
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache)
+            })
+        }
+        return response
+      })
+      .catch(() => {
+        // Only use cache as fallback, and only for specific requests
+        return caches.match(event.request)
           .then((response) => {
-            // Don't cache non-successful responses
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            if (response) {
               return response
             }
-
-            // Clone the response
-            const responseToCache = response.clone()
-
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache)
-              })
-
-            return response
-          })
-          .catch(() => {
-            // Return offline page for navigation requests
+            // Return offline page only for navigation requests as last resort
             if (event.request.destination === 'document') {
               return caches.match('/offline')
             }

@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/src/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -48,7 +48,8 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator) {
+              // Only register service worker in production
+              if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
@@ -58,6 +59,16 @@ export default function RootLayout({
                       console.log('SW registration failed: ', registrationError);
                     });
                 });
+              } else {
+                console.log('Service Worker disabled in development');
+                // Clear any existing service workers in development
+                if ('serviceWorker' in navigator) {
+                  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                      registration.unregister();
+                    }
+                  });
+                }
               }
             `,
           }}
