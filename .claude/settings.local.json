@@ -23,7 +23,9 @@
       "Bash(git push:*)",
       "Bash(npx:*)",
       "Bash(mv:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(npm run lint)",
+      "Bash(timeout 10 npm run dev)"
     ],
     "deny": []
   }

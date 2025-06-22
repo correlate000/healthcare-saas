@@ -3,7 +3,7 @@
 import { ReactNode } from 'react'
 import { Button } from '@/src/components/ui/button'
 import { Badge } from '@/src/components/ui/badge'
-import { ArrowLeft, Heart, MessageCircle, TrendingUp, Calendar, Settings, Home, BarChart3, Map, Users, Building2, BookOpen, UserCheck, LogOut } from 'lucide-react'
+import { ArrowLeft, Heart, MessageCircle, TrendingUp, Calendar, Settings, Home, BarChart3, Map, Users, Building2, BookOpen, UserCheck, LogOut, Shield, Crown } from 'lucide-react'
 import { useRouter, usePathname } from 'next/navigation'
 
 interface AppLayoutProps {
@@ -55,18 +55,44 @@ export function AppLayout({ children, title, showBackButton }: AppLayoutProps) {
               )}
             </div>
             
-            {/* Enterprise Admin Access - Only show if enterprise pages exist */}
-            {pathname.includes('/enterprise-admin') && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.push('/enterprise-admin/dashboard')}
-                className="text-blue-600"
-              >
-                <Building2 className="h-4 w-4 mr-1" />
-                <span className="text-xs">企業</span>
-              </Button>
-            )}
+            {/* Admin Access - Enhanced with multiple admin levels */}
+            <div className="flex items-center space-x-2">
+              {pathname.includes('/enterprise-admin') && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/enterprise-admin/dashboard')}
+                  className="text-blue-600"
+                >
+                  <Building2 className="h-4 w-4 mr-1" />
+                  <span className="text-xs">企業管理</span>
+                </Button>
+              )}
+              
+              {pathname.includes('/admin') && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/admin')}
+                  className="text-purple-600"
+                >
+                  <Crown className="h-4 w-4 mr-1" />
+                  <span className="text-xs">管理者</span>
+                </Button>
+              )}
+              
+              {pathname.includes('/super-admin') && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => router.push('/super-admin')}
+                  className="text-red-600"
+                >
+                  <Shield className="h-4 w-4 mr-1" />
+                  <span className="text-xs">スーパー管理</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -128,14 +154,43 @@ export function AppLayout({ children, title, showBackButton }: AppLayoutProps) {
                 <Settings className="h-4 w-4" />
                 <span className="text-xs">設定</span>
               </button>
-              {/* Admin Access */}
-              <button
-                onClick={() => router.push('/admin-staging')}
-                className="flex items-center space-x-1 text-gray-500 hover:text-blue-600 transition-colors"
-              >
-                <Building2 className="h-4 w-4" />
-                <span className="text-xs">管理者</span>
-              </button>
+              {/* Enhanced Admin Access with dropdown-like behavior */}
+              <div className="relative group">
+                <button
+                  onClick={() => router.push('/admin-staging')}
+                  className="flex items-center space-x-1 text-gray-500 hover:text-blue-600 transition-colors"
+                >
+                  <Building2 className="h-4 w-4" />
+                  <span className="text-xs">管理者</span>
+                </button>
+                
+                {/* Quick Admin Access Menu */}
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-white shadow-lg rounded-lg border p-2 min-w-32 z-50">
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => router.push('/admin')}
+                      className="w-full text-left px-2 py-1 text-xs hover:bg-gray-100 rounded flex items-center space-x-1"
+                    >
+                      <Crown className="h-3 w-3 text-purple-500" />
+                      <span>基本管理</span>
+                    </button>
+                    <button
+                      onClick={() => router.push('/enterprise-admin')}
+                      className="w-full text-left px-2 py-1 text-xs hover:bg-gray-100 rounded flex items-center space-x-1"
+                    >
+                      <Building2 className="h-3 w-3 text-blue-500" />
+                      <span>企業管理</span>
+                    </button>
+                    <button
+                      onClick={() => router.push('/super-admin')}
+                      className="w-full text-left px-2 py-1 text-xs hover:bg-gray-100 rounded flex items-center space-x-1"
+                    >
+                      <Shield className="h-3 w-3 text-red-500" />
+                      <span>スーパー管理</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
