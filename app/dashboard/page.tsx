@@ -2,610 +2,468 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { Badge } from '@/components/ui/badge'
+import { EnhancedButton } from '@/components/ui/enhanced-button'
+import { CharacterAvatar } from '@/components/characters/CharacterAvatar'
+import { ProgressSystem } from '@/components/gamification/ProgressSystem'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { 
   Heart, 
-  Zap, 
+  MessageSquare, 
+  BarChart3, 
+  Calendar,
   Star,
-  Crown,
-  Sparkles, 
-  TrendingUp,
-  Gift,
-  Clock,
-  Users,
+  Trophy,
+  Flame,
   Target,
-  CheckCircle,
+  Zap,
+  Crown,
+  Gift,
+  Users,
+  TrendingUp,
+  Clock,
+  Sparkles,
+  Moon,
+  Sun,
+  Coffee,
+  Award,
+  Activity,
+  Smile,
+  Brain,
+  Shield,
   PlayCircle,
-  MessageSquare,
-  Flame
+  BookOpen,
+  Headphones
 } from 'lucide-react'
-import {
-  TaskCompleteAnimation,
-  LevelUpAnimation,
-  CharacterReaction,
-  CountUpAnimation,
-  PulseHighlight,
-  FloatingNotification,
-  RippleButton
-} from '@/components/ui/micro-interactions'
-import {
-  DailyNarrativeSnippet,
-  CharacterRelationshipTracker
-} from '@/components/ui/narrative-elements'
 
-// ゲーム化されたユーザーデータ
+// モックデータ
 const userData = {
   name: 'あなた',
-  level: 12,
-  currentXP: 850,
-  nextLevelXP: 1000,
-  totalXP: 8750,
-  currentStreak: 7, // 連続記録
-  longestStreak: 23,
-  todayProgress: 60, // 今日の進捗%
-  mood: 'good', // today's mood
-  selectedCharacter: 'luna',
-  weeklyGoal: 5, // 週間目標
-  weeklyProgress: 4, // 今週の達成
-  unlockedBadges: 8,
-  totalBadges: 15,
-  energy: 85,
-  happiness: 78
-}
-
-// AIキャラクターデータ（視覚的に強化）
-const characters = {
-  luna: {
-    name: 'Luna',
-    avatar: '🌙',
-    mood: 'caring',
-    status: 'online',
-    relationship: 85,
-    message: 'おかえりなさい！今日はどんな一日でしたか？✨',
-    color: 'from-purple-400 to-purple-600',
-    textColor: 'text-purple-600'
-  },
-  aria: {
-    name: 'Aria', 
-    avatar: '🌟',
-    mood: 'energetic',
-    status: 'online',
-    relationship: 72,
-    message: 'こんにちは！今日も素晴らしい発見がありそうですね！🎉',
-    color: 'from-teal-400 to-teal-600',
-    textColor: 'text-teal-600'
-  },
-  zen: {
-    name: 'Zen',
-    avatar: '🧘‍♂️',
-    mood: 'peaceful',
-    status: 'online', 
-    relationship: 91,
-    message: '心を静めて、今この瞬間に意識を向けてみましょう。🕯️',
-    color: 'from-indigo-400 to-indigo-600',
-    textColor: 'text-indigo-600'
+  level: 7,
+  currentXP: 2450,
+  xpToNextLevel: 3000,
+  streak: 12,
+  totalCheckins: 67,
+  achievementsCount: 15,
+  currentMood: 'happy',
+  todayProgress: {
+    checkin: true,
+    meditation: false,
+    exercise: true,
+    journal: false
   }
 }
 
-// 今日のタスク（ゲーム化）
-const todaysTasks = [
-  { id: 1, title: '朝の気分チェック', icon: Heart, completed: true, xp: 10, timeSpent: '2分' },
-  { id: 2, title: 'Lunaとお話', icon: MessageSquare, completed: true, xp: 25, timeSpent: '8分' },
-  { id: 3, title: '5分間瞑想', icon: Target, completed: false, xp: 15, estimatedTime: '5分' },
-  { id: 4, title: '専門記事を読む', icon: Clock, completed: false, xp: 20, estimatedTime: '8分' }
+const quickActions = [
+  {
+    id: 'checkin',
+    title: '今日の気分チェックイン',
+    description: '5分で完了',
+    icon: Heart,
+    color: 'from-pink-500 to-rose-500',
+    path: '/checkin',
+    xp: '+50 XP',
+    completed: userData.todayProgress.checkin
+  },
+  {
+    id: 'chat',
+    title: 'AIキャラクターと対話',
+    description: 'Luna、Aria、Zenと話そう',
+    icon: MessageSquare,
+    color: 'from-blue-500 to-purple-500',
+    path: '/chat',
+    xp: '+30 XP',
+    completed: false
+  },
+  {
+    id: 'meditation',
+    title: 'マインドフルネス',
+    description: '3分瞑想セッション',
+    icon: Brain,
+    color: 'from-green-500 to-teal-500',
+    path: '/meditation',
+    xp: '+40 XP',
+    completed: userData.todayProgress.meditation
+  },
+  {
+    id: 'journal',
+    title: '感情日記',
+    description: '今日の振り返り',
+    icon: BookOpen,
+    color: 'from-orange-500 to-yellow-500',
+    path: '/emotion-diary',
+    xp: '+35 XP',
+    completed: userData.todayProgress.journal
+  }
 ]
 
-// 最近の実績・通知
-const recentAchievements = [
-  { id: 1, title: '7日連続記録達成！', icon: Flame, color: 'text-orange-500', time: '今日', new: true },
-  { id: 2, title: 'Lunaとの絆レベルアップ', icon: Heart, color: 'text-pink-500', time: '昨日', new: true },
-  { id: 3, title: '専門家記事を5つ完読', icon: Star, color: 'text-yellow-500', time: '2日前', new: false }
+const insights = [
+  {
+    title: '今週の調子',
+    value: '85%',
+    change: '+12%',
+    positive: true,
+    description: '先週より気分が向上しています'
+  },
+  {
+    title: 'ストレスレベル',
+    value: '低',
+    change: '-15%',
+    positive: true,
+    description: 'リラックスできている状態です'
+  },
+  {
+    title: '睡眠の質',
+    value: '良好',
+    change: '+8%',
+    positive: true,
+    description: '深い眠りが取れています'
+  }
 ]
 
 export default function Dashboard() {
   const router = useRouter()
-  const [currentTime, setCurrentTime] = useState('')
-  const [showCelebration, setShowCelebration] = useState(false)
-  const [selectedCharacter, setSelectedCharacter] = useState<keyof typeof characters>('luna')
-  const [showTaskComplete, setShowTaskComplete] = useState(false)
-  const [showLevelUp, setShowLevelUp] = useState(false)
-  const [showCharacterReaction, setShowCharacterReaction] = useState(false)
-  const [showNotification, setShowNotification] = useState(false)
-  const [completedTaskId, setCompletedTaskId] = useState<number | null>(null)
-  
-  const character = characters[selectedCharacter]
-  const completedTasks = todaysTasks.filter(task => task.completed).length
-  const progressPercentage = (completedTasks / todaysTasks.length) * 100
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [selectedCharacter, setSelectedCharacter] = useState<'luna' | 'aria' | 'zen'>('luna')
+  const [showWelcome, setShowWelcome] = useState(true)
+  const [completedActions, setCompletedActions] = useState<string[]>([])
 
   useEffect(() => {
-    const now = new Date()
-    const hour = now.getHours()
-    
-    if (hour < 12) setCurrentTime('おはようございます')
-    else if (hour < 17) setCurrentTime('こんにちは')
-    else setCurrentTime('こんばんは')
-
-    // 新しい実績があれば祝福アニメーション
-    if (recentAchievements.some(a => a.new)) {
-      setTimeout(() => setShowCelebration(true), 1000)
-    }
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
   }, [])
 
-  const handleTaskComplete = (taskId: number) => {
-    const task = todaysTasks.find(t => t.id === taskId)
-    if (!task) return
+  useEffect(() => {
+    const timer = setTimeout(() => setShowWelcome(false), 3000)
+    return () => clearTimeout(timer)
+  }, [])
 
-    // タスク完了アニメーション開始
-    setCompletedTaskId(taskId)
-    setShowTaskComplete(true)
-    
-    // キャラクター反応表示
-    setTimeout(() => {
-      setShowCharacterReaction(true)
-      setTimeout(() => setShowCharacterReaction(false), 3000)
-    }, 1000)
+  const getGreeting = () => {
+    const hour = currentTime.getHours()
+    if (hour < 12) return { text: 'おはようございます', icon: Sun, color: 'text-yellow-500' }
+    if (hour < 18) return { text: 'こんにちは', icon: Sun, color: 'text-orange-500' }
+    return { text: 'こんばんは', icon: Moon, color: 'text-purple-500' }
+  }
 
-    // 通知表示
-    setTimeout(() => {
-      setShowNotification(true)
-    }, 2000)
+  const greeting = getGreeting()
 
-    // レベルアップチェック（例：5つごと）
-    if ((completedTasks + 1) % 5 === 0) {
-      setTimeout(() => {
-        setShowLevelUp(true)
-      }, 2500)
+  const handleActionComplete = (actionId: string) => {
+    setCompletedActions(prev => [...prev, actionId])
+    // XP獲得アニメーション等をここで実装
+  }
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
     }
   }
 
-  const handleTaskCompleteFinish = () => {
-    setShowTaskComplete(false)
-    setCompletedTaskId(null)
-  }
-
-  const handleLevelUpFinish = () => {
-    setShowLevelUp(false)
-  }
-
-  const handleNotificationClose = () => {
-    setShowNotification(false)
-  }
-
-  const handleQuickAction = (action: string) => {
-    switch (action) {
-      case 'checkin':
-        router.push('/checkin')
-        break
-      case 'chat':
-        router.push('/chat')
-        break
-      case 'meditation':
-        router.push('/content-library/exercises')
-        break
-      case 'content':
-        router.push('/content-library')
-        break
-      case 'booking':
-        router.push('/booking')
-        break
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 25
+      }
     }
   }
 
   return (
-    <AppLayout>
-      <div className="px-4 py-6 space-y-6 max-w-md mx-auto">
-        
-        {/* 🎊 祝福アニメーション */}
-        {showCelebration && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-            <div className="text-6xl animate-bounce">🎉</div>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 touch-manipulation">
+      {/* ウェルカムスプラッシュ */}
+      <AnimatePresence>
+        {showWelcome && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-600 to-blue-600"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="text-center text-white">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
+              >
+                <CharacterAvatar
+                  character={selectedCharacter}
+                  emotion="celebrating"
+                  size="xl"
+                  animated={true}
+                />
+              </motion.div>
+              <motion.h1
+                className="text-4xl font-bold mt-6 mb-2"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                お帰りなさい！
+              </motion.h1>
+              <motion.p
+                className="text-xl opacity-90"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.7 }}
+              >
+                今日も一緒に頑張りましょう
+              </motion.p>
+            </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* マイクロインタラクション */}
-        <TaskCompleteAnimation
-          isVisible={showTaskComplete}
-          onComplete={handleTaskCompleteFinish}
-          xpGained={completedTaskId ? todaysTasks.find(t => t.id === completedTaskId)?.xp || 10 : 10}
-          taskTitle={completedTaskId ? todaysTasks.find(t => t.id === completedTaskId)?.title || 'タスク完了！' : 'タスク完了！'}
-        />
-
-        <LevelUpAnimation
-          isVisible={showLevelUp}
-          onComplete={handleLevelUpFinish}
-          newLevel={userData.level + 1}
-        />
-
-        <CharacterReaction
-          isVisible={showCharacterReaction}
-          character={{
-            name: character.name,
-            avatar: character.avatar,
-            color: character.color
-          }}
-          reaction="proud"
-        />
-
-        <FloatingNotification
-          isVisible={showNotification}
-          title="タスク完了！"
-          message="素晴らしい進歩です！続けていきましょう。"
-          type="achievement"
-          onClose={handleNotificationClose}
-        />
-
-        {/* 📜 デイリーナラティブ */}
-        <DailyNarrativeSnippet 
-          userMood={userData.mood}
-          timeOfDay={currentTime.includes('おはよう') ? 'morning' : 
-                    currentTime.includes('こんにちは') ? 'afternoon' : 'evening'}
-          characterPreference={selectedCharacter}
-        />
-
-        {/* 👤 ユーザープロファイル & レベル */}
-        <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Avatar className="h-16 w-16 border-4 border-white shadow-lg">
-                    <AvatarFallback className="bg-white text-blue-600 text-xl font-bold">
-                      {userData.name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center text-xs font-bold">
-                    {userData.level}
-                  </div>
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold">{currentTime}</h2>
-                  <p className="text-blue-100">{userData.name}さん</p>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <Crown className="h-4 w-4 text-yellow-300" />
-                    <span className="text-sm">レベル {userData.level}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold">{userData.currentStreak}</div>
-                <div className="text-xs text-blue-100">連続記録</div>
-                <Flame className="h-6 w-6 text-orange-300 mx-auto mt-1" />
-              </div>
-            </div>
-            
-            {/* XP プログレスバー */}
-            <div className="mt-4 space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>次のレベルまで</span>
-                <span>{userData.nextLevelXP - userData.currentXP} XP</span>
-              </div>
-              <Progress 
-                value={(userData.currentXP / userData.nextLevelXP) * 100} 
-                className="h-3 bg-blue-400"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 🎯 今日の進捗（大きく目立つ） */}
-        <Card className="border-2 border-green-200 bg-green-50">
-          <CardContent className="p-6 text-center">
-            <div className="mb-4">
-              <CountUpAnimation 
-                from={Math.max(0, Math.round(progressPercentage) - 10)}
-                to={Math.round(progressPercentage)}
-                suffix="%"
-                className="text-4xl font-bold text-green-600"
-              />
-              <div className="text-green-700 font-medium">今日の達成度</div>
-            </div>
-            <div className="relative w-24 h-24 mx-auto mb-4">
-              <svg className="w-24 h-24 transform -rotate-90">
-                <circle cx="48" cy="48" r="40" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-green-200"/>
-                <circle 
-                  cx="48" cy="48" r="40" 
-                  stroke="currentColor" 
-                  strokeWidth="8" 
-                  fill="transparent"
-                  strokeDasharray={`${2 * Math.PI * 40}`}
-                  strokeDashoffset={`${2 * Math.PI * 40 * (1 - progressPercentage / 100)}`}
-                  className="text-green-500 transition-all duration-1000 ease-out"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <CheckCircle className="h-8 w-8 text-green-500" />
-              </div>
-            </div>
-            <p className="text-sm text-green-700">
-              {completedTasks}/{todaysTasks.length} タスク完了
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* 🤖 AIキャラクター選択 & メッセージ */}
-        <Card className={`bg-gradient-to-br ${character.color} text-white`}>
-          <CardContent className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              {Object.entries(characters).map(([id, char]) => (
-                <button
-                  key={id}
-                  onClick={() => setSelectedCharacter(id as keyof typeof characters)}
-                  className={`text-3xl p-2 rounded-full transition-all ${
-                    selectedCharacter === id ? 'bg-white bg-opacity-20 scale-110' : 'hover:scale-105'
-                  }`}
-                >
-                  {char.avatar}
-                </button>
-              ))}
-            </div>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold">{character.name}</h3>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-300 rounded-full animate-pulse"></div>
-                  <span className="text-sm">オンライン</span>
-                </div>
-              </div>
-              
-              <p className="text-white text-opacity-90 leading-relaxed">
-                {character.message}
-              </p>
-              
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4 text-pink-200" />
-                  <span className="text-sm">絆レベル {character.relationship}</span>
-                </div>
-                <Button 
-                  variant="secondary" 
-                  size="sm"
-                  onClick={() => router.push('/chat')}
-                  className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white"
-                >
-                  お話しする
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* ⚡ 今日のタスク（ゲーム風） */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold flex items-center space-x-2">
-                <Target className="h-5 w-5 text-blue-500" />
-                <span>今日のミッション</span>
-              </h3>
-              <div className="text-sm text-gray-500">
-                {completedTasks}/{todaysTasks.length}
-              </div>
-            </div>
-            
-            <div className="space-y-3">
-              {todaysTasks.map((task) => (
-                <div 
-                  key={task.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
-                    task.completed 
-                      ? 'bg-green-50 border-green-200' 
-                      : 'bg-gray-50 border-gray-200 hover:border-blue-300'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-full ${
-                      task.completed ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-600'
-                    }`}>
-                      <task.icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className={`font-medium ${task.completed ? 'line-through text-gray-500' : ''}`}>
-                        {task.title}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {task.completed ? `完了 • ${task.timeSpent}` : `予想時間: ${task.estimatedTime}`}
-                      </p>
-                    </div>
-                  </div>
+      <motion.div
+        className="container max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6 pb-24 md:pb-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* モバイル最適化ヘッダー */}
+        <motion.div variants={itemVariants}>
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="p-4 md:p-6">
+              {/* モバイル: 縦レイアウト、デスクトップ: 横レイアウト */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                {/* キャラクターと挨拶 */}
+                <div className="flex items-center space-x-4">
+                  <CharacterAvatar
+                    character={selectedCharacter}
+                    emotion={userData.currentMood as any}
+                    size="md"
+                    animated={true}
+                    showVoiceWave={false}
+                  />
                   
-                  <div className="flex items-center space-x-2">
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-yellow-600">+{task.xp} XP</div>
-                    </div>
-                    {!task.completed && (
-                      <RippleButton 
-                        onClick={() => handleTaskComplete(task.id)}
-                        className="h-8 w-8 p-0 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center"
-                      >
-                        <PlayCircle className="h-4 w-4" />
-                      </RippleButton>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 💖 キャラクターとの絆 */}
-        <CharacterRelationshipTracker 
-          character={selectedCharacter}
-          relationshipLevel={character.relationship}
-          interactionCount={42} 
-        />
-
-        {/* 🎉 最近の実績 */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="text-lg font-bold flex items-center space-x-2 mb-4">
-              <Star className="h-5 w-5 text-yellow-500" />
-              <span>最近の実績</span>
-            </h3>
-            
-            <div className="space-y-3">
-              {recentAchievements.map((achievement) => (
-                <div 
-                  key={achievement.id}
-                  className={`flex items-center space-x-3 p-3 rounded-lg ${
-                    achievement.new ? 'bg-yellow-50 border-2 border-yellow-200' : 'bg-gray-50'
-                  }`}
-                >
-                  <achievement.icon className={`h-6 w-6 ${achievement.color}`} />
                   <div className="flex-1">
-                    <p className="font-medium">{achievement.title}</p>
-                    <p className="text-xs text-gray-500">{achievement.time}</p>
-                  </div>
-                  {achievement.new && (
-                    <div className="bg-yellow-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold">
-                      NEW!
+                    <div className="flex items-center space-x-2 mb-1">
+                      <greeting.icon className={`h-5 w-5 ${greeting.color}`} />
+                      <h1 className="text-xl md:text-2xl font-bold text-gray-800">
+                        {greeting.text}！
+                      </h1>
                     </div>
-                  )}
+                    <p className="text-gray-600 text-sm md:text-base">
+                      今日も一緒に頑張りましょう ✨
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* 🚀 クイックアクション（大きめボタン） */}
-        <div className="grid grid-cols-2 gap-4">
-          <PulseHighlight isActive={userData.currentStreak === 0} color="yellow">
-            <RippleButton 
-              onClick={() => handleQuickAction('checkin')}
-              className="h-20 w-full flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-lg"
-            >
-              <Heart className="h-6 w-6" />
-              <span className="text-sm font-medium">気分チェック</span>
-            </RippleButton>
-          </PulseHighlight>
-          
-          <RippleButton 
-            onClick={() => handleQuickAction('content')}
-            className="h-20 w-full flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-lg"
-          >
-            <Clock className="h-6 w-6" />
-            <span className="text-sm font-medium">コンテンツ</span>
-          </RippleButton>
+                {/* ステータスバッジ */}
+                <div className="flex items-center justify-between md:flex-col md:items-end space-x-3 md:space-x-0 md:space-y-2">
+                  <div className="flex space-x-2">
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-700 text-xs">
+                      <Clock className="h-3 w-3 mr-1" />
+                      {currentTime.toLocaleTimeString('ja-JP', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </Badge>
+                    <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+                      <Flame className="h-3 w-3 mr-1" />
+                      {userData.streak}日
+                    </Badge>
+                  </div>
 
-          <RippleButton 
-            onClick={() => handleQuickAction('booking')}
-            className="h-20 w-full flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg"
-          >
-            <Users className="h-6 w-6" />
-            <span className="text-sm font-medium">専門家予約</span>
-          </RippleButton>
-          
-          <RippleButton 
-            onClick={() => router.push('/daily-challenge')}
-            className="h-20 w-full flex flex-col items-center justify-center space-y-2 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white rounded-lg"
-          >
-            <Zap className="h-6 w-6" />
-            <span className="text-sm font-medium">チャレンジ</span>
-          </RippleButton>
-        </div>
-
-        {/* 📈 今週の統計（簡潔に） */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="text-lg font-bold mb-4 flex items-center space-x-2">
-              <TrendingUp className="h-5 w-5 text-green-500" />
-              <span>今週の記録</span>
-            </h3>
-            
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <CountUpAnimation 
-                  from={Math.max(0, userData.energy - 10)}
-                  to={userData.energy}
-                  suffix="%"
-                  className="text-2xl font-bold text-blue-600"
-                />
-                <div className="text-xs text-gray-600">エネルギー</div>
+                  {/* キャラクター選択ボタン（タッチフレンドリー） */}
+                  <div className="flex space-x-2">
+                    {[
+                      { char: 'luna', emoji: '🌙' },
+                      { char: 'aria', emoji: '✨' },
+                      { char: 'zen', emoji: '🧘' }
+                    ].map(({ char, emoji }) => (
+                      <motion.button
+                        key={char}
+                        className={`w-12 h-12 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-all touch-manipulation select-none ${
+                          selectedCharacter === char 
+                            ? 'bg-blue-500 text-white shadow-lg' 
+                            : 'bg-gray-100 hover:bg-gray-200 active:bg-gray-300'
+                        }`}
+                        onClick={() => setSelectedCharacter(char as any)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <span className="text-base">{emoji}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <div>
-                <CountUpAnimation 
-                  from={Math.max(0, userData.happiness - 10)}
-                  to={userData.happiness}
-                  suffix="%"
-                  className="text-2xl font-bold text-green-600"
-                />
-                <div className="text-xs text-gray-600">幸福度</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-purple-600">{userData.weeklyProgress}/{userData.weeklyGoal}</div>
-                <div className="text-xs text-gray-600">週間目標</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        {/* 🎁 特別オファー・サプライズ */}
-        <Card className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
-          <CardContent className="p-6 text-center">
-            <Gift className="h-8 w-8 mx-auto mb-3" />
-            <h3 className="font-bold mb-2">🎊 7日連続記録達成！</h3>
-            <p className="text-sm text-yellow-100 mb-3">
-              新しいバッジと限定スタンプをゲット！
-            </p>
-            <Button 
-              variant="secondary"
-              size="sm"
-              onClick={() => router.push('/achievements')}
-              className="bg-white text-orange-500 hover:bg-yellow-50"
-            >
-              報酬を受け取る
-            </Button>
-          </CardContent>
-        </Card>
+        {/* プログレスシステム */}
+        <motion.div variants={itemVariants}>
+          <ProgressSystem
+            userLevel={userData.level}
+            currentXP={userData.currentXP}
+            xpToNextLevel={userData.xpToNextLevel}
+            streak={userData.streak}
+            totalCheckins={userData.totalCheckins}
+            achievementsCount={userData.achievementsCount}
+            animated={true}
+          />
+        </motion.div>
 
-        {/* 🗺️ ページ探索 */}
-        <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-          <CardContent className="p-6">
-            <h3 className="font-bold mb-3 flex items-center">
-              <Sparkles className="h-5 w-5 mr-2" />
-              他の機能も探してみませんか？
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push('/analytics')}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs"
+        {/* モバイル最適化クイックアクション */}
+        <motion.div variants={itemVariants}>
+          <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center space-x-2 text-xl">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                <span>今日のアクション</span>
+              </CardTitle>
+              <CardDescription className="text-sm">
+                毎日の習慣で心の健康を育てよう
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* モバイル: 縦並び1列、タブレット: 2列、デスクトップ: 4列 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {quickActions.map((action, index) => {
+                  const IconComponent = action.icon
+                  const isCompleted = action.completed || completedActions.includes(action.id)
+                  
+                  return (
+                    <motion.div
+                      key={action.id}
+                      variants={itemVariants}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <Card className={`relative overflow-hidden transition-all duration-300 touch-manipulation ${
+                        isCompleted ? 'bg-green-50 border-green-200' : 'hover:shadow-lg cursor-pointer active:scale-95'
+                      }`}>
+                        <CardContent className="p-4 md:p-4">
+                          <div className="space-y-3">
+                            {/* アイコンとXPバッジ */}
+                            <div className="flex items-center justify-between">
+                              <div className={`w-12 h-12 md:w-12 md:h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
+                                <IconComponent className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                              </div>
+                              {isCompleted ? (
+                                <motion.div
+                                  initial={{ scale: 0 }}
+                                  animate={{ scale: 1 }}
+                                  className="w-7 h-7 rounded-full bg-green-500 flex items-center justify-center"
+                                >
+                                  <Star className="h-3 w-3 text-white" />
+                                </motion.div>
+                              ) : (
+                                <Badge className="bg-yellow-100 text-yellow-700 text-xs">
+                                  {action.xp}
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            {/* タイトルと説明 */}
+                            <div>
+                              <h3 className="font-semibold text-gray-800 text-sm md:text-base mb-1">
+                                {action.title}
+                              </h3>
+                              <p className="text-xs md:text-sm text-gray-600">
+                                {action.description}
+                              </p>
+                            </div>
+
+                            {/* アクションボタン（モバイルで大きめ、タッチフレンドリー） */}
+                            <EnhancedButton
+                              variant={isCompleted ? "outline" : "gradient"}
+                              size="sm"
+                              effect={isCompleted ? "none" : "sparkle"}
+                              className="w-full h-12 md:h-10 text-sm font-medium touch-manipulation select-none"
+                              success={isCompleted}
+                              celebration={!isCompleted}
+                              onClick={() => {
+                                if (!isCompleted) {
+                                  handleActionComplete(action.id)
+                                  router.push(action.path)
+                                }
+                              }}
+                              disabled={isCompleted}
+                            >
+                              {isCompleted ? '完了済み' : '開始'}
+                            </EnhancedButton>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* インサイト・分析 */}
+        <motion.div variants={itemVariants}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {insights.map((insight, index) => (
+              <motion.div
+                key={insight.title}
+                variants={itemVariants}
+                transition={{ delay: index * 0.1 }}
               >
-                📊 詳細分析
-              </Button>
-              <Button 
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push('/characters')}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs"
-              >
-                🤖 キャラクター
-              </Button>
-              <Button 
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push('/sitemap')}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs"
-              >
-                🗺️ 全機能一覧
-              </Button>
-              <Button 
-                variant="secondary"
-                size="sm"
-                onClick={() => router.push('/help')}
-                className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white text-xs"
-              >
-                ❓ ヘルプ
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </AppLayout>
+                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="font-semibold text-gray-700">{insight.title}</h3>
+                      <TrendingUp className={`h-5 w-5 ${insight.positive ? 'text-green-500' : 'text-red-500'}`} />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="text-3xl font-bold text-gray-800">
+                        {insight.value}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge 
+                          variant="secondary" 
+                          className={`${insight.positive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                        >
+                          {insight.change}
+                        </Badge>
+                        <span className="text-sm text-gray-600">先週比</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{insight.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* フローティングアクションボタン（モバイルでは隠す） */}
+        <motion.div
+          className="fixed bottom-6 right-6 z-40 hidden md:block"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 1, type: "spring", stiffness: 300 }}
+        >
+          <EnhancedButton
+            variant="magical"
+            size="lg"
+            effect="glow"
+            className="rounded-full w-16 h-16 shadow-2xl"
+            onClick={() => router.push('/chat')}
+          >
+            <MessageSquare className="h-6 w-6" />
+          </EnhancedButton>
+        </motion.div>
+      </motion.div>
+
+      {/* モバイルボトムナビゲーション */}
+      <MobileBottomNav />
+    </div>
   )
 }
