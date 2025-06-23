@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
-import { Input } from '@/src/components/ui/input'
-import { Switch } from '@/src/components/ui/switch'
-import { Progress } from '@/src/components/ui/progress'
+import { AdminRoute } from '@/components/auth/AdminRoute'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
+import { Progress } from '@/components/ui/progress'
 import { 
   Building,
   Users,
@@ -209,7 +210,7 @@ const managers: Manager[] = [
   }
 ]
 
-export default function EnterpriseAdmin() {
+function EnterpriseAdminContent() {
   const [settings, setSettings] = useState(defaultSettings)
   const [activeTab, setActiveTab] = useState('overview')
   const [isEditing, setIsEditing] = useState(false)
@@ -834,5 +835,13 @@ export default function EnterpriseAdmin() {
         </Tabs>
       </div>
     </div>
+  )
+}
+
+export default function EnterpriseAdmin() {
+  return (
+    <AdminRoute requiredRole="enterprise-admin">
+      <EnterpriseAdminContent />
+    </AdminRoute>
   )
 }

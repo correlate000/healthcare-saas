@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { 
   Heart, 
   Sparkles, 
@@ -109,6 +109,13 @@ const userFeatures = [
 ]
 
 const adminFeatures = [
+  {
+    title: '管理者ナビゲーション',
+    description: '管理者専用ダッシュボード',
+    icon: Shield,
+    path: '/admin-nav',
+    color: 'from-blue-500 to-purple-500'
+  },
   {
     title: '基本管理',
     description: '部門別分析・アラート管理',
@@ -276,7 +283,7 @@ export default function Home() {
                       <h3 className="font-bold text-lg text-gray-800 group-hover:text-primary transition-colors">
                         {feature.title}
                       </h3>
-                      {feature.priority === 'high' && (
+                      {'priority' in feature && feature.priority === 'high' && (
                         <Badge variant="secondary" className="bg-red-100 text-red-700">
                           <Star className="h-3 w-3 mr-1" />
                           人気

@@ -6,6 +6,8 @@ interface User {
   id: string
   email: string
   name: string
+  role: 'user' | 'admin' | 'enterprise-admin' | 'super-admin'
+  permissions: string[]
   company?: string
   provider?: 'google' | 'apple' | 'email'
   registeredAt: string
@@ -24,6 +26,11 @@ interface AuthContextType extends AuthState {
   socialLogin: (provider: 'google' | 'apple') => Promise<boolean>
   hasCheckedInToday: () => boolean
   markCheckedInToday: () => void
+  isAdmin: () => boolean
+  isEnterpriseAdmin: () => boolean
+  isSuperAdmin: () => boolean
+  hasPermission: (permission: string) => boolean
+  loginAsAdmin: (adminType: 'admin' | 'enterprise-admin' | 'super-admin') => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -75,6 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: '1',
         email,
         name: email.split('@')[0],
+        role: 'user',
+        permissions: ['read:own-data', 'write:own-data'],
         registeredAt: new Date().toISOString()
       }
 
@@ -106,6 +115,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: Date.now().toString(),
         email: userData.email!,
         name: userData.name!,
+        role: 'user',
+        permissions: ['read:own-data', 'write:own-data'],
         company: userData.company,
         registeredAt: new Date().toISOString()
       }
@@ -138,6 +149,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: Date.now().toString(),
         email: `user@${provider}.com`,
         name: `${provider}ユーザー`,
+        role: 'user',
+        permissions: ['read:own-data', 'write:own-data'],
         provider,
         registeredAt: new Date().toISOString()
       }
@@ -185,6 +198,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('mindcare-last-checkin', today)
   }
 
+  const isAdmin = (): boolean => {
+    return authState.user?.role === 'admin' || authState.user?.role === 'enterprise-admin' || authState.user?.role === 'super-admin'
+  }
+
+  const isEnterpriseAdmin = (): boolean => {
+    return authState.user?.role === 'enterprise-admin' || authState.user?.role === 'super-admin'
+  }
+
+  const isSuperAdmin = (): boolean => {
+    return authState.user?.role === 'super-admin'
+  }
+
+  const hasPermission = (permission: string): boolean => {
+    return authState.user?.permissions?.includes(permission) || false
+  }
+
+  const loginAsAdmin = async (adminType: 'admin' | 'enterprise-admin' | 'super-admin'): Promise<boolean> => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
+      const adminPermissions = {
+        'admin': ['read:all-users', 'write:all-users', 'read:reports', 'manage:organization'],
+        'enterprise-admin': ['read:all-users', 'write:all-users', 'read:reports', 'manage:organization', 'manage:enterprise', 'read:analytics'],
+        'super-admin': ['read:all-users', 'write:all-users', 'read:reports', 'manage:organization', 'manage:enterprise', 'read:analytics', 'manage:system', 'manage:all-organizations']
+      }
+
+      const user: User = {
+        id: `${adminType}-${Date.now()}`,
+        email: `${adminType}@mindcare.com`,
+        name: `${adminType === 'super-admin' ? 'スーパー管理者' : adminType === 'enterprise-admin' ? '企業管理者' : '管理者'}`,
+        role: adminType,
+        permissions: adminPermissions[adminType],
+        registeredAt: new Date().toISOString()
+      }
+
+      const authData = {
+        isAuthenticated: true,
+        user
+      }
+
+      localStorage.setItem('mindcare-auth', JSON.stringify(authData))
+      setAuthState({
+        isAuthenticated: true,
+        user,
+        isLoading: false
+      })
+
+      return true
+    } catch (error) {
+      console.error('Admin login error:', error)
+      return false
+    }
+  }
+
   const value: AuthContextType = {
     ...authState,
     login,
@@ -192,7 +259,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     socialLogin,
     hasCheckedInToday,
-    markCheckedInToday
+    markCheckedInToday,
+    isAdmin,
+    isEnterpriseAdmin,
+    isSuperAdmin,
+    hasPermission,
+    loginAsAdmin
   }
 
   return (

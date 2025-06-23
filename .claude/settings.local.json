@@ -26,7 +26,12 @@
       "Bash(cp:*)",
       "Bash(npm run lint)",
       "Bash(timeout 10 npm run dev)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm install:*)",
+      "Bash(timeout 15 npm run dev)",
+      "Bash(node:*)",
+      "Bash(npm --version)"
     ],
     "deny": []
   }

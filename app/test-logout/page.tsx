@@ -1,9 +1,9 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { AppLayout } from '@/components/layout/AppLayout'
 import { LogOut, RotateCcw, Trash2 } from 'lucide-react'
 
 export default function TestLogoutPage() {

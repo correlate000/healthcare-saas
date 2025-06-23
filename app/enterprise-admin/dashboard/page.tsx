@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { AppLayout } from '@/src/components/layout/AppLayout'
+import { AdminRoute } from '@/components/auth/AdminRoute'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { AppLayout } from '@/components/layout/AppLayout'
 import { motion } from 'framer-motion'
 import { 
   TrendingUp, 
@@ -26,7 +27,7 @@ import {
   MessageSquare,
   PieChart
 } from 'lucide-react'
-import { CountUpAnimation } from '@/src/components/ui/micro-interactions'
+import { CountUpAnimation } from '@/components/ui/micro-interactions'
 
 interface CompanyMetrics {
   overview: {
@@ -108,7 +109,7 @@ const sampleMetrics: CompanyMetrics = {
   }
 }
 
-export default function EnterpriseDashboard() {
+function EnterpriseDashboardContent() {
   const [metrics, setMetrics] = useState<CompanyMetrics>(sampleMetrics)
   const [timeRange, setTimeRange] = useState('7d')
   const [loading, setLoading] = useState(false)
@@ -588,5 +589,13 @@ export default function EnterpriseDashboard() {
         </motion.div>
       </div>
     </AppLayout>
+  )
+}
+
+export default function EnterpriseDashboard() {
+  return (
+    <AdminRoute requiredRole="enterprise-admin">
+      <EnterpriseDashboardContent />
+    </AdminRoute>
   )
 }

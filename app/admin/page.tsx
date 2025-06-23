@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
-import { Avatar, AvatarFallback } from '@/src/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { 
   Users, 
   TrendingUp, 
@@ -20,6 +20,7 @@ import {
   Filter
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { AdminRoute } from '@/components/auth/AdminRoute'
 
 // Mock organization data
 const orgData = {
@@ -44,7 +45,7 @@ const orgData = {
   ]
 }
 
-export default function AdminDashboard() {
+function AdminDashboardContent() {
   const router = useRouter()
   const [timeRange, setTimeRange] = useState('7days')
   const [selectedDepartment, setSelectedDepartment] = useState('all')
@@ -326,5 +327,13 @@ export default function AdminDashboard() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminDashboard() {
+  return (
+    <AdminRoute requiredRole="admin">
+      <AdminDashboardContent />
+    </AdminRoute>
   )
 }

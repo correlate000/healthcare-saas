@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { AppLayout } from '@/src/components/layout/AppLayout'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { AppLayout } from '@/components/layout/AppLayout'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { 

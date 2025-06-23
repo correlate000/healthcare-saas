@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/src/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { AppLayout } from '@/src/components/layout/AppLayout'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
+import { AdminRoute } from '@/components/auth/AdminRoute'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AppLayout } from '@/components/layout/AppLayout'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -105,7 +106,7 @@ const complianceMetrics = {
   }
 }
 
-export default function EnterpriseAnalytics() {
+function EnterpriseAnalyticsContent() {
   const router = useRouter()
   const [selectedTimeframe, setSelectedTimeframe] = useState('6months')
   const [selectedDepartment, setSelectedDepartment] = useState('all')
@@ -473,5 +474,13 @@ export default function EnterpriseAnalytics() {
         </div>
       </div>
     </AppLayout>
+  )
+}
+
+export default function EnterpriseAnalytics() {
+  return (
+    <AdminRoute requiredRole="enterprise-admin">
+      <EnterpriseAnalyticsContent />
+    </AdminRoute>
   )
 }

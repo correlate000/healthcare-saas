@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card'
-import { Button } from '@/src/components/ui/button'
-import { Badge } from '@/src/components/ui/badge'
-import { Progress } from '@/src/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs'
+import { AdminRoute } from '@/components/auth/AdminRoute'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Shield, 
   Users, 
@@ -68,7 +69,7 @@ const platformUsage = {
   ]
 }
 
-export default function SuperAdminDashboard() {
+function SuperAdminDashboardContent() {
   const router = useRouter()
   const [realTimeData, setRealTimeData] = useState(true)
   const [lastUpdate, setLastUpdate] = useState(new Date())
@@ -462,5 +463,13 @@ export default function SuperAdminDashboard() {
         </Tabs>
       </div>
     </div>
+  )
+}
+
+export default function SuperAdminDashboard() {
+  return (
+    <AdminRoute requiredRole="super-admin">
+      <SuperAdminDashboardContent />
+    </AdminRoute>
   )
 }

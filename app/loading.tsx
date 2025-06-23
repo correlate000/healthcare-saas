@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardContent } from '@/src/components/ui/card'
-import { Progress } from '@/src/components/ui/progress'
+import { Card, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import { Heart, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
