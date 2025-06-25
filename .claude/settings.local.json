@@ -31,7 +31,9 @@
       "Bash(npm install:*)",
       "Bash(timeout 15 npm run dev)",
       "Bash(node:*)",
-      "Bash(npm --version)"
+      "Bash(npm --version)",
+      "Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" npm run dev)",
+      "Bash(kill:*)"
     ],
     "deny": []
   }

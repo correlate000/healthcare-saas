@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
+import { Character3D } from './Character3D'
 
 interface CharacterAvatarProps {
   character: 'luna' | 'aria' | 'zen'
@@ -11,6 +12,7 @@ interface CharacterAvatarProps {
   animated?: boolean
   showVoiceWave?: boolean
   className?: string
+  use3D?: boolean
 }
 
 const characters = {
@@ -59,7 +61,8 @@ export function CharacterAvatar({
   size = 'md',
   animated = true,
   showVoiceWave = false,
-  className
+  className,
+  use3D = false
 }: CharacterAvatarProps) {
   const [currentEmotion, setCurrentEmotion] = useState(emotion)
   const [isBlinking, setIsBlinking] = useState(false)
@@ -96,6 +99,20 @@ export function CharacterAvatar({
   useEffect(() => {
     setCurrentEmotion(emotion)
   }, [emotion])
+
+  // 3Dアバターを使用する場合
+  if (use3D) {
+    return (
+      <Character3D
+        character={character}
+        emotion={emotion}
+        size={size}
+        animated={animated}
+        showVoiceWave={showVoiceWave}
+        className={className}
+      />
+    )
+  }
 
   return (
     <div className={cn("relative inline-block", className)}>

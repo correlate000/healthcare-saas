@@ -201,6 +201,7 @@ export default function Dashboard() {
                   emotion="celebrating"
                   size="xl"
                   animated={true}
+                  use3D={true}
                 />
               </motion.div>
               <motion.h1
@@ -244,6 +245,7 @@ export default function Dashboard() {
                     size="md"
                     animated={true}
                     showVoiceWave={false}
+                    use3D={true}
                   />
                   
                   <div className="flex-1">
