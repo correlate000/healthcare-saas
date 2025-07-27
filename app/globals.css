@@ -53,8 +53,193 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    /* Healthcare gradient background for larger screens */
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    min-height: 100vh;
+  }
+  
   body {
     @apply bg-background text-foreground;
+    /* Force mobile layout on all screen sizes */
+    max-width: 375px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+    /* Add subtle shadow for mobile container on larger screens */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Add decorative elements for larger screens */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: -200px;
+    width: 200px;
+    height: 100vh;
+    background: linear-gradient(90deg, transparent 0%, rgba(139, 194, 74, 0.1) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: -200px;
+    width: 200px;
+    height: 100vh;
+    background: linear-gradient(-90deg, transparent 0%, rgba(139, 194, 74, 0.1) 50%, transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  /* Responsive decorative background for larger screens */
+  @media (min-width: 640px) {
+    body {
+      max-width: 375px;
+    }
+    
+    body::before {
+      left: -300px;
+      width: 300px;
+      background: linear-gradient(90deg, transparent 0%, rgba(139, 194, 74, 0.15) 30%, rgba(59, 130, 246, 0.1) 70%, transparent 100%);
+    }
+    
+    body::after {
+      right: -300px;
+      width: 300px;
+      background: linear-gradient(-90deg, transparent 0%, rgba(139, 194, 74, 0.15) 30%, rgba(59, 130, 246, 0.1) 70%, transparent 100%);
+    }
+  }
+  
+  @media (min-width: 768px) {
+    body {
+      max-width: 375px;
+    }
+    
+    html::before {
+      content: '';
+      position: fixed;
+      top: 20%;
+      left: 10%;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(139, 194, 74, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    html::after {
+      content: '';
+      position: fixed;
+      bottom: 20%;
+      right: 10%;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+      animation: float 8s ease-in-out infinite reverse;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    body {
+      max-width: 375px;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    body {
+      max-width: 375px;
+    }
+  }
+  
+  @media (min-width: 1536px) {
+    body {
+      max-width: 375px;
+    }
+  }
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Additional decorative elements for healthcare theme */
+@media (min-width: 1024px) {
+  html {
+    position: relative;
+  }
+  
+  /* Add subtle healthcare icons in background */
+  html:before {
+    content: '💙';
+    position: fixed;
+    top: 10%;
+    left: 15%;
+    font-size: 24px;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+    animation: float 10s ease-in-out infinite;
+  }
+  
+  /* Add mind/brain icon */
+  body:before {
+    content: '🧠';
+    position: fixed !important;
+    top: 30%;
+    right: 20%;
+    font-size: 20px;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: -1;
+    animation: float 12s ease-in-out infinite reverse;
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    left: auto !important;
+  }
+  
+  /* Add wellness icon */
+  body:after {
+    content: '🌿';
+    position: fixed !important;
+    bottom: 30%;
+    left: 20%;
+    font-size: 22px;
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+    animation: float 14s ease-in-out infinite;
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    right: auto !important;
+  }
+}
+
+/* Pulse animation for accent elements */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.2;
   }
 }
 
