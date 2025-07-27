@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { AppLayout } from '@/components/layout/AppLayout'
@@ -8,22 +9,46 @@ import { LogOut, RotateCcw, Trash2 } from 'lucide-react'
 
 export default function TestLogoutPage() {
   const router = useRouter()
+  const [status, setStatus] = useState({
+    auth: false,
+    checkin: false,
+    setup: false
+  })
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    if (typeof window !== 'undefined') {
+      setStatus({
+        auth: !!localStorage.getItem('mindcare-auth'),
+        checkin: localStorage.getItem('mindcare-last-checkin') === new Date().toDateString(),
+        setup: !!localStorage.getItem('mindcare-setup')
+      })
+    }
+  }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem('mindcare-auth')
-    localStorage.removeItem('mindcare-last-checkin')
-    router.push('/auth')
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mindcare-auth')
+      localStorage.removeItem('mindcare-last-checkin')
+      router.push('/auth')
+    }
   }
 
   const handleClearCheckin = () => {
-    localStorage.removeItem('mindcare-last-checkin')
-    alert('チェックイン記録をクリアしました。次回アクセス時にチェックイン画面が表示されます。')
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mindcare-last-checkin')
+      alert('チェックイン記録をクリアしました。次回アクセス時にチェックイン画面が表示されます。')
+      setStatus(prev => ({ ...prev, checkin: false }))
+    }
   }
 
   const handleClearAll = () => {
-    localStorage.clear()
-    alert('すべてのデータをクリアしました。')
-    router.push('/')
+    if (typeof window !== 'undefined') {
+      localStorage.clear()
+      alert('すべてのデータをクリアしました。')
+      router.push('/')
+    }
   }
 
   return (
@@ -76,17 +101,21 @@ export default function TestLogoutPage() {
             <CardTitle>📊 現在の状態</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm space-y-2">
-              <div>
-                <strong>認証状態:</strong> {localStorage.getItem('mindcare-auth') ? '✅ ログイン済み' : '❌ 未ログイン'}
+            {mounted ? (
+              <div className="text-sm space-y-2">
+                <div>
+                  <strong>認証状態:</strong> {status.auth ? '✅ ログイン済み' : '❌ 未ログイン'}
+                </div>
+                <div>
+                  <strong>今日のチェックイン:</strong> {status.checkin ? '✅ 完了' : '❌ 未完了'}
+                </div>
+                <div>
+                  <strong>セットアップ:</strong> {status.setup ? '✅ 完了' : '❌ 未完了'}
+                </div>
               </div>
-              <div>
-                <strong>今日のチェックイン:</strong> {localStorage.getItem('mindcare-last-checkin') === new Date().toDateString() ? '✅ 完了' : '❌ 未完了'}
-              </div>
-              <div>
-                <strong>セットアップ:</strong> {localStorage.getItem('mindcare-setup') ? '✅ 完了' : '❌ 未完了'}
-              </div>
-            </div>
+            ) : (
+              <div className="text-sm text-gray-500">読み込み中...</div>
+            )}
           </CardContent>
         </Card>
       </div>

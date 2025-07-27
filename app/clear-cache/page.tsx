@@ -42,12 +42,16 @@ export default function ClearCache() {
       }
 
       // Clear local storage
-      localStorage.clear()
-      results.push('✅ Cleared localStorage')
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.clear()
+        results.push('✅ Cleared localStorage')
+      }
 
       // Clear session storage
-      sessionStorage.clear()
-      results.push('✅ Cleared sessionStorage')
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        sessionStorage.clear()
+        results.push('✅ Cleared sessionStorage')
+      }
 
       results.push('🎉 All cache clearing complete!')
       
