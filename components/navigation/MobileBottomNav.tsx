@@ -39,8 +39,7 @@ const navItems: NavItem[] = [
     id: 'chat',
     label: 'チャット',
     icon: MessageSquare,
-    path: '/chat',
-    badge: 2
+    path: '/chat'
   },
   {
     id: 'analytics',
@@ -49,10 +48,10 @@ const navItems: NavItem[] = [
     path: '/analytics'
   },
   {
-    id: 'profile',
-    label: 'プロフィール',
-    icon: User,
-    path: '/profile'
+    id: 'booking',
+    label: '予約',
+    icon: Calendar,
+    path: '/booking'
   }
 ]
 
@@ -66,12 +65,9 @@ export function MobileBottomNav() {
 
   return (
     <>
-      {/* スペーサー - コンテンツが底部ナビで隠れないように */}
-      <div className="h-20 md:hidden" />
-      
       {/* ボトムナビゲーション */}
       <motion.nav
-        className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200 z-50 md:hidden"
+        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[375px] bg-gray-800/95 backdrop-blur-lg border-t border-gray-700 z-50"
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -85,10 +81,10 @@ export function MobileBottomNav() {
               return (
                 <motion.button
                   key={item.id}
-                  className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 touch-manipulation min-h-[56px] ${
+                  className={`relative flex flex-col items-center justify-center p-2 rounded-xl transition-all duration-200 touch-manipulation min-h-[48px] ${
                     isActive 
-                      ? 'text-blue-600' 
-                      : 'text-gray-500 hover:text-gray-700 active:text-gray-800'
+                      ? 'text-white' 
+                      : 'text-gray-400 hover:text-gray-300 active:text-white'
                   }`}
                   onClick={() => handleNavigation(item.path)}
                   whileTap={{ scale: 0.95 }}
@@ -97,7 +93,7 @@ export function MobileBottomNav() {
                   {/* アクティブ状態の背景 */}
                   {isActive && (
                     <motion.div
-                      className="absolute inset-0 bg-blue-100 rounded-xl"
+                      className="absolute inset-0 bg-gray-700 rounded-xl"
                       layoutId="activeBackground"
                       initial={false}
                       transition={{
@@ -112,7 +108,7 @@ export function MobileBottomNav() {
                   <div className="relative z-10">
                     <div className="relative">
                       <IconComponent 
-                        className={`h-6 w-6 transition-all duration-200 ${
+                        className={`h-5 w-5 transition-all duration-200 ${
                           isActive ? 'scale-110' : ''
                         }`}
                       />
@@ -143,10 +139,6 @@ export function MobileBottomNav() {
           </div>
         </div>
         
-        {/* ホームインジケーター（iOS風） */}
-        <div className="flex justify-center pb-1">
-          <div className="w-32 h-1 bg-gray-300 rounded-full" />
-        </div>
       </motion.nav>
     </>
   )
