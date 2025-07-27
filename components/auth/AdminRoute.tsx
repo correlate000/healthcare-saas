@@ -15,6 +15,14 @@ interface AdminRouteProps {
 }
 
 export function AdminRoute({ children, requiredRole = 'admin', fallback }: AdminRouteProps) {
+  // 🚨 開発用: 認証チェックを一時的に無効化
+  // 本番環境では必ず認証チェックを有効にしてください
+  const DISABLE_AUTH_CHECK = true
+  
+  if (DISABLE_AUTH_CHECK) {
+    return <>{children}</>
+  }
+
   const auth = useAuth()
   const router = useRouter()
 

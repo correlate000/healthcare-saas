@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -239,7 +240,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-gray-50 pb-32">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
         <div className="px-4 py-6">
@@ -720,6 +721,9 @@ export default function Profile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* モバイルボトムナビゲーション */}
+      <MobileBottomNav />
     </div>
   )
 }
