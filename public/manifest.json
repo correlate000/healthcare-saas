@@ -15,6 +15,12 @@
       "src": "/favicon.ico",
       "sizes": "32x32",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "categories": ["health", "medical", "lifestyle", "productivity"],
