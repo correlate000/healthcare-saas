@@ -87,7 +87,8 @@ export default function CheckinPage() {
             className="space-y-6"
           >
             <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-medium mb-2">今日のこころの調子は？</h2>
+              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のこころの調子は？</h2>
+              <p className="text-gray-300 text-sm font-medium">正直な気持ちを教えてください</p>
             </div>
             
             <div className="space-y-3">
@@ -95,13 +96,13 @@ export default function CheckinPage() {
                 <button
                   key={mood.id}
                   onClick={() => setSelectedMood(mood.id)}
-                  className={`w-full p-4 rounded-2xl transition-all ${
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md ${
                     selectedMood === mood.id
-                      ? 'bg-white text-gray-800'
-                      : 'bg-gray-600 text-white hover:bg-gray-500'
+                      ? 'bg-white text-gray-800 shadow-lg scale-105'
+                      : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-medium">
+                  <div className="text-center font-semibold tracking-wide">
                     {mood.label}
                   </div>
                 </button>
@@ -118,7 +119,8 @@ export default function CheckinPage() {
             className="space-y-6"
           >
             <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-medium mb-2">今日のからだの調子は？</h2>
+              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のからだの調子は？</h2>
+              <p className="text-gray-300 text-sm font-medium">体調も大切な健康の指標です</p>
             </div>
             
             <div className="space-y-3">
@@ -126,13 +128,13 @@ export default function CheckinPage() {
                 <button
                   key={feeling.id}
                   onClick={() => setSelectedBodyFeeling(feeling.id)}
-                  className={`w-full p-4 rounded-2xl transition-all ${
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md ${
                     selectedBodyFeeling === feeling.id
-                      ? 'bg-white text-gray-800'
-                      : 'bg-gray-600 text-white hover:bg-gray-500'
+                      ? 'bg-white text-gray-800 shadow-lg scale-105'
+                      : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-medium">
+                  <div className="text-center font-semibold tracking-wide">
                     {feeling.label}
                   </div>
                 </button>
@@ -154,20 +156,20 @@ export default function CheckinPage() {
     <div className="min-h-screen bg-gray-800 flex flex-col">
       {/* Character area */}
       <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6">
-          <span className="text-gray-800 text-xl font-medium">キャラクター</span>
+        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <span className="text-gray-800 text-xl font-bold tracking-wide">キャラクター</span>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="px-6 mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-white text-sm">ステップ {currentStep} / {totalSteps}</span>
-          <span className="text-white text-sm">{Math.round(progress)}%</span>
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-white text-sm font-semibold">ステップ {currentStep} / {totalSteps}</span>
+          <span className="text-lime-400 text-sm font-bold">{Math.round(progress)}%</span>
         </div>
-        <div className="w-full bg-gray-600 rounded-full h-2">
+        <div className="w-full bg-gray-600/70 rounded-full h-3 shadow-inner">
           <div 
-            className="bg-gray-200 h-2 rounded-full transition-all duration-300" 
+            className="bg-gradient-to-r from-lime-400 to-green-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -183,7 +185,7 @@ export default function CheckinPage() {
         {currentStep > 1 && (
           <button
             onClick={handleBack}
-            className="w-full py-3 bg-gray-600 text-white rounded-xl font-medium hover:bg-gray-500 transition-colors"
+            className="w-full py-3 bg-gray-600/90 text-white rounded-xl font-semibold hover:bg-gray-500 transition-all duration-200 shadow-md hover:shadow-lg border border-gray-500/30"
           >
             戻る
           </button>
@@ -192,10 +194,10 @@ export default function CheckinPage() {
         <button
           onClick={currentStep < 2 ? handleNext : handleComplete}
           disabled={!canProceed()}
-          className={`w-full py-3 rounded-xl font-medium transition-colors ${
+          className={`w-full py-4 rounded-xl font-semibold transition-all duration-200 ${
             canProceed()
-              ? 'bg-gray-500 text-white hover:bg-gray-400'
-              : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              ? 'bg-lime-500 text-gray-800 hover:bg-lime-400 shadow-lg hover:shadow-xl hover:scale-105'
+              : 'bg-gray-700/50 text-gray-400 cursor-not-allowed border border-gray-600/30'
           }`}
         >
           {currentStep >= 2 ? 'あとで' : 'あとで'}

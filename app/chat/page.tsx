@@ -91,18 +91,18 @@ export default function ChatPage() {
     <div className="min-h-screen bg-gray-800 flex flex-col">
       {/* Character area */}
       <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6">
-          <span className="text-gray-800 text-xl font-medium">キャラクター</span>
+        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <span className="text-gray-800 text-xl font-bold tracking-wide">キャラクター</span>
         </div>
         
-        {/* Achievement message */}
-        <div className="text-center mb-4">
-          <h2 className="text-white text-xl font-medium mb-2">今日もお疲れ様でした</h2>
-          <p className="text-gray-300 text-sm">記録完了 - 15日連続ログイン達成！</p>
+        {/* Achievement message - improved typography */}
+        <div className="text-center mb-6">
+          <h2 className="text-white text-xl font-bold mb-3 tracking-wide">今日もお疲れ様でした</h2>
+          <p className="text-gray-200 text-sm font-medium">記録完了 - 15日連続ログイン達成！</p>
         </div>
         
-        {/* Weekly records button */}
-        <Button className="w-full max-w-xs bg-gray-600 text-white hover:bg-gray-500 rounded-xl mb-6">
+        {/* Weekly records button - enhanced visual */}
+        <Button className="w-full max-w-xs bg-gray-600/90 text-white hover:bg-gray-500 rounded-xl mb-6 font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200">
           今週の記録を見る
         </Button>
       </div>
@@ -118,12 +118,12 @@ export default function ChatPage() {
           </div>
         </div>
         
-        <div className="bg-gray-700 rounded-2xl p-4 mb-6">
-          <p className="text-white text-sm leading-relaxed">
+        <div className="bg-gray-700/95 rounded-2xl p-5 mb-6 border border-gray-600/30 shadow-sm">
+          <p className="text-gray-100 text-sm leading-relaxed font-medium">
             XXさん、今日も一日お疲れ様でした。継続して記録していることが素晴らしいですね。明日もよい一日になりますように。
           </p>
-          <div className="mt-3 text-gray-400 text-xs">
-            xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+          <div className="mt-4 text-gray-400 text-xs font-medium">
+            健康管理を続けることで、心身のバランスが整ってきますよ。
           </div>
         </div>
       </div>
@@ -141,10 +141,10 @@ export default function ChatPage() {
             >
               <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
                 <div
-                  className={`px-4 py-3 rounded-2xl ${
+                  className={`px-4 py-3 rounded-2xl shadow-sm ${
                     message.type === 'user'
-                      ? 'bg-gray-600 text-white'
-                      : 'bg-gray-700 text-white'
+                      ? 'bg-gray-600/90 text-white border border-gray-500/30'
+                      : 'bg-gray-700/90 text-gray-100 border border-gray-600/30'
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.message}</p>
@@ -161,12 +161,12 @@ export default function ChatPage() {
             animate={{ opacity: 1, y: 0 }}
             className="flex justify-start"
           >
-            <div className="bg-gray-700 px-4 py-3 rounded-2xl">
+            <div className="bg-gray-700/90 px-4 py-3 rounded-2xl shadow-sm border border-gray-600/30">
               <div className="flex space-x-1">
                 {[...Array(3)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="w-2 h-2 bg-gray-400 rounded-full"
+                    className="w-2 h-2 bg-gray-300 rounded-full"
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{
                       duration: 1.5,
@@ -190,13 +190,13 @@ export default function ChatPage() {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="メッセージを入力..."
-            className="flex-1 bg-gray-700 text-white placeholder-gray-400 px-4 py-3 rounded-2xl border-none focus:outline-none focus:ring-2 focus:ring-gray-500"
+            className="flex-1 bg-gray-700/90 text-white placeholder-gray-400 px-4 py-3 rounded-2xl border border-gray-600/30 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200 font-medium"
             disabled={isTyping}
           />
           <button
             type="submit"
             disabled={!newMessage.trim() || isTyping}
-            className="w-12 h-12 bg-gray-600 hover:bg-gray-500 disabled:bg-gray-700 text-white rounded-full flex items-center justify-center transition-colors"
+            className="w-12 h-12 bg-gray-600/90 hover:bg-gray-500 disabled:bg-gray-700/50 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-md hover:shadow-lg disabled:shadow-none hover:scale-105 disabled:scale-100"
           >
             <Send className="h-5 w-5" />
           </button>

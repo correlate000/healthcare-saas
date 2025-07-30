@@ -83,110 +83,114 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-800 text-white">
       {/* Header with character and greeting */}
       <div className="p-6 flex items-start space-x-4">
-        {/* Character area - lime green circle */}
-        <div className="w-24 h-24 bg-lime-400 rounded-3xl flex items-center justify-center flex-shrink-0">
-          <span className="text-gray-800 text-sm font-medium">キャラクター</span>
+        {/* Character area - improved shadow and spacing */}
+        <div className="w-24 h-24 bg-lime-400 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <span className="text-gray-800 text-sm font-semibold tracking-wide">キャラクター</span>
         </div>
         
-        {/* Greeting area */}
-        <div className="flex-1 bg-gray-700 rounded-2xl p-4">
-          <p className="text-white text-sm leading-relaxed">
+        {/* Greeting area - enhanced readability */}
+        <div className="flex-1 bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
+          <p className="text-gray-100 text-sm leading-relaxed font-medium">
             おかえりなさい。今日はどんな一日でしたか？午後の時間はいかがお過ごしでしたか？少し休憩してみましょう。...
           </p>
         </div>
       </div>
 
       <div className="px-6 space-y-6">
-        {/* Friend level */}
+        {/* Friend level - improved visual hierarchy */}
         <div className="flex items-center justify-between text-sm">
-          <span>フレンドレベル 85</span>
+          <span className="text-gray-300 font-medium tracking-wide">フレンドレベル 85</span>
           <div className="flex space-x-2">
-            <div className="w-8 h-8 bg-white rounded-full"></div>
-            <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
-            <div className="w-8 h-8 bg-gray-600 rounded-full"></div>
+            <div className="w-8 h-8 bg-white rounded-full shadow-md transition-transform hover:scale-110"></div>
+            <div className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500"></div>
+            <div className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500"></div>
           </div>
         </div>
 
-        {/* Daily message */}
-        <div className="bg-gray-700 rounded-2xl p-4">
-          <h3 className="text-white font-medium mb-2">今日の運勢・メッセージ</h3>
-          <p className="text-gray-300 text-sm leading-relaxed">
+        {/* Daily message - enhanced contrast and spacing */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
+          <h3 className="text-white font-semibold mb-3 tracking-wide">今日の運勢・メッセージ</h3>
+          <p className="text-gray-200 text-sm leading-relaxed mb-3">
             あなたの存在自体が、誰かにとっての光になっています。今日も自分らしく、一歩ずつ前に進んでいきましょう。
           </p>
-          <div className="mt-2 text-xs text-gray-400">
+          <div className="text-xs text-gray-400 font-medium">
             今日のラッキーカラー・ブルー
           </div>
         </div>
 
-        {/* Today's record */}
-        <div className="space-y-3">
-          <h3 className="text-white font-medium">今日の記録</h3>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-300">調子の記録</span>
+        {/* Today's record - improved visual hierarchy */}
+        <div className="space-y-4">
+          <h3 className="text-white font-semibold tracking-wide">今日の記録</h3>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300 font-medium">調子の記録</span>
             <div className="text-right">
-              <div className="text-sm">12日</div>
-              <div className="text-sm">5ヶ月</div>
+              <div className="text-sm text-white font-semibold">12日</div>
+              <div className="text-sm text-white font-semibold">5ヶ月</div>
             </div>
           </div>
           
-          <div className="text-sm text-gray-300">lvl.5</div>
+          <div className="text-sm text-gray-300 font-medium">lvl.5</div>
           
-          <div className="text-center mb-4">
-            <div className="text-4xl font-bold text-white mb-1">50%</div>
-            <div className="text-sm text-gray-300 mb-3">今日の進捗状況</div>
+          <div className="text-center mb-6">
+            <div className="text-5xl font-bold text-white mb-2">50%</div>
+            <div className="text-sm text-gray-300 mb-4 font-medium">今日の進捗状況</div>
             
-            {/* Check-in circle */}
-            <div className="w-16 h-16 bg-white rounded-full mx-auto flex items-center justify-center">
-              <div className="text-gray-800 text-xs">24分の時</div>
+            {/* Check-in circle - enhanced visual */}
+            <div className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <div className="text-gray-800 text-xs font-semibold text-center leading-tight">24分の時</div>
             </div>
           </div>
         </div>
 
-        {/* Daily challenges */}
-        <div className="space-y-3">
+        {/* Daily challenges - improved readability */}
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-white font-medium">今日のチャレンジ</h3>
-            <span className="text-sm text-gray-300">2/4</span>
+            <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
+            <span className="text-sm text-gray-300 font-medium">2/4</span>
           </div>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             {dailyChallenges.map((challenge) => (
-              <div key={challenge.id} className="bg-gray-700 rounded-xl p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-white">{challenge.title}</span>
-                  <span className={`text-xs px-2 py-1 rounded ${
+              <div key={challenge.id} className="bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
+                  <span className={`text-xs px-3 py-1 rounded-full font-medium ${
                     challenge.category === 'チャレンジ' 
-                      ? 'bg-orange-600 text-white' 
-                      : 'bg-gray-600 text-gray-300'
+                      ? 'bg-orange-600/90 text-orange-100' 
+                      : 'bg-gray-600/90 text-gray-200'
                   }`}>
                     {challenge.category}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-gray-300">
-                  <span>{challenge.completed ? '完了' : '未完了'}</span>
-                  <span>+{challenge.xp} XP</span>
+                <div className="flex items-center justify-between text-xs">
+                  <span className={`font-medium ${
+                    challenge.completed ? 'text-green-400' : 'text-gray-400'
+                  }`}>
+                    {challenge.completed ? '完了' : '未完了'}
+                  </span>
+                  <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Recent activities */}
-        <div className="space-y-3">
-          <h3 className="text-white font-medium">最近の実績</h3>
+        {/* Recent activities - enhanced spacing and typography */}
+        <div className="space-y-4">
+          <h3 className="text-white font-semibold tracking-wide">最近の実績</h3>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             {recentActivities.map((activity) => (
-              <div key={activity.id} className="bg-gray-700 rounded-xl p-3">
+              <div key={activity.id} className="bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="text-sm font-medium text-white">{activity.title}</span>
+                    <div className="flex items-center space-x-3 mb-2">
+                      <span className="text-sm font-semibold text-white tracking-wide">{activity.title}</span>
                       {activity.isNew && (
-                        <span className="text-xs bg-red-500 text-white px-1.5 py-0.5 rounded">NEW</span>
+                        <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-medium animate-pulse">NEW</span>
                       )}
                     </div>
-                    <span className="text-xs text-gray-300">{activity.description}</span>
+                    <span className="text-xs text-gray-300 font-medium">{activity.description}</span>
                   </div>
                 </div>
               </div>
@@ -194,54 +198,54 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Today's record summary */}
-        <div className="bg-gray-700 rounded-2xl p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-white font-medium">今日の記録</span>
+        {/* Today's record summary - better contrast and spacing */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-white font-semibold tracking-wide">今日の記録</span>
           </div>
           
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-6 text-center">
             <div>
-              <div className="text-2xl font-bold text-white">65%</div>
-              <div className="text-xs text-gray-300">ストレス</div>
+              <div className="text-3xl font-bold text-red-400 mb-1">65%</div>
+              <div className="text-xs text-gray-300 font-medium">ストレス</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">78%</div>
-              <div className="text-xs text-gray-300">エネルギー</div>
+              <div className="text-3xl font-bold text-green-400 mb-1">78%</div>
+              <div className="text-xs text-gray-300 font-medium">エネルギー</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-white">4/5</div>
-              <div className="text-xs text-gray-300">睡眠時間</div>
+              <div className="text-3xl font-bold text-blue-400 mb-1">4/5</div>
+              <div className="text-xs text-gray-300 font-medium">睡眠時間</div>
             </div>
           </div>
         </div>
 
-        {/* Achievement notification */}
-        <div className="bg-gray-700 rounded-2xl p-4 text-center">
-          <div className="w-12 h-12 bg-white rounded-full mx-auto mb-3 flex items-center justify-center">
-            <span className="text-gray-800 text-sm">🏆</span>
+        {/* Achievement notification - enhanced visual appeal */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 text-center border border-gray-600/30 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+            <span className="text-white text-xl">🏆</span>
           </div>
-          <div className="text-yellow-400 font-medium mb-1">7日連続記録達成！</div>
-          <div className="text-xs text-gray-300 mb-3">
+          <div className="text-yellow-400 font-bold mb-2 text-lg">7日連続記録達成！</div>
+          <div className="text-sm text-gray-200 mb-4 leading-relaxed">
             新しいバッジを獲得しました！おめでとう！
           </div>
-          <Button className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl">
+          <Button className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200">
             バッジを確認する
           </Button>
         </div>
 
-        {/* Quick access to settings */}
-        <div className="bg-gray-700 rounded-2xl p-4">
+        {/* Quick access to settings - improved accessibility */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-white font-medium">設定・その他</h3>
-              <p className="text-gray-300 text-sm">アカウント設定やプライバシー設定</p>
+              <h3 className="text-white font-semibold tracking-wide">設定・その他</h3>
+              <p className="text-gray-300 text-sm font-medium">アカウント設定やプライバシー設定</p>
             </div>
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => router.push('/settings')}
-              className="text-gray-300 hover:text-white"
+              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl px-4 py-2 transition-all duration-200"
             >
               →
             </Button>
