@@ -84,22 +84,22 @@ export default function Dashboard() {
       {/* Header with character and greeting */}
       <div className="p-6 flex items-start space-x-4">
         {/* Character area - improved shadow and spacing */}
-        <div className="w-24 h-24 bg-lime-400 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-          <span className="text-gray-800 text-sm font-semibold tracking-wide">キャラクター</span>
+        <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <span className="text-white text-sm font-semibold tracking-wide">キャラクター</span>
         </div>
         
-        {/* Greeting area - enhanced readability */}
-        <div className="flex-1 bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
-          <p className="text-gray-100 text-sm leading-relaxed font-medium">
-            おかえりなさい。今日はどんな一日でしたか？午後の時間はいかがお過ごしでしたか？少し休憩してみましょう。...
+        {/* Greeting area - mobile optimized */}
+        <div className="flex-1 bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30 shadow-sm">
+          <p className="text-gray-100 text-base leading-relaxed font-medium">
+            おかえりなさい。今日はいかがでしたか？
           </p>
         </div>
       </div>
 
-      <div className="px-6 space-y-6">
+      <div className="px-4 space-y-5">
         {/* Friend level - improved visual hierarchy */}
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-300 font-medium tracking-wide">フレンドレベル 85</span>
+          <span className="text-gray-300 font-medium tracking-wide text-base">フレンドレベル 85</span>
           <div className="flex space-x-2">
             <div className="w-8 h-8 bg-white rounded-full shadow-md transition-transform hover:scale-110"></div>
             <div className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500"></div>
@@ -109,11 +109,11 @@ export default function Dashboard() {
 
         {/* Daily message - enhanced contrast and spacing */}
         <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
-          <h3 className="text-white font-semibold mb-3 tracking-wide">今日の運勢・メッセージ</h3>
-          <p className="text-gray-200 text-sm leading-relaxed mb-3">
-            あなたの存在自体が、誰かにとっての光になっています。今日も自分らしく、一歩ずつ前に進んでいきましょう。
+          <h3 className="text-white font-semibold mb-3 tracking-wide text-lg">今日のメッセージ</h3>
+          <p className="text-gray-200 text-base leading-relaxed mb-3">
+            今日も自分らしく、一歩ずつ前に進んでいきましょう。
           </p>
-          <div className="text-xs text-gray-400 font-medium">
+          <div className="text-sm text-gray-400 font-medium">
             今日のラッキーカラー・ブルー
           </div>
         </div>
@@ -145,13 +145,13 @@ export default function Dashboard() {
         {/* Daily challenges - improved readability */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
-            <span className="text-sm text-gray-300 font-medium">2/4</span>
+            <h3 className="text-white font-semibold tracking-wide text-lg">今日のチャレンジ</h3>
+            <span className="text-base text-gray-300 font-medium">2/4</span>
           </div>
           
           <div className="space-y-3">
             {dailyChallenges.map((challenge) => (
-              <div key={challenge.id} className="bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200">
+              <button key={challenge.id} className="w-full bg-gray-700/95 rounded-xl p-5 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200 text-left touch-manipulation" onClick={() => router.push('/daily-challenge')}>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
                   <span className={`text-xs px-3 py-1 rounded-full font-medium ${
@@ -170,7 +170,7 @@ export default function Dashboard() {
                   </span>
                   <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -181,7 +181,7 @@ export default function Dashboard() {
           
           <div className="space-y-3">
             {recentActivities.map((activity) => (
-              <div key={activity.id} className="bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm">
+              <button key={activity.id} className="w-full bg-gray-700/95 rounded-xl p-5 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200 text-left touch-manipulation" onClick={() => router.push('/achievements')}>
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">
@@ -193,7 +193,7 @@ export default function Dashboard() {
                     <span className="text-xs text-gray-300 font-medium">{activity.description}</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -229,7 +229,10 @@ export default function Dashboard() {
           <div className="text-sm text-gray-200 mb-4 leading-relaxed">
             新しいバッジを獲得しました！おめでとう！
           </div>
-          <Button className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200">
+          <Button 
+            onClick={() => router.push('/achievements')}
+            className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200"
+          >
             バッジを確認する
           </Button>
         </div>
@@ -243,9 +246,9 @@ export default function Dashboard() {
             </div>
             <Button 
               variant="ghost" 
-              size="sm"
+              size="lg"
               onClick={() => router.push('/settings')}
-              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl px-4 py-2 transition-all duration-200"
+              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl px-6 py-4 transition-all duration-200 min-h-[48px] touch-manipulation"
             >
               →
             </Button>
@@ -253,7 +256,7 @@ export default function Dashboard() {
         </div>
 
         {/* Bottom spacing for navigation */}
-        <div className="h-20"></div>
+        <div className="h-24"></div>
       </div>
 
       {/* Bottom Navigation */}

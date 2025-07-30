@@ -91,8 +91,8 @@ export default function ChatPage() {
     <div className="min-h-screen bg-gray-800 flex flex-col">
       {/* Character area */}
       <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <span className="text-gray-800 text-xl font-bold tracking-wide">キャラクター</span>
+        <div className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <span className="text-white text-xl font-bold tracking-wide">キャラクター</span>
         </div>
         
         {/* Achievement message - improved typography */}
@@ -102,13 +102,16 @@ export default function ChatPage() {
         </div>
         
         {/* Weekly records button - enhanced visual */}
-        <Button className="w-full max-w-xs bg-gray-600/90 text-white hover:bg-gray-500 rounded-xl mb-6 font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200">
+        <Button 
+          onClick={() => router.push('/analytics')}
+          className="w-full max-w-xs bg-gray-600/90 text-white hover:bg-gray-500 rounded-xl mb-6 font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200"
+        >
           今週の記録を見る
         </Button>
       </div>
 
       {/* Character comment section */}
-      <div className="px-6 mb-4">
+      <div className="px-4 mb-4">
         <div className="flex items-start space-x-3 mb-4">
           <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
             <span className="text-white text-sm">XX</span>
@@ -129,7 +132,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-6 space-y-4 mb-4">
+      <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4">
         <AnimatePresence>
           {messages.slice(0, 0).map((message) => ( // Hide initial message since it's shown above
             <motion.div
@@ -184,7 +187,7 @@ export default function ChatPage() {
       </div>
 
       {/* Message input */}
-      <div className="p-6 pt-0 pb-20">
+      <div className="p-4 pt-0 pb-24">
         <form onSubmit={handleSendMessage} className="flex space-x-3">
           <input
             value={newMessage}

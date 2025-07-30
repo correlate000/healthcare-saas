@@ -96,7 +96,7 @@ export default function CheckinPage() {
                 <button
                   key={mood.id}
                   onClick={() => setSelectedMood(mood.id)}
-                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md ${
+                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
                     selectedMood === mood.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
@@ -128,7 +128,7 @@ export default function CheckinPage() {
                 <button
                   key={feeling.id}
                   onClick={() => setSelectedBodyFeeling(feeling.id)}
-                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md ${
+                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
                     selectedBodyFeeling === feeling.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
@@ -156,36 +156,36 @@ export default function CheckinPage() {
     <div className="min-h-screen bg-gray-800 flex flex-col">
       {/* Character area */}
       <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <span className="text-gray-800 text-xl font-bold tracking-wide">キャラクター</span>
+        <div className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+          <span className="text-white text-xl font-bold tracking-wide">キャラクター</span>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="px-6 mb-6">
+      <div className="px-4 mb-5">
         <div className="flex justify-between items-center mb-3">
           <span className="text-white text-sm font-semibold">ステップ {currentStep} / {totalSteps}</span>
-          <span className="text-lime-400 text-sm font-bold">{Math.round(progress)}%</span>
+          <span className="text-emerald-400 text-sm font-bold">{Math.round(progress)}%</span>
         </div>
         <div className="w-full bg-gray-600/70 rounded-full h-3 shadow-inner">
           <div 
-            className="bg-gradient-to-r from-lime-400 to-green-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
+            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
       </div>
 
       {/* Content area */}
-      <div className="flex-1 px-6">
+      <div className="flex-1 px-4">
         {renderStep()}
       </div>
 
       {/* Navigation buttons */}
-      <div className="p-6 space-y-4 pb-20">
+      <div className="p-4 space-y-4 pb-24">
         {currentStep > 1 && (
           <button
             onClick={handleBack}
-            className="w-full py-3 bg-gray-600/90 text-white rounded-xl font-semibold hover:bg-gray-500 transition-all duration-200 shadow-md hover:shadow-lg border border-gray-500/30"
+            className="w-full py-4 bg-gray-600/90 text-white rounded-xl font-semibold hover:bg-gray-500 transition-all duration-200 shadow-md hover:shadow-lg border border-gray-500/30 min-h-[52px] touch-manipulation"
           >
             戻る
           </button>
@@ -196,7 +196,7 @@ export default function CheckinPage() {
           disabled={!canProceed()}
           className={`w-full py-4 rounded-xl font-semibold transition-all duration-200 ${
             canProceed()
-              ? 'bg-lime-500 text-gray-800 hover:bg-lime-400 shadow-lg hover:shadow-xl hover:scale-105'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-400 hover:to-teal-500 shadow-lg hover:shadow-xl hover:scale-105'
               : 'bg-gray-700/50 text-gray-400 cursor-not-allowed border border-gray-600/30'
           }`}
         >
