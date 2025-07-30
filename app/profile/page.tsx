@@ -240,9 +240,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-32">
+    <div className="min-h-screen bg-gray-800 flex flex-col pb-32">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
         <div className="px-4 py-6">
           <div className="flex items-center space-x-4 mb-4">
             <div className="relative">

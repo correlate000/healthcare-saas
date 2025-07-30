@@ -4,48 +4,66 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Mental Care Color Palette - Calming & Safe */
+    --background: 220 20% 98%;
+    --foreground: 210 15% 20%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 15% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    --popover-foreground: 210 15% 20%;
+    
+    /* Primary: Soft Teal - Trust & Healing */
+    --primary: 180 45% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Warm Neutral - Comfort */
+    --secondary: 45 20% 92%;
+    --secondary-foreground: 210 15% 20%;
+    
+    /* Muted: Light Gray - Calm */
+    --muted: 220 20% 95%;
+    --muted-foreground: 210 15% 45%;
+    
+    /* Accent: Soft Sage - Growth */
+    --accent: 120 25% 88%;
+    --accent-foreground: 210 15% 20%;
+    
+    /* Mental Health Specific Colors */
+    --mindful-blue: 210 60% 85%;
+    --healing-green: 145 40% 85%;
+    --calm-lavender: 260 30% 88%;
+    --warm-peach: 25 60% 90%;
+    --trust-teal: 180 45% 55%;
+    
+    --destructive: 0 65% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 90%;
+    --input: 220 20% 95%;
+    --ring: 180 45% 55%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    /* Dark mode for mental care - Soft & Comforting */
+    --background: 220 25% 8%;
+    --foreground: 220 20% 92%;
+    --card: 220 25% 10%;
+    --card-foreground: 220 20% 92%;
+    --popover: 220 25% 10%;
+    --popover-foreground: 220 20% 92%;
+    --primary: 180 45% 65%;
+    --primary-foreground: 220 25% 8%;
+    --secondary: 220 25% 15%;
+    --secondary-foreground: 220 20% 92%;
+    --muted: 220 25% 12%;
+    --muted-foreground: 220 15% 65%;
+    --accent: 120 25% 20%;
+    --accent-foreground: 220 20% 92%;
+    --destructive: 0 65% 70%;
+    --destructive-foreground: 220 25% 8%;
+    --border: 220 25% 18%;
+    --input: 220 25% 15%;
+    --ring: 180 45% 65%;
   }
 }
 
@@ -55,8 +73,8 @@
   }
   
   html {
-    /* Healthcare gradient background for larger screens */
-    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    /* Mental Care Dark gradient background */
+    background: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1f2937 70%, #111827 100%);
     min-height: 100vh;
   }
   
@@ -68,11 +86,11 @@
     overflow-x: hidden;
     min-height: 100vh;
     position: relative;
-    /* Add subtle shadow for mobile container on larger screens */
-    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+    /* Dark theme shadow for mental care app */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.4), 0 0 80px rgba(72, 187, 120, 0.1);
   }
   
-  /* Add decorative elements for larger screens */
+  /* Subtle decorative elements for mental wellness */
   body::before {
     content: '';
     position: fixed;
@@ -80,7 +98,7 @@
     left: -200px;
     width: 200px;
     height: 100vh;
-    background: linear-gradient(90deg, transparent 0%, rgba(139, 194, 74, 0.1) 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, rgba(72, 187, 120, 0.03) 50%, transparent 100%);
     pointer-events: none;
     z-index: -1;
   }
@@ -92,7 +110,7 @@
     right: -200px;
     width: 200px;
     height: 100vh;
-    background: linear-gradient(-90deg, transparent 0%, rgba(139, 194, 74, 0.1) 50%, transparent 100%);
+    background: linear-gradient(-90deg, transparent 0%, rgba(99, 179, 237, 0.03) 50%, transparent 100%);
     pointer-events: none;
     z-index: -1;
   }
@@ -106,13 +124,13 @@
     body::before {
       left: -300px;
       width: 300px;
-      background: linear-gradient(90deg, transparent 0%, rgba(139, 194, 74, 0.15) 30%, rgba(59, 130, 246, 0.1) 70%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, rgba(72, 187, 120, 0.04) 30%, rgba(99, 179, 237, 0.03) 70%, transparent 100%);
     }
     
     body::after {
       right: -300px;
       width: 300px;
-      background: linear-gradient(-90deg, transparent 0%, rgba(139, 194, 74, 0.15) 30%, rgba(59, 130, 246, 0.1) 70%, transparent 100%);
+      background: linear-gradient(-90deg, transparent 0%, rgba(72, 187, 120, 0.04) 30%, rgba(99, 179, 237, 0.03) 70%, transparent 100%);
     }
   }
   
@@ -126,13 +144,13 @@
       position: fixed;
       top: 20%;
       left: 10%;
-      width: 100px;
-      height: 100px;
-      background: radial-gradient(circle, rgba(139, 194, 74, 0.1) 0%, transparent 70%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(72, 187, 120, 0.04) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
       z-index: -1;
-      animation: float 6s ease-in-out infinite;
+      animation: float 12s ease-in-out infinite;
     }
     
     html::after {
@@ -140,13 +158,13 @@
       position: fixed;
       bottom: 20%;
       right: 10%;
-      width: 80px;
-      height: 80px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(99, 179, 237, 0.04) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
       z-index: -1;
-      animation: float 8s ease-in-out infinite reverse;
+      animation: float 15s ease-in-out infinite reverse;
     }
   }
   
@@ -169,63 +187,91 @@
   }
 }
 
-/* Floating animation for decorative elements */
+/* Calming animations for mental wellness */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-15px) rotate(2deg);
   }
 }
 
-/* Additional decorative elements for healthcare theme */
+@keyframes gentle-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes soft-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(72, 187, 120, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(72, 187, 120, 0.4);
+  }
+}
+
+.gentle-pulse {
+  animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+.soft-glow {
+  animation: soft-glow 4s ease-in-out infinite;
+}
+
+/* Mental Care themed decorative elements */
 @media (min-width: 1024px) {
   html {
     position: relative;
   }
   
-  /* Add subtle healthcare icons in background */
+  /* Peaceful mind symbol */
   html:before {
-    content: '💙';
+    content: '🧘‍♀️';
     position: fixed;
-    top: 10%;
-    left: 15%;
-    font-size: 24px;
-    opacity: 0.1;
+    top: 15%;
+    left: 12%;
+    font-size: 18px;
+    opacity: 0.03;
     pointer-events: none;
     z-index: -1;
-    animation: float 10s ease-in-out infinite;
+    animation: float 20s ease-in-out infinite;
   }
   
-  /* Add mind/brain icon */
+  /* Growth and healing */
   body:before {
-    content: '🧠';
+    content: '🌱';
     position: fixed !important;
-    top: 30%;
-    right: 20%;
-    font-size: 20px;
-    opacity: 0.08;
+    top: 40%;
+    right: 15%;
+    font-size: 16px;
+    opacity: 0.03;
     pointer-events: none;
     z-index: -1;
-    animation: float 12s ease-in-out infinite reverse;
+    animation: float 25s ease-in-out infinite reverse;
     background: none !important;
     width: auto !important;
     height: auto !important;
     left: auto !important;
   }
   
-  /* Add wellness icon */
+  /* Inner peace */
   body:after {
-    content: '🌿';
+    content: '☮️';
     position: fixed !important;
-    bottom: 30%;
-    left: 20%;
-    font-size: 22px;
-    opacity: 0.1;
+    bottom: 25%;
+    left: 18%;
+    font-size: 14px;
+    opacity: 0.03;
     pointer-events: none;
     z-index: -1;
-    animation: float 14s ease-in-out infinite;
+    animation: float 30s ease-in-out infinite;
     background: none !important;
     width: auto !important;
     height: auto !important;
@@ -243,19 +289,90 @@
   }
 }
 
-/* Custom styles for Healthcare SaaS */
-.healthcare-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Mental Care Dark Design System */
+.mindcare-gradient {
+  background: linear-gradient(135deg, 
+    hsl(180, 45%, 45%) 0%, 
+    hsl(200, 50%, 50%) 100%);
 }
 
-.healthcare-card {
-  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+.mindcare-gradient-soft {
+  background: linear-gradient(135deg, 
+    hsl(220, 25%, 8%) 0%, 
+    hsl(215, 25%, 12%) 50%,
+    hsl(210, 25%, 10%) 100%);
 }
 
-.healthcare-button {
-  @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-lg transition-colors duration-200;
+.mindcare-card {
+  @apply bg-slate-800/90 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-700/50 p-6;
 }
 
-.healthcare-input {
-  @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+.mindcare-card-elevated {
+  @apply bg-slate-800 rounded-2xl shadow-lg border border-slate-700 p-6;
+}
+
+.mindcare-button {
+  @apply bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105;
+}
+
+.mindcare-button-soft {
+  @apply bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-sm;
+}
+
+.mindcare-input {
+  @apply flex h-12 w-full rounded-xl border border-slate-600 bg-slate-800/50 backdrop-blur-sm px-4 py-3 text-sm text-slate-100 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200;
+}
+
+/* Privacy-focused dark styling */
+.privacy-safe {
+  @apply border-l-4 border-l-teal-400 bg-teal-900/30 p-4 rounded-r-xl;
+}
+
+/* Emotional state colors - Dark theme */
+.emotion-great {
+  @apply bg-gradient-to-r from-emerald-800/40 to-green-800/40 border-emerald-600/60;
+}
+
+.emotion-good {
+  @apply bg-gradient-to-r from-blue-800/40 to-cyan-800/40 border-blue-600/60;
+}
+
+.emotion-neutral {
+  @apply bg-gradient-to-r from-amber-800/40 to-yellow-800/40 border-amber-600/60;
+}
+
+.emotion-tired {
+  @apply bg-gradient-to-r from-orange-800/40 to-amber-800/40 border-orange-600/60;
+}
+
+.emotion-difficult {
+  @apply bg-gradient-to-r from-rose-800/40 to-pink-800/40 border-rose-600/60;
+}
+
+/* Breathing animation for calm elements */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+/* Safe space indicator */
+.safe-space {
+  position: relative;
+}
+
+.safe-space::before {
+  content: '🔒';
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 12px;
+  opacity: 0.6;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

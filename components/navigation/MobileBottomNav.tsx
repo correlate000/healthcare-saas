@@ -67,7 +67,7 @@ export function MobileBottomNav() {
     <>
       {/* ボトムナビゲーション */}
       <motion.nav
-        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[375px] bg-gray-900/95 backdrop-blur-lg border-t border-gray-700/50 z-50 shadow-2xl"
+        className="fixed bottom-0 left-0 right-0 w-full max-w-[375px] mx-auto bg-gray-900/95 backdrop-blur-lg border-t border-gray-700/50 z-[100] shadow-2xl"
         initial={{ y: 80 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 40, duration: 0.3 }}

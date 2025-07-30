@@ -24,11 +24,41 @@ const bodyFeelingOptions = [
   { id: 'bad', label: 'つらい' }
 ]
 
+// Sleep quality options
+const sleepOptions = [
+  { id: 'excellent', label: 'とてもよく眠れた' },
+  { id: 'good', label: 'よく眠れた' },
+  { id: 'normal', label: '普通' },
+  { id: 'poor', label: 'あまり眠れなかった' },
+  { id: 'very-poor', label: '全然眠れなかった' }
+]
+
+// Energy level options
+const energyOptions = [
+  { id: 'very-high', label: 'エネルギッシュ' },
+  { id: 'high', label: '元気' },
+  { id: 'normal', label: '普通' },
+  { id: 'low', label: '少し疲れている' },
+  { id: 'very-low', label: 'とても疲れている' }
+]
+
+// Stress level options
+const stressOptions = [
+  { id: 'none', label: '全くない' },
+  { id: 'low', label: '少し' },
+  { id: 'medium', label: '普通' },
+  { id: 'high', label: '多い' },
+  { id: 'very-high', label: 'とても多い' }
+]
+
 export default function CheckinPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedMood, setSelectedMood] = useState<string | null>(null)
   const [selectedBodyFeeling, setSelectedBodyFeeling] = useState<string | null>(null)
+  const [selectedSleep, setSelectedSleep] = useState<string | null>(null)
+  const [selectedEnergy, setSelectedEnergy] = useState<string | null>(null)
+  const [selectedStress, setSelectedStress] = useState<string | null>(null)
 
   const totalSteps = 5
   const progress = (currentStep / totalSteps) * 100
@@ -52,7 +82,10 @@ export default function CheckinPage() {
     const checkinData = {
       date: new Date().toISOString(),
       mood: selectedMood,
-      bodyFeeling: selectedBodyFeeling
+      bodyFeeling: selectedBodyFeeling,
+      sleep: selectedSleep,
+      energy: selectedEnergy,
+      stress: selectedStress
     }
     
     // Store checkin for today
@@ -73,6 +106,9 @@ export default function CheckinPage() {
     switch (currentStep) {
       case 1: return selectedMood !== null
       case 2: return selectedBodyFeeling !== null
+      case 3: return selectedSleep !== null
+      case 4: return selectedEnergy !== null
+      case 5: return selectedStress !== null
       default: return true
     }
   }
@@ -145,6 +181,105 @@ export default function CheckinPage() {
           </motion.div>
         )
 
+      case 3:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">昨夜の睡眠の質は？</h2>
+              <p className="text-gray-300 text-sm font-medium">良い睡眠は心の健康に大切です</p>
+            </div>
+            
+            <div className="space-y-3">
+              {sleepOptions.map((sleep) => (
+                <button
+                  key={sleep.id}
+                  onClick={() => setSelectedSleep(sleep.id)}
+                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                    selectedSleep === sleep.id
+                      ? 'bg-white text-gray-800 shadow-lg scale-105'
+                      : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
+                  }`}
+                >
+                  <div className="text-center font-semibold tracking-wide">
+                    {sleep.label}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )
+
+      case 4:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のエネルギーレベルは？</h2>
+              <p className="text-gray-300 text-sm font-medium">活力の状態を教えてください</p>
+            </div>
+            
+            <div className="space-y-3">
+              {energyOptions.map((energy) => (
+                <button
+                  key={energy.id}
+                  onClick={() => setSelectedEnergy(energy.id)}
+                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                    selectedEnergy === energy.id
+                      ? 'bg-white text-gray-800 shadow-lg scale-105'
+                      : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
+                  }`}
+                >
+                  <div className="text-center font-semibold tracking-wide">
+                    {energy.label}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )
+
+      case 5:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 15 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            <div className="text-center mb-8">
+              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のストレスレベルは？</h2>
+              <p className="text-gray-300 text-sm font-medium">感じているストレスの程度を教えてください</p>
+            </div>
+            
+            <div className="space-y-3">
+              {stressOptions.map((stress) => (
+                <button
+                  key={stress.id}
+                  onClick={() => setSelectedStress(stress.id)}
+                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                    selectedStress === stress.id
+                      ? 'bg-white text-gray-800 shadow-lg scale-105'
+                      : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
+                  }`}
+                >
+                  <div className="text-center font-semibold tracking-wide">
+                    {stress.label}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )
+
       default:
         return (
           <div className="text-center text-white">
@@ -194,7 +329,7 @@ export default function CheckinPage() {
         )}
         
         <button
-          onClick={currentStep < 2 ? handleNext : handleComplete}
+          onClick={currentStep < 5 ? handleNext : handleComplete}
           disabled={!canProceed()}
           className={`w-full py-4 rounded-xl font-semibold transition-all duration-200 ${
             canProceed()
@@ -202,7 +337,7 @@ export default function CheckinPage() {
               : 'bg-gray-700/50 text-gray-400 cursor-not-allowed border border-gray-600/30'
           }`}
         >
-          {currentStep >= 2 ? 'あとで' : 'あとで'}
+          {currentStep >= 5 ? '完了' : '次へ'}
         </button>
       </div>
 

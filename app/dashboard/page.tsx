@@ -101,9 +101,18 @@ export default function Dashboard() {
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-300 font-medium tracking-wide text-base">フレンドレベル 85</span>
           <div className="flex space-x-2">
-            <div className="w-8 h-8 bg-white rounded-full shadow-md transition-transform hover:scale-110"></div>
-            <div className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500"></div>
-            <div className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500"></div>
+            <button 
+              onClick={() => router.push('/profile')}
+              className="w-8 h-8 bg-white rounded-full shadow-md transition-transform hover:scale-110 touch-manipulation"
+            ></button>
+            <button 
+              onClick={() => router.push('/profile')}
+              className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500 touch-manipulation"
+            ></button>
+            <button 
+              onClick={() => router.push('/profile')}
+              className="w-8 h-8 bg-gray-600/70 rounded-full transition-colors hover:bg-gray-500 touch-manipulation"
+            ></button>
           </div>
         </div>
 
@@ -132,13 +141,21 @@ export default function Dashboard() {
           <div className="text-sm text-gray-300 font-medium">lvl.5</div>
           
           <div className="text-center mb-6">
-            <div className="text-5xl font-bold text-white mb-2">50%</div>
-            <div className="text-sm text-gray-300 mb-4 font-medium">今日の進捗状況</div>
+            <button 
+              onClick={() => router.push('/analytics')}
+              className="touch-manipulation hover:scale-105 transition-transform duration-200 mb-4"
+            >
+              <div className="text-5xl font-bold text-white mb-2">50%</div>
+              <div className="text-sm text-gray-300 font-medium">今日の進捗状況</div>
+            </button>
             
             {/* Check-in circle - enhanced visual */}
-            <div className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <button 
+              onClick={() => router.push('/checkin')}
+              className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 touch-manipulation hover:scale-105"
+            >
               <div className="text-gray-800 text-xs font-semibold text-center leading-tight">24分の時</div>
-            </div>
+            </button>
           </div>
         </div>
 

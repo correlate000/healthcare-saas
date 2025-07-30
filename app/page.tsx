@@ -8,10 +8,10 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    // スプラッシュ画面を3秒表示してから同意画面に遷移
+    // スプラッシュ画面に遷移
     const timer = setTimeout(() => {
-      router.push('/consent')
-    }, 3000)
+      router.push('/splash')
+    }, 2000)
 
     return () => clearTimeout(timer)
   }, [router])
@@ -30,7 +30,7 @@ export default function Home() {
             stiffness: 200,
             delay: 0.2
           }}
-          className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center shadow-xl"
+          className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl"
         >
           <span className="text-gray-800 text-xl font-medium">キャラクター</span>
         </motion.div>
@@ -42,9 +42,12 @@ export default function Home() {
           transition={{ delay: 0.8, duration: 0.8 }}
           className="text-center"
         >
-          <h1 className="text-white text-lg font-medium">
-            サービスロゴ
+          <h1 className="text-white text-2xl font-bold tracking-wide">
+            MindCare
           </h1>
+          <p className="text-gray-300 text-base font-medium mt-2">
+            あなたの心の健康をサポート
+          </p>
         </motion.div>
       </div>
 
@@ -69,7 +72,7 @@ export default function Home() {
                 repeat: Infinity,
                 delay: i * 0.2
               }}
-              className="w-2 h-2 bg-lime-400 rounded-full"
+              className="w-2 h-2 bg-emerald-400 rounded-full"
             />
           ))}
         </div>

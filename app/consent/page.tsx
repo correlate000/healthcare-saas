@@ -24,7 +24,7 @@ export default function ConsentScreen() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="w-80 h-80 bg-lime-400 rounded-3xl flex items-center justify-center shadow-xl"
+            className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl"
           >
             <span className="text-gray-800 text-xl font-medium">キャラクター</span>
           </motion.div>
