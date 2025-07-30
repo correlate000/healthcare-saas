@@ -80,11 +80,11 @@ export default function Dashboard() {
   const checkinPercentage = 50
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white">
+    <div className="min-h-screen bg-gray-800 text-white overscroll-contain">
       {/* Header with character and greeting */}
       <div className="p-6 flex items-start space-x-4">
         {/* Character area - improved shadow and spacing */}
-        <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg transition-shadow duration-200">
           <span className="text-white text-sm font-semibold tracking-wide">キャラクター</span>
         </div>
         

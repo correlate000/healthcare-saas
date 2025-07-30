@@ -132,7 +132,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4">
+      <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4 overscroll-contain">
         <AnimatePresence>
           {messages.slice(0, 0).map((message) => ( // Hide initial message since it's shown above
             <motion.div
@@ -172,9 +172,9 @@ export default function ChatPage() {
                     className="w-2 h-2 bg-gray-300 rounded-full"
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{
-                      duration: 1.5,
+                      duration: 1.2,
                       repeat: Infinity,
-                      delay: i * 0.2
+                      delay: i * 0.15
                     }}
                   />
                 ))}

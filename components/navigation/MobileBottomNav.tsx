@@ -67,13 +67,13 @@ export function MobileBottomNav() {
     <>
       {/* ボトムナビゲーション */}
       <motion.nav
-        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[375px] bg-gray-800/98 backdrop-blur-lg border-t border-gray-700/70 z-50 shadow-lg"
-        initial={{ y: 100 }}
+        className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[375px] bg-gray-900/95 backdrop-blur-lg border-t border-gray-700/50 z-50 shadow-2xl"
+        initial={{ y: 80 }}
         animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        transition={{ type: "spring", stiffness: 400, damping: 40, duration: 0.3 }}
       >
-        <div className="px-3 py-2">
-          <div className="flex items-center justify-around">
+        <div className="px-2 py-2">
+          <div className="grid grid-cols-5 gap-1">
             {navItems.map((item) => {
               const IconComponent = item.icon
               const isActive = pathname === item.path
@@ -81,25 +81,25 @@ export function MobileBottomNav() {
               return (
                 <motion.button
                   key={item.id}
-                  className={`relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 touch-manipulation min-h-[52px] ${
+                  className={`relative flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 touch-manipulation min-h-[60px] ${
                     isActive 
-                      ? 'text-white' 
-                      : 'text-gray-400 hover:text-gray-300 active:text-white'
+                      ? 'text-emerald-400' 
+                      : 'text-gray-500 hover:text-gray-300 active:text-emerald-400'
                   }`}
                   onClick={() => handleNavigation(item.path)}
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
                 >
                   {/* アクティブ状態の背景 */}
                   {isActive && (
                     <motion.div
-                      className="absolute inset-0 bg-gray-700/90 rounded-xl border border-gray-600/30"
+                      className="absolute inset-0 bg-gray-800/80 rounded-lg border border-emerald-400/20"
                       layoutId="activeBackground"
                       initial={false}
                       transition={{
                         type: "spring",
                         stiffness: 500,
-                        damping: 35
+                        damping: 40,
+                        duration: 0.2
                       }}
                     />
                   )}
@@ -108,15 +108,15 @@ export function MobileBottomNav() {
                   <div className="relative z-10">
                     <div className="relative">
                       <IconComponent 
-                        className={`h-6 w-6 transition-all duration-200 ${
-                          isActive ? 'scale-110 drop-shadow-sm' : ''
+                        className={`h-5 w-5 transition-all duration-200 ${
+                          isActive ? 'scale-105 drop-shadow-sm' : ''
                         }`}
                       />
                       
                       {/* 通知バッジ */}
                       {item.badge && item.badge > 0 && (
                         <motion.div
-                          className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1"
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
                           transition={{ type: "spring", stiffness: 500 }}
@@ -127,8 +127,8 @@ export function MobileBottomNav() {
                     </div>
                     
                     {/* ラベル */}
-                    <span className={`text-xs mt-1 font-semibold transition-all duration-200 tracking-wide ${
-                      isActive ? 'opacity-100' : 'opacity-70'
+                    <span className={`text-xs mt-1 font-medium transition-all duration-200 ${
+                      isActive ? 'opacity-100 text-emerald-400' : 'opacity-80 text-gray-500'
                     }`}>
                       {item.label}
                     </span>

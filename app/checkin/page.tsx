@@ -82,8 +82,9 @@ export default function CheckinPage() {
       case 1:
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -114,8 +115,9 @@ export default function CheckinPage() {
       case 2:
         return (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
             className="space-y-6"
           >
             <div className="text-center mb-8">
@@ -169,7 +171,7 @@ export default function CheckinPage() {
         </div>
         <div className="w-full bg-gray-600/70 rounded-full h-3 shadow-inner">
           <div 
-            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-500 ease-out shadow-sm" 
+            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-300 ease-out shadow-sm" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
