@@ -1,95 +1,134 @@
-// Development mode check - disable service worker completely in development
-if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port === '3002') {
-  console.log('Service Worker: Disabled in development environment')
-  // Self-destruct and prevent any caching
-  self.addEventListener('install', () => {
-    self.skipWaiting()
-  })
-  self.addEventListener('activate', () => {
-    self.registration.unregister()
-  })
-  self.addEventListener('fetch', (event) => {
-    // Pass through all requests without caching
-    return
-  })
-} else {
-  // Production service worker code
-  const CACHE_NAME = 'mindcare-v1.0.0'
-  const urlsToCache = [
-    '/',
-    '/dashboard',
-    '/checkin',
-    '/chat',
-    '/analytics',
-    '/booking',
-    '/settings',
-    '/offline',
-    '/manifest.json'
-  ]
+// Service Worker for Healthcare SaaS
+const CACHE_NAME = 'healthcare-saas-v1.0.0'
+const urlsToCache = [
+  '/',
+  '/dashboard',
+  '/checkin', 
+  '/chat',
+  '/analytics',
+  '/booking',
+  '/settings',
+  '/manifest.json'
+]
 
-  // Install event - cache resources
-  self.addEventListener('install', (event) => {
-    event.waitUntil(
-      caches.open(CACHE_NAME)
-        .then((cache) => {
-          console.log('Service Worker: Caching app shell')
-          return cache.addAll(urlsToCache)
-        })
-        .catch((error) => {
-          console.error('Service Worker: Cache failed', error)
-        })
-    )
-  })
-
-  // Activate event - clean up old caches
-  self.addEventListener('activate', (event) => {
-    event.waitUntil(
-      caches.keys().then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Service Worker: Deleting old cache', cacheName)
-              return caches.delete(cacheName)
-            }
-          })
-        )
+// Install event - cache resources
+self.addEventListener('install', (event) => {
+  console.log('Service Worker: Installing')
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        console.log('Service Worker: Caching app shell')
+        return cache.addAll(urlsToCache.map(url => new Request(url, {cache: 'reload'})))
       })
-    )
-  })
-}
+      .catch((error) => {
+        console.error('Service Worker: Cache failed', error)
+      })
+      .then(() => {
+        console.log('Service Worker: Skip waiting')
+        return self.skipWaiting()
+      })
+  )
+})
 
-// Fetch event - only for production
-if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.port !== '3002') {
-  self.addEventListener('fetch', (event) => {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Clone and cache successful responses
-          if (response && response.status === 200 && response.type === 'basic') {
-            const responseToCache = response.clone()
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache)
-              })
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Activating')
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('Service Worker: Deleting old cache', cacheName)
+            return caches.delete(cacheName)
           }
+        })
+      )
+    }).then(() => {
+      console.log('Service Worker: Claiming clients')
+      return self.clients.claim()
+    })
+  )
+})
+
+// Fetch event - network first, then cache
+self.addEventListener('fetch', (event) => {
+  // Skip chrome-extension requests
+  if (event.request.url.startsWith('chrome-extension://')) {
+    return
+  }
+  
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
+    return
+  }
+
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Check if we received a valid response
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response
-        })
-        .catch(() => {
-          // Only use cache as fallback, and only for specific requests
-          return caches.match(event.request)
-            .then((response) => {
-              if (response) {
-                return response
-              }
-              // Return offline page only for navigation requests as last resort
-              if (event.request.destination === 'document') {
-                return caches.match('/offline')
-              }
+        }
+
+        // Clone and cache successful responses for navigation and static assets
+        if (event.request.destination === 'document' || 
+            event.request.destination === 'script' ||
+            event.request.destination === 'style' ||
+            event.request.destination === 'image') {
+          const responseToCache = response.clone()
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache)
             })
-        })
-    )
-  })
-}
+            .catch((error) => {
+              console.log('Service Worker: Cache put failed', error)
+            })
+        }
+        
+        return response
+      })
+      .catch(() => {
+        console.log('Service Worker: Network failed, trying cache')
+        // Only use cache as fallback for specific requests
+        return caches.match(event.request)
+          .then((response) => {
+            if (response) {
+              console.log('Service Worker: Serving from cache', event.request.url)
+              return response
+            }
+            // For navigation requests, return a basic fallback
+            if (event.request.destination === 'document') {
+              return new Response(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                  <title>オフライン - Healthcare SaaS</title>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                  <style>
+                    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-align: center; padding: 50px; background: #1f2937; color: white; }
+                    .container { max-width: 400px; margin: 0 auto; }
+                    h1 { color: #10b981; }
+                  </style>
+                </head>
+                <body>
+                  <div class="container">
+                    <h1>オフライン</h1>
+                    <p>インターネット接続を確認してください</p>
+                    <button onclick="location.reload()">再試行</button>
+                  </div>
+                </body>
+                </html>
+              `, {
+                headers: { 'Content-Type': 'text/html' }
+              })
+            }
+            // For other requests, just reject
+            return new Response('Network error', { status: 503 })
+          })
+      })
+  )
+})
 
 // Background sync for check-ins
 self.addEventListener('sync', (event) => {
