@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { motion } from 'framer-motion'
 import { 
   CheckCircle, 
   Clock, 
@@ -23,7 +25,8 @@ import {
   Smile,
   BookOpen,
   MessageSquare,
-  Award
+  Award,
+  ArrowLeft
 } from 'lucide-react'
 
 interface Challenge {
@@ -39,12 +42,28 @@ interface Challenge {
   characterSuggestion?: string
 }
 
+// Wireframe page 23 daily challenges data
+const wireframeChallengeData = {
+  todayMessage: '今日も自分らしく、一歩ずつ前に進んでいきましょう',
+  currentStreak: 12,
+  completedToday: 2,
+  totalToday: 4,
+  todayXP: 85,
+  dailyChallenges: [
+    { id: 1, title: '朝の気分チェック', category: '基本', completed: true, xp: 20, timeEstimate: '1分' },
+    { id: 2, title: '今日の感謝', category: '基本', completed: true, xp: 30, timeEstimate: '2分' },
+    { id: 3, title: '感情の記録', category: '基本', completed: false, xp: 40, timeEstimate: '3分' },
+    { id: 4, title: '30分のマインドフルネス', category: 'チャレンジ', completed: false, xp: 50, timeEstimate: '30分' }
+  ]
+}
+
 export default function DailyChallenge() {
-  const [currentStreak, setCurrentStreak] = useState(7)
-  const [todayXP, setTodayXP] = useState(150)
+  const router = useRouter()
+  const [currentStreak, setCurrentStreak] = useState(wireframeChallengeData.currentStreak)
+  const [todayXP, setTodayXP] = useState(wireframeChallengeData.todayXP)
   const [totalXP, setTotalXP] = useState(2840)
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null)
-  const [completedChallenges, setCompletedChallenges] = useState<string[]>([])
+  const [completedChallenges, setCompletedChallenges] = useState<string[]>(['morning-check', 'gratitude-note'])
 
   const challenges: Challenge[] = [
     {
@@ -164,218 +183,151 @@ export default function DailyChallenge() {
   const totalChallenges = challenges.length
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-        <div className="px-4 py-6">
+    <div className="min-h-screen bg-gray-800 text-white">
+      {/* Header - wireframe style */}
+      <div className="p-4 border-b border-gray-700">
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={() => router.push('/dashboard')} className="text-gray-400 hover:text-white">
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-white text-lg font-semibold">デイリーチャレンジ</h1>
+          <div className="w-6" />
+        </div>
+      </div>
+
+      {/* Character greeting and today's message */}
+      <div className="p-6">
+        <div className="flex items-start space-x-4 mb-6">
+          <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg">
+            <span className="text-white text-sm font-semibold tracking-wide">キャラクター</span>
+          </div>
+          <div className="flex-1 bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30 shadow-sm">
+            <p className="text-gray-100 text-sm leading-relaxed font-medium">
+              {wireframeChallengeData.todayMessage}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 space-y-6">
+        {/* Today's progress */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-2xl font-bold">デイリーチャレンジ</h1>
-              <p className="text-blue-100">毎日の小さな積み重ねで心の健康を</p>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">{currentStreak}</div>
-              <div className="text-sm text-blue-100">日連続</div>
-            </div>
+            <h3 className="text-white font-semibold tracking-wide">今日の進捗</h3>
+            <span className="text-emerald-400 text-sm font-bold">{wireframeChallengeData.completedToday}/{wireframeChallengeData.totalToday}</span>
           </div>
           
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="text-center">
-              <div className="text-xl font-bold">{todayXP}</div>
-              <div className="text-sm text-blue-100">今日のXP</div>
+              <div className="text-2xl font-bold text-emerald-400">{wireframeChallengeData.todayXP}</div>
+              <div className="text-xs text-gray-300 font-medium">今日のXP</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold">{totalXP}</div>
-              <div className="text-sm text-blue-100">総XP</div>
+              <div className="text-2xl font-bold text-blue-400">{currentStreak}</div>
+              <div className="text-xs text-gray-300 font-medium">連続日数</div>
             </div>
             <div className="text-center">
-              <div className="text-xl font-bold">{completedToday}/{totalChallenges}</div>
-              <div className="text-sm text-blue-100">完了</div>
+              <div className="text-2xl font-bold text-orange-400">{Math.round((wireframeChallengeData.completedToday / wireframeChallengeData.totalToday) * 100)}%</div>
+              <div className="text-xs text-gray-300 font-medium">達成率</div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm">今日の進捗</span>
-              <span className="text-sm">{Math.round((completedToday / totalChallenges) * 100)}%</span>
-            </div>
-            <Progress 
-              value={(completedToday / totalChallenges) * 100} 
-              className="h-2 bg-blue-400"
+          <div className="w-full bg-gray-600/70 rounded-full h-3 mb-2">
+            <div 
+              className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-300"
+              style={{ width: `${(wireframeChallengeData.completedToday / wireframeChallengeData.totalToday) * 100}%` }}
             />
           </div>
         </div>
-      </div>
 
-      {/* Today's Challenges */}
-      <div className="px-4 py-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">今日のチャレンジ</h2>
-          <Badge variant="outline" className="text-blue-600 border-blue-200">
-            <Calendar className="w-3 h-3 mr-1" />
-            {new Date().toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })}
-          </Badge>
-        </div>
-
-        {availableChallenges.length === 0 ? (
-          <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
-            <CardContent className="p-6 text-center">
-              <div className="text-4xl mb-4">🎉</div>
-              <h3 className="text-lg font-bold text-green-700 mb-2">
-                今日のチャレンジ完了！
-              </h3>
-              <p className="text-green-600 mb-4">
-                素晴らしいですね！明日も新しいチャレンジが待っています。
-              </p>
-              <div className="flex items-center justify-center space-x-4">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-green-700">+{todayXP}</div>
-                  <div className="text-sm text-green-600">XP獲得</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-green-700">{currentStreak}</div>
-                  <div className="text-sm text-green-600">日連続</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
+        {/* Today's challenges list */}
+        <div className="space-y-4">
+          <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
+          
           <div className="space-y-3">
-            {availableChallenges.map((challenge) => (
-              <Card 
+            {wireframeChallengeData.dailyChallenges.map((challenge) => (
+              <motion.button 
                 key={challenge.id} 
-                className="cursor-pointer hover:shadow-md transition-shadow border-l-4"
-                style={{ borderLeftColor: getChallengeTypeColor(challenge.type).replace('bg-', '') }}
-                onClick={() => setSelectedChallenge(challenge)}
+                className="w-full bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-all duration-200 text-left touch-manipulation"
+                onClick={() => challenge.completed ? null : router.push('/checkin')}
+                whileTap={{ scale: 0.98 }}
               >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-3 flex-1">
-                      <div className={`p-2 rounded-lg ${getChallengeTypeColor(challenge.type)} text-white flex-shrink-0`}>
-                        {challenge.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-medium text-gray-900">{challenge.title}</h3>
-                          {getDifficultyBadge(challenge.difficulty)}
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2">{challenge.description}</p>
-                        <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <div className="flex items-center">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {challenge.estimatedTime}
-                          </div>
-                          <div className="flex items-center">
-                            <Star className="w-3 h-3 mr-1" />
-                            {challenge.xp} XP
-                          </div>
-                        </div>
-                        {challenge.characterSuggestion && (
-                          <p className="text-xs text-blue-600 mt-2">
-                            💡 {challenge.characterSuggestion}
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      challenge.category === 'チャレンジ' 
+                        ? 'bg-orange-600/90 text-orange-100' 
+                        : 'bg-gray-600/90 text-gray-200'
+                    }`}>
+                      {challenge.category}
+                    </span>
+                    {challenge.completed && (
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-3">
+                    <span className={`font-medium ${
+                      challenge.completed ? 'text-green-400' : 'text-gray-400'
+                    }`}>
+                      {challenge.completed ? '完了' : '未完了'}
+                    </span>
+                    <span className="text-gray-400">
+                      <Clock className="w-3 h-3 inline mr-1" />
+                      {challenge.timeEstimate}
+                    </span>
+                  </div>
+                  <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
+                </div>
+              </motion.button>
             ))}
           </div>
-        )}
+        </div>
 
-        {/* Completed Challenges */}
-        {completedChallenges.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-md font-bold text-gray-700 mb-3 flex items-center">
-              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-              完了したチャレンジ
-            </h3>
-            <div className="space-y-2">
-              {challenges
-                .filter(c => completedChallenges.includes(c.id))
-                .map((challenge) => (
-                  <div key={challenge.id} className="flex items-center p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
-                    <span className="text-sm text-green-700 flex-1">{challenge.title}</span>
-                    <Badge variant="secondary" className="text-green-600 bg-green-100">
-                      +{challenge.xp} XP
-                    </Badge>
-                  </div>
-                ))}
+        {/* Achievement celebration */}
+        {wireframeChallengeData.completedToday >= 2 && (
+          <div className="bg-emerald-500/10 border border-emerald-400/30 rounded-2xl p-5">
+            <div className="flex items-start space-x-3">
+              <Trophy className="w-5 h-5 text-emerald-400 mt-0.5" />
+              <div>
+                <h4 className="text-emerald-400 font-semibold mb-2">順調なスタート！</h4>
+                <p className="text-gray-300 text-sm leading-relaxed font-medium">
+                  今日は{wireframeChallengeData.completedToday}個のチャレンジを達成しました。この調子で残りも頒張りましょう！
+                </p>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Streak Bonus */}
-        {currentStreak >= 3 && (
-          <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="text-2xl">🔥</div>
-                <div className="flex-1">
-                  <h4 className="font-bold text-yellow-800">連続ログインボーナス！</h4>
-                  <p className="text-sm text-yellow-700">
-                    {currentStreak}日連続でチャレンジを達成中！素晴らしいですね！
-                  </p>
-                </div>
-                <Badge className="bg-yellow-500 text-white">
-                  ×{Math.floor(currentStreak / 7) + 1} XP
-                </Badge>
+        {/* Weekly streak info */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="text-white font-semibold tracking-wide">週間継続ストリーク</h4>
+            <span className="text-orange-400 text-sm font-bold">{currentStreak}日</span>
+          </div>
+          <div className="flex items-center space-x-2 mb-2">
+            {[...Array(7)].map((_, i) => (
+              <div 
+                key={i} 
+                className={`w-6 h-6 rounded-full ${
+                  i < 5 ? 'bg-emerald-400' : 'bg-gray-600'
+                } flex items-center justify-center`}
+              >
+                {i < 5 && <CheckCircle className="w-3 h-3 text-white" />}
               </div>
-            </CardContent>
-          </Card>
-        )}
+            ))}
+          </div>
+          <p className="text-gray-300 text-xs">今週は5日間チャレンジを達成しました！</p>
+        </div>
+
+        {/* Bottom spacing for navigation */}
+        <div className="h-24"></div>
       </div>
 
-      {/* Challenge Modal */}
-      {selectedChallenge && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <div className="flex items-center space-x-3">
-                <div className={`p-3 rounded-lg ${getChallengeTypeColor(selectedChallenge.type)} text-white`}>
-                  {selectedChallenge.icon}
-                </div>
-                <div>
-                  <CardTitle>{selectedChallenge.title}</CardTitle>
-                  <CardDescription>
-                    {selectedChallenge.estimatedTime} • {selectedChallenge.xp} XP
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-gray-700">{selectedChallenge.description}</p>
-              
-              {selectedChallenge.characterSuggestion && (
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    💡 {selectedChallenge.characterSuggestion}
-                  </p>
-                </div>
-              )}
-
-              <div className="flex space-x-3">
-                <Button 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => setSelectedChallenge(null)}
-                >
-                  後で
-                </Button>
-                <Button 
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600"
-                  onClick={() => completeChallenge(selectedChallenge.id)}
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  開始
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   )
 }

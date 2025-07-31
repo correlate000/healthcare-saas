@@ -51,6 +51,7 @@ const stressOptions = [
   { id: 'very-high', label: 'とても多い' }
 ]
 
+// Wireframe pages 15-20 character data
 const characters = [
   { id: 'luna', name: 'Luna', active: true },
   { id: 'aria', name: 'Aria', active: false },
@@ -161,8 +162,8 @@ export default function CheckinPage() {
             className="space-y-4"
           >
             <div className="text-center mb-6">
-              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のこころの調子は？</h2>
-              <p className="text-gray-300 text-xs font-medium">正直な気持ちを教えてください</p>
+              <h2 className="text-white text-lg font-bold mb-2 tracking-wide">今日のこころの調子は？</h2>
+              <p className="text-gray-300 text-sm font-medium">正直な気持ちを教えてください</p>
             </div>
             
             <div className="space-y-2">
@@ -194,8 +195,8 @@ export default function CheckinPage() {
             className="space-y-4"
           >
             <div className="text-center mb-6">
-              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のからだの調子は？</h2>
-              <p className="text-gray-300 text-xs font-medium">体調も大切な健康の指標です</p>
+              <h2 className="text-white text-lg font-bold mb-2 tracking-wide">今日のからだの調子は？</h2>
+              <p className="text-gray-300 text-sm font-medium">体調も大切な健康の指標です</p>
             </div>
             
             <div className="space-y-2">
@@ -227,8 +228,8 @@ export default function CheckinPage() {
             className="space-y-4"
           >
             <div className="text-center mb-6">
-              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">昨夜の睡眠の質は？</h2>
-              <p className="text-gray-300 text-xs font-medium">良い睡眠は心の健康に大切です</p>
+              <h2 className="text-white text-lg font-bold mb-2 tracking-wide">昨夜の睡眠の質は？</h2>
+              <p className="text-gray-300 text-sm font-medium">良い睡眠は心の健康に大切です</p>
             </div>
             
             <div className="space-y-2">
@@ -260,8 +261,8 @@ export default function CheckinPage() {
             className="space-y-4"
           >
             <div className="text-center mb-6">
-              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のエネルギーレベルは？</h2>
-              <p className="text-gray-300 text-xs font-medium">活力の状態を教えてください</p>
+              <h2 className="text-white text-lg font-bold mb-2 tracking-wide">今日のエネルギーレベルは？</h2>
+              <p className="text-gray-300 text-sm font-medium">活力の状態を教えてください</p>
             </div>
             
             <div className="space-y-2">
@@ -293,8 +294,8 @@ export default function CheckinPage() {
             className="space-y-4"
           >
             <div className="text-center mb-6">
-              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のストレスレベルは？</h2>
-              <p className="text-gray-300 text-xs font-medium">感じているストレスの程度を教えてください</p>
+              <h2 className="text-white text-lg font-bold mb-2 tracking-wide">今日のストレスレベルは？</h2>
+              <p className="text-gray-300 text-sm font-medium">感じているストレスの程度を教えてください</p>
             </div>
             
             <div className="space-y-2">
@@ -328,32 +329,32 @@ export default function CheckinPage() {
 
   return (
     <div className="min-h-screen bg-gray-800 flex flex-col">
-      {/* Character area with message and character switching */}
+      {/* Character area with message - wireframe layout */}
       <div className="p-4 flex flex-col items-center">
-        <div className="relative">
+        <div className="relative mb-4">
           {/* Character */}
-          <div className="w-32 h-32 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-3 shadow-xl">
+          <div className="w-32 h-32 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl">
             <span className="text-white text-base font-bold tracking-wide">キャラクター</span>
           </div>
           
-          {/* Message bubble */}
+          {/* Message bubble - wireframe style */}
           <div className="absolute -right-2 top-6 bg-gray-700 text-white px-3 py-2 rounded-2xl max-w-40 shadow-lg">
             <p className="text-xs font-medium">おかえりなさい。今日はいかがでしたか？</p>
           </div>
         </div>
         
         {/* Friend level */}
-        <div className="mt-2 mb-3">
-          <p className="text-white text-xs font-medium">フレンドレベル 85</p>
+        <div className="mb-3">
+          <p className="text-white text-sm font-medium">フレンドレベル 85</p>
         </div>
         
-        {/* Character switching dots */}
-        <div className="flex space-x-3 mb-3">
+        {/* Character switching dots - wireframe positioning */}
+        <div className="flex space-x-2 mb-4">
           {characters.map((char, index) => (
             <button
               key={char.id}
               onClick={() => setCurrentCharacter(index)}
-              className={`w-4 h-4 rounded-full transition-all duration-200 ${
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
                 currentCharacter === index
                   ? 'bg-white'
                   : 'bg-gray-500'

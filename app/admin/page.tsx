@@ -1,339 +1,307 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { 
-  Users, 
-  TrendingUp, 
-  AlertTriangle, 
   Shield, 
-  Download,
-  ArrowUp,
-  ArrowDown,
-  Activity,
-  Calendar,
+  TrendingUp, 
+  Users, 
+  AlertTriangle,
+  Clock,
   BarChart3,
-  Settings,
-  Filter
+  Download,
+  RefreshCw
 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { AdminRoute } from '@/components/auth/AdminRoute'
 
-// Mock organization data
-const orgData = {
-  totalEmployees: 1247,
-  activeUsers: 892,
-  checkinRate: 71.5,
-  riskAlerts: 8,
-  averageMood: 3.6,
-  wellnessScore: 78,
-  monthlyGrowth: 12.3,
+// Wireframe data matching page 1
+const dashboardData = {
+  totalUsers: 247,
+  activeUsers: 189,
+  avgMoodScore: 72,
+  riskAlerts: 3,
+  totalSatisfaction: 8.0,
+  weeklyGrowth: 0.3,
+  monthlyGrowth: 12,
+  participationRate: 76.5,
   departments: [
-    { name: '営業部', employees: 156, checkinRate: 78, riskLevel: 'low', avgMood: 3.8 },
-    { name: '開発部', employees: 203, checkinRate: 85, riskLevel: 'low', avgMood: 3.9 },
-    { name: '人事部', employees: 45, checkinRate: 92, riskLevel: 'low', avgMood: 4.1 },
-    { name: 'マーケティング部', employees: 89, checkinRate: 65, riskLevel: 'medium', avgMood: 3.2 },
-    { name: 'サポート部', employees: 67, checkinRate: 58, riskLevel: 'high', avgMood: 2.9 },
+    { name: 'エンジニア', participation: 82, avgMood: '7.1/10', riskLevel: '良好', riskColor: 'green' },
+    { name: '営業', participation: 71, avgMood: '6.8/10', riskLevel: '注意', riskColor: 'yellow' },
+    { name: 'マーケティング', participation: 89, avgMood: '7.5/10', riskLevel: '良好', riskColor: 'green' },
+    { name: '人事・総務', participation: 94, avgMood: '7.8/10', riskLevel: '良好', riskColor: 'green' },
+    { name: 'ファイナンス', participation: 85, avgMood: '6.5/10', riskLevel: '注意', riskColor: 'yellow' }
   ],
-  recentAlerts: [
-    { id: 1, department: 'サポート部', type: 'low_mood', severity: 'high', time: '2時間前' },
-    { id: 2, department: 'マーケティング部', type: 'stress_spike', severity: 'medium', time: '4時間前' },
-    { id: 3, department: '営業部', type: 'engagement_drop', severity: 'medium', time: '6時間前' },
-  ]
+  todayUsage: [
+    { type: '気分チェック', count: 156, percentage: 45 },
+    { type: 'AI会話', count: 89, percentage: 38 },
+    { type: 'コンテンツ閲覧', count: 234, percentage: 17 }
+  ],
+  stressDistribution: [
+    { level: '低ストレス', percentage: 45, color: 'bg-green-500' },
+    { level: '中程度', percentage: 38, color: 'bg-yellow-500' },
+    { level: '高ストレス', percentage: 17, color: 'bg-red-500' }
+  ],
+  impactMetrics: {
+    stressReduction: 24,
+    moodImprovement: 62,
+    continuationRate: 76.5
+  },
+  peakUsageHours: '09:00 / 12:00 / 18:00'
 }
 
-function AdminDashboardContent() {
-  const router = useRouter()
-  const [timeRange, setTimeRange] = useState('7days')
-  const [selectedDepartment, setSelectedDepartment] = useState('all')
+export default function AdminDashboard() {
+  const [selectedPeriod, setSelectedPeriod] = useState('過去7日')
 
-  const getRiskColor = (level: string) => {
-    switch (level) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200'
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      default: return 'text-green-600 bg-green-50 border-green-200'
-    }
-  }
-
-  const getAlertIcon = (type: string) => {
-    switch (type) {
-      case 'low_mood': return '😔'
-      case 'stress_spike': return '⚡'
-      case 'engagement_drop': return '📉'
-      default: return '⚠️'
+  const getRiskBadgeClass = (riskColor: string) => {
+    switch (riskColor) {
+      case 'green': return 'bg-green-100 text-green-800'
+      case 'yellow': return 'bg-yellow-100 text-yellow-800'
+      case 'red': return 'bg-red-100 text-red-800'
+      default: return 'bg-gray-100 text-gray-800'
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">ウェルビーイング統計</h1>
+          <p className="text-sm text-gray-600">匿名化された従業員のメンタルヘルス指標</p>
+        </div>
+        <div className="flex space-x-3">
+          <select 
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg bg-white"
+          >
+            <option>過去7日</option>
+            <option>過去30日</option>
+            <option>過去3ヶ月</option>
+          </select>
+          <Button variant="outline" size="sm">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            更新
+          </Button>
+          <Button size="sm" className="bg-gray-900 text-white">
+            <Download className="w-4 h-4 mr-2" />
+            レポート出力
+          </Button>
+        </div>
+      </div>
+
+      {/* Privacy Notice */}
+      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-start space-x-3">
+        <Shield className="w-5 h-5 text-gray-600 mt-0.5" />
+        <div>
+          <h3 className="font-semibold text-gray-900 mb-1">🔒 プライバシー保護</h3>
+          <p className="text-sm text-gray-700">
+            すべてのデータは完全に匿名化されており、個人を特定することは一切できません。統計は暗号化された集計処理により生成されています。
+          </p>
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-lg shadow-sm border p-6"
+        >
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">管理者ダッシュボード</h1>
-              <p className="text-gray-600">組織全体のメンタルヘルス状況</p>
+              <p className="text-sm text-gray-600">総利用者数</p>
+              <p className="text-2xl font-bold text-gray-900">{dashboardData.totalUsers}</p>
+              <p className="text-sm text-green-600">+{dashboardData.monthlyGrowth}% 前月比</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <select 
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="7days">過去7日</option>
-                <option value="30days">過去30日</option>
-                <option value="90days">過去90日</option>
-              </select>
-              <Button variant="outline" size="sm">
-                <Download className="h-4 w-4 mr-2" />
-                レポート出力
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4" />
-              </Button>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-lg shadow-sm border p-6"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">アクティブユーザー</p>
+              <p className="text-2xl font-bold text-gray-900">{dashboardData.activeUsers}</p>
+              <p className="text-sm text-gray-500">参加率: {dashboardData.participationRate}%</p>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-lg shadow-sm border p-6"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">平均気分スコア</p>
+              <p className="text-2xl font-bold text-gray-900">{dashboardData.avgMoodScore}</p>
+              <p className="text-sm text-green-600">+{dashboardData.weeklyGrowth} 前週比</p>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-lg shadow-sm border p-6"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-gray-600">要注意アラート</p>
+              <p className="text-2xl font-bold text-red-600">{dashboardData.riskAlerts}</p>
+              <p className="text-sm text-gray-500">匿名化済み</p>
+            </div>
+            <AlertTriangle className="w-8 h-8 text-red-500" />
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Department Analysis */}
+        <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border">
+          <div className="p-6 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900">部門別ウェルビーイング指標</h3>
+          </div>
+          <div className="p-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-4 gap-4 text-sm font-medium text-gray-500 pb-2">
+                <div>部門</div>
+                <div>参加率</div>
+                <div>平均気分</div>
+                <div>リスクレベル</div>
+              </div>
+              {dashboardData.departments.map((dept, index) => (
+                <motion.div
+                  key={dept.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="grid grid-cols-4 gap-4 items-center py-3 border-t border-gray-100"
+                >
+                  <div className="font-medium text-gray-900">{dept.name}</div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full bg-gray-800"
+                        style={{ width: `${dept.participation}%` }}
+                      />
+                    </div>
+                    <span className="text-sm text-gray-600">{dept.participation}%</span>
+                  </div>
+                  <div className="text-sm text-gray-700">{dept.avgMood}</div>
+                  <div>
+                    <Badge className={getRiskBadgeClass(dept.riskColor)}>
+                      {dept.riskLevel}
+                    </Badge>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="space-y-6">
+          {/* Impact Results */}
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2 text-green-600" />
+                🔒 導入効果
+              </h3>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-lg font-bold text-gray-900">{dashboardData.totalSatisfaction}/10</p>
+                    <p className="text-sm text-gray-600">総合満足度</p>
+                    <p className="text-xs text-green-600">+{dashboardData.weeklyGrowth} 前週比</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">ストレス軽減:</span>
+                    <span className="text-sm font-medium">{dashboardData.impactMetrics.stressReduction}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">気分改善者:</span>
+                    <span className="text-sm font-medium">{dashboardData.impactMetrics.moodImprovement}%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">継続利用率:</span>
+                    <span className="text-sm font-medium">{dashboardData.impactMetrics.continuationRate}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Today's Usage */}
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">本日の利用状況</h3>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                {dashboardData.todayUsage.map((usage, index) => (
+                  <div key={usage.type} className="flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-3 h-3 bg-gray-800 rounded-full" />
+                      <span className="text-sm text-gray-700">{usage.type}</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{usage.count}</span>
+                  </div>
+                ))}
+                <div className="pt-2 border-t border-gray-100">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">ピーク利用時間</span>
+                    <span className="font-medium">{dashboardData.peakUsageHours}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Stress Level Distribution */}
+          <div className="bg-white rounded-lg shadow-sm border">
+            <div className="p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">ストレスレベル分布</h3>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                {dashboardData.stressDistribution.map((level, index) => (
+                  <div key={level.level} className="flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-3 h-3 ${level.color} rounded-full`} />
+                      <span className="text-sm text-gray-700">{level.level}</span>
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{level.percentage}%</span>
+                  </div>
+                ))}
+                <div className="pt-2">
+                  <div className="w-full bg-gray-200 rounded-full h-2 flex overflow-hidden">
+                    <div className="bg-green-500 h-2" style={{ width: '45%' }} />
+                    <div className="bg-yellow-500 h-2" style={{ width: '38%' }} />
+                    <div className="bg-red-500 h-2" style={{ width: '17%' }} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">総従業員数</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{orgData.totalEmployees.toLocaleString()}</div>
-                <Users className="h-8 w-8 text-blue-500" />
-              </div>
-              <div className="flex items-center mt-2 text-sm">
-                <ArrowUp className="h-4 w-4 text-green-500 mr-1" />
-                <span className="text-green-600">+{orgData.monthlyGrowth}%</span>
-                <span className="text-gray-500 ml-1">from last month</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">アクティブユーザー</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{orgData.activeUsers.toLocaleString()}</div>
-                <Activity className="h-8 w-8 text-green-500" />
-              </div>
-              <div className="flex items-center mt-2 text-sm">
-                <span className="text-gray-600">{((orgData.activeUsers / orgData.totalEmployees) * 100).toFixed(1)}% 利用率</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">チェックイン率</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold">{orgData.checkinRate}%</div>
-                <BarChart3 className="h-8 w-8 text-purple-500" />
-              </div>
-              <Progress value={orgData.checkinRate} className="mt-2 h-2" />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">リスクアラート</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold text-red-600">{orgData.riskAlerts}</div>
-                <AlertTriangle className="h-8 w-8 text-red-500" />
-              </div>
-              <div className="flex items-center mt-2 text-sm">
-                <ArrowDown className="h-4 w-4 text-green-500 mr-1" />
-                <span className="text-green-600">-2</span>
-                <span className="text-gray-500 ml-1">from yesterday</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Wellness Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <TrendingUp className="h-5 w-5 text-blue-500" />
-                <span>組織ウェルネススコア</span>
-              </CardTitle>
-              <CardDescription>全体的なメンタルヘルス指標</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">総合スコア</span>
-                  <span className="text-2xl font-bold text-green-600">{orgData.wellnessScore}/100</span>
-                </div>
-                <Progress value={orgData.wellnessScore} className="h-3" />
-                
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{orgData.averageMood}</div>
-                    <div className="text-sm text-gray-600">平均気分</div>
-                  </div>
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">85%</div>
-                    <div className="text-sm text-gray-600">満足度</div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <AlertTriangle className="h-5 w-5 text-red-500" />
-                <span>最近のアラート</span>
-              </CardTitle>
-              <CardDescription>要注意状況の早期発見</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {orgData.recentAlerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-2xl">{getAlertIcon(alert.type)}</div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">{alert.department}</div>
-                      <div className="text-sm text-gray-600">
-                        {alert.type === 'low_mood' && '気分の低下を検知'}
-                        {alert.type === 'stress_spike' && 'ストレス値の急上昇'}
-                        {alert.type === 'engagement_drop' && 'エンゲージメント低下'}
-                      </div>
-                    </div>
-                    <div className="text-xs text-gray-500">{alert.time}</div>
-                  </div>
-                ))}
-              </div>
-              <Button variant="outline" className="w-full mt-4">
-                すべてのアラートを表示
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Department Breakdown */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Users className="h-5 w-5 text-purple-500" />
-                <span>部門別分析</span>
-              </div>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                フィルター
-              </Button>
-            </CardTitle>
-            <CardDescription>各部門のメンタルヘルス状況</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">部門名</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">従業員数</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">チェックイン率</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">平均気分</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">リスクレベル</th>
-                    <th className="text-left py-3 px-4 font-medium text-gray-600">アクション</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orgData.departments.map((dept, index) => (
-                    <tr key={index} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4 font-medium">{dept.name}</td>
-                      <td className="py-3 px-4">{dept.employees}名</td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-16 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-500 h-2 rounded-full" 
-                              style={{width: `${dept.checkinRate}%`}}
-                            />
-                          </div>
-                          <span className="text-sm">{dept.checkinRate}%</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="flex items-center space-x-1">
-                          <span className="font-medium">{dept.avgMood}</span>
-                          <span className="text-gray-500">/5</span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getRiskColor(dept.riskLevel)}`}>
-                          {dept.riskLevel === 'high' && '高リスク'}
-                          {dept.riskLevel === 'medium' && '中リスク'}
-                          {dept.riskLevel === 'low' && '低リスク'}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4">
-                        <Button variant="ghost" size="sm">
-                          詳細
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardHeader className="text-center">
-              <Calendar className="h-12 w-12 text-blue-500 mx-auto mb-2" />
-              <CardTitle className="text-lg">月次レポート生成</CardTitle>
-              <CardDescription>組織全体の詳細分析レポート</CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardHeader className="text-center">
-              <Shield className="h-12 w-12 text-green-500 mx-auto mb-2" />
-              <CardTitle className="text-lg">プライバシー設定</CardTitle>
-              <CardDescription>データ保護とアクセス権限管理</CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardHeader className="text-center">
-              <Users className="h-12 w-12 text-purple-500 mx-auto mb-2" />
-              <CardTitle className="text-lg">ユーザー管理</CardTitle>
-              <CardDescription>従業員アカウントと権限設定</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </div>
     </div>
-  )
-}
-
-export default function AdminDashboard() {
-  return (
-    <AdminRoute requiredRole="admin">
-      <AdminDashboardContent />
-    </AdminRoute>
   )
 }
