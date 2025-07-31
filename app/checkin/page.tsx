@@ -51,6 +51,12 @@ const stressOptions = [
   { id: 'very-high', label: 'とても多い' }
 ]
 
+const characters = [
+  { id: 'luna', name: 'Luna', active: true },
+  { id: 'aria', name: 'Aria', active: false },
+  { id: 'zen', name: 'Zen', active: false }
+]
+
 export default function CheckinPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
@@ -59,6 +65,7 @@ export default function CheckinPage() {
   const [selectedSleep, setSelectedSleep] = useState<string | null>(null)
   const [selectedEnergy, setSelectedEnergy] = useState<string | null>(null)
   const [selectedStress, setSelectedStress] = useState<string | null>(null)
+  const [currentCharacter, setCurrentCharacter] = useState(0)
 
   const totalSteps = 5
   const progress = (currentStep / totalSteps) * 100
@@ -69,6 +76,36 @@ export default function CheckinPage() {
     } else {
       handleComplete()
     }
+  }
+
+  // Auto-advance when option is selected
+  const handleOptionSelect = (step: number, value: string) => {
+    switch (step) {
+      case 1:
+        setSelectedMood(value)
+        break
+      case 2:
+        setSelectedBodyFeeling(value)
+        break
+      case 3:
+        setSelectedSleep(value)
+        break
+      case 4:
+        setSelectedEnergy(value)
+        break
+      case 5:
+        setSelectedStress(value)
+        break
+    }
+    
+    // Auto-advance to next step after a short delay
+    setTimeout(() => {
+      if (step < totalSteps) {
+        setCurrentStep(step + 1)
+      } else {
+        handleComplete()
+      }
+    }, 600)
   }
 
   const handleBack = () => {
@@ -99,7 +136,7 @@ export default function CheckinPage() {
       localStorage.setItem('mindcare-checkins', JSON.stringify(existingCheckins))
     }
     
-    router.push('/dashboard')
+    router.push('/checkin/results')
   }
 
   const canProceed = () => {
@@ -121,25 +158,25 @@ export default function CheckinPage() {
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のこころの調子は？</h2>
-              <p className="text-gray-300 text-sm font-medium">正直な気持ちを教えてください</p>
+            <div className="text-center mb-6">
+              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のこころの調子は？</h2>
+              <p className="text-gray-300 text-xs font-medium">正直な気持ちを教えてください</p>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {moodOptions.map((mood) => (
                 <button
                   key={mood.id}
-                  onClick={() => setSelectedMood(mood.id)}
-                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                  onClick={() => handleOptionSelect(1, mood.id)}
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[48px] touch-manipulation ${
                     selectedMood === mood.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-semibold tracking-wide">
+                  <div className="text-center text-sm font-semibold tracking-wide">
                     {mood.label}
                   </div>
                 </button>
@@ -154,25 +191,25 @@ export default function CheckinPage() {
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のからだの調子は？</h2>
-              <p className="text-gray-300 text-sm font-medium">体調も大切な健康の指標です</p>
+            <div className="text-center mb-6">
+              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のからだの調子は？</h2>
+              <p className="text-gray-300 text-xs font-medium">体調も大切な健康の指標です</p>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {bodyFeelingOptions.map((feeling) => (
                 <button
                   key={feeling.id}
-                  onClick={() => setSelectedBodyFeeling(feeling.id)}
-                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                  onClick={() => handleOptionSelect(2, feeling.id)}
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[48px] touch-manipulation ${
                     selectedBodyFeeling === feeling.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-semibold tracking-wide">
+                  <div className="text-center text-sm font-semibold tracking-wide">
                     {feeling.label}
                   </div>
                 </button>
@@ -187,25 +224,25 @@ export default function CheckinPage() {
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">昨夜の睡眠の質は？</h2>
-              <p className="text-gray-300 text-sm font-medium">良い睡眠は心の健康に大切です</p>
+            <div className="text-center mb-6">
+              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">昨夜の睡眠の質は？</h2>
+              <p className="text-gray-300 text-xs font-medium">良い睡眠は心の健康に大切です</p>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {sleepOptions.map((sleep) => (
                 <button
                   key={sleep.id}
-                  onClick={() => setSelectedSleep(sleep.id)}
-                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                  onClick={() => handleOptionSelect(3, sleep.id)}
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[48px] touch-manipulation ${
                     selectedSleep === sleep.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-semibold tracking-wide">
+                  <div className="text-center text-sm font-semibold tracking-wide">
                     {sleep.label}
                   </div>
                 </button>
@@ -220,25 +257,25 @@ export default function CheckinPage() {
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のエネルギーレベルは？</h2>
-              <p className="text-gray-300 text-sm font-medium">活力の状態を教えてください</p>
+            <div className="text-center mb-6">
+              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のエネルギーレベルは？</h2>
+              <p className="text-gray-300 text-xs font-medium">活力の状態を教えてください</p>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {energyOptions.map((energy) => (
                 <button
                   key={energy.id}
-                  onClick={() => setSelectedEnergy(energy.id)}
-                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                  onClick={() => handleOptionSelect(4, energy.id)}
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[48px] touch-manipulation ${
                     selectedEnergy === energy.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-semibold tracking-wide">
+                  <div className="text-center text-sm font-semibold tracking-wide">
                     {energy.label}
                   </div>
                 </button>
@@ -253,25 +290,25 @@ export default function CheckinPage() {
             initial={{ opacity: 0, x: 15 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
-            className="space-y-6"
+            className="space-y-4"
           >
-            <div className="text-center mb-8">
-              <h2 className="text-white text-xl font-bold mb-2 tracking-wide">今日のストレスレベルは？</h2>
-              <p className="text-gray-300 text-sm font-medium">感じているストレスの程度を教えてください</p>
+            <div className="text-center mb-6">
+              <h2 className="text-white text-lg font-bold mb-1 tracking-wide">今日のストレスレベルは？</h2>
+              <p className="text-gray-300 text-xs font-medium">感じているストレスの程度を教えてください</p>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-2">
               {stressOptions.map((stress) => (
                 <button
                   key={stress.id}
-                  onClick={() => setSelectedStress(stress.id)}
-                  className={`w-full p-6 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[64px] touch-manipulation ${
+                  onClick={() => handleOptionSelect(5, stress.id)}
+                  className={`w-full p-4 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md min-h-[48px] touch-manipulation ${
                     selectedStress === stress.id
                       ? 'bg-white text-gray-800 shadow-lg scale-105'
                       : 'bg-gray-600/90 text-white hover:bg-gray-500 border border-gray-500/30'
                   }`}
                 >
-                  <div className="text-center font-semibold tracking-wide">
+                  <div className="text-center text-sm font-semibold tracking-wide">
                     {stress.label}
                   </div>
                 </button>
@@ -291,22 +328,50 @@ export default function CheckinPage() {
 
   return (
     <div className="min-h-screen bg-gray-800 flex flex-col">
-      {/* Character area */}
-      <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <span className="text-white text-xl font-bold tracking-wide">キャラクター</span>
+      {/* Character area with message and character switching */}
+      <div className="p-4 flex flex-col items-center">
+        <div className="relative">
+          {/* Character */}
+          <div className="w-32 h-32 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-3 shadow-xl">
+            <span className="text-white text-base font-bold tracking-wide">キャラクター</span>
+          </div>
+          
+          {/* Message bubble */}
+          <div className="absolute -right-2 top-6 bg-gray-700 text-white px-3 py-2 rounded-2xl max-w-40 shadow-lg">
+            <p className="text-xs font-medium">おかえりなさい。今日はいかがでしたか？</p>
+          </div>
+        </div>
+        
+        {/* Friend level */}
+        <div className="mt-2 mb-3">
+          <p className="text-white text-xs font-medium">フレンドレベル 85</p>
+        </div>
+        
+        {/* Character switching dots */}
+        <div className="flex space-x-3 mb-3">
+          {characters.map((char, index) => (
+            <button
+              key={char.id}
+              onClick={() => setCurrentCharacter(index)}
+              className={`w-4 h-4 rounded-full transition-all duration-200 ${
+                currentCharacter === index
+                  ? 'bg-white'
+                  : 'bg-gray-500'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="px-4 mb-5">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-white text-sm font-semibold">ステップ {currentStep} / {totalSteps}</span>
-          <span className="text-emerald-400 text-sm font-bold">{Math.round(progress)}%</span>
+      <div className="px-4 mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-white text-xs font-semibold">ステップ {currentStep} / {totalSteps}</span>
+          <span className="text-emerald-400 text-xs font-bold">{Math.round(progress)}%</span>
         </div>
-        <div className="w-full bg-gray-600/70 rounded-full h-3 shadow-inner">
+        <div className="w-full bg-gray-600/70 rounded-full h-2 shadow-inner">
           <div 
-            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full transition-all duration-300 ease-out shadow-sm" 
+            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 rounded-full transition-all duration-300 ease-out shadow-sm" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -317,8 +382,8 @@ export default function CheckinPage() {
         {renderStep()}
       </div>
 
-      {/* Navigation buttons */}
-      <div className="p-4 space-y-4 pb-24">
+      {/* Back button only (options auto-advance) */}
+      <div className="p-4 pb-24">
         {currentStep > 1 && (
           <button
             onClick={handleBack}
@@ -327,18 +392,6 @@ export default function CheckinPage() {
             戻る
           </button>
         )}
-        
-        <button
-          onClick={currentStep < 5 ? handleNext : handleComplete}
-          disabled={!canProceed()}
-          className={`w-full py-4 rounded-xl font-semibold transition-all duration-200 ${
-            canProceed()
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-400 hover:to-teal-500 shadow-lg hover:shadow-xl hover:scale-105'
-              : 'bg-gray-700/50 text-gray-400 cursor-not-allowed border border-gray-600/30'
-          }`}
-        >
-          {currentStep >= 5 ? '完了' : '次へ'}
-        </button>
       </div>
 
       {/* Bottom Navigation */}
