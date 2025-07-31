@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 pb-24 space-y-6">
+      <div className="flex-1 p-4 space-y-6">
         {/* Period selector */}
         <div className="flex space-x-2">
           {[
@@ -228,6 +228,9 @@ export default function AnalyticsPage() {
             </p>
           </motion.div>
         </div>
+
+        {/* Bottom spacing for navigation */}
+        <div className="h-24"></div>
       </div>
 
       {/* Bottom Navigation */}

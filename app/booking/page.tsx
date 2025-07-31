@@ -417,12 +417,12 @@ export default function BookingPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 pb-24">
+      <div className="flex-1 p-4">
         {renderStep()}
       </div>
 
       {/* Navigation buttons */}
-      <div className="p-4 pb-24 space-y-3">
+      <div className="p-4 space-y-3">
         <Button
           onClick={handleNext}
           disabled={!canProceed()}
@@ -434,6 +434,9 @@ export default function BookingPage() {
         >
           {currentStep === 4 ? '予約を確定する' : '次へ'}
         </Button>
+
+        {/* Bottom spacing for navigation */}
+        <div className="h-24"></div>
       </div>
 
       {/* Bottom Navigation */}

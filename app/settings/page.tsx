@@ -67,7 +67,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 pb-24 space-y-6">
+      <div className="flex-1 p-4 space-y-6">
         {/* Profile section - exact wireframe */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -325,6 +325,9 @@ export default function SettingsPage() {
         <div className="text-center text-xs text-gray-500 py-4">
           © 2025 Healthcare SaaS. All rights reserved.
         </div>
+
+        {/* Bottom spacing for navigation */}
+        <div className="h-24"></div>
       </div>
 
       {/* Bottom Navigation */}
