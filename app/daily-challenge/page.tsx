@@ -4,37 +4,13 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { wireframeChallengeData } from '@/lib/challengeData'
 import { 
   CheckCircle, 
   Clock, 
   Star, 
   ArrowLeft
 } from 'lucide-react'
-
-// Wireframe page 23 exact data structure
-const wireframeChallengeData = {
-  todayMessage: '毎日の積み重ねで心の健康を',
-  currentStreak: 7,
-  completedToday: 1,
-  totalToday: 7,
-  todayXP: 32,
-  totalXP: 2840,
-  todayProgress: 14,
-  date: '2025年6月19日',
-  dailyChallenges: [
-    { id: 1, title: '朝の気分チェック', category: '簡単', completed: true, xp: 20, timeEstimate: '1分', description: '今日の気分を3つの絵文字で表現してみましょう' },
-    { id: 2, title: '感謝の記録', category: '簡単', completed: false, xp: 30, timeEstimate: '1分', description: '今日感謝したい小さなことを3つ見つけてみましょう' },
-    { id: 3, title: '感謝の記録', category: '簡単', completed: false, xp: 30, timeEstimate: '1分', description: '今日感謝したい小さなことを3つ見つけてみましょう' },
-    { id: 4, title: '3分間の深呼吸', category: '簡単', completed: false, xp: 40, timeEstimate: '3分', description: 'ガイド付きで3分間のマインドフルネスを体験しましょう' }
-  ],
-  completedChallenges: [
-    { id: 'work-reflection', title: '仕事の振り返り', xp: 30 }
-  ],
-  streakBonus: {
-    message: '7日連続でチャレンジを達成中！素晴らしい！',
-    xp: 2
-  }
-}
 
 export default function DailyChallenge() {
   const router = useRouter()

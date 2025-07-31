@@ -5,30 +5,29 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { wireframeChallengeData, getDashboardMetrics } from '@/lib/challengeData'
 
-// Wireframe page 14 exact data structure
+// Get dashboard metrics from shared challenge data
+const challengeMetrics = getDashboardMetrics(wireframeChallengeData)
+
+// Wireframe page 14 exact data structure with challenge data integration
 const dashboardData = {
   friendLevel: 85,
   currentLevel: 8,
   xp: '850 / 1000',
-  todayProgress: 50,
-  completedTasks: '2/4',
+  todayProgress: challengeMetrics.progressPercentage,
+  completedTasks: `${challengeMetrics.completedTasks}/${challengeMetrics.totalTasks}`,
   todayMessage: 'あなたの存在自体が、誰かにとっての光になっています。',
   todayLuckyColor: 'ブルー',
   weeklyRecords: {
-    continuousRecord: 12,
+    continuousRecord: challengeMetrics.currentStreak,
     totalRecord: '5ヶ月',
     weeklyCheckin: '5/7日'
   },
   level: 8,
-  progressPercentage: 50,
-  checkInTime: '24分の時',
-  challenges: [
-    { id: 1, title: '朝の気分チェック', category: '簡単', completed: true, xp: 20, time: '1分' },
-    { id: 2, title: '感謝の記録', category: '簡単', completed: true, xp: 30, time: '1分' },
-    { id: 3, title: '感謝の記録', category: '簡単', completed: false, xp: 30, time: '1分' },
-    { id: 4, title: '3分間の深呼吸', category: '簡単', completed: false, xp: 40, time: '3分' }
-  ],
+  progressPercentage: challengeMetrics.progressPercentage,
+  checkInTime: `${challengeMetrics.completedTasks}/${challengeMetrics.totalTasks}\nタスク完了`,
+  challenges: challengeMetrics.challenges,
   recentAchievements: [
     { id: 1, title: '7日連続記録達成！', description: '新しいバッジと限定スタンプをゲット！', isNew: true },
     { id: 2, title: 'Lunaとのフレンドレベルアップ', description: '', isNew: true },
@@ -171,7 +170,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-3">
-                    <span className="text-gray-400">{challenge.time}</span>
+                    <span className="text-gray-400">{challenge.timeEstimate}</span>
                     <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
                   </div>
                   {challenge.completed && (

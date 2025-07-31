@@ -2,128 +2,158 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Heart, 
-  MessageCircle, 
-  BarChart3, 
-  Shield,
-  Bell,
-  Sparkles,
-  CheckCircle,
-  Star
-} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-// Onboarding steps data
+// Wireframe pages 4-13 exact onboarding data structure
 const onboardingSteps = [
   {
-    id: 'welcome',
-    title: 'ようこそ MindCare へ',
-    subtitle: 'あなたの心の健康パートナー',
-    description: 'AIキャラクターとの温かい対話を通して、毎日の心の状態をケアします。',
-    icon: <Heart className="h-16 w-16 text-pink-500" />,
-    features: [
-      '30秒で完了する簡単チェックイン',
-      'AIキャラクターとの癒しの対話',
-      '専門家による個別サポート'
+    id: 'industry',
+    title: 'あなたの業界を教えてください',
+    subtitle: 'データは完全に匿名化されます',
+    step: 1,
+    total: 8,
+    progress: 13,
+    options: [
+      'IT・テクノロジー',
+      '金融・保険',
+      '製造業',
+      '医療・ヘルスケア',
+      '小売・サービス',
+      'コンサルティング',
+      '教育・研究',
+      'その他'
     ]
   },
   {
-    id: 'characters',
-    title: 'AIキャラクターを選択',
-    subtitle: 'あなたの相談相手を選んでください',
-    description: '3人のAIキャラクターから、あなたに最も合う相手を選択できます。',
-    icon: <MessageCircle className="h-16 w-16 text-purple-500" />,
+    id: 'workstyle',
+    title: '働き方を教えてください',
+    subtitle: '主な勤務スタイルはどちらですか？',
+    step: 2,
+    total: 8,
+    progress: 25,
+    options: [
+      { id: 'office', title: 'オフィス勤務', subtitle: '主に会社で働いています' },
+      { id: 'remote', title: 'リモート勤務', subtitle: '主に自宅で働いています' },
+      { id: 'hybrid', title: 'ハイブリッド', subtitle: 'オフィスと自宅を使い分けています' }
+    ]
+  },
+  {
+    id: 'age',
+    title: '年代を教えてください',
+    subtitle: '適切なサポートを提供するため',
+    step: 3,
+    total: 8,
+    progress: 37,
+    options: ['10代', '20代', '30代', '40代', '50代', '60代以上']
+  },
+  {
+    id: 'occupation',
+    title: '職種を教えてください',
+    subtitle: 'より関連性の高いサポートを提供します',
+    step: 4,
+    total: 8,
+    progress: 50,
+    options: [
+      '管理職',
+      'エンジニア・技術職',
+      '営業',
+      'マーケティング',
+      'デザイン・企画',
+      '事務・バックオフィス',
+      '人事・総務',
+      'その他'
+    ]
+  },
+  {
+    id: 'interests',
+    title: '関心のあるテーマは？',
+    subtitle: '複数選択可能です',
+    step: 5,
+    total: 8,
+    progress: 63,
+    multiSelect: true,
+    options: [
+      'ストレス管理',
+      'ワークライフバランス',
+      '職場の人間関係',
+      'パフォーマンス向上',
+      '不安・心配事',
+      '睡眠の質',
+      'モチベーション',
+      '変化への適応'
+    ]
+  },
+  {
+    id: 'aipartner',
+    title: 'AIパートナーを選んでください',
+    subtitle: 'いつでも変更できます',
+    step: 6,
+    total: 8,
+    progress: 75,
     characters: [
       {
         id: 'luna',
-        name: 'Luna',
-        personality: '優しく包み込むような',
-        description: '穏やかで思いやりのある対話を心がけます。困ったときはいつでも寄り添います。',
-        color: 'bg-purple-500'
+        name: 'Luna - 優しく共感的',
+        description: '静かで思慮深く、あなたの感情に寄り添います',
+        recommendation: '内向的、深く考える方におすすめ'
       },
       {
         id: 'aria',
-        name: 'Aria', 
-        personality: '明るく前向きな',
-        description: '元気で楽観的な視点を提供します。一緒に前向きに歩んでいきましょう。',
-        color: 'bg-teal-500'
+        name: 'Aria - 明るく励ましてくれる',
+        description: 'エネルギッシュで前向き、やる気を引き出します',
+        recommendation: 'アクティブ、チャレンジ好きな方におすすめ'
       },
       {
         id: 'zen',
-        name: 'Zen',
-        personality: '落ち着いた',
-        description: '冷静で深い洞察を共有します。静かに、でも確実にサポートします。',
-        color: 'bg-indigo-500'
+        name: 'Zen - 落ち着いていて知的',
+        description: '冷静で客観的、論理的なアドバイスをします',
+        recommendation: '分析的、効率重視の方におすすめ'
       }
     ]
   },
   {
-    id: 'notifications',
-    title: '通知設定',
-    subtitle: 'あなたに合ったタイミングで',
-    description: 'チェックインのリマインダーや励ましメッセージの配信タイミングを設定します。',
-    icon: <Bell className="h-16 w-16 text-blue-500" />,
-    notificationOptions: [
-      { id: 'morning', label: '朝のチェックイン', time: '09:00', enabled: true },
-      { id: 'lunch', label: 'お昼の振り返り', time: '12:30', enabled: false },
-      { id: 'evening', label: '夕方のケア', time: '18:00', enabled: true },
-      { id: 'encouragement', label: '励ましメッセージ', time: '随時', enabled: true }
-    ]
-  },
-  {
-    id: 'privacy',
-    title: 'プライバシーとセキュリティ',
-    subtitle: 'あなたのデータを安全に保護',
-    description: 'すべてのデータは暗号化され、あなたの同意なしに第三者と共有されることはありません。',
-    icon: <Shield className="h-16 w-16 text-green-500" />,
-    privacyPoints: [
-      'エンドツーエンド暗号化でデータを保護',
-      '匿名化された分析データのみを使用', 
-      'いつでもデータの削除・エクスポートが可能',
-      'GDPR・個人情報保護法に完全準拠'
+    id: 'goals',
+    title: '目標を設定しましょう',
+    subtitle: '達成したいことを選んでください（複数選択可）',
+    step: 7,
+    total: 8,
+    progress: 87,
+    multiSelect: true,
+    options: [
+      'ストレス軽減',
+      '気分の安定',
+      '睡眠改善',
+      '仕事効率UP',
+      'チーム関係改善',
+      '自己理解を深める'
     ]
   },
   {
     id: 'complete',
-    title: '準備完了！',
-    subtitle: 'あなたの心のケアを始めましょう',
-    description: 'セットアップが完了しました。今すぐ最初のチェックインを始めて、AIキャラクターと出会いましょう。',
-    icon: <Sparkles className="h-16 w-16 text-yellow-500" />,
-    benefits: [
-      '毎日の継続でストリークを獲得',
-      'バッジとレベルアップで達成感',
-      '専門家による個別サポート',
-      '詳細な分析で成長を実感'
-    ]
+    title: 'セットアップ完了！',
+    subtitle: '+30XP',
+    step: 8,
+    total: 8,
+    progress: 100,
+    isComplete: true
   }
 ]
 
 export default function Onboarding() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
   const [selectedCharacter, setSelectedCharacter] = useState('luna')
-  const [notifications, setNotifications] = useState({
-    morning: true,
-    lunch: false,
-    evening: true,
-    encouragement: true
-  })
 
   const currentStepData = onboardingSteps[currentStep]
-  const progress = ((currentStep + 1) / onboardingSteps.length) * 100
 
   const handleNext = () => {
     if (currentStep < onboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1)
+      setSelectedOptions([]) // Reset selections for next step
     } else {
       // Complete onboarding
-      router.push('/onboarding/setup')
+      router.push('/dashboard')
     }
   }
 
@@ -133,251 +163,202 @@ export default function Onboarding() {
     }
   }
 
-  const handleSkip = () => {
-    router.push('/onboarding/setup')
+  const handleOptionSelect = (option: string) => {
+    if (currentStepData.multiSelect) {
+      setSelectedOptions(prev => 
+        prev.includes(option)
+          ? prev.filter(item => item !== option)
+          : [...prev, option]
+      )
+    } else {
+      setSelectedOptions([option])
+    }
   }
 
-  const handleNotificationToggle = (key: string) => {
-    setNotifications(prev => ({
-      ...prev,
-      [key]: !prev[key as keyof typeof notifications]
-    }))
+  const handleCharacterSelect = (characterId: string) => {
+    setSelectedCharacter(characterId)
+    setSelectedOptions([characterId])
+  }
+
+  const canProceed = () => {
+    if (currentStepData.isComplete) return true
+    if (currentStepData.multiSelect) return selectedOptions.length > 0
+    return selectedOptions.length > 0
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-white/20">
-        <div className="max-w-md mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {currentStep > 0 && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handlePrevious}
-                  className="mr-3"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-              )}
-              <div>
-                <h1 className="font-medium text-gray-900">セットアップ</h1>
-                <p className="text-xs text-gray-500">ステップ {currentStep + 1} / {onboardingSteps.length}</p>
-              </div>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleSkip}>
-              スキップ
-            </Button>
-          </div>
-          <Progress value={progress} className="mt-3 h-2" />
+    <div className="min-h-screen bg-gray-800 text-white">
+      {/* Character Area - exact wireframe */}
+      <div className="flex flex-col items-center pt-8 pb-6">
+        <div className="w-32 h-32 bg-lime-400 rounded-3xl flex items-center justify-center mb-6">
+          <span className="text-gray-800 text-lg font-medium">キャラクター</span>
         </div>
-      </div>
-
-      <div className="max-w-md mx-auto px-4 py-8">
-        {/* Welcome Step */}
-        {currentStepData.id === 'welcome' && (
-          <div className="text-center space-y-6">
-            <div className="space-y-4">
-              <div className="mx-auto">
-                {currentStepData.icon}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
-                <p className="text-lg text-gray-600 mb-4">{currentStepData.subtitle}</p>
-                <p className="text-gray-700 leading-relaxed">{currentStepData.description}</p>
-              </div>
-            </div>
-
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">主な機能</h3>
-                <div className="space-y-3">
-                  {currentStepData.features?.map((feature, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      <span className="text-sm text-gray-700">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+        
+        {currentStepData.step && (
+          <div className="bg-gray-700 rounded-xl px-6 py-3 mb-4 max-w-md mx-4">
+            <p className="text-white text-sm">まずはあなたのことを教えてください</p>
           </div>
         )}
+      </div>
 
-        {/* Character Selection Step */}
-        {currentStepData.id === 'characters' && (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <div className="mx-auto">
-                {currentStepData.icon}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
-                <p className="text-gray-600">{currentStepData.description}</p>
-              </div>
+      {/* Progress - exact wireframe */}
+      {currentStepData.step && (
+        <div className="px-6 mb-8">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-white text-sm">ステップ {currentStepData.step} / {currentStepData.total}</span>
+            <span className="text-white text-sm">{currentStepData.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-600 rounded-full h-2">
+            <div 
+              className="bg-white h-2 rounded-full transition-all duration-300"
+              style={{ width: `${currentStepData.progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="px-6 pb-6">
+        {/* Regular Steps */}
+        {!currentStepData.isComplete && (
+          <>
+            <div className="mb-8">
+              <h1 className="text-white text-xl font-semibold mb-2">{currentStepData.title}</h1>
+              <p className="text-gray-300 text-sm">{currentStepData.subtitle}</p>
             </div>
 
-            <div className="space-y-4">
-              {currentStepData.characters?.map((character) => (
-                <Card 
-                  key={character.id}
-                  className={`cursor-pointer transition-all duration-200 ${
-                    selectedCharacter === character.id
-                      ? 'ring-2 ring-blue-500 bg-blue-50'
-                      : 'hover:shadow-md'
-                  }`}
-                  onClick={() => setSelectedCharacter(character.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start space-x-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarFallback className={`${character.color} text-white text-xl`}>
-                          {character.name[0]}
-                        </AvatarFallback>
-                      </Avatar>
+            {/* Options Grid */}
+            {currentStepData.options && !currentStepData.characters && (
+              <div className="space-y-3 mb-8">
+                {currentStepData.options.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionSelect(typeof option === 'string' ? option : option.id)}
+                    className={`w-full p-4 rounded-xl border transition-all duration-200 text-left min-h-[60px] ${
+                      selectedOptions.includes(typeof option === 'string' ? option : option.id)
+                        ? 'bg-white text-gray-800 border-gray-300'
+                        : 'bg-gray-700 text-white border-gray-600 hover:border-gray-500'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedOptions.includes(typeof option === 'string' ? option : option.id)
+                          ? 'border-gray-800 bg-gray-800'
+                          : 'border-gray-400'
+                      }`}>
+                        {selectedOptions.includes(typeof option === 'string' ? option : option.id) && (
+                          <div className="w-2 h-2 bg-white rounded-full" />
+                        )}
+                      </div>
                       <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <h3 className="font-semibold text-gray-900">{character.name}</h3>
-                          {selectedCharacter === character.id && (
-                            <CheckCircle className="h-5 w-5 text-blue-500" />
-                          )}
+                        <div className="font-medium">
+                          {typeof option === 'string' ? option : option.title}
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{character.personality}</p>
-                        <p className="text-sm text-gray-700">{character.description}</p>
+                        {typeof option === 'object' && option.subtitle && (
+                          <div className="text-sm text-gray-400 mt-1">{option.subtitle}</div>
+                        )}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Notifications Step */}
-        {currentStepData.id === 'notifications' && (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <div className="mx-auto">
-                {currentStepData.icon}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
-                <p className="text-gray-600">{currentStepData.description}</p>
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>通知設定</CardTitle>
-                <CardDescription>後から設定で変更できます</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {currentStepData.notificationOptions?.map((option) => (
-                  <div key={option.id} className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">{option.label}</div>
-                      <div className="text-sm text-gray-500">{option.time}</div>
-                    </div>
-                    <button
-                      onClick={() => handleNotificationToggle(option.id)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                        notifications[option.id as keyof typeof notifications]
-                          ? 'bg-blue-600'
-                          : 'bg-gray-200'
-                      }`}
-                    >
-                      <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                          notifications[option.id as keyof typeof notifications]
-                            ? 'translate-x-6'
-                            : 'translate-x-1'
-                        }`}
-                      />
-                    </button>
-                  </div>
+                  </button>
                 ))}
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            )}
+
+            {/* Character Selection */}
+            {currentStepData.characters && (
+              <div className="space-y-4 mb-8">
+                {currentStepData.characters.map((character) => (
+                  <button
+                    key={character.id}
+                    onClick={() => handleCharacterSelect(character.id)}
+                    className={`w-full p-5 rounded-2xl border transition-all duration-200 text-left ${
+                      selectedCharacter === character.id
+                        ? 'bg-white text-gray-800 border-gray-300'
+                        : 'bg-gray-700 text-white border-gray-600 hover:border-gray-500'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                        selectedCharacter === character.id
+                          ? 'border-gray-800 bg-gray-800'
+                          : 'border-gray-400'
+                      }`}>
+                        {selectedCharacter === character.id && (
+                          <div className="w-2 h-2 bg-white rounded-full" />
+                        )}
+                      </div>
+                      <h3 className="font-semibold text-lg">{character.name}</h3>
+                    </div>
+                    <p className="text-sm mb-2 leading-relaxed">{character.description}</p>
+                    <p className="text-xs text-gray-400">{character.recommendation}</p>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Navigation Buttons */}
+            <div className="flex space-x-3">
+              {currentStep > 0 && (
+                <Button
+                  onClick={handlePrevious}
+                  variant="outline"
+                  className="flex-1 py-3 rounded-xl bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
+                >
+                  戻る
+                </Button>
+              )}
+              <Button
+                onClick={handleNext}
+                disabled={!canProceed()}
+                className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                  canProceed()
+                    ? 'bg-white text-gray-800 hover:bg-gray-100'
+                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                次へ
+              </Button>
+            </div>
+          </>
         )}
 
-        {/* Privacy Step */}
-        {currentStepData.id === 'privacy' && (
-          <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <div className="mx-auto">
-                {currentStepData.icon}
+        {/* Completion Step */}
+        {currentStepData.isComplete && (
+          <div className="text-center space-y-8">
+            <div className="bg-white rounded-2xl p-8 max-w-sm mx-auto">
+              <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-8 h-8 bg-white rounded-full" />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
-                <p className="text-gray-600">{currentStepData.description}</p>
-              </div>
+              <h2 className="text-gray-800 text-2xl font-bold mb-2">{currentStepData.title}</h2>
+              <p className="text-gray-800 text-lg font-semibold">{currentStepData.subtitle}</p>
             </div>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  {currentStepData.privacyPoints?.map((point, index) => (
-                    <div key={index} className="flex items-start space-x-3">
-                      <Shield className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-gray-700">{point}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <Button
+              onClick={handleNext}
+              className="w-full py-4 rounded-xl bg-white text-gray-800 hover:bg-gray-100 font-semibold text-lg"
+            >
+              セットアップ完了
+            </Button>
           </div>
         )}
-
-        {/* Complete Step */}
-        {currentStepData.id === 'complete' && (
-          <div className="text-center space-y-6">
-            <div className="space-y-4">
-              <div className="mx-auto">
-                {currentStepData.icon}
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{currentStepData.title}</h2>
-                <p className="text-lg text-gray-600 mb-4">{currentStepData.subtitle}</p>
-                <p className="text-gray-700">{currentStepData.description}</p>
-              </div>
-            </div>
-
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                  <Star className="h-5 w-5 text-yellow-500" />
-                  <span>これから始まること</span>
-                </h3>
-                <div className="space-y-3">
-                  {currentStepData.benefits?.map((benefit, index) => (
-                    <div key={index} className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                      <span className="text-sm text-gray-700">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Navigation Buttons */}
-        <div className="mt-8 flex space-x-3">
-          {currentStep < onboardingSteps.length - 1 ? (
-            <Button onClick={handleNext} className="flex-1" size="lg">
-              <span>次へ</span>
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          ) : (
-            <Button onClick={handleNext} className="flex-1 bg-green-500 hover:bg-green-600" size="lg">
-              <span>始める</span>
-              <Sparkles className="h-4 w-4 ml-2" />
-            </Button>
-          )}
-        </div>
       </div>
+
+      {/* Privacy Protection Footer */}
+      {currentStepData.step && (
+        <div className="px-6 pb-6">
+          <div className="bg-gray-700/50 rounded-xl p-4">
+            <div className="flex items-start space-x-3">
+              <div className="text-lg">🔒</div>
+              <div>
+                <h4 className="text-white font-semibold text-sm mb-1">プライバシー保護</h4>
+                <p className="text-gray-300 text-xs leading-relaxed">
+                  すべてのデータは完全に匿名化されており、所属先の企業から個人を特定することは一切できません。統計は暗号化された集計処理により生成されています。
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
