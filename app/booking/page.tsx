@@ -42,44 +42,58 @@ interface BookingStep {
   description: string
 }
 
+// Wireframe pages 25-27 exact specialist data
 const specialists: Specialist[] = [
   {
     id: 1,
-    name: '田中 美咲',
+    name: '専門家名',
     title: '臨床心理士',
-    specialty: 'ストレス管理・不安対処',
+    specialty: 'ストレス管理・うつ病・不安障害',
     rating: 4.9,
     experience: '8年',
     avatar: '👩‍⚕️',
-    availableSlots: ['14:00', '15:30', '17:00'],
-    consultationType: ['video', 'phone', 'chat'],
-    description: 'ストレス管理と不安対処法を専門としています。認知行動療法を中心としたアプローチで多くの患者様をサポートしています。',
-    languages: ['日本語', '英語']
+    availableSlots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+    consultationType: ['video', 'phone'],
+    description: '職場でのストレスや人間関係の悩みを専門としています。認知行動療法を中心とした治療を...',
+    languages: ['日本語']
   },
   {
     id: 2,
-    name: '佐藤 健太郎',
-    title: '精神科医',
-    specialty: 'うつ病・適応障害',
-    rating: 4.8,
-    experience: '12年',
+    name: '専門家名',
+    title: '臨床心理士',
+    specialty: 'ストレス管理・うつ病・不安障害',
+    rating: 4.9,
+    experience: '8年',
     avatar: '👨‍⚕️',
-    availableSlots: ['10:30', '13:00', '16:00'],
+    availableSlots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
     consultationType: ['video', 'phone'],
-    description: 'うつ病・適応障害の治療に特化しています。薬物療法と心理療法を組み合わせた包括的な治療を提供します。',
+    description: '職場でのストレスや人間関係の悩みを専門としています。認知行動療法を中心とした治療を...',
     languages: ['日本語']
   },
   {
     id: 3,
-    name: '山田 智子',
-    title: 'カウンセラー',
-    specialty: '職場ストレス・人間関係',
-    rating: 4.7,
-    experience: '6年',
+    name: '専門家名',
+    title: '臨床心理士',
+    specialty: 'ストレス管理・うつ病・不安障害',
+    rating: 4.9,
+    experience: '8年',
     avatar: '👩‍💼',
-    availableSlots: ['09:00', '11:30', '14:30'],
-    consultationType: ['video', 'chat'],
-    description: '職場でのストレスや人間関係の悩みを専門としています。解決志向のカウンセリングで実践的なサポートを提供します。',
+    availableSlots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+    consultationType: ['video', 'phone'],
+    description: '職場でのストレスや人間関係の悩みを専門としています。認知行動療法を中心とした治療を...',
+    languages: ['日本語']
+  },
+  {
+    id: 4,
+    name: '専門家名',
+    title: '臨床心理士',
+    specialty: 'ストレス管理・うつ病・不安障害',
+    rating: 4.9,
+    experience: '8年',
+    avatar: '👨‍⚕️',
+    availableSlots: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'],
+    consultationType: ['video', 'phone'],
+    description: '職場でのストレスや人間関係の悩みを専門としています。認知行動療法を中心とした治療を...',
     languages: ['日本語']
   }
 ]
@@ -96,7 +110,7 @@ export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedSpecialist, setSelectedSpecialist] = useState<Specialist | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [selectedDate, setSelectedDate] = useState<string>('今日')
+  const [selectedDate, setSelectedDate] = useState<string>('6/1')
   const [consultationType, setConsultationType] = useState<'video' | 'phone' | 'chat' | null>(null)
 
   const handleNext = () => {
@@ -156,10 +170,13 @@ export default function BookingPage() {
                     <div className="text-3xl">{specialist.avatar}</div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-white font-semibold text-lg">{specialist.name}</h3>
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-white font-semibold text-lg">{specialist.name}</h3>
+                          <Badge className="bg-gray-600 text-gray-200 text-xs">おすすめ</Badge>
+                        </div>
                         <div className="flex items-center space-x-1">
                           <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                          <span className="text-yellow-400 text-sm font-medium">{specialist.rating}</span>
+                          <span className="text-yellow-400 text-sm font-medium">{specialist.rating}({127}件)</span>
                         </div>
                       </div>
                       <div className="flex items-center space-x-3 mb-3">
@@ -168,19 +185,15 @@ export default function BookingPage() {
                         </Badge>
                         <span className="text-gray-400 text-sm">{specialist.experience}の経験</span>
                       </div>
-                      <p className="text-gray-300 text-sm mb-3 leading-relaxed">{specialist.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {specialist.consultationType.map((type) => (
-                          <div key={type} className="flex items-center space-x-1 text-xs text-gray-400">
-                            {type === 'video' && <Video className="w-3 h-3" />}
-                            {type === 'phone' && <Phone className="w-3 h-3" />}
-                            {type === 'chat' && <MessageSquare className="w-3 h-3" />}
-                            <span>
-                              {type === 'video' ? 'ビデオ通話' : 
-                               type === 'phone' ? '音声通話' : 'チャット'}
-                            </span>
-                          </div>
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {specialist.specialty.split('・').map((spec, index) => (
+                          <Badge key={index} className="bg-gray-600 text-gray-200 text-xs">{spec}</Badge>
                         ))}
+                      </div>
+                      <p className="text-gray-300 text-sm mb-3 leading-relaxed">{specialist.description}</p>
+                      <div className="flex items-center text-xs text-gray-400">
+                        <Clock className="w-3 h-3 mr-1" />
+                        <span>今日 14:00</span>
                       </div>
                     </div>
                   </div>
@@ -213,22 +226,52 @@ export default function BookingPage() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-white font-medium">利用可能な時間</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {selectedSpecialist?.availableSlots.map((time) => (
+              <h3 className="text-white font-medium">面談方法</h3>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <button className="p-4 rounded-xl border bg-white text-gray-800 border-gray-300 min-h-[60px]">
+                  <div className="text-center">
+                    <div className="text-sm font-semibold">ビデオ通話</div>
+                    <div className="text-xs text-gray-600">推奨</div>
+                  </div>
+                </button>
+                <button className="p-4 rounded-xl border bg-gray-700 text-white border-gray-600 min-h-[60px]">
+                  <div className="text-center">
+                    <div className="text-sm font-semibold">電話</div>
+                    <div className="text-xs text-gray-400">音声のみ</div>
+                  </div>
+                </button>
+              </div>
+              
+              <h3 className="text-white font-medium">日付選択</h3>
+              <div className="grid grid-cols-4 gap-2 mb-6">
+                {['6/1', '6/2', '6/3', '6/4'].map((date) => (
+                  <button
+                    key={date}
+                    onClick={() => setSelectedDate(date)}
+                    className={`p-3 rounded-xl transition-all duration-200 ${
+                      selectedDate === date
+                        ? 'bg-white text-gray-800'
+                        : 'bg-gray-700 text-white'
+                    }`}
+                  >
+                    {date}
+                  </button>
+                ))}
+              </div>
+              
+              <h3 className="text-white font-medium">時間選択</h3>
+              <div className="grid grid-cols-4 gap-2">
+                {selectedSpecialist?.availableSlots.slice(0, 8).map((time) => (
                   <button
                     key={time}
                     onClick={() => setSelectedTime(time)}
-                    className={`p-4 rounded-xl border transition-all duration-200 min-h-[60px] touch-manipulation ${
+                    className={`p-3 rounded-xl border transition-all duration-200 min-h-[48px] touch-manipulation ${
                       selectedTime === time
-                        ? 'bg-emerald-500 text-white border-emerald-400 shadow-lg'
-                        : 'bg-gray-700/90 text-white border-gray-600/30 hover:border-gray-500/50'
+                        ? 'bg-white text-gray-800 border-gray-300'
+                        : 'bg-gray-700 text-white border-gray-600'
                     }`}
                   >
-                    <div className="flex items-center justify-center space-x-2">
-                      <Clock className="w-4 h-4" />
-                      <span className="font-medium">{time}</span>
-                    </div>
+                    <span className="text-sm font-medium">{time}</span>
                   </button>
                 ))}
               </div>
@@ -310,39 +353,29 @@ export default function BookingPage() {
               </div>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">日時</span>
-                  <span className="text-white font-medium">{selectedDate} {selectedTime}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-gray-300">相談方法</span>
-                  <div className="flex items-center space-x-2">
-                    {consultationType === 'video' && <Video className="w-4 h-4 text-emerald-400" />}
-                    {consultationType === 'phone' && <Phone className="w-4 h-4 text-emerald-400" />}
-                    {consultationType === 'chat' && <MessageSquare className="w-4 h-4 text-emerald-400" />}
-                    <span className="text-white font-medium">
-                      {consultationType === 'video' ? 'ビデオ通話' : 
-                       consultationType === 'phone' ? '音声通話' : 'チャット相談'}
-                    </span>
-                  </div>
+                <div className="space-y-2">
+                  <div className="text-white font-medium">6日後 09:00</div>
+                  <div className="text-white font-medium">ビデオ通話 (50分)</div>
+                  <div className="text-white font-medium">オンライン</div>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">料金</span>
-                  <span className="text-white font-medium">¥3,000</span>
+                  <div className="text-right">
+                    <div className="text-white font-medium text-lg">¥8,000</div>
+                    <div className="text-xs text-gray-400">※企業保険により一部負担軽減適用</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-emerald-500/10 border border-emerald-400/30 rounded-2xl p-4">
-              <div className="flex items-start space-x-3">
-                <Check className="w-5 h-5 text-emerald-400 mt-0.5" />
-                <div>
-                  <p className="text-emerald-400 font-medium mb-1">予約確定後</p>
-                  <p className="text-gray-300 text-sm">
-                    予約確認のメールが送信されます。相談開始時間の5分前にアクセス情報をお送りします。
-                  </p>
-                </div>
-              </div>
+            <div className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30">
+              <h4 className="text-white font-semibold mb-3">予約前のご確認</h4>
+              <ul className="text-gray-300 text-sm space-y-1">
+                <li>• キャンセルは24時間前まで無料です</li>
+                <li>• 遅刻の場合、セッション時間が短縮される場合があります</li>
+                <li>• 技術的な問題が発生した場合は、別の日程で振替いたします</li>
+                <li>• 相談内容は厳重に秘匿管理されます</li>
+              </ul>
             </div>
           </motion.div>
         )
@@ -360,9 +393,15 @@ export default function BookingPage() {
           <button onClick={handleBack} className="text-gray-400 hover:text-white">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-white text-lg font-semibold">専門家予約</h1>
+          <h1 className="text-white text-lg font-semibold">専門家を選択して予約</h1>
           <div className="w-6" />
         </div>
+        
+        {currentStep === 1 && (
+          <p className="text-gray-300 text-sm mb-4">
+            最近のチェックイン内容から、ストレス管理が得意な専門家をおすすめします。
+          </p>
+        )}
         
         <div className="flex items-center justify-between mb-2">
           <span className="text-gray-300 text-sm">ステップ {currentStep} / 4</span>

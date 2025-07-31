@@ -329,50 +329,23 @@ export default function CheckinPage() {
 
   return (
     <div className="min-h-screen bg-gray-800 flex flex-col">
-      {/* Character area with message - wireframe layout */}
-      <div className="p-4 flex flex-col items-center">
-        <div className="relative mb-4">
-          {/* Character */}
-          <div className="w-32 h-32 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl">
-            <span className="text-white text-base font-bold tracking-wide">キャラクター</span>
-          </div>
-          
-          {/* Message bubble - wireframe style */}
-          <div className="absolute -right-2 top-6 bg-gray-700 text-white px-3 py-2 rounded-2xl max-w-40 shadow-lg">
-            <p className="text-xs font-medium">おかえりなさい。今日はいかがでしたか？</p>
-          </div>
-        </div>
-        
-        {/* Friend level */}
-        <div className="mb-3">
-          <p className="text-white text-sm font-medium">フレンドレベル 85</p>
-        </div>
-        
-        {/* Character switching dots - wireframe positioning */}
-        <div className="flex space-x-2 mb-4">
-          {characters.map((char, index) => (
-            <button
-              key={char.id}
-              onClick={() => setCurrentCharacter(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                currentCharacter === index
-                  ? 'bg-white'
-                  : 'bg-gray-500'
-              }`}
-            />
-          ))}
+      {/* Character area - exact wireframe layout */}
+      <div className="p-6 flex flex-col items-center">
+        {/* Large character display */}
+        <div className="w-40 h-40 bg-gradient-to-br from-yellow-400 to-green-500 rounded-3xl flex items-center justify-center shadow-xl mb-4">
+          <span className="text-gray-800 text-lg font-bold tracking-wide">キャラクター</span>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="px-4 mb-4">
+      {/* Progress bar - exact wireframe */}
+      <div className="px-6 mb-6">
         <div className="flex justify-between items-center mb-2">
-          <span className="text-white text-xs font-semibold">ステップ {currentStep} / {totalSteps}</span>
-          <span className="text-emerald-400 text-xs font-bold">{Math.round(progress)}%</span>
+          <span className="text-white text-sm font-medium">ステップ {currentStep} / {totalSteps}</span>
+          <span className="text-white text-sm font-medium">{Math.round(progress)}%</span>
         </div>
-        <div className="w-full bg-gray-600/70 rounded-full h-2 shadow-inner">
+        <div className="w-full bg-gray-600 rounded-full h-2">
           <div 
-            className="bg-gradient-to-r from-emerald-400 to-teal-500 h-2 rounded-full transition-all duration-300 ease-out shadow-sm" 
+            className="bg-white h-2 rounded-full transition-all duration-300 ease-out" 
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -383,14 +356,22 @@ export default function CheckinPage() {
         {renderStep()}
       </div>
 
-      {/* Back button only (options auto-advance) */}
-      <div className="p-4 pb-24">
+      {/* Action buttons - exact wireframe */}
+      <div className="p-6 pb-32 space-y-3">
         {currentStep > 1 && (
           <button
             onClick={handleBack}
-            className="w-full py-4 bg-gray-600/90 text-white rounded-xl font-semibold hover:bg-gray-500 transition-all duration-200 shadow-md hover:shadow-lg border border-gray-500/30 min-h-[52px] touch-manipulation"
+            className="w-full py-4 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-500 transition-all duration-200 min-h-[52px] touch-manipulation"
           >
             戻る
+          </button>
+        )}
+        {currentStep < totalSteps && (
+          <button
+            className="w-full py-4 bg-gray-500 text-gray-300 rounded-xl font-semibold min-h-[52px] touch-manipulation cursor-not-allowed"
+            disabled
+          >
+            あとで
           </button>
         )}
       </div>

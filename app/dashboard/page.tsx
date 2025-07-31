@@ -6,36 +6,38 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Wireframe page 14 data structure
+// Wireframe page 14 exact data structure
 const dashboardData = {
   friendLevel: 85,
   currentLevel: 8,
   xp: '850 / 1000',
-  todayProgress: '50%',
+  todayProgress: 50,
   completedTasks: '2/4',
   todayMessage: 'あなたの存在自体が、誰かにとっての光になっています。',
+  todayLuckyColor: 'ブルー',
   weeklyRecords: {
-    days: 12,
-    months: 5
+    continuousRecord: 12,
+    totalRecord: '5ヶ月',
+    weeklyCheckin: '5/7日'
   },
-  level: 5,
+  level: 8,
   progressPercentage: 50,
   checkInTime: '24分の時',
   challenges: [
-    { id: 1, title: '朝の気分チェック', category: '基本', completed: true, xp: 20 },
-    { id: 2, title: '今日の感謝', category: '基本', completed: true, xp: 30 },
-    { id: 3, title: '感情の記録', category: '基本', completed: false, xp: 40 },
-    { id: 4, title: '30分のマインドフルネス', category: 'チャレンジ', completed: false, xp: 35 }
+    { id: 1, title: '朝の気分チェック', category: '簡単', completed: true, xp: 20, time: '1分' },
+    { id: 2, title: '感謝の記録', category: '簡単', completed: true, xp: 30, time: '1分' },
+    { id: 3, title: '感謝の記録', category: '簡単', completed: false, xp: 30, time: '1分' },
+    { id: 4, title: '3分間の深呼吸', category: '簡単', completed: false, xp: 40, time: '3分' }
   ],
   recentAchievements: [
-    { id: 1, title: '7日連続記録達成！', description: '素晴らしい継続力です！', isNew: true },
-    { id: 2, title: 'Lunaとのフレンドレベルアップ', description: 'Lunaとのきずなが深まりました', isNew: false },
-    { id: 3, title: 'チーム内順位が上昇！', description: '3位に上昇しました', isNew: false }
+    { id: 1, title: '7日連続記録達成！', description: '新しいバッジと限定スタンプをゲット！', isNew: true },
+    { id: 2, title: 'Lunaとのフレンドレベルアップ', description: '', isNew: true },
+    { id: 3, title: 'チーム投稿が10いいね！', description: '', isNew: false }
   ],
   todayStats: {
-    stress: 65,
-    energy: 78,
-    sleep: '4/5'
+    energy: 85,
+    happiness: 78,
+    weeklyGoal: '4/5'
   }
 }
 
@@ -85,39 +87,51 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Today's message - wireframe styling */}
+        {/* Today's fortune and message - exact wireframe */}
         <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
-          <h3 className="text-white font-semibold mb-3 tracking-wide">今日のメッセージ</h3>
-          <p className="text-gray-200 text-sm leading-relaxed">
+          <h3 className="text-white font-semibold mb-3 tracking-wide">今日の運勢・メッセージ</h3>
+          <p className="text-gray-200 text-sm leading-relaxed mb-3">
             {dashboardData.todayMessage}
           </p>
+          <p className="text-gray-200 text-sm leading-relaxed mb-3">
+            今日も自分らしく、一歩ずつ前に進んでいきましょう。
+          </p>
+          <div className="text-sm text-gray-400 font-medium">
+            今日のラッキーカラー: {dashboardData.todayLuckyColor}
+          </div>
         </div>
 
-        {/* Weekly records section */}
+        {/* Weekly records section - exact wireframe layout */}
         <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">週間記録</h3>
+          <h3 className="text-white font-semibold tracking-wide">今週の記録</h3>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-300 font-medium">調子の記録</span>
+            <span className="text-sm text-gray-300 font-medium">連続記録</span>
             <div className="text-right">
-              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.days}日</div>
-              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.months}ヶ月</div>
+              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.continuousRecord}日</div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300 font-medium">今週のチェックイン</span>
+            <div className="text-right">
+              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.weeklyCheckin}</div>
             </div>
           </div>
           
-          <div className="text-sm text-gray-300 font-medium">lvl.{dashboardData.level}</div>
+          <div className="text-sm text-gray-300 font-medium">lv.{dashboardData.level} {dashboardData.xp} xp</div>
         </div>
 
-        {/* Today's progress - center focus */}
+        {/* Today's achievement - exact wireframe */}
         <div className="text-center space-y-4">
           <button 
             onClick={() => router.push('/analytics')}
             className="touch-manipulation hover:scale-105 transition-transform duration-200"
           >
             <div className="text-5xl font-bold text-white mb-2">{dashboardData.progressPercentage}%</div>
-            <div className="text-sm text-gray-300 font-medium">今日の進捗状況</div>
+            <div className="text-sm text-gray-300 font-medium">今日の達成度</div>
           </button>
+          <div className="text-sm text-gray-300 font-medium">{dashboardData.completedTasks} タスク完了</div>
           
-          {/* Check-in button */}
+          {/* Check-in button - exact wireframe positioning */}
           <button 
             onClick={() => router.push('/checkin')}
             className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 touch-manipulation hover:scale-105"
@@ -126,7 +140,7 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Today's challenges */}
+        {/* Today's challenges - exact wireframe layout */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
@@ -142,28 +156,34 @@ export default function Dashboard() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    challenge.category === 'チャレンジ' 
-                      ? 'bg-orange-600/90 text-orange-100' 
-                      : 'bg-gray-600/90 text-gray-200'
-                  }`}>
-                    {challenge.category}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      challenge.category === '簡単' 
+                        ? 'bg-gray-600/90 text-gray-200' 
+                        : 'bg-orange-600/90 text-orange-100'
+                    }`}>
+                      {challenge.category}
+                    </span>
+                    {challenge.completed && (
+                      <span className="text-green-400 text-xs">完了</span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className={`font-medium ${
-                    challenge.completed ? 'text-green-400' : 'text-gray-400'
-                  }`}>
-                    {challenge.completed ? '完了' : '未完了'}
-                  </span>
-                  <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-400">{challenge.time}</span>
+                    <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
+                  </div>
+                  {challenge.completed && (
+                    <span className="text-green-400 text-xs">✓</span>
+                  )}
                 </div>
               </button>
             ))}
           </div>
         </div>
 
-        {/* Recent achievements */}
+        {/* Recent achievements - exact wireframe */}
         <div className="space-y-4">
           <h3 className="text-white font-semibold tracking-wide">最近の実績</h3>
           
@@ -174,19 +194,21 @@ export default function Dashboard() {
                 className="w-full bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200 text-left touch-manipulation" 
                 onClick={() => router.push('/achievements')}
               >
-                <div className="flex items-center space-x-3 mb-2">
+                <div className="flex items-center space-x-3 mb-1">
                   <span className="text-sm font-semibold text-white tracking-wide">{achievement.title}</span>
                   {achievement.isNew && (
                     <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-medium animate-pulse">NEW</span>
                   )}
                 </div>
-                <span className="text-xs text-gray-300 font-medium">{achievement.description}</span>
+                {achievement.description && (
+                  <span className="text-xs text-gray-300 font-medium">{achievement.description}</span>
+                )}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Today's stats summary */}
+        {/* Today's record - exact wireframe */}
         <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <span className="text-white font-semibold tracking-wide">今日の記録</span>
@@ -194,18 +216,35 @@ export default function Dashboard() {
           
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-2xl font-bold text-red-400 mb-1">{dashboardData.todayStats.stress}%</div>
-              <div className="text-xs text-gray-300 font-medium">ストレス</div>
-            </div>
-            <div>
               <div className="text-2xl font-bold text-green-400 mb-1">{dashboardData.todayStats.energy}%</div>
               <div className="text-xs text-gray-300 font-medium">エネルギー</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-blue-400 mb-1">{dashboardData.todayStats.sleep}</div>
-              <div className="text-xs text-gray-300 font-medium">睡眠時間</div>
+              <div className="text-2xl font-bold text-blue-400 mb-1">{dashboardData.todayStats.happiness}%</div>
+              <div className="text-xs text-gray-300 font-medium">幸福度</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-orange-400 mb-1">{dashboardData.todayStats.weeklyGoal}</div>
+              <div className="text-xs text-gray-300 font-medium">週間目標</div>
             </div>
           </div>
+        </div>
+
+        {/* 7-day achievement badge - exact wireframe */}
+        <div className="bg-gray-700/95 rounded-2xl p-5 text-center border border-gray-600/30 shadow-lg">
+          <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+            <span className="text-white text-xl">🏆</span>
+          </div>
+          <div className="text-yellow-400 font-bold mb-2 text-lg">7日連続記録達成！</div>
+          <div className="text-sm text-gray-200 mb-4 leading-relaxed">
+            新しいバッジと限定スタンプをゲット！
+          </div>
+          <button 
+            onClick={() => router.push('/achievements')}
+            className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200"
+          >
+            報酬を受け取る
+          </button>
         </div>
 
         {/* Bottom spacing for navigation */}
