@@ -189,7 +189,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-800 flex items-center justify-center p-4">
       <FloatingNotification
         isVisible={showNotification}
         title="成功"
@@ -205,21 +205,21 @@ export default function AuthPage() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+          <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center shadow-lg mx-auto mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full flex items-center justify-center">
               <Heart className="h-6 w-6 text-white" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">MindCare</h1>
-          <p className="text-gray-600">あなたの心の健康パートナー</p>
+          <h1 className="text-2xl font-bold text-white">MindCare</h1>
+          <p className="text-gray-300">あなたの心の健康パートナー</p>
         </div>
 
-        <Card className="shadow-xl border-0">
+        <Card className="shadow-xl border border-gray-600/30 bg-gray-700/95">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl">
+            <CardTitle className="text-xl text-white">
               {activeTab === 'login' ? 'ログイン' : 'アカウント作成'}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-gray-300">
               {activeTab === 'login' 
                 ? 'アカウントにログインしてください' 
                 : '新しいアカウントを作成しましょう'
@@ -244,13 +244,13 @@ export default function AuthPage() {
                 <TabsContent value="login" className="space-y-4 mt-6">
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">メールアドレス</label>
+                    <label className="text-sm font-medium text-white">メールアドレス</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type="email"
                         placeholder="your@email.com"
-                        className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
+                        className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.email ? 'border-red-500' : ''}`}
                         value={formData.email}
                         onChange={(e) => updateFormData('email', e.target.value)}
                       />
@@ -265,13 +265,13 @@ export default function AuthPage() {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">パスワード</label>
+                    <label className="text-sm font-medium text-white">パスワード</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="パスワードを入力"
-                        className={`pl-10 pr-10 ${errors.password ? 'border-red-500' : ''}`}
+                        className={`pl-10 pr-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.password ? 'border-red-500' : ''}`}
                         value={formData.password}
                         onChange={(e) => updateFormData('password', e.target.value)}
                       />
@@ -294,9 +294,9 @@ export default function AuthPage() {
                   <div className="flex items-center justify-between text-sm">
                     <label className="flex items-center space-x-2">
                       <Checkbox />
-                      <span className="text-gray-600">ログイン状態を保持</span>
+                      <span className="text-gray-300">ログイン状態を保持</span>
                     </label>
-                    <button type="button" className="text-blue-600 hover:underline">
+                    <button type="button" className="text-emerald-400 hover:underline">
                       パスワードを忘れた方
                     </button>
                   </div>
@@ -305,13 +305,13 @@ export default function AuthPage() {
                 <TabsContent value="register" className="space-y-4 mt-6">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">お名前</label>
+                    <label className="text-sm font-medium text-white">お名前</label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type="text"
                         placeholder="田中 太郎"
-                        className={`pl-10 ${errors.name ? 'border-red-500' : ''}`}
+                        className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.name ? 'border-red-500' : ''}`}
                         value={formData.name}
                         onChange={(e) => updateFormData('name', e.target.value)}
                       />
@@ -326,13 +326,13 @@ export default function AuthPage() {
 
                   {/* Company (Optional) */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">会社名（任意）</label>
+                    <label className="text-sm font-medium text-white">会社名（任意）</label>
                     <div className="relative">
                       <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type="text"
                         placeholder="株式会社サンプル"
-                        className="pl-10"
+                        className="pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400"
                         value={formData.company}
                         onChange={(e) => updateFormData('company', e.target.value)}
                       />
@@ -341,13 +341,13 @@ export default function AuthPage() {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">メールアドレス</label>
+                    <label className="text-sm font-medium text-white">メールアドレス</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type="email"
                         placeholder="your@email.com"
-                        className={`pl-10 ${errors.email ? 'border-red-500' : ''}`}
+                        className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.email ? 'border-red-500' : ''}`}
                         value={formData.email}
                         onChange={(e) => updateFormData('email', e.target.value)}
                       />
@@ -362,13 +362,13 @@ export default function AuthPage() {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">パスワード</label>
+                    <label className="text-sm font-medium text-white">パスワード</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="8文字以上のパスワード"
-                        className={`pl-10 pr-10 ${errors.password ? 'border-red-500' : ''}`}
+                        className={`pl-10 pr-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.password ? 'border-red-500' : ''}`}
                         value={formData.password}
                         onChange={(e) => updateFormData('password', e.target.value)}
                       />
@@ -390,13 +390,13 @@ export default function AuthPage() {
 
                   {/* Confirm Password */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">パスワード確認</label>
+                    <label className="text-sm font-medium text-white">パスワード確認</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="パスワードをもう一度入力"
-                        className={`pl-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                        className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.confirmPassword ? 'border-red-500' : ''}`}
                         value={formData.confirmPassword}
                         onChange={(e) => updateFormData('confirmPassword', e.target.value)}
                       />
@@ -416,8 +416,8 @@ export default function AuthPage() {
                         checked={formData.agreeTerms}
                         onCheckedChange={(checked) => updateFormData('agreeTerms', checked as boolean)}
                       />
-                      <span className="text-sm text-gray-600 leading-relaxed">
-                        <a href="#" className="text-blue-600 hover:underline">利用規約</a>に同意します
+                      <span className="text-sm text-gray-300 leading-relaxed">
+                        <a href="#" className="text-emerald-400 hover:underline">利用規約</a>に同意します
                       </span>
                     </label>
                     {errors.agreeTerms && (
@@ -432,8 +432,8 @@ export default function AuthPage() {
                         checked={formData.agreePrivacy}
                         onCheckedChange={(checked) => updateFormData('agreePrivacy', checked as boolean)}
                       />
-                      <span className="text-sm text-gray-600 leading-relaxed">
-                        <a href="#" className="text-blue-600 hover:underline">プライバシーポリシー</a>に同意します
+                      <span className="text-sm text-gray-300 leading-relaxed">
+                        <a href="#" className="text-emerald-400 hover:underline">プライバシーポリシー</a>に同意します
                       </span>
                     </label>
                     {errors.agreePrivacy && (
@@ -449,7 +449,7 @@ export default function AuthPage() {
                 <RippleButton
                   type="submit"
                   disabled={isLoading}
-                  className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-3 rounded-lg font-medium flex items-center justify-center space-x-2"
+                  className="w-full mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-3 rounded-lg font-medium flex items-center justify-center space-x-2 min-h-[48px] touch-manipulation"
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -469,7 +469,7 @@ export default function AuthPage() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">または</span>
+                <span className="px-2 bg-gray-700 text-gray-400">または</span>
               </div>
             </div>
 
@@ -478,7 +478,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => handleSocialLogin('google')}
                 disabled={isLoading}
-                className="flex items-center justify-center space-x-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 py-3 rounded-lg"
+                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[48px] touch-manipulation"
               >
                 <Chrome className="h-4 w-4" />
                 <span className="text-sm">Google</span>
@@ -487,7 +487,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => handleSocialLogin('apple')}
                 disabled={isLoading}
-                className="flex items-center justify-center space-x-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 py-3 rounded-lg"
+                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[48px] touch-manipulation"
               >
                 <Apple className="h-4 w-4" />
                 <span className="text-sm">Apple</span>
@@ -495,12 +495,12 @@ export default function AuthPage() {
             </div>
 
             {/* Privacy Notice */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-emerald-500/10 border border-emerald-400/30 rounded-lg p-4">
               <div className="flex items-start space-x-3">
-                <Shield className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <Shield className="h-5 w-5 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-blue-800 mb-1">🔒 プライバシー保護</h4>
-                  <p className="text-sm text-blue-700">
+                  <h4 className="font-medium text-emerald-400 mb-1">🔒 プライバシー保護</h4>
+                  <p className="text-sm text-gray-300">
                     すべてのデータは暗号化され、個人を特定できない形で処理されます。
                     企業には集計データのみが提供されます。
                   </p>
@@ -512,13 +512,13 @@ export default function AuthPage() {
 
         {/* Additional Links */}
         <div className="text-center mt-6 space-y-2">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-300">
             サポートが必要ですか？{' '}
-            <button className="text-blue-600 hover:underline">
+            <button className="text-emerald-400 hover:underline">
               ヘルプセンター
             </button>
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-400">
             © 2024 MindCare. All rights reserved.
           </p>
         </div>

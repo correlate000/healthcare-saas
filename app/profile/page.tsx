@@ -1,25 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Progress } from '@/components/ui/progress'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { 
   User,
   Edit,
-  Save,
-  Mail,
-  Building,
-  Calendar,
-  MapPin,
-  Phone,
-  Globe,
+  Settings,
   Award,
   Target,
   TrendingUp,
@@ -28,701 +19,312 @@ import {
   Trophy,
   Zap,
   Clock,
-  Users,
   MessageCircle,
-  BookOpen,
-  Shield,
-  Settings,
-  Camera,
   CheckCircle,
-  X,
-  Plus,
-  Trash2
+  ArrowLeft,
+  ChevronRight,
+  Camera,
+  Mail,
+  MapPin,
+  Calendar,
+  Smartphone
 } from 'lucide-react'
 
-interface UserProfile {
-  basicInfo: {
-    name: string
-    email: string
-    department: string
-    position: string
-    joinDate: string
-    location: string
-    phone: string
-    bio: string
-  }
-  preferences: {
-    favoriteCharacter: 'luna' | 'aria' | 'zen'
-    notificationTime: string
-    reminderFrequency: 'daily' | 'weekly' | 'custom'
-    privacyLevel: 'open' | 'team' | 'private'
-    language: 'ja' | 'en'
-    theme: 'light' | 'dark' | 'auto'
-  }
-  goals: {
-    current: string[]
-    completed: string[]
-  }
-  achievements: {
-    badges: Array<{
-      id: string
-      name: string
-      description: string
-      unlockedAt: string
-      category: string
-    }>
-    level: number
-    totalXP: number
-    currentStreaks: {
-      checkin: number
-      chat: number
-      challenges: number
-    }
-  }
-  stats: {
-    totalSessions: number
-    totalMinutes: number
-    favoriteFeatures: string[]
-    monthlyProgress: number
-  }
-}
+export default function ProfilePage() {
+  const router = useRouter()
+  const [isEditing, setIsEditing] = useState(false)
 
-const defaultProfile: UserProfile = {
-  basicInfo: {
+  // Mock user data - in real app this would come from API/context
+  const profile = {
     name: '田中 太郎',
     email: 'tanaka.taro@company.com',
     department: '開発部',
     position: 'シニアエンジニア',
-    joinDate: '2020-04-01',
-    location: '東京オフィス',
-    phone: '03-1234-5678',
-    bio: 'フルスタック開発者として、チームの技術的な課題解決に取り組んでいます。メンタルヘルスの重要性を理解し、チーム全体のウェルビーイング向上に貢献したいと考えています。'
-  },
-  preferences: {
-    favoriteCharacter: 'luna',
-    notificationTime: '09:00',
-    reminderFrequency: 'daily',
-    privacyLevel: 'team',
-    language: 'ja',
-    theme: 'auto'
-  },
-  goals: {
-    current: [
-      'ストレス管理スキルの向上',
-      '毎日のチェックイン習慣化',
-      'チームとのコミュニケーション改善'
-    ],
-    completed: [
-      '基本的なマインドフルネス習得',
-      '感情日記を1ヶ月継続',
-      'AIキャラクターとの信頼関係構築'
-    ]
-  },
-  achievements: {
-    badges: [
-      {
-        id: 'first_checkin',
-        name: 'はじめの一歩',
-        description: '初回チェックインを完了',
-        unlockedAt: '2025-05-15',
-        category: 'milestone'
-      },
-      {
-        id: 'streak_7',
-        name: '1週間継続',
-        description: '7日連続でチェックイン',
-        unlockedAt: '2025-05-22',
-        category: 'streak'
-      },
-      {
-        id: 'chat_master',
-        name: '対話マスター',
-        description: 'AIキャラクターと50回対話',
-        unlockedAt: '2025-06-01',
-        category: 'engagement'
-      }
-    ],
-    level: 8,
+    joinDate: '2020年4月',
+    level: 12,
     totalXP: 2850,
-    currentStreaks: {
-      checkin: 12,
-      chat: 8,
-      challenges: 5
-    }
-  },
-  stats: {
-    totalSessions: 67,
-    totalMinutes: 423,
-    favoriteFeatures: ['感情チェックイン', 'Luna との対話', 'デイリーチャレンジ'],
-    monthlyProgress: 78
-  }
-}
-
-export default function Profile() {
-  const [profile, setProfile] = useState(defaultProfile)
-  const [isEditing, setIsEditing] = useState(false)
-  const [activeTab, setActiveTab] = useState('overview')
-  const [editForm, setEditForm] = useState(defaultProfile.basicInfo)
-  const [newGoal, setNewGoal] = useState('')
-
-  const handleSave = () => {
-    setProfile({
-      ...profile,
-      basicInfo: editForm
-    })
-    setIsEditing(false)
+    nextLevelXP: 3000,
+    streakDays: 28,
+    totalSessions: 47,
+    totalMinutes: 1260,
+    monthlyProgress: 78,
+    favoriteCharacter: 'Luna',
+    achievements: [
+      { id: '1', name: '7日継続', icon: '🔥', earned: true },
+      { id: '2', name: '気分向上', icon: '📈', earned: true },
+      { id: '3', name: 'ストレス管理', icon: '🧘', earned: false },
+      { id: '4', name: '早起き', icon: '🌅', earned: false }
+    ]
   }
 
-  const handleCancel = () => {
-    setEditForm(profile.basicInfo)
-    setIsEditing(false)
-  }
-
-  const addGoal = () => {
-    if (newGoal.trim()) {
-      setProfile({
-        ...profile,
-        goals: {
-          ...profile.goals,
-          current: [...profile.goals.current, newGoal.trim()]
-        }
-      })
-      setNewGoal('')
-    }
-  }
-
-  const removeGoal = (index: number) => {
-    setProfile({
-      ...profile,
-      goals: {
-        ...profile.goals,
-        current: profile.goals.current.filter((_, i) => i !== index)
-      }
-    })
-  }
-
-  const completeGoal = (index: number) => {
-    const goal = profile.goals.current[index]
-    setProfile({
-      ...profile,
-      goals: {
-        current: profile.goals.current.filter((_, i) => i !== index),
-        completed: [...profile.goals.completed, goal]
-      }
-    })
-  }
-
-  const getBadgeIcon = (category: string) => {
-    switch (category) {
-      case 'milestone': return <Target className="w-4 h-4" />
-      case 'streak': return <Zap className="w-4 h-4" />
-      case 'engagement': return <MessageCircle className="w-4 h-4" />
-      default: return <Award className="w-4 h-4" />
-    }
-  }
-
-  const getBadgeColor = (category: string) => {
-    switch (category) {
-      case 'milestone': return 'bg-blue-500'
-      case 'streak': return 'bg-orange-500'
-      case 'engagement': return 'bg-green-500'
-      default: return 'bg-purple-500'
-    }
-  }
-
-  const getCharacterInfo = (character: string) => {
-    switch (character) {
-      case 'luna': return { name: 'Luna', color: 'bg-purple-500', emoji: '🌙' }
-      case 'aria': return { name: 'Aria', color: 'bg-teal-500', emoji: '✨' }
-      case 'zen': return { name: 'Zen', color: 'bg-indigo-500', emoji: '🧘' }
-      default: return { name: 'Luna', color: 'bg-purple-500', emoji: '🌙' }
-    }
-  }
+  const currentLevelProgress = ((profile.totalXP % 1000) / 1000) * 100
 
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col pb-32">
+    <div className="min-h-screen bg-gray-800 flex flex-col">
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
-        <div className="px-4 py-6">
-          <div className="flex items-center space-x-4 mb-4">
+      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white relative">
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => router.push('/dashboard')}
+              className="text-white hover:bg-white/10 rounded-xl p-2"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </Button>
+            <h1 className="text-xl font-semibold tracking-wide">プロフィール</h1>
+            <Button 
+              variant="ghost" 
+              onClick={() => router.push('/settings')}
+              className="text-white hover:bg-white/10 rounded-xl p-2"
+            >
+              <Settings className="w-6 h-6" />
+            </Button>
+          </div>
+
+          <div className="flex items-center space-x-4 mb-6">
             <div className="relative">
-              <Avatar className="h-16 w-16 border-2 border-white">
-                <AvatarFallback className="bg-white text-blue-600 text-xl font-bold">
-                  {profile.basicInfo.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
+                <User className="w-10 h-10 text-white" />
+              </div>
               <Button 
                 size="sm" 
-                className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-white text-blue-600 hover:bg-gray-100 p-0"
+                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white text-emerald-600 hover:bg-gray-100 p-0 shadow-lg"
               >
-                <Camera className="w-3 h-3" />
+                <Camera className="w-4 h-4" />
               </Button>
             </div>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">{profile.basicInfo.name}</h1>
-              <p className="text-blue-100">{profile.basicInfo.position}</p>
-              <p className="text-blue-200 text-sm">{profile.basicInfo.department}</p>
+              <h2 className="text-2xl font-bold tracking-wide">{profile.name}</h2>
+              <p className="text-emerald-100 font-medium">{profile.position}</p>
+              <p className="text-emerald-100/80 text-sm">{profile.department}</p>
+            </div>
+          </div>
+          
+          {/* Level Progress */}
+          <div className="bg-white/10 rounded-2xl p-5 backdrop-blur-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <Trophy className="w-5 h-5 text-yellow-300" />
+                <span className="font-semibold">レベル {profile.level}</span>
+              </div>
+              <span className="text-sm text-emerald-100">
+                {profile.totalXP} / {profile.nextLevelXP} XP
+              </span>
+            </div>
+            <Progress value={currentLevelProgress} className="h-2 bg-white/20" />
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <div className="text-xl font-bold">{profile.streakDays}</div>
+              <div className="text-sm text-emerald-100 font-medium">日連続</div>
+            </div>
+            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <div className="text-xl font-bold">{profile.totalSessions}</div>
+              <div className="text-sm text-emerald-100 font-medium">セッション</div>
+            </div>
+            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
+              <div className="text-xl font-bold">{Math.floor(profile.totalMinutes / 60)}h</div>
+              <div className="text-sm text-emerald-100 font-medium">総時間</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 p-4 pb-24 space-y-6">
+        {/* This Month Progress */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-blue-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold tracking-wide">今月の進捗</h3>
+                <p className="text-gray-400 text-sm">ウェルビーイングスコア</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-white">{profile.monthlyProgress}%</div>
+              <div className="text-sm text-green-400 font-medium">+12% 先月比</div>
+            </div>
+          </div>
+          <Progress value={profile.monthlyProgress} className="h-3" />
+        </motion.div>
+
+        {/* Recent Achievements */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-white font-semibold text-lg tracking-wide">最近の実績</h3>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => router.push('/achievements')}
+              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
+            >
+              すべて見る
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-3">
+            {profile.achievements.slice(0, 4).map((achievement, index) => (
+              <motion.div
+                key={achievement.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + index * 0.1 }}
+                className={`p-4 rounded-xl border transition-all duration-200 ${
+                  achievement.earned 
+                    ? 'bg-emerald-500/10 border-emerald-400/30' 
+                    : 'bg-gray-700/50 border-gray-600/30'
+                }`}
+              >
+                <div className="text-center">
+                  <div className="text-2xl mb-2">{achievement.icon}</div>
+                  <h4 className={`font-semibold text-sm ${
+                    achievement.earned ? 'text-emerald-400' : 'text-gray-400'
+                  }`}>
+                    {achievement.name}
+                  </h4>
+                  {achievement.earned && (
+                    <div className="mt-2">
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 text-xs">
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        獲得済み
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Favorite Character */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-pink-500/20 rounded-lg">
+                <Heart className="w-5 h-5 text-pink-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold tracking-wide">お気に入りキャラクター</h3>
+                <p className="text-gray-400 text-sm">一緒に過ごした時間: {Math.floor(profile.totalMinutes / 60)}時間</p>
+              </div>
             </div>
             <Button 
-              variant="outline" 
-              size="sm" 
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30"
+              variant="ghost" 
+              size="sm"
+              onClick={() => router.push('/characters')}
+              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
+            >
+              変更
+            </Button>
+          </div>
+          
+          <div className="flex items-center space-x-4 p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
+            <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+              <span className="text-white text-xl">🌙</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="text-white font-semibold">{profile.favoriteCharacter}</h4>
+              <p className="text-gray-400 text-sm">優しく包み込むような対話スタイル</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Basic Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-white font-semibold text-lg tracking-wide">基本情報</h3>
+            <Button 
+              variant="ghost" 
+              size="sm"
               onClick={() => setIsEditing(!isEditing)}
+              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
             >
               <Edit className="w-4 h-4 mr-2" />
               編集
             </Button>
           </div>
           
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-xl font-bold">Lv.{profile.achievements.level}</div>
-              <div className="text-sm text-blue-100">レベル</div>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <Mail className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-gray-400 text-sm">メールアドレス</p>
+                <p className="text-white font-medium">{profile.email}</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">{profile.achievements.totalXP}</div>
-              <div className="text-sm text-blue-100">総XP</div>
+            <div className="flex items-center space-x-3">
+              <MapPin className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-gray-400 text-sm">所属</p>
+                <p className="text-white font-medium">{profile.department}</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-xl font-bold">{profile.stats.totalSessions}</div>
-              <div className="text-sm text-blue-100">セッション数</div>
+            <div className="flex items-center space-x-3">
+              <Calendar className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-gray-400 text-sm">入社日</p>
+                <p className="text-white font-medium">{profile.joinDate}</p>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
+
+        {/* App Info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
+        >
+          <h3 className="text-white font-semibold text-lg tracking-wide mb-4">アプリ情報</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">バージョン</span>
+              <span className="text-white font-medium">1.0.0</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">最終更新</span>
+              <span className="text-white font-medium">2024年7月30日</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400">デバイス</span>
+              <div className="flex items-center space-x-2 text-white font-medium">
+                <Smartphone className="w-4 h-4" />
+                <span>iOS</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
 
-      <div className="px-4 py-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">概要</TabsTrigger>
-            <TabsTrigger value="goals">目標</TabsTrigger>
-            <TabsTrigger value="achievements">実績</TabsTrigger>
-            <TabsTrigger value="settings">設定</TabsTrigger>
-          </TabsList>
-
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-4 mt-4">
-            {/* Progress Overview */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <TrendingUp className="w-5 h-5 mr-2 text-blue-600" />
-                  今月の進捗
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">ウェルビーイングスコア</span>
-                    <span className="text-sm font-medium">{profile.stats.monthlyProgress}%</span>
-                  </div>
-                  <Progress value={profile.stats.monthlyProgress} className="h-2" />
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-3 bg-orange-50 rounded-lg">
-                    <Zap className="w-5 h-5 text-orange-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-orange-600">{profile.achievements.currentStreaks.checkin}</div>
-                    <div className="text-xs text-orange-600">チェックイン連続</div>
-                  </div>
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <MessageCircle className="w-5 h-5 text-green-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-green-600">{profile.achievements.currentStreaks.chat}</div>
-                    <div className="text-xs text-green-600">対話連続</div>
-                  </div>
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <Target className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-blue-600">{profile.achievements.currentStreaks.challenges}</div>
-                    <div className="text-xs text-blue-600">チャレンジ連続</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Favorite Character */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Heart className="w-5 h-5 mr-2 text-red-500" />
-                  お気に入りキャラクター
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center space-x-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                  <div className={`w-12 h-12 rounded-full ${getCharacterInfo(profile.preferences.favoriteCharacter).color} flex items-center justify-center text-white text-xl`}>
-                    {getCharacterInfo(profile.preferences.favoriteCharacter).emoji}
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-gray-900">{getCharacterInfo(profile.preferences.favoriteCharacter).name}</h4>
-                    <p className="text-sm text-gray-600">一緒に過ごした時間: {Math.floor(profile.stats.totalMinutes / 60)}時間</p>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={() => window.location.href = '/characters'}>
-                    詳細を見る
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Basic Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center">
-                    <User className="w-5 h-5 mr-2 text-gray-600" />
-                    基本情報
-                  </span>
-                  {isEditing && (
-                    <div className="space-x-2">
-                      <Button size="sm" variant="outline" onClick={handleCancel}>
-                        <X className="w-4 h-4 mr-1" />
-                        キャンセル
-                      </Button>
-                      <Button size="sm" onClick={handleSave}>
-                        <Save className="w-4 h-4 mr-1" />
-                        保存
-                      </Button>
-                    </div>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {isEditing ? (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">名前</label>
-                        <Input 
-                          value={editForm.name}
-                          onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">役職</label>
-                        <Input 
-                          value={editForm.position}
-                          onChange={(e) => setEditForm({...editForm, position: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">部署</label>
-                        <Input 
-                          value={editForm.department}
-                          onChange={(e) => setEditForm({...editForm, department: e.target.value})}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">所在地</label>
-                        <Input 
-                          value={editForm.location}
-                          onChange={(e) => setEditForm({...editForm, location: e.target.value})}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">自己紹介</label>
-                      <Textarea 
-                        value={editForm.bio}
-                        onChange={(e) => setEditForm({...editForm, bio: e.target.value})}
-                        rows={3}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-3">
-                      <Mail className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm">{profile.basicInfo.email}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Building className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm">{profile.basicInfo.department}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Calendar className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm">入社日: {new Date(profile.basicInfo.joinDate).toLocaleDateString('ja-JP')}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <MapPin className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm">{profile.basicInfo.location}</span>
-                    </div>
-                    {profile.basicInfo.bio && (
-                      <div className="pt-2 border-t">
-                        <p className="text-sm text-gray-700 leading-relaxed">{profile.basicInfo.bio}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Favorite Features */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Star className="w-5 h-5 mr-2 text-yellow-500" />
-                  よく使う機能
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {profile.stats.favoriteFeatures.map((feature, index) => (
-                    <Badge key={index} variant="secondary" className="bg-yellow-50 text-yellow-700">
-                      {feature}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Goals Tab */}
-          <TabsContent value="goals" className="space-y-4 mt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Target className="w-5 h-5 mr-2 text-blue-600" />
-                  現在の目標
-                </CardTitle>
-                <CardDescription>
-                  メンタルヘルス向上のための個人目標を設定・管理できます
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex space-x-2">
-                  <Input 
-                    placeholder="新しい目標を入力..."
-                    value={newGoal}
-                    onChange={(e) => setNewGoal(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addGoal()}
-                  />
-                  <Button onClick={addGoal} disabled={!newGoal.trim()}>
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  {profile.goals.current.map((goal, index) => (
-                    <Card key={index} className="border-l-4 border-l-blue-500">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-900">{goal}</span>
-                          <div className="flex space-x-2">
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => completeGoal(index)}
-                            >
-                              <CheckCircle className="w-4 h-4 mr-1" />
-                              完了
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              onClick={() => removeGoal(index)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="w-5 h-5 mr-2 text-green-600" />
-                  達成した目標
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {profile.goals.completed.map((goal, index) => (
-                    <div key={index} className="flex items-center p-3 bg-green-50 rounded-lg border border-green-200">
-                      <CheckCircle className="w-4 h-4 text-green-600 mr-3" />
-                      <span className="text-sm text-green-800">{goal}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Achievements Tab */}
-          <TabsContent value="achievements" className="space-y-4 mt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Trophy className="w-5 h-5 mr-2 text-yellow-500" />
-                  獲得バッジ
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-3">
-                  {profile.achievements.badges.map((badge) => (
-                    <Card key={badge.id} className="border-l-4 border-l-yellow-500">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-4">
-                          <div className={`w-12 h-12 ${getBadgeColor(badge.category)} rounded-full flex items-center justify-center text-white`}>
-                            {getBadgeIcon(badge.category)}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{badge.name}</h4>
-                            <p className="text-sm text-gray-600">{badge.description}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              獲得日: {new Date(badge.unlockedAt).toLocaleDateString('ja-JP')}
-                            </p>
-                          </div>
-                          <Badge className="bg-yellow-100 text-yellow-800">
-                            獲得済み
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>レベル進行</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">レベル {profile.achievements.level}</span>
-                    <span className="text-sm text-gray-600">{profile.achievements.totalXP}/3000 XP</span>
-                  </div>
-                  <Progress value={(profile.achievements.totalXP % 1000) / 10} className="h-3" />
-                  <p className="text-xs text-gray-500">次のレベルまで {3000 - profile.achievements.totalXP} XP</p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center p-3 bg-purple-50 rounded-lg">
-                    <Award className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-purple-600">{profile.achievements.badges.length}</div>
-                    <div className="text-xs text-purple-600">バッジ数</div>
-                  </div>
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <TrendingUp className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-blue-600">{profile.achievements.level}</div>
-                    <div className="text-xs text-blue-600">現在レベル</div>
-                  </div>
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <Star className="w-5 h-5 text-green-600 mx-auto mb-1" />
-                    <div className="text-lg font-bold text-green-600">{profile.achievements.totalXP}</div>
-                    <div className="text-xs text-green-600">総獲得XP</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Settings Tab */}
-          <TabsContent value="settings" className="space-y-4 mt-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Settings className="w-5 h-5 mr-2 text-gray-600" />
-                  個人設定
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">通知時間</label>
-                    <Input 
-                      type="time" 
-                      value={profile.preferences.notificationTime}
-                      onChange={(e) => setProfile({
-                        ...profile,
-                        preferences: {
-                          ...profile.preferences,
-                          notificationTime: e.target.value
-                        }
-                      })}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">プライバシーレベル</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['open', 'team', 'private'].map((level) => (
-                        <Button
-                          key={level}
-                          variant={profile.preferences.privacyLevel === level ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setProfile({
-                            ...profile,
-                            preferences: {
-                              ...profile.preferences,
-                              privacyLevel: level as any
-                            }
-                          })}
-                        >
-                          {level === 'open' ? 'オープン' : 
-                           level === 'team' ? 'チーム内' : 'プライベート'}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">テーマ</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['light', 'dark', 'auto'].map((theme) => (
-                        <Button
-                          key={theme}
-                          variant={profile.preferences.theme === theme ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setProfile({
-                            ...profile,
-                            preferences: {
-                              ...profile.preferences,
-                              theme: theme as any
-                            }
-                          })}
-                        >
-                          {theme === 'light' ? 'ライト' : 
-                           theme === 'dark' ? 'ダーク' : '自動'}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>アカウント管理</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
-                  <Shield className="w-4 h-4 mr-2" />
-                  プライバシー設定
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  データのエクスポート
-                </Button>
-                <Button variant="outline" className="w-full justify-start text-red-600 border-red-300 hover:bg-red-50">
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  アカウント削除
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* モバイルボトムナビゲーション */}
+      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )
