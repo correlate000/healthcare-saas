@@ -187,7 +187,7 @@ export default function ChatPage() {
       </div>
 
       {/* Message input */}
-      <div className="p-4 pt-0 pb-24">
+      <div className="p-4 pt-0">
         <form onSubmit={handleSendMessage} className="flex space-x-3">
           <input
             value={newMessage}
@@ -204,6 +204,9 @@ export default function ChatPage() {
             <Send className="h-5 w-5" />
           </button>
         </form>
+        
+        {/* Bottom spacing for navigation */}
+        <div className="h-24"></div>
       </div>
 
       {/* Bottom Navigation */}
