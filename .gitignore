@@ -5,41 +5,116 @@ node_modules/
 
 # Testing
 coverage/
+.nyc_output
 
 # Next.js
 .next/
 out/
-build
+build/
+next-env.d.ts
 
 # Production
 dist/
 
 # Misc
 .DS_Store
+*.pem
 *.tsbuildinfo
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
-# Logs
+# Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env*.local
+.env.development
+.env.production
+
+# Vercel
+.vercel
+
+# Logs
+logs/
+*.log
+healthcare-saas.log
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Backups
+backups/*
+!backups/.gitkeep
+
+# SSL Certificates
+nginx/ssl/*
+!nginx/ssl/.gitkeep
+
+# Docker
+docker-compose.override.yml
+.docker/
+
+# OS Files
+Thumbs.db
+.DS_Store
+package-lock 2.json
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.Python
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# Health check outputs
+health_status.json
+health_report.txt
+deploy_report_*.txt
+deploy.log
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Test artifacts
+.coverage
+.pytest_cache/
+test-results/
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# Monitoring
+prometheus_data/
+grafana_data/
 
 # Runtime data
 pids
 *.pid
 *.seed
 *.pid.lock
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS generated files
-.DS_Store
-Thumbs.dbpackage-lock 2.json

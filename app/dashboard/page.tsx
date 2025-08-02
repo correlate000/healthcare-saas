@@ -4,254 +4,252 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { wireframeChallengeData, getDashboardMetrics } from '@/lib/challengeData'
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { HealthMetricsCard } from '@/components/dashboard/HealthMetricsCard'
+import { HealthTrendsChart } from '@/components/dashboard/HealthTrendsChart'
+import { AIInsightsCard } from '@/components/dashboard/AIInsightsCard'
+import { QuickHealthSummary } from '@/components/dashboard/QuickHealthSummary'
+import { useAuth } from '@/contexts/AuthContext'
+import { toast } from '@/hooks/use-toast'
+import { 
+  dashboardService, 
+  type DashboardData,
+  type HealthMetric,
+  type HealthTrend,
+  type AIInsight,
+  type AIPrediction,
+  type HealthStatus
+} from '@/lib/dashboard'
+import { generateSampleMetrics } from '@/components/dashboard/HealthMetricsCard'
+import { generateSampleTrends } from '@/components/dashboard/HealthTrendsChart'
+import { generateSampleInsights, generateSamplePredictions } from '@/components/dashboard/AIInsightsCard'
+import { generateSampleHealthStatus, generateSampleQuickActions } from '@/components/dashboard/QuickHealthSummary'
+import { Bell, Loader2, RefreshCw, Plus } from 'lucide-react'
 
-// Get dashboard metrics from shared challenge data
-const challengeMetrics = getDashboardMetrics(wireframeChallengeData)
-
-// Wireframe page 14 exact data structure with challenge data integration
-const dashboardData = {
-  friendLevel: 85,
-  currentLevel: 8,
-  xp: '850 / 1000',
-  todayProgress: challengeMetrics.progressPercentage,
-  completedTasks: `${challengeMetrics.completedTasks}/${challengeMetrics.totalTasks}`,
-  todayMessage: 'あなたの存在自体が、誰かにとっての光になっています。',
-  todayLuckyColor: 'ブルー',
-  weeklyRecords: {
-    continuousRecord: challengeMetrics.currentStreak,
-    totalRecord: '5ヶ月',
-    weeklyCheckin: '5/7日'
-  },
-  level: 8,
-  progressPercentage: challengeMetrics.progressPercentage,
-  checkInTime: `${challengeMetrics.completedTasks}/${challengeMetrics.totalTasks}\nタスク完了`,
-  challenges: challengeMetrics.challenges,
-  recentAchievements: [
-    { id: 1, title: '7日連続記録達成！', description: '新しいバッジと限定スタンプをゲット！', isNew: true },
-    { id: 2, title: 'Lunaとのフレンドレベルアップ', description: '', isNew: true },
-    { id: 3, title: 'チーム投稿が10いいね！', description: '', isNew: false }
-  ],
-  todayStats: {
-    energy: 85,
-    happiness: 78,
-    weeklyGoal: '4/5'
-  }
-}
-
-export default function Dashboard() {
+function Dashboard() {
   const router = useRouter()
-  const [currentCharacter, setCurrentCharacter] = useState(0)
+  const { user } = useAuth()
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [healthMetrics, setHealthMetrics] = useState<HealthMetric[]>([])
+  const [healthTrends, setHealthTrends] = useState<HealthTrend[]>([])
+  const [aiInsights, setAiInsights] = useState<AIInsight[]>([])
+  const [aiPredictions, setAiPredictions] = useState<AIPrediction[]>([])
+  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null)
 
-  const characters = [
-    { id: 'luna', name: 'Luna', active: true },
-    { id: 'aria', name: 'Aria', active: false },
-    { id: 'zen', name: 'Zen', active: false }
-  ]
+  // Load dashboard data
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  const loadDashboardData = async () => {
+    try {
+      setIsLoading(true)
+      
+      // For now, use sample data until backend is fully connected
+      // In production, this would call: const data = await dashboardService.getDashboardData()
+      
+      const sampleMetrics = generateSampleMetrics()
+      const sampleTrends = generateSampleTrends()
+      const sampleInsights = generateSampleInsights()
+      const samplePredictions = generateSamplePredictions()
+      const sampleStatus = generateSampleHealthStatus()
+
+      setHealthMetrics(sampleMetrics)
+      setHealthTrends(sampleTrends)
+      setAiInsights(sampleInsights)
+      setAiPredictions(samplePredictions)
+      setHealthStatus(sampleStatus)
+
+      // Try to load real data from API (gracefully handle failures)
+      try {
+        const realData = await dashboardService.getDashboardData()
+        if (realData.healthMetrics.length > 0) {
+          setHealthMetrics(realData.healthMetrics)
+        }
+        if (realData.healthTrends.length > 0) {
+          setHealthTrends(realData.healthTrends)
+        }
+        if (realData.aiInsights.length > 0) {
+          setAiInsights(realData.aiInsights)
+        }
+        if (realData.aiPredictions.length > 0) {
+          setAiPredictions(realData.aiPredictions)
+        }
+        setHealthStatus(realData.healthStatus || sampleStatus)
+      } catch (apiError) {
+        console.log('Using sample data as API is not yet available:', apiError)
+      }
+
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+      toast({
+        title: "データ読み込みエラー",
+        description: "ダッシュボードデータの読み込みに失敗しました。",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await loadDashboardData()
+    setIsRefreshing(false)
+    
+    toast({
+      title: "更新完了",
+      description: "ダッシュボードデータを更新しました。",
+    })
+  }
+
+  const handleMetricClick = (metricId: string) => {
+    router.push(`/analytics?metric=${metricId}`)
+  }
+
+  const handleInsightClick = (insight: AIInsight) => {
+    router.push(`/ai-insights/${insight.id}`)
+  }
+
+  const handleViewAllInsights = () => {
+    router.push('/ai-insights')
+  }
+
+  const handleViewDetails = () => {
+    router.push('/analytics')
+  }
+
+  if (isLoading && !healthStatus) {
+    return (
+      <div className="min-h-screen bg-gray-800 flex items-center justify-center">
+        <div className="text-center text-white">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p>健康データを読み込み中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const quickActions = generateSampleQuickActions(router)
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white overscroll-contain">
-      {/* Header with character and greeting - matching wireframe */}
-      <div className="p-6 flex items-start space-x-4">
-        {/* Character area */}
-        <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center flex-shrink-0 shadow-lg">
-          <span className="text-white text-sm font-semibold tracking-wide">キャラクター</span>
-        </div>
-        
-        {/* Greeting message */}
-        <div className="flex-1 bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30 shadow-sm">
-          <p className="text-gray-100 text-base leading-relaxed font-medium">
-            おかえりなさい。今日はいかがでしたか？
-          </p>
-        </div>
-      </div>
-
-      <div className="px-4 space-y-5">
-        {/* Friend level with character dots */}
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-300 font-medium tracking-wide text-base">フレンドレベル {dashboardData.friendLevel}</span>
-          <div className="flex space-x-2">
-            {characters.map((char, index) => (
-              <button 
-                key={char.id}
-                onClick={() => setCurrentCharacter(index)}
-                className={`w-8 h-8 rounded-full shadow-md transition-all duration-200 touch-manipulation ${
-                  currentCharacter === index 
-                    ? 'bg-white scale-110' 
-                    : 'bg-gray-600/70 hover:bg-gray-500'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Today's fortune and message - exact wireframe */}
-        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
-          <h3 className="text-white font-semibold mb-3 tracking-wide">今日の運勢・メッセージ</h3>
-          <p className="text-gray-200 text-sm leading-relaxed mb-3">
-            {dashboardData.todayMessage}
-          </p>
-          <p className="text-gray-200 text-sm leading-relaxed mb-3">
-            今日も自分らしく、一歩ずつ前に進んでいきましょう。
-          </p>
-          <div className="text-sm text-gray-400 font-medium">
-            今日のラッキーカラー: {dashboardData.todayLuckyColor}
-          </div>
-        </div>
-
-        {/* Weekly records section - exact wireframe layout */}
-        <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">今週の記録</h3>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-300 font-medium">連続記録</span>
-            <div className="text-right">
-              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.continuousRecord}日</div>
+    <ProtectedRoute requireAuth={true}>
+      <div className="min-h-screen bg-gray-800 text-white">
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700/50">
+          <div className="flex items-center justify-between p-4">
+            <div>
+              <h1 className="text-xl font-bold text-white">ダッシュボード</h1>
+              <p className="text-sm text-gray-400">
+                {user?.name}さんの健康サマリー
+              </p>
             </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-300 font-medium">今週のチェックイン</span>
-            <div className="text-right">
-              <div className="text-sm text-white font-semibold">{dashboardData.weeklyRecords.weeklyCheckin}</div>
-            </div>
-          </div>
-          
-          <div className="text-sm text-gray-300 font-medium">lv.{dashboardData.level} {dashboardData.xp} xp</div>
-        </div>
-
-        {/* Today's achievement - exact wireframe */}
-        <div className="text-center space-y-4">
-          <button 
-            onClick={() => router.push('/analytics')}
-            className="touch-manipulation hover:scale-105 transition-transform duration-200"
-          >
-            <div className="text-5xl font-bold text-white mb-2">{dashboardData.progressPercentage}%</div>
-            <div className="text-sm text-gray-300 font-medium">今日の達成度</div>
-          </button>
-          <div className="text-sm text-gray-300 font-medium">{dashboardData.completedTasks} タスク完了</div>
-          
-          {/* Check-in button - exact wireframe positioning */}
-          <button 
-            onClick={() => router.push('/checkin')}
-            className="w-20 h-20 bg-white rounded-full mx-auto flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200 touch-manipulation hover:scale-105"
-          >
-            <div className="text-gray-800 text-xs font-semibold text-center leading-tight">{dashboardData.checkInTime}</div>
-          </button>
-        </div>
-
-        {/* Today's challenges - exact wireframe layout */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
-            <span className="text-sm text-gray-300 font-medium">{dashboardData.completedTasks}</span>
-          </div>
-          
-          <div className="space-y-3">
-            {dashboardData.challenges.map((challenge) => (
-              <button 
-                key={challenge.id} 
-                className="w-full bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200 text-left touch-manipulation" 
-                onClick={() => router.push('/daily-challenge')}
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="text-gray-300 hover:text-white"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                      challenge.category === '簡単' 
-                        ? 'bg-gray-600/90 text-gray-200' 
-                        : 'bg-orange-600/90 text-orange-100'
-                    }`}>
-                      {challenge.category}
-                    </span>
-                    {challenge.completed && (
-                      <span className="text-green-400 text-xs">完了</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-gray-400">{challenge.timeEstimate}</span>
-                    <span className="text-yellow-400 font-semibold">+{challenge.xp} XP</span>
-                  </div>
-                  {challenge.completed && (
-                    <span className="text-green-400 text-xs">✓</span>
-                  )}
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent achievements - exact wireframe */}
-        <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">最近の実績</h3>
-          
-          <div className="space-y-3">
-            {dashboardData.recentAchievements.map((achievement) => (
-              <button 
-                key={achievement.id} 
-                className="w-full bg-gray-700/95 rounded-xl p-4 border border-gray-600/30 shadow-sm hover:border-gray-500/50 transition-colors duration-200 text-left touch-manipulation" 
-                onClick={() => router.push('/achievements')}
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push('/notifications')}
+                className="text-gray-300 hover:text-white relative"
               >
-                <div className="flex items-center space-x-3 mb-1">
-                  <span className="text-sm font-semibold text-white tracking-wide">{achievement.title}</span>
-                  {achievement.isNew && (
-                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-medium animate-pulse">NEW</span>
-                  )}
-                </div>
-                {achievement.description && (
-                  <span className="text-xs text-gray-300 font-medium">{achievement.description}</span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Today's record - exact wireframe */}
-        <div className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-white font-semibold tracking-wide">今日の記録</span>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-green-400 mb-1">{dashboardData.todayStats.energy}%</div>
-              <div className="text-xs text-gray-300 font-medium">エネルギー</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-blue-400 mb-1">{dashboardData.todayStats.happiness}%</div>
-              <div className="text-xs text-gray-300 font-medium">幸福度</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-orange-400 mb-1">{dashboardData.todayStats.weeklyGoal}</div>
-              <div className="text-xs text-gray-300 font-medium">週間目標</div>
+                <Bell className="h-4 w-4" />
+                <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* 7-day achievement badge - exact wireframe */}
-        <div className="bg-gray-700/95 rounded-2xl p-5 text-center border border-gray-600/30 shadow-lg">
-          <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">🏆</span>
+        <div className="p-4 space-y-6">
+          {/* Quick Health Summary */}
+          {healthStatus && (
+            <QuickHealthSummary
+              status={healthStatus}
+              quickActions={quickActions}
+              userName={user?.name}
+              onViewDetails={handleViewDetails}
+            />
+          )}
+
+          {/* Health Metrics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Health Metrics */}
+            <HealthMetricsCard
+              metrics={healthMetrics}
+              onMetricClick={handleMetricClick}
+            />
+
+            {/* AI Insights */}
+            <AIInsightsCard
+              insights={aiInsights}
+              predictions={aiPredictions}
+              onInsightClick={handleInsightClick}
+              onViewAll={handleViewAllInsights}
+              isLoading={isLoading}
+            />
           </div>
-          <div className="text-yellow-400 font-bold mb-2 text-lg">7日連続記録達成！</div>
-          <div className="text-sm text-gray-200 mb-4 leading-relaxed">
-            新しいバッジと限定スタンプをゲット！
-          </div>
-          <button 
-            onClick={() => router.push('/achievements')}
-            className="w-full bg-white text-gray-800 hover:bg-gray-100 rounded-xl font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200"
-          >
-            報酬を受け取る
-          </button>
+
+          {/* Health Trends Chart */}
+          <HealthTrendsChart
+            trends={healthTrends}
+            timeRange="7d"
+          />
+
+          {/* Quick Actions */}
+          <Card className="bg-gray-700/95 border-gray-600/30">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-white font-semibold">クイックアクション</h3>
+                <Button
+                  size="sm"
+                  onClick={() => router.push('/checkin')}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  データ記録
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {quickActions.map((action, index) => (
+                  <motion.button
+                    key={action.id}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    onClick={action.action}
+                    className={`flex flex-col items-center p-4 rounded-lg border border-gray-600/50 hover:border-gray-500 transition-all duration-200 ${action.color}`}
+                  >
+                    <div className="text-white mb-2">{action.icon}</div>
+                    <span className="text-white text-sm font-medium text-center">{action.title}</span>
+                  </motion.button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bottom spacing for navigation */}
+          <div className="h-24"></div>
         </div>
 
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
+        {/* Bottom Navigation */}
+        <MobileBottomNav />
       </div>
-
-      {/* Bottom Navigation */}
-      <MobileBottomNav />
-    </div>
+    </ProtectedRoute>
   )
 }
+
+export default Dashboard

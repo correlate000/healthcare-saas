@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,6 +30,8 @@ import {
   Apple
 } from 'lucide-react'
 import { RippleButton, FloatingNotification } from '@/components/ui/micro-interactions'
+import { useAuth } from '@/contexts/AuthContext'
+import { toast } from '@/hooks/use-toast'
 
 interface AuthForm {
   email: string
@@ -36,8 +39,10 @@ interface AuthForm {
   confirmPassword?: string
   name?: string
   company?: string
+  department?: string
   agreeTerms: boolean
   agreePrivacy: boolean
+  rememberMe: boolean
 }
 
 interface AuthFormErrors {
@@ -46,12 +51,15 @@ interface AuthFormErrors {
   confirmPassword?: string
   name?: string
   company?: string
+  department?: string
   agreeTerms?: string
   agreePrivacy?: string
+  general?: string
 }
 
 export default function AuthPage() {
   const router = useRouter()
+  const { login, register, isAuthenticated } = useAuth()
   const [activeTab, setActiveTab] = useState('login')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -63,10 +71,18 @@ export default function AuthPage() {
     confirmPassword: '',
     name: '',
     company: '',
+    department: '',
     agreeTerms: false,
-    agreePrivacy: false
+    agreePrivacy: false,
+    rememberMe: false
   })
   const [errors, setErrors] = useState<AuthFormErrors>({})
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    router.push('/dashboard')
+    return null
+  }
 
   const validateForm = () => {
     const newErrors: AuthFormErrors = {}
@@ -112,72 +128,64 @@ export default function AuthPage() {
     }
 
     setIsLoading(true)
+    setErrors({})
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      
-      // Store auth state
-      localStorage.setItem('mindcare-auth', JSON.stringify({
-        isAuthenticated: true,
-        user: {
-          id: '1',
-          email: formData.email,
-          name: formData.name || formData.email.split('@')[0],
-          company: formData.company,
-          registeredAt: new Date().toISOString()
-        }
-      }))
-
-      // Check if it's a new registration
-      if (activeTab === 'register') {
-        setNotificationMessage('アカウントが作成されました！')
-        setShowNotification(true)
-        setTimeout(() => {
-          router.push('/onboarding')
-        }, 2000)
-      } else {
-        setNotificationMessage('ログインしました！')
-        setShowNotification(true)
-        setTimeout(() => {
-          // Check if user has checked in today
-          const today = new Date().toDateString()
-          const lastCheckin = localStorage.getItem('mindcare-last-checkin')
+    try {
+      if (activeTab === 'login') {
+        const success = await login(formData.email, formData.password, formData.rememberMe)
+        
+        if (success) {
+          setNotificationMessage('ログインしました！')
+          setShowNotification(true)
           
-          if (lastCheckin === today) {
-            router.push('/dashboard')
-          } else {
-            router.push('/checkin')
-          }
-        }, 2000)
+          setTimeout(() => {
+            // Check if user has checked in today
+            const today = new Date().toDateString()
+            const lastCheckin = localStorage.getItem('mindcare-last-checkin')
+            
+            if (lastCheckin === today) {
+              router.push('/dashboard')
+            } else {
+              router.push('/checkin')
+            }
+          }, 1500)
+        }
+      } else {
+        // Registration
+        const success = await register({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name!,
+          company: formData.company,
+          department: formData.department,
+          agreeTerms: formData.agreeTerms,
+          agreePrivacy: formData.agreePrivacy
+        })
+        
+        if (success) {
+          setNotificationMessage('アカウントが作成されました！メール認証を確認してください。')
+          setShowNotification(true)
+          
+          setTimeout(() => {
+            router.push('/onboarding')
+          }, 2000)
+        }
       }
-    }, 1500)
+    } catch (error) {
+      console.error('Authentication error:', error)
+      setErrors({ general: '認証中にエラーが発生しました。' })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleSocialLogin = (provider: 'google' | 'apple') => {
-    setIsLoading(true)
-    
-    // Simulate social login
-    setTimeout(() => {
-      setIsLoading(false)
-      localStorage.setItem('mindcare-auth', JSON.stringify({
-        isAuthenticated: true,
-        user: {
-          id: '1',
-          email: `user@${provider}.com`,
-          name: `${provider}ユーザー`,
-          provider: provider,
-          registeredAt: new Date().toISOString()
-        }
-      }))
-
-      setNotificationMessage(`${provider === 'google' ? 'Google' : 'Apple'}でログインしました！`)
-      setShowNotification(true)
-      
-      setTimeout(() => {
-        router.push('/onboarding')
-      }, 2000)
-    }, 1000)
+    // For now, show a message that social login is not implemented
+    toast({
+      title: "準備中",
+      description: `${provider === 'google' ? 'Google' : 'Apple'}ログインは準備中です。メールアドレスでの登録をお試しください。`,
+      variant: "default",
+    })
   }
 
   const updateFormData = (field: keyof AuthForm, value: string | boolean) => {
@@ -241,6 +249,16 @@ export default function AuthPage() {
               </TabsList>
 
               <form onSubmit={handleSubmit}>
+                {/* General Error Display */}
+                {errors.general && (
+                  <div className="bg-red-500/10 border border-red-400/30 rounded-lg p-3 mb-4">
+                    <p className="text-sm text-red-400 flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-2" />
+                      {errors.general}
+                    </p>
+                  </div>
+                )}
+
                 <TabsContent value="login" className="space-y-4 mt-6">
                   {/* Email */}
                   <div className="space-y-2">
@@ -293,12 +311,18 @@ export default function AuthPage() {
 
                   <div className="flex items-center justify-between text-sm">
                     <label className="flex items-center space-x-2">
-                      <Checkbox />
+                      <Checkbox 
+                        checked={formData.rememberMe}
+                        onCheckedChange={(checked) => updateFormData('rememberMe', checked as boolean)}
+                      />
                       <span className="text-gray-300">ログイン状態を保持</span>
                     </label>
-                    <button type="button" className="text-emerald-400 hover:underline">
+                    <Link 
+                      href="/auth/forgot-password" 
+                      className="text-emerald-400 hover:underline"
+                    >
                       パスワードを忘れた方
-                    </button>
+                    </Link>
                   </div>
                 </TabsContent>
 
@@ -335,6 +359,21 @@ export default function AuthPage() {
                         className="pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400"
                         value={formData.company}
                         onChange={(e) => updateFormData('company', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Department (Optional) */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-white">部署名（任意）</label>
+                    <div className="relative">
+                      <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        type="text"
+                        placeholder="開発部"
+                        className="pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400"
+                        value={formData.department}
+                        onChange={(e) => updateFormData('department', e.target.value)}
                       />
                     </div>
                   </div>

@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: healthcare-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-healthcare_saas}
+      POSTGRES_USER: ${DB_USER:-healthcare_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=ja_JP.UTF-8"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./api/db/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - healthcare-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-healthcare_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: healthcare-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    networks:
+      - healthcare-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # API Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: healthcare-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      API_PORT: ${API_PORT:-3001}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-healthcare_saas}
+      DB_USER: ${DB_USER:-healthcare_user}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs/api:/app/logs
+    ports:
+      - "${API_PORT:-3001}:3001"
+    networks:
+      - healthcare-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Server
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    container_name: healthcare-frontend
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:3001}
+    volumes:
+      - ./logs/frontend:/app/logs
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - healthcare-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: nginx
+    container_name: healthcare-nginx
+    restart: unless-stopped
+    depends_on:
+      - frontend
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+      - nginx_cache:/var/cache/nginx
+    networks:
+      - healthcare-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backup Service
+  backup:
+    image: postgres:15-alpine
+    container_name: healthcare-backup
+    depends_on:
+      - postgres
+    environment:
+      PGPASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    entrypoint: ["/bin/sh"]
+    command: ["-c", "while true; do /backup.sh; sleep 86400; done"]
+    networks:
+      - healthcare-network
+
+networks:
+  healthcare-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  nginx_cache:
+    driver: local
