@@ -268,9 +268,9 @@ export class Validator {
   validate(data: Record<string, any>): Record<string, ValidationResult> {
     const results: Record<string, ValidationResult> = {}
 
-    for (const [field, rules] of this.rules.entries()) {
+    Array.from(this.rules.entries()).forEach(([field, rules]) => {
       results[field] = this.validateField(field, data[field])
-    }
+    })
 
     return results
   }

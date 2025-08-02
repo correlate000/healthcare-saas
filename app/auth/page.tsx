@@ -54,6 +54,7 @@ interface AuthFormErrors {
   department?: string
   agreeTerms?: string
   agreePrivacy?: string
+  rememberMe?: string
   general?: string
 }
 

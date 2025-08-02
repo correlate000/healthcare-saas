@@ -70,10 +70,12 @@ export function AdminNavigation() {
   }
 
   const handleAdminLogin = async (adminType: 'admin' | 'enterprise-admin' | 'super-admin') => {
-    const success = await auth.loginAsAdmin(adminType)
-    if (success) {
-      router.refresh()
-    }
+    // TODO: Implement loginAsAdmin in AuthContext
+    // const success = await auth.loginAsAdmin(adminType)
+    // if (success) {
+    //   router.refresh()
+    // }
+    console.log('Admin login for:', adminType)
   }
 
   return (

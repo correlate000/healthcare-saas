@@ -1,5 +1,6 @@
 // Dashboard Service
 // Centralized service for fetching and managing dashboard data
+import React from 'react'
 import { apiClient } from './api'
 
 export interface DashboardData {
@@ -21,7 +22,7 @@ export interface HealthMetric {
   trendValue: number
   status: 'normal' | 'warning' | 'critical'
   lastUpdated: string
-  icon: string
+  icon: React.ReactNode
   color: string
 }
 
@@ -110,7 +111,7 @@ class DashboardService {
       // Process health metrics
       const healthMetrics = this.processHealthMetrics(
         healthProfileResponse.data,
-        healthEntriesResponse.data
+        healthEntriesResponse.data || []
       )
 
       // Process health trends
@@ -119,7 +120,7 @@ class DashboardService {
       // Process health status
       const healthStatus = this.calculateHealthStatus(
         healthMetrics,
-        healthEntriesResponse.data
+        healthEntriesResponse.data || []
       )
 
       // Get AI insights and predictions
@@ -211,7 +212,7 @@ class DashboardService {
 
     // Process each metric type
     Object.keys(groupedEntries).forEach(type => {
-      const entries = groupedEntries[type].sort((a, b) => 
+      const entries = groupedEntries[type].sort((a: any, b: any) => 
         new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime()
       )
       
@@ -414,9 +415,10 @@ class DashboardService {
   private calculateStreakDays(entries: any[]): number {
     if (!entries.length) return 0
 
-    const dates = [...new Set(
+    const uniqueDates = new Set(
       entries.map(entry => new Date(entry.recordedAt).toDateString())
-    )].sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+    )
+    const dates = Array.from(uniqueDates).sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
 
     let streak = 0
     let currentDate = new Date()

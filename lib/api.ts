@@ -30,6 +30,7 @@ interface User {
   id: string;
   email: string;
   name: string;
+  avatar?: string;
   role: 'user' | 'admin' | 'enterprise-admin' | 'super-admin';
   permissions: string[];
   company?: {
