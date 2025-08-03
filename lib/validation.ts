@@ -15,7 +15,7 @@ export interface ValidationResult {
 const patterns = {
   email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
   phoneJapan: /^(\+81|0)[0-9]{9,10}$/,
-  password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+  password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
   hiragana: /^[ぁ-ん]+$/,
   katakana: /^[ァ-ヶｱ-ﾝﾞﾟ]+$/,
   kanji: /^[一-龠々〆〤]+$/,
@@ -386,4 +386,57 @@ export function createFormValidator<T extends Record<string, any>>(
   }
   
   return validator
+}
+
+// Simple validation functions for tests
+export function validateEmail(email: string): boolean {
+  if (!email) return false
+  return patterns.email.test(email)
+}
+
+export function validatePassword(password: string): boolean {
+  if (!password) return false
+  return password.length >= 8 && patterns.password.test(password)
+}
+
+export function validateHealthData(data: any): boolean {
+  if (!data || typeof data !== 'object') return false
+  
+  // Check blood pressure
+  if (data.bloodPressure) {
+    const { systolic, diastolic } = data.bloodPressure
+    if (systolic < 70 || systolic > 250 || diastolic < 40 || diastolic > 150) {
+      return false
+    }
+  }
+  
+  // Check heart rate
+  if (data.heartRate) {
+    if (data.heartRate < 30 || data.heartRate > 250) {
+      return false
+    }
+  }
+  
+  // Check weight
+  if (data.weight) {
+    if (data.weight < 0 || data.weight > 300) {
+      return false
+    }
+  }
+  
+  // Check height
+  if (data.height) {
+    if (data.height < 50 || data.height > 300) {
+      return false
+    }
+  }
+  
+  return true
+}
+
+export function sanitizeInput(input: any): string {
+  if (input === null || input === undefined) return ''
+  if (typeof input !== 'string') return String(input)
+  
+  return sanitize.stripHtml(input)
 }

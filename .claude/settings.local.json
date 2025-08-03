@@ -36,7 +36,9 @@
       "Bash(kill:*)",
       "Bash(git checkout:*)",
       "Bash(chmod:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(npm test)",
+      "Bash(npm run test:e2e:*)"
     ],
     "deny": []
   }

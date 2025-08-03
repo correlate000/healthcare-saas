@@ -726,6 +726,44 @@ class ApiClient {
 // Create and export singleton instance
 export const apiClient = new ApiClient();
 
+// Simple API request function for tests
+export async function apiRequest(
+  endpoint: string,
+  options?: {
+    method?: string;
+    data?: any;
+    headers?: Record<string, string>;
+  }
+): Promise<any> {
+  const method = options?.method || 'GET';
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options?.headers,
+  };
+
+  const config: RequestInit = {
+    method,
+    headers,
+  };
+
+  if (options?.data && method !== 'GET') {
+    config.body = JSON.stringify(options.data);
+  }
+
+  const response = await fetch(endpoint, config);
+
+  if (!response.ok) {
+    throw new Error('API request failed');
+  }
+
+  return response.json();
+}
+
+// Helper function to check if an object is an API error
+export function isApiError(obj: any): boolean {
+  return obj !== null && obj !== undefined && typeof obj === 'object' && 'error' in obj;
+}
+
 // Export types for use in components
 export type {
   ApiResponse,
