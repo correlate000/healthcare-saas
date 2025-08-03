@@ -39,9 +39,6 @@
       ]
     }
   ],
-  "env": {
-    "NEXT_PUBLIC_API_URL": "@vercel_url"
-  },
   "build": {
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1"
