@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "ls -la components/ui/ && ls -la components/ && npm run build",
+  "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "npm install",
