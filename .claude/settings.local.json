@@ -41,7 +41,8 @@
       "Bash(npm run test:e2e:*)",
       "Bash(git rm:*)",
       "Bash(npm test:*)",
-      "Bash(git rev-parse:*)"
+      "Bash(git rev-parse:*)",
+      "Bash(npm ls:*)"
     ],
     "deny": []
   }
