@@ -1,23 +1,17 @@
 'use client'
+import '../globals.css'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Check, Star, Trophy, Target, TrendingUp, Calendar, Heart } from 'lucide-react'
+import { Check } from 'lucide-react'
 
 export default function Dashboard() {
-  const router = useRouter()
-  const [userName] = useState('ユーザー')
   const [friendLevel] = useState(85)
-  const [todayProgress, setTodayProgress] = useState(50)
-  const [weeklyStreak, setWeeklyStreak] = useState(5)
-  const [totalXP, setTotalXP] = useState(850)
+  const [todayProgress] = useState(50)
+  const [weeklyStreak] = useState(5)
+  const [totalXP] = useState(850)
   const [maxXP] = useState(1000)
 
-  // モックデータ
   const todaysChallenges = [
     { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', completed: true },
     { id: 2, title: '感謝の記録', xp: 30, time: '1分', completed: true },
@@ -31,169 +25,205 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div style={{ minHeight: '100vh', backgroundColor: '#111827', color: 'white' }}>
       {/* ヘッダー部分 - キャラクターとメッセージ */}
-      <div className="p-4 pb-2">
-        <div className="flex items-start space-x-3">
+      <div style={{ padding: '16px', paddingBottom: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
           {/* キャラクターアイコン */}
-          <div className="w-16 h-16 bg-lime-400 rounded-2xl flex items-center justify-center">
-            <span className="text-gray-900 text-xs font-medium">キャラクター</span>
+          <div style={{ width: '64px', height: '64px', backgroundColor: '#a3e635', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#111827', fontSize: '12px', fontWeight: '500' }}>キャラクター</span>
           </div>
           
           {/* メッセージ吹き出し */}
-          <div className="flex-1 bg-gray-800 rounded-lg p-3">
-            <p className="text-sm text-gray-300">
+          <div style={{ flex: 1, backgroundColor: '#1f2937', borderRadius: '8px', padding: '12px' }}>
+            <p style={{ fontSize: '14px', color: '#d1d5db' }}>
               おかえりなさい。今日はどんな一日でしたか？午後の時間はいかがお過ごしですか？少し休憩してみましょう。...
             </p>
           </div>
         </div>
 
         {/* フレンドレベル */}
-        <div className="mt-3 flex items-center justify-between">
-          <span className="text-xs text-gray-400">フレンドレベル {friendLevel}</span>
-          <div className="flex-1 mx-3">
-            <Progress value={(totalXP / maxXP) * 100} className="h-2 bg-gray-700" />
+        <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '12px', color: '#9ca3af' }}>フレンドレベル {friendLevel}</span>
+          <div style={{ flex: 1, margin: '0 12px', height: '8px', backgroundColor: '#374151', borderRadius: '4px', position: 'relative' }}>
+            <div style={{ position: 'absolute', height: '100%', width: `${(totalXP / maxXP) * 100}%`, backgroundColor: '#a3e635', borderRadius: '4px' }}></div>
           </div>
-          <span className="text-xs text-gray-400">lv.8 {totalXP} / {maxXP} xp</span>
+          <span style={{ fontSize: '12px', color: '#9ca3af' }}>lv.8 {totalXP} / {maxXP} xp</span>
         </div>
       </div>
 
       {/* 今日の運勢・メッセージ */}
-      <div className="px-4 py-2">
-        <Card className="bg-gray-800 border-gray-700 p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-2">今日の運勢・メッセージ</h3>
-          <p className="text-sm text-gray-300 mb-2">
+      <div style={{ padding: '8px 16px' }}>
+        <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', padding: '16px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#9ca3af', marginBottom: '8px' }}>今日の運勢・メッセージ</h3>
+          <p style={{ fontSize: '14px', color: '#d1d5db', marginBottom: '8px' }}>
             あなたの存在自体が、誰かにとっての光になっています。
           </p>
-          <p className="text-sm text-gray-300">
+          <p style={{ fontSize: '14px', color: '#d1d5db' }}>
             今日も自分らしく、一歩ずつ前に進んでいきましょう。
           </p>
-          <div className="mt-2">
-            <span className="text-xs text-blue-400">🔵 今日のラッキーカラー: ブルー</span>
+          <div style={{ marginTop: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#60a5fa' }}>🔵 今日のラッキーカラー: ブルー</span>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* 今週の記録 */}
-      <div className="px-4 py-2">
-        <Card className="bg-gray-800 border-gray-700 p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">今週の記録</h3>
+      <div style={{ padding: '8px 16px' }}>
+        <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', padding: '16px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#9ca3af', marginBottom: '12px' }}>今週の記録</h3>
           
           {/* 今日の達成度 */}
-          <div className="mb-3">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-gray-400">今日の達成度</span>
-              <span className="text-xs text-gray-400">2/4 タスク完了</span>
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#9ca3af' }}>今日の達成度</span>
+              <span style={{ fontSize: '12px', color: '#9ca3af' }}>2/4 タスク完了</span>
             </div>
-            <Progress value={todayProgress} className="h-2 bg-gray-700" />
+            <div style={{ height: '8px', backgroundColor: '#374151', borderRadius: '4px', position: 'relative' }}>
+              <div style={{ position: 'absolute', height: '100%', width: `${todayProgress}%`, backgroundColor: '#a3e635', borderRadius: '4px' }}></div>
+            </div>
           </div>
 
           {/* 連続記録 */}
-          <div className="mb-3">
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-xs text-gray-400">連続記録</span>
-              <span className="text-xs text-lime-400 font-medium">12日</span>
+          <div style={{ marginBottom: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontSize: '12px', color: '#9ca3af' }}>連続記録</span>
+              <span style={{ fontSize: '12px', color: '#a3e635', fontWeight: '500' }}>12日</span>
             </div>
           </div>
 
           {/* 今週のチェックイン */}
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-gray-400">今週のチェックイン</span>
-            <div className="flex space-x-1">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '12px', color: '#9ca3af' }}>今週のチェックイン</span>
+            <div style={{ display: 'flex', gap: '4px' }}>
               {[1, 2, 3, 4, 5, 6, 7].map((day) => (
                 <div
                   key={day}
-                  className={`w-6 h-6 rounded ${
-                    day <= weeklyStreak
-                      ? 'bg-lime-400'
-                      : 'bg-gray-700'
-                  } flex items-center justify-center`}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '4px',
+                    backgroundColor: day <= weeklyStreak ? '#a3e635' : '#374151',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 >
                   {day <= weeklyStreak && (
-                    <Check className="w-3 h-3 text-gray-900" />
+                    <Check style={{ width: '12px', height: '12px', color: '#111827' }} />
                   )}
                 </div>
               ))}
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* 今日のチャレンジ */}
-      <div className="px-4 py-2">
-        <Card className="bg-gray-800 border-gray-700 p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">今日のチャレンジ</h3>
-          <div className="space-y-2">
+      <div style={{ padding: '8px 16px' }}>
+        <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', padding: '16px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#9ca3af', marginBottom: '12px' }}>今日のチャレンジ</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {todaysChallenges.map((challenge) => (
               <div
                 key={challenge.id}
-                className={`flex items-center justify-between p-3 rounded-lg ${
-                  challenge.completed ? 'bg-gray-700/50' : 'bg-gray-700'
-                }`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  backgroundColor: challenge.completed ? 'rgba(55, 65, 81, 0.5)' : '#374151'
+                }}
               >
-                <div className="flex items-center space-x-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <div
-                    className={`w-5 h-5 rounded-full border-2 ${
-                      challenge.completed
-                        ? 'bg-lime-400 border-lime-400'
-                        : 'border-gray-500'
-                    } flex items-center justify-center`}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      border: `2px solid ${challenge.completed ? '#a3e635' : '#6b7280'}`,
+                      backgroundColor: challenge.completed ? '#a3e635' : 'transparent',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
                   >
                     {challenge.completed && (
-                      <Check className="w-3 h-3 text-gray-900" />
+                      <Check style={{ width: '12px', height: '12px', color: '#111827' }} />
                     )}
                   </div>
                   <div>
-                    <p className={`text-sm ${
-                      challenge.completed ? 'text-gray-400 line-through' : 'text-gray-200'
-                    }`}>
+                    <p style={{
+                      fontSize: '14px',
+                      color: challenge.completed ? '#9ca3af' : '#e5e7eb',
+                      textDecoration: challenge.completed ? 'line-through' : 'none'
+                    }}>
                       {challenge.title}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p style={{ fontSize: '12px', color: '#6b7280' }}>
                       {challenge.xp} XP · {challenge.time}
                     </p>
                   </div>
                 </div>
                 {!challenge.completed && (
-                  <Button
-                    size="sm"
-                    className="bg-lime-400 hover:bg-lime-500 text-gray-900"
-                    onClick={() => {
-                      // チャレンジ実行
+                  <button
+                    style={{
+                      padding: '4px 12px',
+                      backgroundColor: '#a3e635',
+                      color: '#111827',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      border: 'none',
+                      cursor: 'pointer'
                     }}
                   >
                     開始
-                  </Button>
+                  </button>
                 )}
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* 最近の実績 */}
-      <div className="px-4 py-2 pb-24">
-        <Card className="bg-gray-800 border-gray-700 p-4">
-          <h3 className="text-sm font-medium text-gray-400 mb-3">最近の実績</h3>
-          <div className="space-y-2">
+      <div style={{ padding: '8px 16px', paddingBottom: '96px' }}>
+        <div style={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px', padding: '16px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#9ca3af', marginBottom: '12px' }}>最近の実績</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {achievements.map((achievement) => (
               <div
                 key={achievement.id}
-                className="flex items-center justify-between p-2 rounded-lg bg-gray-700/50"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px',
+                  borderRadius: '8px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.5)'
+                }}
               >
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">{achievement.icon}</span>
-                  <span className="text-sm text-gray-300">{achievement.title}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '18px' }}>{achievement.icon}</span>
+                  <span style={{ fontSize: '14px', color: '#d1d5db' }}>{achievement.title}</span>
                 </div>
                 {achievement.new && (
-                  <span className="text-xs bg-lime-400 text-gray-900 px-2 py-1 rounded">
+                  <span style={{
+                    fontSize: '12px',
+                    backgroundColor: '#a3e635',
+                    color: '#111827',
+                    padding: '2px 8px',
+                    borderRadius: '4px'
+                  }}>
                     NEW
                   </span>
                 )}
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* ボトムナビゲーション */}
