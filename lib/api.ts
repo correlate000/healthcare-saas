@@ -67,7 +67,8 @@ class ApiClient {
   private accessToken: string | null = null;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    // Use relative URL for mock API in production
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || '';
     
     // Try to get token from localStorage on initialization
     if (typeof window !== 'undefined') {
@@ -181,7 +182,8 @@ class ApiClient {
   // Authentication endpoints
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
     try {
-      const response = await this.request<AuthResponse>('/auth/login', {
+      // Use mock API endpoint for now
+      const response = await this.request<AuthResponse>('/api/auth/mock-login', {
         method: 'POST',
         body: JSON.stringify(credentials),
       });
