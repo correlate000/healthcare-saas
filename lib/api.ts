@@ -350,7 +350,7 @@ class ApiClient {
 
   async getCurrentUser(): Promise<ApiResponse<User>> {
     try {
-      return await this.request<User>('/auth/me', {
+      return await this.request<User>('/api/auth/me', {
         method: 'GET',
       });
     } catch (error) {
