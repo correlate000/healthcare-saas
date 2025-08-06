@@ -8,12 +8,15 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    // スプラッシュ画面に遷移
-    const timer = setTimeout(() => {
-      router.push('/splash')
-    }, 2000)
-
-    return () => clearTimeout(timer)
+    // 認証チェック（簡易版）
+    const token = localStorage.getItem('token')
+    if (!token) {
+      // 認証されていない場合はauthページへ
+      router.push('/auth')
+    } else {
+      // 認証済みの場合はdashboardへ
+      router.push('/dashboard')
+    }
   }, [router])
 
   return (

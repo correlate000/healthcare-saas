@@ -46,15 +46,15 @@ export function HealthForm({ onSubmit }: HealthFormProps) {
 
       if (formData.systolic) {
         const systolic = Number(formData.systolic)
-        if (systolic < 50 || systolic > 300) {
-          newErrors.systolic = '収縮期血圧は50-300の範囲で入力してください'
+        if (systolic < 50 || systolic >= 300) {
+          newErrors.systolic = '収縮期血圧は50-299の範囲で入力してください'
         }
       }
       
       if (formData.diastolic) {
         const diastolic = Number(formData.diastolic)
-        if (diastolic < 30 || diastolic > 200) {
-          newErrors.diastolic = '拡張期血圧は30-200の範囲で入力してください'
+        if (diastolic < 30 || diastolic >= 200) {
+          newErrors.diastolic = '拡張期血圧は30-199の範囲で入力してください'
         }
       }
 

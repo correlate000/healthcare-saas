@@ -54,7 +54,7 @@ describe('HealthForm Component', () => {
     await user.click(submitButton)
     
     await waitFor(() => {
-      expect(screen.getByText(/収縮期血圧は50-300の範囲で入力してください/i)).toBeInTheDocument()
+      expect(screen.getByText(/収縮期血圧は50-299の範囲で入力してください/i)).toBeInTheDocument()
     })
   })
 
@@ -88,7 +88,7 @@ describe('HealthForm Component', () => {
 
   it('handles API errors gracefully', async () => {
     const user = userEvent.setup()
-    ;(apiRequest as jest.Mock).mockRejectedValue(new Error('API Error'))
+    mockOnSubmit.mockRejectedValue(new Error('API Error'))
     
     render(<HealthForm onSubmit={mockOnSubmit} />)
     
@@ -106,7 +106,7 @@ describe('HealthForm Component', () => {
 
   it('disables submit button while loading', async () => {
     const user = userEvent.setup()
-    ;(apiRequest as jest.Mock).mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)))
+    mockOnSubmit.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)))
     
     render(<HealthForm onSubmit={mockOnSubmit} />)
     

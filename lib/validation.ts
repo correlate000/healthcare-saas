@@ -13,7 +13,7 @@ export interface ValidationResult {
 
 // Common validation patterns
 const patterns = {
-  email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+  email: /^[a-zA-Z0-9]+([._+%-][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([.-][a-zA-Z0-9]+)*\.[a-zA-Z]{2,}$/,
   phoneJapan: /^(\+81|0)[0-9]{9,10}$/,
   password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
   hiragana: /^[ぁ-ん]+$/,
@@ -426,7 +426,7 @@ export function validateHealthData(data: any): boolean {
   
   // Check height
   if (data.height) {
-    if (data.height < 50 || data.height > 300) {
+    if (data.height < 50 || data.height >= 300) {
       return false
     }
   }

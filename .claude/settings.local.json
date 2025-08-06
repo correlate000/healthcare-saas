@@ -38,7 +38,9 @@
       "Bash(chmod:*)",
       "Bash(grep:*)",
       "Bash(npm test)",
-      "Bash(npm run test:e2e:*)"
+      "Bash(npm run test:e2e:*)",
+      "Bash(git rm:*)",
+      "Bash(npm test:*)"
     ],
     "deny": []
   }

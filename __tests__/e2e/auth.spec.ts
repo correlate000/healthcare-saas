@@ -47,7 +47,7 @@ test.describe('Authentication Flow', () => {
     await page.getByText(/アカウントをお持ちでない方/i).click()
     
     await expect(page.getByRole('heading', { name: /新規登録/i })).toBeVisible()
-    await expect(page.getByLabel(/氏名/i)).toBeVisible()
+    await expect(page.getByLabel(/お名前/i)).toBeVisible()
     await expect(page.getByLabel(/会社名/i)).toBeVisible()
     
     // Click to switch back to login

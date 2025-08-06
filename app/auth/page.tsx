@@ -263,10 +263,11 @@ export default function AuthPage() {
                 <TabsContent value="login" className="space-y-4 mt-6">
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">メールアドレス</label>
+                    <label htmlFor="email" className="text-sm font-medium text-white">メールアドレス</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
+                        id="email"
                         type="email"
                         placeholder="your@email.com"
                         className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.email ? 'border-red-500' : ''}`}
@@ -284,10 +285,11 @@ export default function AuthPage() {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">パスワード</label>
+                    <label htmlFor="password" className="text-sm font-medium text-white">パスワード</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
+                        id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="パスワードを入力"
                         className={`pl-10 pr-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.password ? 'border-red-500' : ''}`}
@@ -330,10 +332,11 @@ export default function AuthPage() {
                 <TabsContent value="register" className="space-y-4 mt-6">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">お名前</label>
+                    <label htmlFor="name" className="text-sm font-medium text-white">お名前</label>
                     <div className="relative">
                       <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
+                        id="name"
                         type="text"
                         placeholder="田中 太郎"
                         className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.name ? 'border-red-500' : ''}`}
@@ -381,10 +384,11 @@ export default function AuthPage() {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">メールアドレス</label>
+                    <label htmlFor="email" className="text-sm font-medium text-white">メールアドレス</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
+                        id="email"
                         type="email"
                         placeholder="your@email.com"
                         className={`pl-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.email ? 'border-red-500' : ''}`}
@@ -402,10 +406,11 @@ export default function AuthPage() {
 
                   {/* Password */}
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">パスワード</label>
+                    <label htmlFor="password" className="text-sm font-medium text-white">パスワード</label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
+                        id="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="8文字以上のパスワード"
                         className={`pl-10 pr-10 bg-gray-600/50 border-gray-500/50 text-white placeholder:text-gray-400 ${errors.password ? 'border-red-500' : ''}`}
