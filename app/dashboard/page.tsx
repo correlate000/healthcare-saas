@@ -32,7 +32,7 @@ import { Bell, Loader2, RefreshCw, Plus } from 'lucide-react'
 function Dashboard() {
   const router = useRouter()
   // const { user } = useAuth() // 一時的に無効化
-  const user = { name: 'テストユーザー', email: 'test@example.com' } // モックユーザー
+  const user = { name: 'テストユーザー' } // モックユーザー
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -139,7 +139,8 @@ function Dashboard() {
   const quickActions = generateSampleQuickActions(router)
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white">
+    // <ProtectedRoute requireAuth={true}> // 一時的に無効化
+      <div className="min-h-screen bg-gray-800 text-white">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700/50">
           <div className="flex items-center justify-between p-4">
@@ -248,6 +249,7 @@ function Dashboard() {
         {/* Bottom Navigation */}
         <MobileBottomNav />
       </div>
+    // </ProtectedRoute> // 一時的に無効化
   )
 }
 
