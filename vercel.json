@@ -6,8 +6,8 @@
   "installCommand": "npm install",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "functions": {
-    "app/api/health/route.ts": {
-      "runtime": "nodejs18.x"
+    "app/api/**/*.ts": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
