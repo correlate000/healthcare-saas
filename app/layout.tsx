@@ -3,6 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from '@/contexts/AuthContext'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -35,11 +36,13 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.ico" />
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          <div className="min-h-screen bg-gray-800">
-            {children}
-          </div>
-        </AuthProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <div className="min-h-screen bg-gray-800">
+              {children}
+            </div>
+          </AuthProvider>
+        </ErrorBoundary>
         <script
           dangerouslySetInnerHTML={{
             __html: `
