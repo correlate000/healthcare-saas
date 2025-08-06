@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  // 一時的に認証チェックを無効化（テスト用）
+  return NextResponse.next()
+  
+  /* 以下は本番用のコード（現在は無効化）
   const token = request.cookies.get('token')?.value
   const pathname = request.nextUrl.pathname
 
@@ -20,6 +24,7 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next()
+  */
 }
 
 export const config = {
