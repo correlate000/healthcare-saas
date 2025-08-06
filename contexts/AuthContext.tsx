@@ -77,40 +77,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const storedUser = localStorage.getItem('healthcareapp_user');
         
         if (storedToken && storedUser) {
-          // Set initial state from stored data immediately
-          try {
-            const parsedUser = JSON.parse(storedUser);
+          // Verify the token is still valid by fetching current user
+          const response = await apiClient.getCurrentUser();
+          
+          if (response.success && response.data) {
             setAuthState({
               isAuthenticated: true,
-              user: parsedUser,
+              user: response.data,
               isLoading: false,
-              emailVerified: parsedUser.emailVerified
+              emailVerified: response.data.emailVerified
             });
-          } catch (parseError) {
-            // If stored user data is invalid, clear it
-            localStorage.removeItem('healthcareapp_user');
-            localStorage.removeItem('healthcareapp_token');
+            return;
           }
-          
-          // Optionally verify the token is still valid in the background
-          // This won't block the initial render
-          apiClient.getCurrentUser().then(response => {
-            if (!response.success || !response.data) {
-              // Token is invalid, clear auth state
-              apiClient.clearAuthToken();
-              setAuthState({
-                isAuthenticated: false,
-                user: null,
-                isLoading: false,
-                emailVerified: false
-              });
-            }
-          }).catch(() => {
-            // Ignore errors for now, user can still use the app
-            console.log('Background auth check failed, continuing with stored data');
-          });
-          
-          return;
         }
       } catch (error) {
         console.error('Error checking auth state:', error);

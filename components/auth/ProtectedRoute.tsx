@@ -48,11 +48,11 @@ export function ProtectedRoute({
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-800">
-        <Card className="w-full max-w-md bg-gray-700 border-gray-600">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
-            <p className="text-sm text-gray-300">認証状態を確認中...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            <p className="text-sm text-gray-600">認証状態を確認中...</p>
           </CardContent>
         </Card>
       </div>
@@ -62,17 +62,17 @@ export function ProtectedRoute({
   // Not authenticated
   if (requireAuth && !isAuthenticated) {
     return fallback || (
-      <div className="min-h-screen flex items-center justify-center bg-gray-800">
-        <Card className="w-full max-w-md bg-gray-700 border-gray-600">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center p-8 space-y-4">
-            <Shield className="h-12 w-12 text-red-400" />
-            <h2 className="text-xl font-semibold text-gray-100">認証が必要です</h2>
-            <p className="text-sm text-gray-300 text-center">
+            <Shield className="h-12 w-12 text-red-500" />
+            <h2 className="text-xl font-semibold text-gray-900">認証が必要です</h2>
+            <p className="text-sm text-gray-600 text-center">
               このページにアクセスするにはログインが必要です。
             </p>
             <Button 
               onClick={() => router.push(redirectTo)}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full"
             >
               ログインページへ
             </Button>

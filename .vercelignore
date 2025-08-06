@@ -1,9 +1,8 @@
 # Vercel Ignore File
 # Files and directories to ignore during Vercel deployment
 
-# Backend API Directory (deployed separately)
-# Note: This excludes /api at root, not /app/api
-/api
+# API Directory (deployed separately)
+api/
 
 # Development files
 *.local

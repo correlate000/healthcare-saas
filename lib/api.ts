@@ -67,15 +67,7 @@ class ApiClient {
   private accessToken: string | null = null;
 
   constructor() {
-    // Use relative URL for mock API in production
-    // Don't use environment variable if it's set to a non-existent domain
-    const envUrl = process.env.NEXT_PUBLIC_API_URL;
-    if (envUrl && envUrl.includes('api.healthcare-saas.example.com')) {
-      // Ignore the example URL, use relative paths instead
-      this.baseURL = '';
-    } else {
-      this.baseURL = envUrl || '';
-    }
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
     
     // Try to get token from localStorage on initialization
     if (typeof window !== 'undefined') {
@@ -87,8 +79,7 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    // For mock API, don't add /api/v1 prefix
-    const url = this.baseURL ? `${this.baseURL}${endpoint}` : endpoint;
+    const url = `${this.baseURL}/api/v1${endpoint}`;
     
     const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -190,8 +181,7 @@ class ApiClient {
   // Authentication endpoints
   async login(credentials: LoginRequest): Promise<ApiResponse<AuthResponse>> {
     try {
-      // Use mock API endpoint for now
-      const response = await this.request<AuthResponse>('/api/auth/mock-login', {
+      const response = await this.request<AuthResponse>('/auth/login', {
         method: 'POST',
         body: JSON.stringify(credentials),
       });
@@ -350,7 +340,7 @@ class ApiClient {
 
   async getCurrentUser(): Promise<ApiResponse<User>> {
     try {
-      return await this.request<User>('/api/auth/me', {
+      return await this.request<User>('/auth/me', {
         method: 'GET',
       });
     } catch (error) {

@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-// import { ProtectedRoute } from '@/components/auth/ProtectedRoute' // 一時的に無効化
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { HealthMetricsCard } from '@/components/dashboard/HealthMetricsCard'
 import { HealthTrendsChart } from '@/components/dashboard/HealthTrendsChart'
 import { AIInsightsCard } from '@/components/dashboard/AIInsightsCard'
 import { QuickHealthSummary } from '@/components/dashboard/QuickHealthSummary'
-// import { useAuth } from '@/contexts/AuthContext' // 一時的に無効化
+import { useAuth } from '@/contexts/AuthContext'
 import { toast } from '@/hooks/use-toast'
 import { 
   dashboardService, 
@@ -31,8 +31,7 @@ import { Bell, Loader2, RefreshCw, Plus } from 'lucide-react'
 
 function Dashboard() {
   const router = useRouter()
-  // const { user } = useAuth() // 一時的に無効化
-  const user = { name: 'テストユーザー' } // モックユーザー
+  const { user } = useAuth()
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -139,7 +138,7 @@ function Dashboard() {
   const quickActions = generateSampleQuickActions(router)
 
   return (
-    // <ProtectedRoute requireAuth={true}> // 一時的に無効化
+    <ProtectedRoute requireAuth={true}>
       <div className="min-h-screen bg-gray-800 text-white">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-gray-800/95 backdrop-blur-sm border-b border-gray-700/50">
@@ -249,7 +248,7 @@ function Dashboard() {
         {/* Bottom Navigation */}
         <MobileBottomNav />
       </div>
-    // </ProtectedRoute> // 一時的に無効化
+    </ProtectedRoute>
   )
 }
 
