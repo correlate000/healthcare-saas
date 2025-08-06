@@ -70,41 +70,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Check for existing auth state on mount
   useEffect(() => {
-    const checkAuthState = async () => {
-      try {
-        // Check if we have a stored token
-        const storedToken = localStorage.getItem('healthcareapp_token');
-        const storedUser = localStorage.getItem('healthcareapp_user');
-        
-        if (storedToken && storedUser) {
-          // Verify the token is still valid by fetching current user
-          const response = await apiClient.getCurrentUser();
-          
-          if (response.success && response.data) {
-            setAuthState({
-              isAuthenticated: true,
-              user: response.data,
-              isLoading: false,
-              emailVerified: response.data.emailVerified
-            });
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Error checking auth state:', error);
-        // Clear invalid auth data
-        apiClient.clearAuthToken();
-      }
-      
-      setAuthState({
-        isAuthenticated: false,
-        user: null,
-        isLoading: false,
-        emailVerified: false
-      });
+    // 一時的に認証を常に成功させる
+    const mockUser: User = {
+      id: '1',
+      email: 'test@example.com',
+      name: 'テストユーザー',
+      role: 'user' as const,
+      permissions: ['read', 'write'],
+      emailVerified: true,
+      createdAt: new Date().toISOString()
     };
-
-    checkAuthState();
+    
+    setAuthState({
+      isAuthenticated: true,
+      user: mockUser,
+      isLoading: false,
+      emailVerified: true
+    });
   }, [])
 
   const handleLogout = useCallback(() => {

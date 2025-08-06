@@ -8,15 +8,8 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    // 認証チェック（簡易版）
-    const token = localStorage.getItem('token')
-    if (!token) {
-      // 認証されていない場合はauthページへ
-      router.push('/auth')
-    } else {
-      // 認証済みの場合はdashboardへ
-      router.push('/dashboard')
-    }
+    // 一時的に常にダッシュボードへリダイレクト
+    router.push('/dashboard')
   }, [router])
 
   return (
