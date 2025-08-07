@@ -56,16 +56,16 @@ export default function Dashboard() {
     }}>
       {/* ヘッダー */}
       <div style={{ 
-        padding: '20px',
+        padding: '24px',
         background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
         borderBottom: '1px solid #374151'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#f3f4f6', margin: '0 0 4px 0' }}>
+            <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#f3f4f6', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
               {getGreeting()}
             </h1>
-            <p style={{ fontSize: '14px', color: '#9ca3af', margin: 0 }}>
+            <p style={{ fontSize: '15px', color: '#9ca3af', margin: 0, lineHeight: '1.5' }}>
               今日も一歩ずつ前進しましょう
             </p>
           </div>
@@ -84,27 +84,37 @@ export default function Dashboard() {
         </div>
         
         {/* クイックアクションボタン */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '16px' }}>
           <button
             onClick={() => router.push('/checkin')}
             style={{
               flex: 1,
-              padding: '14px',
+              padding: '16px',
               backgroundColor: '#a3e635',
               color: '#111827',
               border: 'none',
-              borderRadius: '12px',
-              fontSize: '15px',
+              borderRadius: '14px',
+              fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px'
+              gap: '8px',
+              boxShadow: '0 4px 12px rgba(163, 230, 53, 0.2)',
+              transform: 'translateY(0)'
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+            onMouseEnter={(e) => { 
+              e.currentTarget.style.backgroundColor = '#84cc16'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.3)'
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.backgroundColor = '#a3e635'
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.2)'
+            }}
           >
             <span>✓</span>
             チェックイン
@@ -113,22 +123,29 @@ export default function Dashboard() {
             onClick={() => router.push('/chat')}
             style={{
               flex: 1,
-              padding: '14px',
+              padding: '16px',
               backgroundColor: '#374151',
               color: '#f3f4f6',
               border: 'none',
-              borderRadius: '12px',
-              fontSize: '15px',
+              borderRadius: '14px',
+              fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px'
+              gap: '8px',
+              transform: 'translateY(0)'
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+            onMouseEnter={(e) => { 
+              e.currentTarget.style.backgroundColor = '#4b5563'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.backgroundColor = '#374151'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }}
           >
             <span>💬</span>
             AIと話す
@@ -137,7 +154,7 @@ export default function Dashboard() {
       </div>
 
       {/* ヘッダー部分 - キャラクターとメッセージ */}
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
           {/* キャラクターアイコン - 鳥のSVG */}
           <div style={{ 
@@ -230,7 +247,7 @@ export default function Dashboard() {
       </div>
 
       {/* 今日の運勢・メッセージ */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
@@ -256,7 +273,7 @@ export default function Dashboard() {
       </div>
 
       {/* 今週の記録 */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
@@ -340,7 +357,7 @@ export default function Dashboard() {
       </div>
 
       {/* 今日のチャレンジ */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
@@ -438,7 +455,7 @@ export default function Dashboard() {
       </div>
 
       {/* 最近の実績 */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
@@ -486,7 +503,7 @@ export default function Dashboard() {
       </div>
 
       {/* 今週の記録サマリー */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
           <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
@@ -507,7 +524,7 @@ export default function Dashboard() {
       </div>
 
       {/* 7日継続達成バナー */}
-      <div style={{ padding: '0 16px', marginBottom: '20px' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 

@@ -266,38 +266,66 @@ export default function CheckIn() {
             </p>
           </div>
 
-          {/* Rewards earned today */}
+          {/* Rewards earned today with animation */}
           <div style={{
             display: 'flex',
-            gap: '16px',
-            marginBottom: '32px'
+            gap: '20px',
+            marginBottom: '40px',
+            animation: 'slideUp 0.8s ease-out 0.4s both'
           }}>
             <div style={{
               backgroundColor: '#374151',
-              borderRadius: '12px',
-              padding: '12px 20px',
+              borderRadius: '16px',
+              padding: '16px 24px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '12px',
+              boxShadow: '0 4px 12px rgba(251, 191, 36, 0.2)',
+              border: '1px solid rgba(251, 191, 36, 0.2)',
+              animation: 'pulse 2s infinite',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-              <span style={{ fontSize: '20px' }}>⭐</span>
-              <div>
-                <div style={{ fontSize: '16px', fontWeight: '600', color: '#fbbf24' }}>+50 XP</div>
-                <div style={{ fontSize: '11px', color: '#9ca3af' }}>獲得</div>
+              <div style={{
+                position: 'absolute',
+                top: '-50%',
+                left: '-50%',
+                width: '200%',
+                height: '200%',
+                background: 'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%)',
+                animation: 'ripple 3s ease-out infinite'
+              }}></div>
+              <span style={{ fontSize: '24px', animation: 'bounce 1.5s ease-in-out infinite', position: 'relative' }}>⭐</span>
+              <div style={{ position: 'relative' }}>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: '#fbbf24', animation: 'countUp 1s ease-out 0.5s both' }}>+50 XP</div>
+                <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>獲得しました</div>
               </div>
             </div>
             <div style={{
               backgroundColor: '#374151',
-              borderRadius: '12px',
-              padding: '12px 20px',
+              borderRadius: '16px',
+              padding: '16px 24px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '12px',
+              boxShadow: '0 4px 12px rgba(163, 230, 53, 0.2)',
+              border: '1px solid rgba(163, 230, 53, 0.2)',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-              <span style={{ fontSize: '20px' }}>🏆</span>
+              <div style={{
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '4px',
+                backgroundColor: '#a3e635',
+                animation: 'progressBar 1.5s ease-out 0.6s both'
+              }}></div>
+              <span style={{ fontSize: '24px', animation: 'rotate 2s ease-in-out infinite' }}>🏆</span>
               <div>
-                <div style={{ fontSize: '16px', fontWeight: '600', color: '#a3e635' }}>Lv.8</div>
-                <div style={{ fontSize: '11px', color: '#9ca3af' }}>まであと150XP</div>
+                <div style={{ fontSize: '18px', fontWeight: '700', color: '#a3e635' }}>Lv.8</div>
+                <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>あと150XP</div>
               </div>
             </div>
           </div>
@@ -364,6 +392,84 @@ export default function CheckIn() {
             100% {
               opacity: 1;
               transform: scale(1);
+            }
+          }
+          
+          @keyframes slideUp {
+            0% {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes pulse {
+            0%, 100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.02);
+            }
+          }
+          
+          @keyframes bounce {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+          
+          @keyframes rotate {
+            0% {
+              transform: rotate(0deg);
+            }
+            25% {
+              transform: rotate(-10deg);
+            }
+            75% {
+              transform: rotate(10deg);
+            }
+            100% {
+              transform: rotate(0deg);
+            }
+          }
+          
+          @keyframes countUp {
+            0% {
+              opacity: 0;
+              transform: scale(0.5) translateY(-20px);
+            }
+            50% {
+              transform: scale(1.2) translateY(0);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1) translateY(0);
+            }
+          }
+          
+          @keyframes ripple {
+            0% {
+              transform: scale(0.8);
+              opacity: 0.5;
+            }
+            100% {
+              transform: scale(2);
+              opacity: 0;
+            }
+          }
+          
+          @keyframes progressBar {
+            0% {
+              width: 0;
+            }
+            100% {
+              width: 100%;
             }
           }
         `}</style>

@@ -387,39 +387,102 @@ export default function OnboardingPage() {
         padding: '20px',
         textAlign: 'center'
       }}>
-        <div style={{
-          width: '120px',
-          height: '120px',
-          backgroundColor: '#a3e635',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: '32px',
-          animation: 'celebrate 1s ease-in-out'
-        }}>
-          <span style={{ fontSize: '60px', color: '#111827' }}>🎉</span>
+        {/* Celebration animation */}
+        <div style={{ position: 'relative', marginBottom: '40px' }}>
+          <div style={{
+            width: '140px',
+            height: '140px',
+            backgroundColor: '#a3e635',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            animation: 'celebrateBounce 1s ease-out',
+            boxShadow: '0 8px 32px rgba(163, 230, 53, 0.4)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-50%',
+              left: '-50%',
+              width: '200%',
+              height: '200%',
+              background: 'radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%)',
+              animation: 'rippleOut 1.5s ease-out'
+            }}></div>
+            <span style={{ fontSize: '70px', color: '#111827', animation: 'rotateParty 1.5s ease-in-out', position: 'relative' }}>🎉</span>
+          </div>
+          
+          {/* Confetti particles */}
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  position: 'absolute',
+                  width: '8px',
+                  height: '8px',
+                  backgroundColor: ['#a3e635', '#fbbf24', '#60a5fa', '#f87171'][i % 4],
+                  borderRadius: '50%',
+                  animation: `confetti${i} 1.5s ease-out forwards`
+                }}
+              />
+            ))}
+          </div>
         </div>
         
         <h1 style={{
-          fontSize: '28px',
-          fontWeight: '700',
+          fontSize: '32px',
+          fontWeight: '800',
           color: '#f3f4f6',
-          marginBottom: '16px'
+          marginBottom: '20px',
+          letterSpacing: '-0.5px',
+          animation: 'fadeInScale 0.6s ease-out 0.3s both'
         }}>
           準備完了！
         </h1>
         
         <p style={{
-          fontSize: '16px',
+          fontSize: '18px',
           color: '#d1d5db',
-          marginBottom: '32px',
-          maxWidth: '300px',
-          lineHeight: '1.5'
+          marginBottom: '20px',
+          maxWidth: '360px',
+          lineHeight: '1.7',
+          animation: 'fadeInScale 0.6s ease-out 0.5s both'
         }}>
           {formData.name}さん、設定が完了しました。
+        </p>
+        
+        <p style={{
+          fontSize: '16px',
+          color: '#9ca3af',
+          marginBottom: '40px',
+          maxWidth: '360px',
+          lineHeight: '1.6',
+          animation: 'fadeInScale 0.6s ease-out 0.6s both'
+        }}>
           一緒に健康的な習慣を作っていきましょう！
         </p>
+        
+        {/* Welcome bonus */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '16px',
+          padding: '20px 24px',
+          marginBottom: '32px',
+          border: '2px solid #374151',
+          animation: 'slideUp 0.6s ease-out 0.8s both',
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+            <span style={{ fontSize: '32px', animation: 'bounce 1.5s ease-in-out infinite' }}>🎁</span>
+            <div>
+              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>ウェルカムボーナス</div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#fbbf24' }}>+100 XP</div>
+            </div>
+          </div>
+        </div>
         
         <BirdMascot emotion="happy" size={100} />
         
@@ -444,23 +507,58 @@ export default function OnboardingPage() {
         </button>
 
         <style jsx>{`
-          @keyframes celebrate {
+          @keyframes celebrateBounce {
             0% { transform: scale(0) rotate(0); opacity: 0; }
             50% { transform: scale(1.2) rotate(180deg); }
+            70% { transform: scale(0.9) rotate(270deg); }
             100% { transform: scale(1) rotate(360deg); opacity: 1; }
           }
+          
+          @keyframes rotateParty {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-10deg) scale(1.1); }
+            75% { transform: rotate(10deg) scale(1.1); }
+          }
+          
+          @keyframes rippleOut {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+          }
+          
+          @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+          }
+          
+          @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          
           @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
           }
+          
           @keyframes wingFlap {
             0%, 100% { transform: rotate(-15deg) translateY(0); }
             50% { transform: rotate(-25deg) translateY(-2px); }
           }
+          
           @keyframes sparkle {
             0%, 100% { opacity: 0; transform: scale(0); }
             50% { opacity: 1; transform: scale(1); }
           }
+          
+          ${[...Array(8)].map((_, i) => `
+            @keyframes confetti${i} {
+              0% { transform: translate(0, 0) scale(1); opacity: 1; }
+              100% { 
+                transform: translate(${Math.cos(i * Math.PI / 4) * 80}px, ${Math.sin(i * Math.PI / 4) * 80}px) scale(0); 
+                opacity: 0;
+              }
+            }
+          `).join('')}
         `}</style>
       </div>
     )
