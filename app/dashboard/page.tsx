@@ -15,12 +15,13 @@ export default function Dashboard() {
   const [maxXP] = useState(1000)
   const [currentMood] = useState('😊')
   const [currentTime] = useState(new Date().getHours())
+  const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
 
   const todaysChallenges = [
-    { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', completed: true, difficulty: '簡単' },
-    { id: 2, title: '感謝の記録', xp: 30, time: '1分', completed: true, difficulty: '簡単' },
-    { id: 3, title: '3分間の深呼吸', xp: 40, time: '3分', completed: false, difficulty: '簡単' },
-    { id: 4, title: '夜の振り返り', xp: 25, time: '2分', completed: false, difficulty: '簡単' },
+    { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', difficulty: '簡単' },
+    { id: 2, title: '感謝の記録', xp: 30, time: '1分', difficulty: '簡単' },
+    { id: 3, title: '3分間の深呼吸', xp: 40, time: '3分', difficulty: '簡単' },
+    { id: 4, title: '夜の振り返り', xp: 25, time: '2分', difficulty: '簡単' },
   ]
   
   const getGreeting = () => {
@@ -371,85 +372,185 @@ export default function Dashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>今日のチャレンジ</h3>
             <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>
-              {todaysChallenges.filter(c => c.completed).length}/{todaysChallenges.length}
+              {completedChallenges.length}/{todaysChallenges.length}
             </span>
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {todaysChallenges.map((challenge) => (
-              <div
-                key={challenge.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '16px',
-                  borderRadius: '8px',
-                  backgroundColor: challenge.completed ? '#374151' : '#4b5563'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                  <div
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      border: `2px solid ${challenge.completed ? '#a3e635' : '#6b7280'}`,
-                      backgroundColor: challenge.completed ? '#a3e635' : 'transparent',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    {challenge.completed && (
-                      <Check style={{ width: '12px', height: '12px', color: '#111827' }} />
-                    )}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{
-                        fontSize: '14px',
-                        color: challenge.completed ? '#9ca3af' : '#e5e7eb',
-                        textDecoration: challenge.completed ? 'line-through' : 'none',
-                        fontWeight: '500'
-                      }}>
-                        {challenge.title}
-                      </span>
-                      <span style={{
-                        fontSize: '11px',
-                        backgroundColor: getDifficultyColor(challenge.difficulty),
-                        color: 'white',
-                        padding: '3px 8px',
-                        borderRadius: '12px',
-                        fontWeight: '500'
-                      }}>
-                        {challenge.difficulty}
-                      </span>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '12px',
+            maxHeight: '400px',
+            overflowY: 'auto',
+            paddingRight: '4px'
+          }}>
+            {todaysChallenges.map((challenge, index) => {
+              const isCompleted = completedChallenges.includes(challenge.id)
+              
+              return (
+                <div
+                  key={challenge.id}
+                  id={`challenge-${challenge.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (!isCompleted) {
+                      // Complete challenge with animation
+                      setCompletedChallenges([...completedChallenges, challenge.id])
+                      
+                      // Smooth scroll to next incomplete challenge
+                      setTimeout(() => {
+                        const nextChallenge = todaysChallenges.find(
+                          c => !completedChallenges.includes(c.id) && c.id !== challenge.id && c.id > challenge.id
+                        )
+                        if (nextChallenge) {
+                          const element = document.getElementById(`challenge-${nextChallenge.id}`)
+                          element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }
+                      }, 500)
+                      
+                      // Show XP animation
+                      const xpElement = document.createElement('div')
+                      xpElement.style.cssText = `
+                        position: fixed;
+                        top: ${e.clientY}px;
+                        left: ${e.clientX}px;
+                        color: #a3e635;
+                        font-size: 20px;
+                        font-weight: 700;
+                        pointer-events: none;
+                        z-index: 9999;
+                        animation: floatUp 1.5s ease-out forwards;
+                      `
+                      xpElement.textContent = `+${challenge.xp} XP`
+                      document.body.appendChild(xpElement)
+                      setTimeout(() => xpElement.remove(), 1500)
+                    }
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    borderRadius: '10px',
+                    backgroundColor: isCompleted ? '#374151' : '#4b5563',
+                    cursor: !isCompleted ? 'pointer' : 'default',
+                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    transform: 'scale(1)',
+                    opacity: 1,
+                    animation: isCompleted && completedChallenges[completedChallenges.length - 1] === challenge.id 
+                      ? 'completeChallenge 0.6s ease-out' 
+                      : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isCompleted) {
+                      e.currentTarget.style.transform = 'scale(1.02) translateX(4px)'
+                      e.currentTarget.style.backgroundColor = '#60a5fa20'
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.2)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isCompleted) {
+                      e.currentTarget.style.transform = 'scale(1) translateX(0)'
+                      e.currentTarget.style.backgroundColor = '#4b5563'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                    <div
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        border: `2px solid ${isCompleted ? '#a3e635' : '#6b7280'}`,
+                        backgroundColor: isCompleted ? '#a3e635' : 'transparent',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        transform: isCompleted ? 'scale(1)' : 'scale(0.9)'
+                      }}
+                    >
+                      {isCompleted && (
+                        <Check style={{ 
+                          width: '14px', 
+                          height: '14px', 
+                          color: '#111827',
+                          animation: 'checkMark 0.4s ease-out'
+                        }} />
+                      )}
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
-                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                        +{challenge.xp} XP
-                      </span>
-                      <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                        ⏱ {challenge.time}
-                      </span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{
+                          fontSize: '15px',
+                          color: isCompleted ? '#9ca3af' : '#e5e7eb',
+                          textDecoration: isCompleted ? 'line-through' : 'none',
+                          fontWeight: '500',
+                          transition: 'all 0.3s ease'
+                        }}>
+                          {challenge.title}
+                        </span>
+                        <span style={{
+                          fontSize: '11px',
+                          backgroundColor: getDifficultyColor(challenge.difficulty),
+                          color: 'white',
+                          padding: '4px 10px',
+                          borderRadius: '12px',
+                          fontWeight: '500'
+                        }}>
+                          {challenge.difficulty}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '6px' }}>
+                        <span style={{ 
+                          fontSize: '13px', 
+                          color: '#9ca3af',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          ⭐ +{challenge.xp} XP
+                        </span>
+                        <span style={{ 
+                          fontSize: '13px', 
+                          color: '#9ca3af',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          ⏱ {challenge.time}
+                        </span>
+                      </div>
                     </div>
                   </div>
+                  {isCompleted ? (
+                    <span style={{
+                      fontSize: '12px',
+                      backgroundColor: '#a3e635',
+                      color: '#111827',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      animation: 'fadeInScale 0.4s ease-out'
+                    }}>
+                      完了 ✓
+                    </span>
+                  ) : (
+                    <span style={{
+                      fontSize: '12px',
+                      backgroundColor: '#374151',
+                      color: '#9ca3af',
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      fontWeight: '500'
+                    }}>
+                      タップで完了
+                    </span>
+                  )}
                 </div>
-                {challenge.completed && (
-                  <span style={{
-                    fontSize: '12px',
-                    backgroundColor: '#a3e635',
-                    color: '#111827',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontWeight: '500'
-                  }}>
-                    完了
-                  </span>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -609,6 +710,57 @@ export default function Dashboard() {
             0% { transform: scale(1) rotate(0deg); }
             50% { transform: scale(1.2) rotate(5deg); }
             100% { transform: scale(1) rotate(0deg); }
+          }
+          
+          @keyframes completeChallenge {
+            0% {
+              transform: scale(1);
+              backgroundColor: #4b5563;
+            }
+            50% {
+              transform: scale(1.05);
+              backgroundColor: #a3e63530;
+            }
+            100% {
+              transform: scale(1);
+              backgroundColor: #374151;
+            }
+          }
+          
+          @keyframes checkMark {
+            0% {
+              transform: scale(0) rotate(-45deg);
+              opacity: 0;
+            }
+            50% {
+              transform: scale(1.2) rotate(0deg);
+            }
+            100% {
+              transform: scale(1) rotate(0deg);
+              opacity: 1;
+            }
+          }
+          
+          @keyframes fadeInScale {
+            0% {
+              opacity: 0;
+              transform: scale(0.8);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+          
+          @keyframes floatUp {
+            0% {
+              transform: translateY(0) scale(1);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(-60px) scale(1.2);
+              opacity: 0;
+            }
           }
         `}</style>
       </div>
