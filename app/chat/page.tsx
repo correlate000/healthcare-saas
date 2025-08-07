@@ -27,10 +27,27 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const characters = [
-    { id: 'luna', name: 'Luna', color: '#a3e635' },
-    { id: 'aria', name: 'Aria', color: '#60a5fa' },
-    { id: 'zen', name: 'Zen', color: '#f59e0b' },
+    { id: 'luna', name: 'Luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb' },
+    { id: 'aria', name: 'Aria', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe' },
+    { id: 'zen', name: 'Zen', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa' },
   ]
+  
+  // Bird character SVG component
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 30 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
 
   const quickResponses = [
     '元気です',
@@ -174,21 +191,17 @@ export default function ChatPage() {
               }}
             >
               <div style={{
-                width: '24px',
-                height: '24px',
-                backgroundColor: selectedCharacter === character.id ? '#111827' : character.color,
-                borderRadius: '50%',
+                width: '28px',
+                height: '28px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
               }}>
-                <span style={{ 
-                  fontSize: '10px', 
-                  fontWeight: '600',
-                  color: selectedCharacter === character.id ? character.color : '#111827'
-                }}>
-                  AI
-                </span>
+                <BirdCharacter 
+                  bodyColor={character.bodyColor} 
+                  bellyColor={character.bellyColor}
+                  size={24}
+                />
               </div>
               {character.name}
             </button>
@@ -210,17 +223,20 @@ export default function ChatPage() {
         onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1f2937' }}>
           <div style={{
-            width: '40px',
-            height: '40px',
-            backgroundColor: currentCharacter.color,
+            width: '48px',
+            height: '48px',
+            backgroundColor: '#374151',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            padding: '4px'
           }}>
-            <span style={{ color: '#111827', fontSize: '12px', fontWeight: '600' }}>
-              {currentCharacter.name.substring(0, 2)}
-            </span>
+            <BirdCharacter 
+              bodyColor={currentCharacter.bodyColor} 
+              bellyColor={currentCharacter.bellyColor}
+              size={40}
+            />
           </div>
           <div>
             <div style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6' }}>{currentCharacter.name}</div>
@@ -250,16 +266,21 @@ export default function ChatPage() {
           >
             {message.type === 'character' && (
               <div style={{
-                width: '32px',
-                height: '32px',
-                backgroundColor: currentCharacter.color,
+                width: '36px',
+                height: '36px',
+                backgroundColor: '#374151',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexShrink: 0
+                flexShrink: 0,
+                padding: '2px'
               }}>
-                <span style={{ color: '#111827', fontSize: '10px', fontWeight: '600' }}>AI</span>
+                <BirdCharacter 
+                  bodyColor={currentCharacter.bodyColor} 
+                  bellyColor={currentCharacter.bellyColor}
+                  size={32}
+                />
               </div>
             )}
             

@@ -525,36 +525,41 @@ export default function OnboardingPage() {
         padding: '20px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         maxWidth: '500px',
         margin: '0 auto',
-        width: '100%'
+        width: '100%',
+        minHeight: 0,
+        overflow: 'auto'
       }}>
-        {/* Bird mascot */}
-        <div style={{ margin: '0 auto 32px' }}>
-          <BirdMascot size={80} />
-        </div>
+        {/* Top Section with Bird and Question */}
+        <div style={{ marginBottom: '20px' }}>
+          {/* Bird mascot */}
+          <div style={{ margin: '0 auto 24px', display: 'flex', justifyContent: 'center' }}>
+            <BirdMascot size={60} />
+          </div>
 
-        {/* Question */}
-        <h2 style={{
-          fontSize: '24px',
-          fontWeight: '700',
-          color: '#f3f4f6',
-          marginBottom: '8px',
-          textAlign: 'center'
-        }}>
-          {currentStepData.title}
-        </h2>
-        {currentStepData.subtitle && (
-          <p style={{
-            fontSize: '14px',
-            color: '#9ca3af',
-            marginBottom: '32px',
+          {/* Question */}
+          <h2 style={{
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            marginBottom: '8px',
             textAlign: 'center'
           }}>
-            {currentStepData.subtitle}
-          </p>
-        )}
+            {currentStepData.title}
+          </h2>
+          {currentStepData.subtitle && (
+            <p style={{
+              fontSize: '13px',
+              color: '#9ca3af',
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              {currentStepData.subtitle}
+            </p>
+          )}
+        </div>
 
         {/* Input field */}
         {currentStepData.type === 'input' && (
@@ -584,9 +589,9 @@ export default function OnboardingPage() {
         {currentStepData.type === 'select' && (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-            gap: '12px',
-            marginBottom: '32px'
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '10px',
+            marginBottom: '24px'
           }}>
             {currentStepData.options?.map((option) => {
               const isSelected = formData[currentStepData.field as keyof typeof formData] === option
@@ -628,10 +633,11 @@ export default function OnboardingPage() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '12px',
-            marginBottom: '32px',
-            maxHeight: '300px',
-            overflowY: 'auto'
+            gap: '10px',
+            marginBottom: '24px',
+            maxHeight: '240px',
+            overflowY: 'auto',
+            padding: '4px'
           }}>
             {currentStepData.options?.map((option) => {
               const isSelected = (formData[currentStepData.field as keyof typeof formData] as string[]).includes(option)
@@ -640,19 +646,20 @@ export default function OnboardingPage() {
                   key={option}
                   onClick={() => handleMultiSelect(currentStepData.field!, option)}
                   style={{
-                    padding: '14px',
+                    padding: '12px 8px',
                     backgroundColor: isSelected ? '#a3e635' : '#1f2937',
                     color: isSelected ? '#111827' : '#d1d5db',
                     border: isSelected ? '2px solid #a3e635' : '2px solid #374151',
-                    borderRadius: '12px',
-                    fontSize: '14px',
+                    borderRadius: '10px',
+                    fontSize: '13px',
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    minHeight: '44px'
                   }}
                   onMouseEnter={(e) => {
                     if (!isSelected) {
@@ -674,7 +681,7 @@ export default function OnboardingPage() {
         )}
 
         {/* Navigation buttons */}
-        <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '20px', paddingBottom: '20px' }}>
           {currentStep > 0 && (
             <button
               onClick={handleBack}
