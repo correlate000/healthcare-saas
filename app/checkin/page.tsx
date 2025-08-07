@@ -94,21 +94,19 @@ export default function CheckIn() {
     // Completion screen
     return (
       <div style={{ 
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: '100vh',
         backgroundColor: '#111827', 
         color: 'white',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        display: 'flex',
-        flexDirection: 'column'
+        paddingBottom: '140px',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
         <div style={{ 
-          flex: 1,
           padding: '16px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          minHeight: 'calc(100vh - 140px)'
         }}>
           {/* Success animation */}
           <div style={{ 
@@ -181,20 +179,16 @@ export default function CheckIn() {
 
   return (
     <div style={{ 
-      height: '100vh',
-      overflow: 'hidden',
+      minHeight: '100vh',
       backgroundColor: '#111827', 
       color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      display: 'flex',
-      flexDirection: 'column'
+      paddingBottom: '140px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       <div style={{ 
-        flex: 1,
         padding: '16px',
         display: 'flex',
-        flexDirection: 'column',
-        maxHeight: 'calc(100vh - 80px)' // Account for bottom nav
+        flexDirection: 'column'
       }}>
         {/* Character */}
         <div style={{ 
