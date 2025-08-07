@@ -6,7 +6,7 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function EmotionDiaryPage() {
   const router = useRouter()
-  const [selectedDate, setSelectedDate] = useState(new Date())
+  const today = new Date()
   const [selectedEmotion, setSelectedEmotion] = useState('')
   const [diaryText, setDiaryText] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -60,6 +60,14 @@ export default function EmotionDiaryPage() {
     })
   }
 
+  const getTodayString = () => {
+    const days = ['日', '月', '火', '水', '木', '金', '土']
+    const month = today.getMonth() + 1
+    const date = today.getDate()
+    const day = days[today.getDay()]
+    return `${month}月${date}日(${day})`
+  }
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -109,42 +117,31 @@ export default function EmotionDiaryPage() {
         backgroundColor: '#1f2937',
         marginBottom: '20px'
       }}>
-        <h2 style={{
-          fontSize: '18px',
-          fontWeight: '600',
-          color: '#f3f4f6',
-          marginBottom: '16px'
-        }}>
-          今日の気持ちを記録
-        </h2>
-
-        {/* Date selector */}
         <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           marginBottom: '20px'
         }}>
-          <label style={{
-            fontSize: '14px',
-            color: '#9ca3af',
-            marginBottom: '8px',
-            display: 'block'
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            margin: 0
           }}>
-            日付
-          </label>
-          <input
-            type="date"
-            value={formatDate(selectedDate)}
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
-            style={{
-              width: '100%',
-              padding: '12px',
-              backgroundColor: '#111827',
-              border: '1px solid #374151',
-              borderRadius: '8px',
-              color: '#f3f4f6',
-              fontSize: '14px',
-              outline: 'none'
-            }}
-          />
+            今日の気持ちを記録
+          </h2>
+          <span style={{
+            fontSize: '16px',
+            color: '#a3e635',
+            fontWeight: '500',
+            backgroundColor: '#1f2937',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            border: '1px solid #374151'
+          }}>
+            📅 {getTodayString()}
+          </span>
         </div>
 
         {/* Emotion selector */}
@@ -287,7 +284,11 @@ export default function EmotionDiaryPage() {
         <button
           onClick={() => {
             // Save diary entry
-            alert('日記を保存しました！')
+            alert(`${getTodayString()}の記録を保存しました！`)
+            // Reset form after saving
+            setSelectedEmotion('')
+            setDiaryText('')
+            setSelectedTags([])
           }}
           disabled={!selectedEmotion || !diaryText}
           style={{
@@ -303,7 +304,7 @@ export default function EmotionDiaryPage() {
             transition: 'all 0.2s ease'
           }}
         >
-          記録を保存
+          今日の記録を保存
         </button>
       </div>
 
