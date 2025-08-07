@@ -42,7 +42,15 @@
       "Bash(git rm:*)",
       "Bash(npm test:*)",
       "Bash(git rev-parse:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(for dir in emotion-diary daily-challenge characters achievements profile team-connect content-library notifications help export privacy-settings onboarding emergency-support voice-chat)",
+      "Bash(do)",
+      "Bash(if [ -f \"app/$dir/page.tsx\" ])",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)"
     ],
     "deny": []
   }

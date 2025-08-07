@@ -2,150 +2,367 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { wireframeChallengeData } from '@/lib/challengeData'
-import { 
-  CheckCircle, 
-  Clock, 
-  Star, 
-  ArrowLeft
-} from 'lucide-react'
 
-export default function DailyChallenge() {
+export default function DailyChallengePage() {
   const router = useRouter()
-  const [currentStreak] = useState(wireframeChallengeData.currentStreak)
+  const [selectedChallenge, setSelectedChallenge] = useState<number | null>(null)
+
+  const challenges = [
+    {
+      id: 1,
+      title: '朝の瞑想',
+      description: '5分間の呼吸瞑想を行いましょう',
+      xp: 50,
+      time: '5分',
+      category: 'マインドフルネス',
+      difficulty: '簡単',
+      completed: false,
+      locked: false
+    },
+    {
+      id: 2,
+      title: '感謝日記を書く',
+      description: '今日感謝したい3つのことを記録',
+      xp: 40,
+      time: '3分',
+      category: '記録',
+      difficulty: '簡単',
+      completed: false,
+      locked: false
+    },
+    {
+      id: 3,
+      title: '15分ウォーキング',
+      description: '外に出て軽い散歩をしましょう',
+      xp: 60,
+      time: '15分',
+      category: '運動',
+      difficulty: '普通',
+      completed: false,
+      locked: false
+    },
+    {
+      id: 4,
+      title: 'チームに投稿',
+      description: '今日の気分をチームと共有',
+      xp: 30,
+      time: '2分',
+      category: 'ソーシャル',
+      difficulty: '簡単',
+      completed: false,
+      locked: false
+    },
+    {
+      id: 5,
+      title: 'ストレッチ',
+      description: '仕事の合間に体をほぐしましょう',
+      xp: 40,
+      time: '5分',
+      category: '運動',
+      difficulty: '簡単',
+      completed: false,
+      locked: true
+    },
+    {
+      id: 6,
+      title: 'デジタルデトックス',
+      description: '1時間スマホから離れる',
+      xp: 80,
+      time: '60分',
+      category: 'ウェルビーイング',
+      difficulty: '難しい',
+      completed: false,
+      locked: true
+    }
+  ]
+
+  const streakData = {
+    current: 15,
+    best: 23,
+    weeklyGoal: 5,
+    weeklyProgress: 4
+  }
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch(difficulty) {
+      case '簡単': return '#65a30d'
+      case '普通': return '#facc15'
+      case '難しい': return '#ef4444'
+      default: return '#6b7280'
+    }
+  }
+
+  const handleStartChallenge = (id: number) => {
+    if (id === 1) {
+      router.push('/meditation')
+    } else if (id === 3) {
+      router.push('/walking')
+    } else if (id === 4) {
+      router.push('/team-connect')
+    } else {
+      setSelectedChallenge(id)
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white">
-      {/* Header - wireframe style */}
-      <div className="p-4 border-b border-gray-700">
-        <div className="flex items-center justify-between mb-4">
-          <button onClick={() => router.push('/dashboard')} className="text-gray-400 hover:text-white">
-            <ArrowLeft className="w-6 h-6" />
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#111827', 
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Header */}
+      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+            デイリーチャレンジ
+          </h1>
+          <button
+            onClick={() => router.push('/daily-challenge/streak')}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#374151',
+              color: '#d1d5db',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            🔥 ストリーク
           </button>
-          <h1 className="text-white text-lg font-semibold">デイリーチャレンジ</h1>
-          <div className="w-6" />
         </div>
       </div>
 
-      {/* Title and message - exact wireframe */}
-      <div className="p-6">
-        <div className="text-center mb-6">
-          <h1 className="text-white text-2xl font-bold mb-2">デイリーチャレンジ</h1>
-          <p className="text-gray-300 text-sm font-medium">{wireframeChallengeData.todayMessage}</p>
-        </div>
-      </div>
-
-      <div className="px-4 space-y-6">
-        {/* Stats grid - exact wireframe */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-white mb-1">{wireframeChallengeData.todayXP}</div>
-            <div className="text-xs text-gray-300">今日のXP</div>
-          </div>
-          <div className="bg-gray-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-white mb-1">{wireframeChallengeData.totalXP}</div>
-            <div className="text-xs text-gray-300">総XP</div>
-          </div>
-          <div className="bg-gray-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-white mb-1">{wireframeChallengeData.completedToday}/{wireframeChallengeData.totalToday}</div>
-            <div className="text-xs text-gray-300">達成チャレンジ</div>
-          </div>
-          <div className="bg-gray-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-white mb-1">{currentStreak}日</div>
-            <div className="text-xs text-gray-300">連続達成</div>
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-sm font-medium">今日の進捗</span>
-            <span className="text-white text-sm font-medium">{wireframeChallengeData.todayProgress}%</span>
-          </div>
-          <div className="w-full bg-gray-600 rounded-full h-2">
-            <div 
-              className="bg-white h-2 rounded-full transition-all duration-300"
-              style={{ width: `${wireframeChallengeData.todayProgress}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Today's challenges list */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-white font-semibold tracking-wide">今日のチャレンジ</h3>
-            <span className="text-sm text-gray-300 bg-gray-700 px-2 py-1 rounded-full">{wireframeChallengeData.date}</span>
+      <div style={{ padding: '16px' }}>
+        {/* Streak overview */}
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          marginBottom: '24px',
+          border: '2px solid #a3e635'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div>
+              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>現在のストリーク</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                <span style={{ fontSize: '32px', fontWeight: '700', color: '#a3e635' }}>🔥 {streakData.current}</span>
+                <span style={{ fontSize: '16px', color: '#d1d5db' }}>日</span>
+              </div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>最高記録</div>
+              <div style={{ fontSize: '20px', fontWeight: '600', color: '#f3f4f6' }}>{streakData.best}日</div>
+            </div>
           </div>
           
-          <div className="space-y-3">
-            {wireframeChallengeData.dailyChallenges.map((challenge) => (
-              <motion.div 
-                key={challenge.id} 
-                className="bg-blue-600 rounded-xl p-4 shadow-sm"
-                whileTap={{ scale: 0.98 }}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週の目標</span>
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>{streakData.weeklyProgress}/{streakData.weeklyGoal}日</span>
+            </div>
+            <div style={{
+              width: '100%',
+              height: '8px',
+              backgroundColor: '#374151',
+              borderRadius: '4px',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                height: '100%',
+                width: `${(streakData.weeklyProgress / streakData.weeklyGoal) * 100}%`,
+                backgroundColor: '#a3e635',
+                borderRadius: '4px'
+              }}></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Today's challenges */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            今日のチャレンジ
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {challenges.map((challenge) => (
+              <div
+                key={challenge.id}
+                style={{
+                  backgroundColor: challenge.locked ? '#1a1f2e' : '#1f2937',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  opacity: challenge.locked ? 0.6 : 1,
+                  cursor: challenge.locked ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s ease',
+                  border: selectedChallenge === challenge.id ? '2px solid #a3e635' : '2px solid transparent'
+                }}
+                onClick={() => !challenge.locked && handleStartChallenge(challenge.id)}
+                onMouseEnter={(e) => { 
+                  if (!challenge.locked) {
+                    e.currentTarget.style.backgroundColor = '#374151'
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                  }
+                }}
+                onMouseLeave={(e) => { 
+                  if (!challenge.locked) {
+                    e.currentTarget.style.backgroundColor = '#1f2937'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                  }
+                }}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm font-semibold text-white tracking-wide">{challenge.title}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium bg-gray-800 text-gray-200`}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <h3 style={{ 
+                        fontSize: '16px', 
+                        fontWeight: '600', 
+                        color: challenge.locked ? '#6b7280' : '#f3f4f6',
+                        margin: 0
+                      }}>
+                        {challenge.title}
+                      </h3>
+                      {challenge.locked && (
+                        <span style={{ fontSize: '16px' }}>🔒</span>
+                      )}
+                    </div>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: challenge.locked ? '#4b5563' : '#9ca3af',
+                      margin: 0,
+                      lineHeight: '1.4'
+                    }}>
+                      {challenge.description}
+                    </p>
+                  </div>
+                  <span style={{
+                    padding: '4px 12px',
+                    backgroundColor: getDifficultyColor(challenge.difficulty),
+                    color: 'white',
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}>
+                    {challenge.difficulty}
+                  </span>
+                </div>
+                
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '14px' }}>⚡</span>
+                    <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '500' }}>
+                      +{challenge.xp} XP
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '14px' }}>⏱</span>
+                    <span style={{ fontSize: '14px', color: '#9ca3af' }}>
+                      {challenge.time}
+                    </span>
+                  </div>
+                  <div style={{
+                    padding: '4px 8px',
+                    backgroundColor: '#374151',
+                    borderRadius: '6px'
+                  }}>
+                    <span style={{ fontSize: '12px', color: '#9ca3af' }}>
                       {challenge.category}
                     </span>
                   </div>
-                  {challenge.completed && (
-                    <CheckCircle className="w-5 h-5 text-white" />
-                  )}
                 </div>
-                <p className="text-xs text-blue-100 mb-3">{challenge.description}</p>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-blue-100">
-                      <Clock className="w-3 h-3 inline mr-1" />
-                      {challenge.timeEstimate}
-                    </span>
-                    <span className="text-yellow-300 font-semibold">★ +{challenge.xp} XP</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Completed challenges */}
-        <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">完了したチャレンジ</h3>
-          
-          <div className="space-y-2">
-            {wireframeChallengeData.completedChallenges.map((challenge) => (
-              <div key={challenge.id} className="bg-gray-700 rounded-xl p-3 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span className="text-sm text-white">{challenge.title}</span>
-                </div>
-                <span className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full">+{challenge.xp}xp</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Streak bonus */}
-        <div className="bg-gray-700 rounded-2xl p-4">
-          <div className="flex items-center space-x-3">
-            <div className="text-2xl">🔥</div>
-            <div className="flex-1">
-              <h4 className="text-white font-semibold mb-1">連続ログインボーナス</h4>
-              <p className="text-gray-300 text-sm">{wireframeChallengeData.streakBonus.message}</p>
+        {/* Quick stats */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            今日の進捗
+          </h2>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0/6</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>完了</div>
             </div>
-            <div className="text-sm bg-gray-800 text-gray-300 px-2 py-1 rounded-full">+{wireframeChallengeData.streakBonus.xp}xp</div>
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>獲得XP</div>
+            </div>
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0分</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>活動時間</div>
+            </div>
           </div>
         </div>
 
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            onClick={() => router.push('/daily-challenge/leaderboard')}
+            style={{
+              flex: 1,
+              padding: '16px',
+              backgroundColor: '#374151',
+              color: '#d1d5db',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            🏆 ランキング
+          </button>
+          <button
+            onClick={() => router.push('/achievements')}
+            style={{
+              flex: 1,
+              padding: '16px',
+              backgroundColor: '#a3e635',
+              color: '#111827',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+          >
+            🎖️ 実績を見る
+          </button>
+        </div>
       </div>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )
