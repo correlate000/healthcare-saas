@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function SettingsPage() {
+  const router = useRouter()
   const [notifications, setNotifications] = useState({
     checkinReminder: true,
     weeklyReport: true,
@@ -139,7 +141,7 @@ export default function SettingsPage() {
             アカウント
           </h2>
           <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button style={{
+            <button onClick={() => router.push('/profile')} style={{
               width: '100%',
               padding: '16px',
               backgroundColor: 'transparent',
@@ -159,7 +161,7 @@ export default function SettingsPage() {
               <span style={{ color: '#9ca3af' }}>›</span>
             </button>
             
-            <button style={{
+            <button onClick={() => router.push('/characters')} style={{
               width: '100%',
               padding: '16px',
               backgroundColor: 'transparent',
@@ -179,7 +181,7 @@ export default function SettingsPage() {
               <span style={{ color: '#9ca3af' }}>›</span>
             </button>
             
-            <button style={{
+            <button onClick={() => router.push('/achievements')} style={{
               width: '100%',
               padding: '16px',
               backgroundColor: 'transparent',
@@ -373,7 +375,7 @@ export default function SettingsPage() {
             データ・アカウント管理
           </h2>
           <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button style={{
+            <button onClick={() => router.push('/export')} style={{
               width: '100%',
               padding: '16px',
               backgroundColor: 'transparent',

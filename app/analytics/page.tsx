@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function AnalyticsPage() {
+  const router = useRouter()
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week')
 
   const weeklyData = [
@@ -32,9 +34,29 @@ export default function AnalyticsPage() {
     }}>
       {/* Header */}
       <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
-          分析・統計
-        </h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+            分析・統計
+          </h1>
+          <button
+            onClick={() => router.push('/export')}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#374151',
+              color: '#d1d5db',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            📊 エクスポート
+          </button>
+        </div>
       </div>
 
       <div style={{ padding: '16px' }}>
@@ -277,8 +299,13 @@ export default function AnalyticsPage() {
           <div style={{ 
             backgroundColor: '#1f2937', 
             borderRadius: '12px', 
-            padding: '20px' 
-          }}>
+            padding: '20px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onClick={() => router.push('/analytics/trends')}
+          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
             <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
               <div>
                 <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635' }}>78%</div>

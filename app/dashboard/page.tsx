@@ -2,10 +2,12 @@
 import '../globals.css'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Check } from 'lucide-react'
 
 export default function Dashboard() {
+  const router = useRouter()
   const [friendLevel] = useState(85)
   const [todayProgress] = useState(50)
   const [weeklyStreak] = useState(5)
@@ -32,6 +34,48 @@ export default function Dashboard() {
       paddingBottom: '80px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
+      {/* クイックアクションボタン */}
+      <div style={{ padding: '16px', display: 'flex', gap: '12px' }}>
+        <button
+          onClick={() => router.push('/checkin')}
+          style={{
+            flex: 1,
+            padding: '16px',
+            backgroundColor: '#a3e635',
+            color: '#111827',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+        >
+          今日のチェックイン
+        </button>
+        <button
+          onClick={() => router.push('/chat')}
+          style={{
+            flex: 1,
+            padding: '16px',
+            backgroundColor: '#374151',
+            color: '#f3f4f6',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+        >
+          AIと話す
+        </button>
+      </div>
+
       {/* ヘッダー部分 - キャラクターとメッセージ */}
       <div style={{ padding: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
@@ -98,7 +142,16 @@ export default function Dashboard() {
 
       {/* 今日の運勢・メッセージ */}
       <div style={{ padding: '0 16px', marginBottom: '20px' }}>
-        <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/emotion-diary')}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '12px', margin: '0 0 12px 0' }}>今日の運勢・メッセージ</h3>
           <p style={{ fontSize: '14px', color: '#d1d5db', marginBottom: '8px', margin: '0 0 8px 0', lineHeight: '1.5' }}>
             あなたの存在自体が、誰かにとっての光になっています。
@@ -115,7 +168,16 @@ export default function Dashboard() {
 
       {/* 今週の記録 */}
       <div style={{ padding: '0 16px', marginBottom: '20px' }}>
-        <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/analytics')}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
           
           {/* 今日の達成度 */}
@@ -179,7 +241,16 @@ export default function Dashboard() {
 
       {/* 今日のチャレンジ */}
       <div style={{ padding: '0 16px', marginBottom: '20px' }}>
-        <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/daily-challenge')}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>今日のチャレンジ</h3>
             <span style={{ fontSize: '14px', color: '#9ca3af' }}>2/4</span>
@@ -265,7 +336,16 @@ export default function Dashboard() {
 
       {/* 最近の実績 */}
       <div style={{ padding: '0 16px', marginBottom: '20px' }}>
-        <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/achievements')}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>最近の実績</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {achievements.map((achievement) => (

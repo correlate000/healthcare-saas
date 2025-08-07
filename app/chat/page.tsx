@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function ChatPage() {
+  const router = useRouter()
   const [newMessage, setNewMessage] = useState('')
   const [selectedCharacter, setSelectedCharacter] = useState('luna')
 
@@ -117,8 +119,13 @@ export default function ChatPage() {
           padding: '12px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px'
-        }}>
+          gap: '12px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/characters')}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1f2937' }}>
           <div style={{
             width: '40px',
             height: '40px',

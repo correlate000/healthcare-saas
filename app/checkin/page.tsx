@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 // チェックインフォーム
 
 export default function CheckIn() {
+  const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
   const [responses, setResponses] = useState<Record<string, any>>({})
 
