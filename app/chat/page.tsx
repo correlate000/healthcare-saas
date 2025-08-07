@@ -366,10 +366,11 @@ export default function ChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick responses */}
-      <div style={{ padding: '0 16px 16px' }}>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
-          {quickResponses.map((response) => (
+      {/* Quick responses - only show when conversation hasn't started much */}
+      {messages.length <= 2 && (
+        <div style={{ padding: '0 16px 16px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+            {quickResponses.map((response) => (
             <button
               key={response}
               onClick={() => handleQuickResponse(response)}
@@ -395,9 +396,10 @@ export default function ChatPage() {
             >
               {response}
             </button>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Message input */}
       <div style={{ padding: '0 16px 16px' }}>

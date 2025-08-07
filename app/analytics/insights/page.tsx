@@ -8,6 +8,23 @@ export default function InsightsPage() {
   const router = useRouter()
   const [selectedTab, setSelectedTab] = useState<'personal' | 'ai' | 'recommendations'>('personal')
 
+  // Bird character SVG component
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 40 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
+
   const personalInsights = [
     {
       id: 1,
@@ -51,21 +68,24 @@ export default function InsightsPage() {
     {
       id: 1,
       character: 'Luna',
-      avatar: '🌙',
+      bodyColor: '#a3e635',
+      bellyColor: '#ecfccb',
       message: 'あなたの記録を分析したところ、朝の時間帯に瞑想を行うと、その日の集中力が格段に向上することがわかりました。明日の朝、5分だけでも試してみませんか？',
       confidence: 92
     },
     {
       id: 2,
       character: 'Aria',
-      avatar: '⭐',
+      bodyColor: '#60a5fa',
+      bellyColor: '#dbeafe',
       message: '最近の頑張りは素晴らしいです！特に継続日数が伸びていることは、あなたの意志の強さを示しています。この調子で一緒に頑張りましょう！',
       confidence: 88
     },
     {
       id: 3,
       character: 'Zen',
-      avatar: '🧘',
+      bodyColor: '#f59e0b',
+      bellyColor: '#fed7aa',
       message: '内なる声に耳を傾けることで、本当の自分と向き合えます。毎日の記録から、あなたは既に答えを持っていることがわかります。',
       confidence: 85
     }
@@ -323,10 +343,14 @@ export default function InsightsPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
+                    padding: '4px',
                     flexShrink: 0
                   }}>
-                    {insight.avatar}
+                    <BirdCharacter 
+                      bodyColor={insight.bodyColor} 
+                      bellyColor={insight.bellyColor}
+                      size={40}
+                    />
                   </div>
                   <div style={{ flex: 1 }}>
                     <div style={{

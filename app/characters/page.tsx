@@ -9,11 +9,29 @@ export default function CharactersPage() {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null)
   const [unlockedCharacters, setUnlockedCharacters] = useState(['luna', 'aria'])
 
+  // Bird character SVG component
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 60 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
+
   const characters = [
     {
       id: 'luna',
       name: 'Luna',
-      avatar: '🌙',
+      bodyColor: '#a3e635',
+      bellyColor: '#ecfccb',
       role: '睡眠の守護者',
       personality: '優しく穏やか',
       specialty: '睡眠改善・リラックス',
@@ -37,7 +55,8 @@ export default function CharactersPage() {
     {
       id: 'aria',
       name: 'Aria',
-      avatar: '⭐',
+      bodyColor: '#60a5fa',
+      bellyColor: '#dbeafe',
       role: 'モチベーションコーチ',
       personality: '明るく元気',
       specialty: '目標達成・習慣形成',
@@ -61,7 +80,8 @@ export default function CharactersPage() {
     {
       id: 'zen',
       name: 'Zen',
-      avatar: '🧘',
+      bodyColor: '#f59e0b',
+      bellyColor: '#fed7aa',
       role: '瞑想マスター',
       personality: '落ち着きと知恵',
       specialty: 'マインドフルネス・ストレス管理',
@@ -86,7 +106,8 @@ export default function CharactersPage() {
     {
       id: 'spark',
       name: 'Spark',
-      avatar: '⚡',
+      bodyColor: '#ef4444',
+      bellyColor: '#fecaca',
       role: 'エナジーブースター',
       personality: 'ダイナミックで情熱的',
       specialty: '運動・活力向上',
@@ -253,14 +274,14 @@ export default function CharactersPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '32px',
-                  marginBottom: '12px'
+                  marginBottom: '12px',
+                  padding: '5px'
                 }}>
-                  {character.id === 'luna' && isUnlocked ? (
-                    <BirdCharacter size={50} mood="happy" />
-                  ) : (
-                    character.avatar
-                  )}
+                  <BirdCharacter 
+                    bodyColor={character.bodyColor} 
+                    bellyColor={character.bellyColor}
+                    size={50}
+                  />
                 </div>
 
                 {/* Name & Role */}
