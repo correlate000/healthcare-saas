@@ -362,13 +362,8 @@ export default function Dashboard() {
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
-          padding: '20px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease'
-        }}
-        onClick={() => router.push('/daily-challenge')}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
+          padding: '20px'
+        }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>今日のチャレンジ</h3>
             <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>
@@ -379,10 +374,7 @@ export default function Dashboard() {
           <div style={{ 
             display: 'flex', 
             flexDirection: 'column', 
-            gap: '12px',
-            maxHeight: '400px',
-            overflowY: 'auto',
-            paddingRight: '4px'
+            gap: '12px'
           }}>
             {todaysChallenges.map((challenge, index) => {
               const isCompleted = completedChallenges.includes(challenge.id)
@@ -392,7 +384,6 @@ export default function Dashboard() {
                   key={challenge.id}
                   id={`challenge-${challenge.id}`}
                   onClick={(e) => {
-                    e.stopPropagation()
                     if (!isCompleted) {
                       // Complete challenge with animation
                       setCompletedChallenges([...completedChallenges, challenge.id])
@@ -431,28 +422,21 @@ export default function Dashboard() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '16px',
-                    borderRadius: '10px',
+                    borderRadius: '8px',
                     backgroundColor: isCompleted ? '#374151' : '#4b5563',
                     cursor: !isCompleted ? 'pointer' : 'default',
-                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    transform: 'scale(1)',
-                    opacity: 1,
-                    animation: isCompleted && completedChallenges[completedChallenges.length - 1] === challenge.id 
-                      ? 'completeChallenge 0.6s ease-out' 
-                      : 'none'
+                    transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
                     if (!isCompleted) {
-                      e.currentTarget.style.transform = 'scale(1.02) translateX(4px)'
                       e.currentTarget.style.backgroundColor = '#60a5fa20'
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(96, 165, 250, 0.2)'
+                      e.currentTarget.style.transform = 'translateX(4px)'
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isCompleted) {
-                      e.currentTarget.style.transform = 'scale(1) translateX(0)'
                       e.currentTarget.style.backgroundColor = '#4b5563'
-                      e.currentTarget.style.boxShadow = 'none'
+                      e.currentTarget.style.transform = 'translateX(0)'
                     }
                   }}
                 >
@@ -495,57 +479,33 @@ export default function Dashboard() {
                           fontSize: '11px',
                           backgroundColor: getDifficultyColor(challenge.difficulty),
                           color: 'white',
-                          padding: '4px 10px',
+                          padding: '3px 8px',
                           borderRadius: '12px',
                           fontWeight: '500'
                         }}>
                           {challenge.difficulty}
                         </span>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '6px' }}>
-                        <span style={{ 
-                          fontSize: '13px', 
-                          color: '#9ca3af',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          ⭐ +{challenge.xp} XP
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
+                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                          +{challenge.xp} XP
                         </span>
-                        <span style={{ 
-                          fontSize: '13px', 
-                          color: '#9ca3af',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
+                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>
                           ⏱ {challenge.time}
                         </span>
                       </div>
                     </div>
                   </div>
-                  {isCompleted ? (
+                  {isCompleted && (
                     <span style={{
                       fontSize: '12px',
                       backgroundColor: '#a3e635',
                       color: '#111827',
-                      padding: '6px 12px',
-                      borderRadius: '6px',
-                      fontWeight: '600',
-                      animation: 'fadeInScale 0.4s ease-out'
-                    }}>
-                      完了 ✓
-                    </span>
-                  ) : (
-                    <span style={{
-                      fontSize: '12px',
-                      backgroundColor: '#374151',
-                      color: '#9ca3af',
-                      padding: '6px 12px',
-                      borderRadius: '6px',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
                       fontWeight: '500'
                     }}>
-                      タップで完了
+                      完了
                     </span>
                   )}
                 </div>
