@@ -131,41 +131,6 @@ export default function CharactersPage() {
     }
   ]
 
-  const BirdCharacter = ({ size = 80, mood = 'happy' }: { size?: number, mood?: string }) => {
-    const colors = {
-      body: '#a3e635',
-      belly: '#ecfccb',
-      beak: '#fbbf24',
-      eye: '#111827'
-    }
-
-    return (
-      <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
-        {/* Body */}
-        <ellipse cx="50" cy="55" rx="35" ry="38" fill={colors.body} />
-        {/* Belly */}
-        <ellipse cx="50" cy="60" rx="25" ry="28" fill={colors.belly} />
-        {/* Left Wing */}
-        <ellipse cx="25" cy="50" rx="15" ry="25" fill={colors.body} transform="rotate(-20 25 50)" />
-        {/* Right Wing */}
-        <ellipse cx="75" cy="50" rx="15" ry="25" fill={colors.body} transform="rotate(20 75 50)" />
-        {/* Left Eye */}
-        <circle cx="40" cy="45" r="8" fill="white" />
-        <circle cx="42" cy="45" r="5" fill={colors.eye} />
-        {mood === 'happy' && <circle cx="43" cy="44" r="2" fill="white" />}
-        {/* Right Eye */}
-        <circle cx="60" cy="45" r="8" fill="white" />
-        <circle cx="58" cy="45" r="5" fill={colors.eye} />
-        {mood === 'happy' && <circle cx="59" cy="44" r="2" fill="white" />}
-        {/* Beak */}
-        <path d="M50 52 L45 57 L55 57 Z" fill={colors.beak} />
-        {/* Feet */}
-        <rect x="42" y="85" width="4" height="10" fill={colors.beak} />
-        <rect x="54" y="85" width="4" height="10" fill={colors.beak} />
-      </svg>
-    )
-  }
-
   return (
     <div style={{
       minHeight: '100vh',
