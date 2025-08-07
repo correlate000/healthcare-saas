@@ -374,33 +374,33 @@ export default function CheckIn() {
             </button>
           )}
 
-          {/* Show Next button only for multiple choice and textarea */}
+          {/* Show Next button for multiple choice and textarea (textarea is optional) */}
           {(currentStepData.multiple || currentStepData.type === 'textarea') && (
             <button
               onClick={currentStep === steps.length - 1 ? handleComplete : handleNext}
               disabled={currentStepData.multiple ? 
                 !(responses[currentStepData.id] && responses[currentStepData.id].length > 0) :
-                !responses[currentStepData.id]}
+                false} // textarea is always optional
               style={{
                 flex: currentStep === 0 ? 2 : 1,
                 padding: '14px',
-                backgroundColor: (currentStepData.multiple ? 
-                  (responses[currentStepData.id] && responses[currentStepData.id].length > 0) :
-                  responses[currentStepData.id]) ? '#a3e635' : '#374151',
-                color: (currentStepData.multiple ? 
-                  (responses[currentStepData.id] && responses[currentStepData.id].length > 0) :
-                  responses[currentStepData.id]) ? '#111827' : '#9ca3af',
+                backgroundColor: currentStepData.multiple ? 
+                  ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? '#a3e635' : '#374151') :
+                  '#a3e635', // Always enabled for textarea
+                color: currentStepData.multiple ? 
+                  ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? '#111827' : '#9ca3af') :
+                  '#111827', // Always enabled for textarea
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: (currentStepData.multiple ? 
-                  (responses[currentStepData.id] && responses[currentStepData.id].length > 0) :
-                  responses[currentStepData.id]) ? 'pointer' : 'not-allowed',
+                cursor: currentStepData.multiple ? 
+                  ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? 'pointer' : 'not-allowed') :
+                  'pointer', // Always enabled for textarea
                 transition: 'all 0.2s ease'
               }}
             >
-              {currentStep === steps.length - 1 ? '完了' : '次へ'}
+              {currentStep === steps.length - 1 ? '完了' : currentStepData.type === 'textarea' ? 'スキップ / 次へ' : '次へ'}
             </button>
           )}
         </div>

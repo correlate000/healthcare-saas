@@ -2,332 +2,721 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { 
-  User,
-  Edit,
-  Settings,
-  Award,
-  Target,
-  TrendingUp,
-  Heart,
-  Star,
-  Trophy,
-  Zap,
-  Clock,
-  MessageCircle,
-  CheckCircle,
-  ArrowLeft,
-  ChevronRight,
-  Camera,
-  Mail,
-  MapPin,
-  Calendar,
-  Smartphone
-} from 'lucide-react'
 
 export default function ProfilePage() {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
+  const [profileData, setProfileData] = useState({
+    name: '山田 太郎',
+    email: 'yamada@example.com',
+    phone: '090-1234-5678',
+    birthDate: '1990-01-15',
+    gender: 'male',
+    location: '東京都',
+    bio: 'メンタルヘルスの改善に取り組んでいます。毎日の小さな習慣を大切にしています。',
+    notifications: {
+      email: true,
+      push: true,
+      sms: false
+    },
+    privacy: {
+      profileVisible: true,
+      showStats: false,
+      anonymous: false
+    }
+  })
 
-  // Mock user data - in real app this would come from API/context
-  const profile = {
-    name: '田中 太郎',
-    email: 'tanaka.taro@company.com',
-    department: '開発部',
-    position: 'シニアエンジニア',
-    joinDate: '2020年4月',
-    level: 12,
-    totalXP: 2850,
-    nextLevelXP: 3000,
-    streakDays: 28,
-    totalSessions: 47,
-    totalMinutes: 1260,
-    monthlyProgress: 78,
-    favoriteCharacter: 'Luna',
-    achievements: [
-      { id: '1', name: '7日継続', icon: '🔥', earned: true },
-      { id: '2', name: '気分向上', icon: '📈', earned: true },
-      { id: '3', name: 'ストレス管理', icon: '🧘', earned: false },
-      { id: '4', name: '早起き', icon: '🌅', earned: false }
-    ]
+  // Bird Avatar Component
+  const BirdAvatar = ({ size = 80 }: { size?: number }) => (
+    <div style={{
+      width: `${size}px`,
+      height: `${size}px`,
+      position: 'relative',
+      margin: '0 auto'
+    }}>
+      {/* Background circle */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: '#374151',
+        borderRadius: '50%'
+      }}></div>
+      
+      {/* Bird body */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.15}px`,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: `${size * 0.5}px`,
+        height: `${size * 0.45}px`,
+        backgroundColor: '#a3e635',
+        borderRadius: '50% 50% 45% 45%',
+        zIndex: 1
+      }}></div>
+      
+      {/* Eyes */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.4}px`,
+        left: `${size * 0.35}px`,
+        width: `${size * 0.08}px`,
+        height: `${size * 0.1}px`,
+        backgroundColor: '#111827',
+        borderRadius: '50%',
+        zIndex: 2
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.4}px`,
+        right: `${size * 0.35}px`,
+        width: `${size * 0.08}px`,
+        height: `${size * 0.1}px`,
+        backgroundColor: '#111827',
+        borderRadius: '50%',
+        zIndex: 2
+      }}></div>
+      
+      {/* Beak */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.32}px`,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: `${size * 0.12}px`,
+        height: `${size * 0.08}px`,
+        backgroundColor: '#f59e0b',
+        borderRadius: '0 0 50% 50%',
+        zIndex: 2
+      }}></div>
+    </div>
+  )
+
+  const handleSave = () => {
+    setIsEditing(false)
+    // Save logic here
   }
 
-  const currentLevelProgress = ((profile.totalXP % 1000) / 1000) * 100
-
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col">
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#111827', 
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white relative">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={() => router.push('/dashboard')}
-              className="text-white hover:bg-white/10 rounded-xl p-2"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </Button>
-            <h1 className="text-xl font-semibold tracking-wide">プロフィール</h1>
-            <Button 
-              variant="ghost" 
+      <div style={{ 
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px'
+          }}>
+            <button
               onClick={() => router.push('/settings')}
-              className="text-white hover:bg-white/10 rounded-xl p-2"
+              style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: '#9ca3af',
+                fontSize: '20px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
-              <Settings className="w-6 h-6" />
-            </Button>
-          </div>
-
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="relative">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center shadow-lg">
-                <User className="w-10 h-10 text-white" />
-              </div>
-              <Button 
-                size="sm" 
-                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-white text-emerald-600 hover:bg-gray-100 p-0 shadow-lg"
-              >
-                <Camera className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold tracking-wide">{profile.name}</h2>
-              <p className="text-emerald-100 font-medium">{profile.position}</p>
-              <p className="text-emerald-100/80 text-sm">{profile.department}</p>
-            </div>
+              ←
+            </button>
+            <h1 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700', 
+              color: '#f3f4f6',
+              margin: 0,
+              letterSpacing: '-0.5px'
+            }}>
+              プロフィール
+            </h1>
           </div>
           
-          {/* Level Progress */}
-          <div className="bg-white/10 rounded-2xl p-5 backdrop-blur-sm mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center space-x-2">
-                <Trophy className="w-5 h-5 text-yellow-300" />
-                <span className="font-semibold">レベル {profile.level}</span>
-              </div>
-              <span className="text-sm text-emerald-100">
-                {profile.totalXP} / {profile.nextLevelXP} XP
-              </span>
-            </div>
-            <Progress value={currentLevelProgress} className="h-2 bg-white/20" />
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="text-xl font-bold">{profile.streakDays}</div>
-              <div className="text-sm text-emerald-100 font-medium">日連続</div>
-            </div>
-            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="text-xl font-bold">{profile.totalSessions}</div>
-              <div className="text-sm text-emerald-100 font-medium">セッション</div>
-            </div>
-            <div className="text-center p-3 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="text-xl font-bold">{Math.floor(profile.totalMinutes / 60)}h</div>
-              <div className="text-sm text-emerald-100 font-medium">総時間</div>
-            </div>
-          </div>
+          <button
+            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: isEditing ? '#a3e635' : '#374151',
+              color: isEditing ? '#111827' : '#d1d5db',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {isEditing ? '保存' : '編集'}
+          </button>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-4 space-y-6">
-        {/* This Month Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-blue-400" />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold tracking-wide">今月の進捗</h3>
-                <p className="text-gray-400 text-sm">ウェルビーイングスコア</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-white">{profile.monthlyProgress}%</div>
-              <div className="text-sm text-green-400 font-medium">+12% 先月比</div>
-            </div>
-          </div>
-          <Progress value={profile.monthlyProgress} className="h-3" />
-        </motion.div>
-
-        {/* Recent Achievements */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="text-white font-semibold text-lg tracking-wide">最近の実績</h3>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => router.push('/achievements')}
-              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
-            >
-              すべて見る
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
+      <div style={{ padding: '20px' }}>
+        {/* Profile Avatar Section */}
+        <div style={{ 
+          textAlign: 'center',
+          marginBottom: '32px'
+        }}>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <BirdAvatar size={100} />
+            {isEditing && (
+              <button
+                style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  right: '0',
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#a3e635',
+                  borderRadius: '50%',
+                  border: '2px solid #111827',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  fontSize: '16px'
+                }}
+              >
+                📷
+              </button>
+            )}
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
-            {profile.achievements.slice(0, 4).map((achievement, index) => (
-              <motion.div
-                key={achievement.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + index * 0.1 }}
-                className={`p-4 rounded-xl border transition-all duration-200 ${
-                  achievement.earned 
-                    ? 'bg-emerald-500/10 border-emerald-400/30' 
-                    : 'bg-gray-700/50 border-gray-600/30'
-                }`}
-              >
-                <div className="text-center">
-                  <div className="text-2xl mb-2">{achievement.icon}</div>
-                  <h4 className={`font-semibold text-sm ${
-                    achievement.earned ? 'text-emerald-400' : 'text-gray-400'
-                  }`}>
-                    {achievement.name}
-                  </h4>
-                  {achievement.earned && (
-                    <div className="mt-2">
-                      <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 text-xs">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        獲得済み
-                      </Badge>
-                    </div>
-                  )}
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            marginTop: '16px',
+            marginBottom: '4px',
+            letterSpacing: '-0.5px'
+          }}>
+            {profileData.name}
+          </h2>
+          
+          <p style={{
+            fontSize: '14px',
+            color: '#9ca3af'
+          }}>
+            メンバーID: #12345
+          </p>
+        </div>
+
+        {/* Basic Information */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '20px',
+            paddingBottom: '12px',
+            borderBottom: '1px solid #374151'
+          }}>
+            基本情報
+          </h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Name */}
+            <div>
+              <label style={{
+                fontSize: '13px',
+                color: '#9ca3af',
+                marginBottom: '6px',
+                display: 'block',
+                fontWeight: '500'
+              }}>
+                氏名
+              </label>
+              <input
+                type="text"
+                value={profileData.name}
+                onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                disabled={!isEditing}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: isEditing ? '#111827' : '#374151',
+                  border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              />
+            </div>
+
+            {/* Email */}
+            <div>
+              <label style={{
+                fontSize: '13px',
+                color: '#9ca3af',
+                marginBottom: '6px',
+                display: 'block',
+                fontWeight: '500'
+              }}>
+                メールアドレス
+              </label>
+              <input
+                type="email"
+                value={profileData.email}
+                onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                disabled={!isEditing}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: isEditing ? '#111827' : '#374151',
+                  border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              />
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label style={{
+                fontSize: '13px',
+                color: '#9ca3af',
+                marginBottom: '6px',
+                display: 'block',
+                fontWeight: '500'
+              }}>
+                電話番号
+              </label>
+              <input
+                type="tel"
+                value={profileData.phone}
+                onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                disabled={!isEditing}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: isEditing ? '#111827' : '#374151',
+                  border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              />
+            </div>
+
+            {/* Birth Date & Gender Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div>
+                <label style={{
+                  fontSize: '13px',
+                  color: '#9ca3af',
+                  marginBottom: '6px',
+                  display: 'block',
+                  fontWeight: '500'
+                }}>
+                  生年月日
+                </label>
+                <input
+                  type="date"
+                  value={profileData.birthDate}
+                  onChange={(e) => setProfileData({...profileData, birthDate: e.target.value})}
+                  disabled={!isEditing}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: isEditing ? '#111827' : '#374151',
+                    border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                    borderRadius: '8px',
+                    color: '#f3f4f6',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'all 0.2s ease'
+                  }}
+                />
+              </div>
+              
+              <div>
+                <label style={{
+                  fontSize: '13px',
+                  color: '#9ca3af',
+                  marginBottom: '6px',
+                  display: 'block',
+                  fontWeight: '500'
+                }}>
+                  性別
+                </label>
+                <select
+                  value={profileData.gender}
+                  onChange={(e) => setProfileData({...profileData, gender: e.target.value})}
+                  disabled={!isEditing}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: isEditing ? '#111827' : '#374151',
+                    border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                    borderRadius: '8px',
+                    color: '#f3f4f6',
+                    fontSize: '14px',
+                    outline: 'none',
+                    transition: 'all 0.2s ease',
+                    cursor: isEditing ? 'pointer' : 'default'
+                  }}
+                >
+                  <option value="male">男性</option>
+                  <option value="female">女性</option>
+                  <option value="other">その他</option>
+                  <option value="prefer_not">回答しない</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div>
+              <label style={{
+                fontSize: '13px',
+                color: '#9ca3af',
+                marginBottom: '6px',
+                display: 'block',
+                fontWeight: '500'
+              }}>
+                居住地
+              </label>
+              <input
+                type="text"
+                value={profileData.location}
+                onChange={(e) => setProfileData({...profileData, location: e.target.value})}
+                disabled={!isEditing}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: isEditing ? '#111827' : '#374151',
+                  border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease'
+                }}
+              />
+            </div>
+
+            {/* Bio */}
+            <div>
+              <label style={{
+                fontSize: '13px',
+                color: '#9ca3af',
+                marginBottom: '6px',
+                display: 'block',
+                fontWeight: '500'
+              }}>
+                自己紹介
+              </label>
+              <textarea
+                value={profileData.bio}
+                onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                disabled={!isEditing}
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  backgroundColor: isEditing ? '#111827' : '#374151',
+                  border: isEditing ? '1px solid #4b5563' : '1px solid transparent',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
+                  lineHeight: '1.5'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Health Goals */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '20px',
+            paddingBottom: '12px',
+            borderBottom: '1px solid #374151'
+          }}>
+            健康目標
+          </h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {[
+              { label: 'ストレス軽減', progress: 75 },
+              { label: '睡眠改善', progress: 60 },
+              { label: '運動習慣', progress: 40 },
+              { label: 'マインドフルネス', progress: 85 }
+            ].map((goal) => (
+              <div key={goal.label}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{
+                    fontSize: '14px',
+                    color: '#f3f4f6',
+                    fontWeight: '500'
+                  }}>
+                    {goal.label}
+                  </span>
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#a3e635',
+                    fontWeight: '600'
+                  }}>
+                    {goal.progress}%
+                  </span>
                 </div>
-              </motion.div>
+                <div style={{
+                  width: '100%',
+                  height: '6px',
+                  backgroundColor: '#374151',
+                  borderRadius: '3px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${goal.progress}%`,
+                    backgroundColor: '#a3e635',
+                    borderRadius: '3px',
+                    transition: 'width 0.5s ease'
+                  }}></div>
+                </div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Favorite Character */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-pink-500/20 rounded-lg">
-                <Heart className="w-5 h-5 text-pink-400" />
-              </div>
-              <div>
-                <h3 className="text-white font-semibold tracking-wide">お気に入りキャラクター</h3>
-                <p className="text-gray-400 text-sm">一緒に過ごした時間: {Math.floor(profile.totalMinutes / 60)}時間</p>
-              </div>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => router.push('/characters')}
-              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
-            >
-              変更
-            </Button>
-          </div>
+        {/* Activity Stats */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '20px'
+          }}>
+            アクティビティ統計
+          </h3>
           
-          <div className="flex items-center space-x-4 p-4 bg-purple-500/10 border border-purple-400/30 rounded-xl">
-            <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xl">🌙</span>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '16px'
+          }}>
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#a3e635',
+                marginBottom: '4px'
+              }}>
+                45
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                総セッション数
+              </div>
             </div>
-            <div className="flex-1">
-              <h4 className="text-white font-semibold">{profile.favoriteCharacter}</h4>
-              <p className="text-gray-400 text-sm">優しく包み込むような対話スタイル</p>
+            
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#60a5fa',
+                marginBottom: '4px'
+              }}>
+                15
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                連続記録
+              </div>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#fbbf24',
+                marginBottom: '4px'
+              }}>
+                Lv.8
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                現在レベル
+              </div>
+            </div>
+            
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '16px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#a78bfa',
+                marginBottom: '4px'
+              }}>
+                12
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                獲得バッジ
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Basic Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white font-semibold text-lg tracking-wide">基本情報</h3>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setIsEditing(!isEditing)}
-              className="text-gray-300 hover:text-white hover:bg-gray-600/50 rounded-xl"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              編集
-            </Button>
-          </div>
+        {/* Account Actions */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          <button
+            onClick={() => router.push('/privacy-settings')}
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: '#374151',
+              color: '#d1d5db',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '15px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            <span>プライバシー設定</span>
+            <span style={{ fontSize: '18px' }}>→</span>
+          </button>
           
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <Mail className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-gray-400 text-sm">メールアドレス</p>
-                <p className="text-white font-medium">{profile.email}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <MapPin className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-gray-400 text-sm">所属</p>
-                <p className="text-white font-medium">{profile.department}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-gray-400 text-sm">入社日</p>
-                <p className="text-white font-medium">{profile.joinDate}</p>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* App Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-gray-700/95 rounded-2xl p-5 border border-gray-600/30"
-        >
-          <h3 className="text-white font-semibold text-lg tracking-wide mb-4">アプリ情報</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">バージョン</span>
-              <span className="text-white font-medium">1.0.0</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">最終更新</span>
-              <span className="text-white font-medium">2024年7月30日</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-400">デバイス</span>
-              <div className="flex items-center space-x-2 text-white font-medium">
-                <Smartphone className="w-4 h-4" />
-                <span>iOS</span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
+          <button
+            onClick={() => router.push('/export')}
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: '#374151',
+              color: '#d1d5db',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '15px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            <span>データエクスポート</span>
+            <span style={{ fontSize: '18px' }}>→</span>
+          </button>
+          
+          <button
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              color: '#ef4444',
+              border: '1px solid #ef4444',
+              borderRadius: '12px',
+              fontSize: '15px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => { 
+              e.currentTarget.style.backgroundColor = '#ef4444'
+              e.currentTarget.style.color = '#ffffff'
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.backgroundColor = 'transparent'
+              e.currentTarget.style.color = '#ef4444'
+            }}
+          >
+            アカウントを削除
+          </button>
+        </div>
       </div>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )

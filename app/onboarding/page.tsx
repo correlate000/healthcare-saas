@@ -1,364 +1,751 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-// Wireframe pages 4-13 exact onboarding data structure
-const onboardingSteps = [
-  {
-    id: 'industry',
-    title: 'あなたの業界を教えてください',
-    subtitle: 'データは完全に匿名化されます',
-    step: 1,
-    total: 8,
-    progress: 13,
-    options: [
-      'IT・テクノロジー',
-      '金融・保険',
-      '製造業',
-      '医療・ヘルスケア',
-      '小売・サービス',
-      'コンサルティング',
-      '教育・研究',
-      'その他'
-    ]
-  },
-  {
-    id: 'workstyle',
-    title: '働き方を教えてください',
-    subtitle: '主な勤務スタイルはどちらですか？',
-    step: 2,
-    total: 8,
-    progress: 25,
-    options: [
-      { id: 'office', title: 'オフィス勤務', subtitle: '主に会社で働いています' },
-      { id: 'remote', title: 'リモート勤務', subtitle: '主に自宅で働いています' },
-      { id: 'hybrid', title: 'ハイブリッド', subtitle: 'オフィスと自宅を使い分けています' }
-    ]
-  },
-  {
-    id: 'age',
-    title: '年代を教えてください',
-    subtitle: '適切なサポートを提供するため',
-    step: 3,
-    total: 8,
-    progress: 37,
-    options: ['10代', '20代', '30代', '40代', '50代', '60代以上']
-  },
-  {
-    id: 'occupation',
-    title: '職種を教えてください',
-    subtitle: 'より関連性の高いサポートを提供します',
-    step: 4,
-    total: 8,
-    progress: 50,
-    options: [
-      '管理職',
-      'エンジニア・技術職',
-      '営業',
-      'マーケティング',
-      'デザイン・企画',
-      '事務・バックオフィス',
-      '人事・総務',
-      'その他'
-    ]
-  },
-  {
-    id: 'interests',
-    title: '関心のあるテーマは？',
-    subtitle: '複数選択可能です',
-    step: 5,
-    total: 8,
-    progress: 63,
-    multiSelect: true,
-    options: [
-      'ストレス管理',
-      'ワークライフバランス',
-      '職場の人間関係',
-      'パフォーマンス向上',
-      '不安・心配事',
-      '睡眠の質',
-      'モチベーション',
-      '変化への適応'
-    ]
-  },
-  {
-    id: 'aipartner',
-    title: 'AIパートナーを選んでください',
-    subtitle: 'いつでも変更できます',
-    step: 6,
-    total: 8,
-    progress: 75,
-    characters: [
-      {
-        id: 'luna',
-        name: 'Luna - 優しく共感的',
-        description: '静かで思慮深く、あなたの感情に寄り添います',
-        recommendation: '内向的、深く考える方におすすめ'
-      },
-      {
-        id: 'aria',
-        name: 'Aria - 明るく励ましてくれる',
-        description: 'エネルギッシュで前向き、やる気を引き出します',
-        recommendation: 'アクティブ、チャレンジ好きな方におすすめ'
-      },
-      {
-        id: 'zen',
-        name: 'Zen - 落ち着いていて知的',
-        description: '冷静で客観的、論理的なアドバイスをします',
-        recommendation: '分析的、効率重視の方におすすめ'
-      }
-    ]
-  },
-  {
-    id: 'goals',
-    title: '目標を設定しましょう',
-    subtitle: '達成したいことを選んでください（複数選択可）',
-    step: 7,
-    total: 8,
-    progress: 87,
-    multiSelect: true,
-    options: [
-      'ストレス軽減',
-      '気分の安定',
-      '睡眠改善',
-      '仕事効率UP',
-      'チーム関係改善',
-      '自己理解を深める'
-    ]
-  },
-  {
-    id: 'complete',
-    title: 'セットアップ完了！',
-    subtitle: '+30XP',
-    step: 8,
-    total: 8,
-    progress: 100,
-    isComplete: true
-  }
-]
-
-export default function Onboarding() {
+export default function OnboardingPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
-  const [selectedCharacter, setSelectedCharacter] = useState('luna')
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    goals: [] as string[],
+    conditions: [] as string[],
+    preferredTime: '',
+    notifications: true
+  })
 
-  const currentStepData = onboardingSteps[currentStep]
+  const steps = [
+    {
+      id: 'welcome',
+      type: 'intro'
+    },
+    {
+      id: 'name',
+      type: 'input',
+      title: 'はじめまして！お名前を教えてください',
+      field: 'name',
+      placeholder: 'ニックネームでもOKです'
+    },
+    {
+      id: 'age',
+      type: 'select',
+      title: '年齢層を教えてください',
+      field: 'age',
+      options: ['10代', '20代', '30代', '40代', '50代', '60代以上']
+    },
+    {
+      id: 'goals',
+      type: 'multiselect',
+      title: 'あなたの目標を選んでください',
+      subtitle: '（複数選択可）',
+      field: 'goals',
+      options: [
+        'ストレス軽減',
+        '睡眠改善',
+        '気分の安定',
+        'マインドフルネス',
+        '不安の管理',
+        '自己成長',
+        '人間関係改善',
+        'ワークライフバランス'
+      ]
+    },
+    {
+      id: 'conditions',
+      type: 'multiselect',
+      title: '現在の悩みを教えてください',
+      subtitle: '（複数選択可・スキップ可）',
+      field: 'conditions',
+      options: [
+        '不安感',
+        '憂鬱',
+        '不眠',
+        '疲労感',
+        '集中力低下',
+        'イライラ',
+        '孤独感',
+        '自信喪失'
+      ]
+    },
+    {
+      id: 'time',
+      type: 'select',
+      title: 'いつチェックインしたいですか？',
+      field: 'preferredTime',
+      options: ['朝（6-9時）', '昼（12-14時）', '夕方（17-19時）', '夜（20-22時）', '決めていない']
+    },
+    {
+      id: 'complete',
+      type: 'complete'
+    }
+  ]
+
+  // Animated bird mascot component
+  const BirdMascot = ({ emotion = 'happy', size = 120 }: { emotion?: string, size?: number }) => (
+    <div style={{
+      width: `${size}px`,
+      height: `${size}px`,
+      position: 'relative',
+      animation: emotion === 'happy' ? 'bounce 2s infinite' : 'float 3s ease-in-out infinite'
+    }}>
+      {/* Shadow */}
+      <div style={{
+        position: 'absolute',
+        bottom: '-10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: `${size * 0.6}px`,
+        height: '10px',
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        borderRadius: '50%',
+        filter: 'blur(4px)'
+      }}></div>
+      
+      {/* Body */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.2}px`,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: `${size * 0.7}px`,
+        height: `${size * 0.65}px`,
+        backgroundColor: '#a3e635',
+        borderRadius: '50% 50% 45% 45%',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+      }}>
+        {/* Belly */}
+        <div style={{
+          position: 'absolute',
+          bottom: '10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '60%',
+          height: '40%',
+          backgroundColor: '#bef264',
+          borderRadius: '50%'
+        }}></div>
+      </div>
+      
+      {/* Wings */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.35}px`,
+        left: `${size * 0.1}px`,
+        width: `${size * 0.25}px`,
+        height: `${size * 0.35}px`,
+        backgroundColor: '#84cc16',
+        borderRadius: '50% 0 50% 50%',
+        transform: 'rotate(-15deg)',
+        animation: 'wingFlap 1s ease-in-out infinite'
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.35}px`,
+        right: `${size * 0.1}px`,
+        width: `${size * 0.25}px`,
+        height: `${size * 0.35}px`,
+        backgroundColor: '#84cc16',
+        borderRadius: '0 50% 50% 50%',
+        transform: 'rotate(15deg)',
+        animation: 'wingFlap 1s ease-in-out infinite 0.5s'
+      }}></div>
+      
+      {/* Eyes */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.55}px`,
+        left: `${size * 0.3}px`,
+        width: `${size * 0.12}px`,
+        height: `${size * 0.15}px`,
+        backgroundColor: '#111827',
+        borderRadius: '50%'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '30%',
+          width: '40%',
+          height: '40%',
+          backgroundColor: 'white',
+          borderRadius: '50%'
+        }}></div>
+      </div>
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.55}px`,
+        right: `${size * 0.3}px`,
+        width: `${size * 0.12}px`,
+        height: `${size * 0.15}px`,
+        backgroundColor: '#111827',
+        borderRadius: '50%'
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          right: '30%',
+          width: '40%',
+          height: '40%',
+          backgroundColor: 'white',
+          borderRadius: '50%'
+        }}></div>
+      </div>
+      
+      {/* Beak */}
+      <div style={{
+        position: 'absolute',
+        bottom: `${size * 0.45}px`,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: `${size * 0.15}px`,
+        height: `${size * 0.1}px`,
+        backgroundColor: '#f59e0b',
+        borderRadius: '0 0 50% 50%'
+      }}></div>
+      
+      {/* Sparkles for happy emotion */}
+      {emotion === 'happy' && (
+        <>
+          <div style={{
+            position: 'absolute',
+            top: '0',
+            right: '-10px',
+            fontSize: '20px',
+            animation: 'sparkle 1.5s ease-in-out infinite'
+          }}>✨</div>
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '-10px',
+            fontSize: '16px',
+            animation: 'sparkle 1.5s ease-in-out infinite 0.5s'
+          }}>✨</div>
+        </>
+      )}
+    </div>
+  )
+
+  const currentStepData = steps[currentStep]
+  const progress = ((currentStep + 1) / steps.length) * 100
 
   const handleNext = () => {
-    if (currentStep < onboardingSteps.length - 1) {
+    if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
-      setSelectedOptions([]) // Reset selections for next step
-    } else {
-      // Complete onboarding
-      router.push('/dashboard')
     }
   }
 
-  const handlePrevious = () => {
+  const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     }
   }
 
-  const handleOptionSelect = (option: string) => {
-    if (currentStepData.multiSelect) {
-      setSelectedOptions(prev => 
-        prev.includes(option)
-          ? prev.filter(item => item !== option)
-          : [...prev, option]
-      )
-    } else {
-      setSelectedOptions([option])
-    }
+  const handleComplete = () => {
+    // Save onboarding data and redirect to dashboard
+    localStorage.setItem('onboardingComplete', 'true')
+    localStorage.setItem('userData', JSON.stringify(formData))
+    router.push('/dashboard')
   }
 
-  const handleCharacterSelect = (characterId: string) => {
-    setSelectedCharacter(characterId)
-    setSelectedOptions([characterId])
+  const handleInputChange = (field: string, value: any) => {
+    setFormData({ ...formData, [field]: value })
   }
 
-  const canProceed = () => {
-    if (currentStepData.isComplete) return true
-    if (currentStepData.multiSelect) return selectedOptions.length > 0
-    return selectedOptions.length > 0
+  const handleMultiSelect = (field: string, value: string) => {
+    const current = formData[field as keyof typeof formData] as string[]
+    const updated = current.includes(value)
+      ? current.filter(item => item !== value)
+      : [...current, value]
+    setFormData({ ...formData, [field]: updated })
   }
 
-  return (
-    <div className="min-h-screen bg-gray-800 text-white">
-      {/* Character Area - exact wireframe */}
-      <div className="flex flex-col items-center pt-8 pb-6">
-        <div className="w-32 h-32 bg-lime-400 rounded-3xl flex items-center justify-center mb-6">
-          <span className="text-gray-800 text-lg font-medium">キャラクター</span>
+  // Welcome screen
+  if (currentStepData.type === 'intro') {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#111827',
+        color: 'white',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <BirdMascot emotion="happy" size={150} />
+        
+        <h1 style={{
+          fontSize: '32px',
+          fontWeight: '800',
+          color: '#f3f4f6',
+          marginTop: '32px',
+          marginBottom: '16px',
+          letterSpacing: '-1px'
+        }}>
+          ようこそ！
+        </h1>
+        
+        <p style={{
+          fontSize: '18px',
+          color: '#d1d5db',
+          marginBottom: '8px',
+          lineHeight: '1.5'
+        }}>
+          メンタルヘルスケアの
+        </p>
+        <p style={{
+          fontSize: '18px',
+          color: '#d1d5db',
+          marginBottom: '32px',
+          lineHeight: '1.5'
+        }}>
+          新しい旅を始めましょう
+        </p>
+        
+        <p style={{
+          fontSize: '14px',
+          color: '#9ca3af',
+          marginBottom: '48px',
+          maxWidth: '300px',
+          lineHeight: '1.6'
+        }}>
+          あなたに合わせたパーソナライズされた体験を提供するために、いくつか質問させてください
+        </p>
+        
+        <button
+          onClick={handleNext}
+          style={{
+            padding: '16px 48px',
+            backgroundColor: '#a3e635',
+            color: '#111827',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '18px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: '0 4px 12px rgba(163, 230, 53, 0.3)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#84cc16'
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(163, 230, 53, 0.4)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#a3e635'
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
+          }}
+        >
+          始める
+        </button>
+        
+        <p style={{
+          fontSize: '12px',
+          color: '#6b7280',
+          marginTop: '24px'
+        }}>
+          3分程度で完了します
+        </p>
+
+        <style jsx>{`
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+          }
+          @keyframes wingFlap {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50% { transform: rotate(-25deg) translateY(-2px); }
+          }
+          @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // Completion screen
+  if (currentStepData.type === 'complete') {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        backgroundColor: '#111827',
+        color: 'white',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+        textAlign: 'center'
+      }}>
+        <div style={{
+          width: '120px',
+          height: '120px',
+          backgroundColor: '#a3e635',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '32px',
+          animation: 'celebrate 1s ease-in-out'
+        }}>
+          <span style={{ fontSize: '60px', color: '#111827' }}>🎉</span>
         </div>
         
-        {currentStepData.step && (
-          <div className="bg-gray-700 rounded-xl px-6 py-3 mb-4 max-w-md mx-4">
-            <p className="text-white text-sm">まずはあなたのことを教えてください</p>
-          </div>
-        )}
+        <h1 style={{
+          fontSize: '28px',
+          fontWeight: '700',
+          color: '#f3f4f6',
+          marginBottom: '16px'
+        }}>
+          準備完了！
+        </h1>
+        
+        <p style={{
+          fontSize: '16px',
+          color: '#d1d5db',
+          marginBottom: '32px',
+          maxWidth: '300px',
+          lineHeight: '1.5'
+        }}>
+          {formData.name}さん、設定が完了しました。
+          一緒に健康的な習慣を作っていきましょう！
+        </p>
+        
+        <BirdMascot emotion="happy" size={100} />
+        
+        <button
+          onClick={handleComplete}
+          style={{
+            padding: '16px 48px',
+            backgroundColor: '#a3e635',
+            color: '#111827',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '18px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            marginTop: '32px'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+        >
+          ダッシュボードへ
+        </button>
+
+        <style jsx>{`
+          @keyframes celebrate {
+            0% { transform: scale(0) rotate(0); opacity: 0; }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); opacity: 1; }
+          }
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          @keyframes wingFlap {
+            0%, 100% { transform: rotate(-15deg) translateY(0); }
+            50% { transform: rotate(-25deg) translateY(-2px); }
+          }
+          @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
+  // Form screens
+  return (
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
+      color: 'white',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* Progress bar */}
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '12px'
+        }}>
+          <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+            ステップ {currentStep + 1} / {steps.length}
+          </span>
+          <button
+            onClick={() => router.push('/dashboard')}
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#9ca3af',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
+            スキップ
+          </button>
+        </div>
+        <div style={{
+          width: '100%',
+          height: '6px',
+          backgroundColor: '#374151',
+          borderRadius: '3px',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${progress}%`,
+            backgroundColor: '#a3e635',
+            borderRadius: '3px',
+            transition: 'width 0.3s ease'
+          }}></div>
+        </div>
       </div>
 
-      {/* Progress - exact wireframe */}
-      {currentStepData.step && (
-        <div className="px-6 mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-white text-sm">ステップ {currentStepData.step} / {currentStepData.total}</span>
-            <span className="text-white text-sm">{currentStepData.progress}%</span>
-          </div>
-          <div className="w-full bg-gray-600 rounded-full h-2">
-            <div 
-              className="bg-white h-2 rounded-full transition-all duration-300"
-              style={{ width: `${currentStepData.progress}%` }}
-            />
-          </div>
+      <div style={{
+        flex: 1,
+        padding: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        maxWidth: '500px',
+        margin: '0 auto',
+        width: '100%'
+      }}>
+        {/* Bird mascot */}
+        <div style={{ margin: '0 auto 32px' }}>
+          <BirdMascot size={80} />
         </div>
-      )}
 
-      {/* Content */}
-      <div className="px-6 pb-6">
-        {/* Regular Steps */}
-        {!currentStepData.isComplete && (
-          <>
-            <div className="mb-8">
-              <h1 className="text-white text-xl font-semibold mb-2">{currentStepData.title}</h1>
-              <p className="text-gray-300 text-sm">{currentStepData.subtitle}</p>
-            </div>
+        {/* Question */}
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '700',
+          color: '#f3f4f6',
+          marginBottom: '8px',
+          textAlign: 'center'
+        }}>
+          {currentStepData.title}
+        </h2>
+        {currentStepData.subtitle && (
+          <p style={{
+            fontSize: '14px',
+            color: '#9ca3af',
+            marginBottom: '32px',
+            textAlign: 'center'
+          }}>
+            {currentStepData.subtitle}
+          </p>
+        )}
 
-            {/* Options Grid */}
-            {currentStepData.options && !currentStepData.characters && (
-              <div className="space-y-3 mb-8">
-                {currentStepData.options.map((option, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionSelect(typeof option === 'string' ? option : option.id)}
-                    className={`w-full p-4 rounded-xl border transition-all duration-200 text-left min-h-[60px] ${
-                      selectedOptions.includes(typeof option === 'string' ? option : option.id)
-                        ? 'bg-white text-gray-800 border-gray-300'
-                        : 'bg-gray-700 text-white border-gray-600 hover:border-gray-500'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        selectedOptions.includes(typeof option === 'string' ? option : option.id)
-                          ? 'border-gray-800 bg-gray-800'
-                          : 'border-gray-400'
-                      }`}>
-                        {selectedOptions.includes(typeof option === 'string' ? option : option.id) && (
-                          <div className="w-2 h-2 bg-white rounded-full" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium">
-                          {typeof option === 'string' ? option : option.title}
-                        </div>
-                        {typeof option === 'object' && option.subtitle && (
-                          <div className="text-sm text-gray-400 mt-1">{option.subtitle}</div>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
+        {/* Input field */}
+        {currentStepData.type === 'input' && (
+          <input
+            type="text"
+            value={formData[currentStepData.field as keyof typeof formData] as string}
+            onChange={(e) => handleInputChange(currentStepData.field!, e.target.value)}
+            placeholder={currentStepData.placeholder}
+            style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: '#1f2937',
+              border: '2px solid #374151',
+              borderRadius: '12px',
+              color: '#f3f4f6',
+              fontSize: '16px',
+              outline: 'none',
+              marginBottom: '32px',
+              transition: 'border-color 0.2s ease'
+            }}
+            onFocus={(e) => { e.currentTarget.style.borderColor = '#a3e635' }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = '#374151' }}
+          />
+        )}
 
-            {/* Character Selection */}
-            {currentStepData.characters && (
-              <div className="space-y-4 mb-8">
-                {currentStepData.characters.map((character) => (
-                  <button
-                    key={character.id}
-                    onClick={() => handleCharacterSelect(character.id)}
-                    className={`w-full p-5 rounded-2xl border transition-all duration-200 text-left ${
-                      selectedCharacter === character.id
-                        ? 'bg-white text-gray-800 border-gray-300'
-                        : 'bg-gray-700 text-white border-gray-600 hover:border-gray-500'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        selectedCharacter === character.id
-                          ? 'border-gray-800 bg-gray-800'
-                          : 'border-gray-400'
-                      }`}>
-                        {selectedCharacter === character.id && (
-                          <div className="w-2 h-2 bg-white rounded-full" />
-                        )}
-                      </div>
-                      <h3 className="font-semibold text-lg">{character.name}</h3>
-                    </div>
-                    <p className="text-sm mb-2 leading-relaxed">{character.description}</p>
-                    <p className="text-xs text-gray-400">{character.recommendation}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Navigation Buttons */}
-            <div className="flex space-x-3">
-              {currentStep > 0 && (
-                <Button
-                  onClick={handlePrevious}
-                  variant="outline"
-                  className="flex-1 py-3 rounded-xl bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
+        {/* Select options */}
+        {currentStepData.type === 'select' && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+            gap: '12px',
+            marginBottom: '32px'
+          }}>
+            {currentStepData.options?.map((option) => {
+              const isSelected = formData[currentStepData.field as keyof typeof formData] === option
+              return (
+                <button
+                  key={option}
+                  onClick={() => handleInputChange(currentStepData.field!, option)}
+                  style={{
+                    padding: '16px',
+                    backgroundColor: isSelected ? '#a3e635' : '#1f2937',
+                    color: isSelected ? '#111827' : '#d1d5db',
+                    border: isSelected ? '2px solid #a3e635' : '2px solid #374151',
+                    borderRadius: '12px',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.backgroundColor = '#374151'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.backgroundColor = '#1f2937'
+                    }
+                  }}
                 >
-                  戻る
-                </Button>
-              )}
-              <Button
-                onClick={handleNext}
-                disabled={!canProceed()}
-                className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-200 ${
-                  canProceed()
-                    ? 'bg-white text-gray-800 hover:bg-gray-100'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                次へ
-              </Button>
-            </div>
-          </>
-        )}
-
-        {/* Completion Step */}
-        {currentStepData.isComplete && (
-          <div className="text-center space-y-8">
-            <div className="bg-white rounded-2xl p-8 max-w-sm mx-auto">
-              <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-8 h-8 bg-white rounded-full" />
-              </div>
-              <h2 className="text-gray-800 text-2xl font-bold mb-2">{currentStepData.title}</h2>
-              <p className="text-gray-800 text-lg font-semibold">{currentStepData.subtitle}</p>
-            </div>
-
-            <Button
-              onClick={handleNext}
-              className="w-full py-4 rounded-xl bg-white text-gray-800 hover:bg-gray-100 font-semibold text-lg"
-            >
-              セットアップ完了
-            </Button>
+                  {option}
+                </button>
+              )
+            })}
           </div>
         )}
+
+        {/* Multi-select options */}
+        {currentStepData.type === 'multiselect' && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '12px',
+            marginBottom: '32px',
+            maxHeight: '300px',
+            overflowY: 'auto'
+          }}>
+            {currentStepData.options?.map((option) => {
+              const isSelected = (formData[currentStepData.field as keyof typeof formData] as string[]).includes(option)
+              return (
+                <button
+                  key={option}
+                  onClick={() => handleMultiSelect(currentStepData.field!, option)}
+                  style={{
+                    padding: '14px',
+                    backgroundColor: isSelected ? '#a3e635' : '#1f2937',
+                    color: isSelected ? '#111827' : '#d1d5db',
+                    border: isSelected ? '2px solid #a3e635' : '2px solid #374151',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.backgroundColor = '#374151'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.backgroundColor = '#1f2937'
+                    }
+                  }}
+                >
+                  {isSelected && <span style={{ marginRight: '6px' }}>✓</span>}
+                  {option}
+                </button>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Navigation buttons */}
+        <div style={{ display: 'flex', gap: '12px', marginTop: 'auto' }}>
+          {currentStep > 0 && (
+            <button
+              onClick={handleBack}
+              style={{
+                flex: 1,
+                padding: '14px',
+                backgroundColor: '#374151',
+                color: '#d1d5db',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+            >
+              戻る
+            </button>
+          )}
+          
+          <button
+            onClick={handleNext}
+            disabled={
+              currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData] ||
+              currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData]
+            }
+            style={{
+              flex: 2,
+              padding: '14px',
+              backgroundColor: '#a3e635',
+              color: '#111827',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: (
+                currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData] ||
+                currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData]
+              ) ? 0.5 : 1
+            }}
+            onMouseEnter={(e) => { 
+              if (!(currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData]) &&
+                  !(currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData])) {
+                e.currentTarget.style.backgroundColor = '#84cc16' 
+              }
+            }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+          >
+            次へ
+          </button>
+        </div>
       </div>
 
-      {/* Privacy Protection Footer */}
-      {currentStepData.step && (
-        <div className="px-6 pb-6">
-          <div className="bg-gray-700/50 rounded-xl p-4">
-            <div className="flex items-start space-x-3">
-              <div className="text-lg">🔒</div>
-              <div>
-                <h4 className="text-white font-semibold text-sm mb-1">プライバシー保護</h4>
-                <p className="text-gray-300 text-xs leading-relaxed">
-                  すべてのデータは完全に匿名化されており、所属先の企業から個人を特定することは一切できません。統計は暗号化された集計処理により生成されています。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <style jsx>{`
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        @keyframes wingFlap {
+          0%, 100% { transform: rotate(-15deg) translateY(0); }
+          50% { transform: rotate(-25deg) translateY(-2px); }
+        }
+      `}</style>
     </div>
   )
 }

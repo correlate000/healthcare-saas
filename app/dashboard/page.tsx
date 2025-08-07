@@ -10,7 +10,7 @@ export default function Dashboard() {
   const router = useRouter()
   const [friendLevel] = useState(85)
   const [todayProgress] = useState(50)
-  const [weeklyStreak] = useState(5)
+  const [weeklyContinuation] = useState(5)
   const [totalXP] = useState(850)
   const [maxXP] = useState(1000)
 
@@ -21,7 +21,7 @@ export default function Dashboard() {
   ]
 
   const achievements = [
-    { id: 1, title: '7日連続記録達成！', icon: '🔥', new: true },
+    { id: 1, title: '7日継続達成！', icon: '🔥', new: true },
     { id: 2, title: 'Lunaとのフレンドレベルアップ', icon: '⬆️', new: true },
     { id: 3, title: 'チーム投稿が10いいね！', icon: '❤️', new: false },
   ]
@@ -200,10 +200,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* 連続記録 */}
+          {/* 継続日数 */}
           <div style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>連続記録</span>
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>継続日数</span>
               <span style={{ fontSize: '16px', color: '#a3e635', fontWeight: '600' }}>12日</span>
             </div>
           </div>
@@ -219,13 +219,13 @@ export default function Dashboard() {
                     width: '24px',
                     height: '24px',
                     borderRadius: '4px',
-                    backgroundColor: day <= weeklyStreak ? '#a3e635' : '#374151',
+                    backgroundColor: day <= weeklyContinuation ? '#a3e635' : '#374151',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}
                 >
-                  {day <= weeklyStreak && (
+                  {day <= weeklyContinuation && (
                     <Check style={{ width: '12px', height: '12px', color: '#111827' }} />
                   )}
                 </div>
@@ -403,31 +403,94 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 7日連続記録達成バナー */}
+      {/* 7日継続達成バナー */}
       <div style={{ padding: '0 16px', marginBottom: '20px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
           borderRadius: '12px', 
           padding: '20px', 
           textAlign: 'center',
-          border: '2px solid #a3e635'
+          border: '2px solid #a3e635',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
-          <div style={{ fontSize: '48px', marginBottom: '8px' }}>🏆</div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#a3e635', margin: '0 0 8px 0' }}>7日連続記録達成！</h3>
-          <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 16px 0' }}>新しいバッジと限定スタンプをゲット！</p>
-          <button style={{
-            backgroundColor: '#a3e635',
-            color: '#111827',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            border: 'none',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}>
+          {/* アニメーション背景 */}
+          <div style={{
+            position: 'absolute',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            background: 'radial-gradient(circle, rgba(163,230,53,0.1) 0%, transparent 70%)',
+            animation: 'pulse 2s ease-in-out infinite'
+          }}></div>
+          
+          <div style={{ 
+            fontSize: '48px', 
+            marginBottom: '8px',
+            animation: 'bounce 1.5s ease-in-out infinite',
+            position: 'relative'
+          }}>🏆</div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#a3e635', margin: '0 0 8px 0', position: 'relative' }}>7日継続達成！</h3>
+          <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 16px 0', position: 'relative' }}>新しいバッジと限定スタンプをゲット！</p>
+          <button 
+            onClick={() => {
+              // 報酬アニメーション
+              const button = event?.currentTarget as HTMLElement
+              if (button) {
+                button.style.animation = 'celebrate 0.5s ease-out'
+                setTimeout(() => {
+                  button.style.animation = ''
+                  button.textContent = '受け取り済み ✓'
+                  button.style.backgroundColor = '#4b5563'
+                  button.style.cursor = 'default'
+                }, 500)
+              }
+            }}
+            style={{
+              backgroundColor: '#a3e635',
+              color: '#111827',
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              position: 'relative',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => { 
+              if (e.currentTarget.textContent !== '受け取り済み ✓') {
+                e.currentTarget.style.backgroundColor = '#84cc16'
+                e.currentTarget.style.transform = 'scale(1.05)'
+              }
+            }}
+            onMouseLeave={(e) => { 
+              if (e.currentTarget.textContent !== '受け取り済み ✓') {
+                e.currentTarget.style.backgroundColor = '#a3e635'
+                e.currentTarget.style.transform = 'scale(1)'
+              }
+            }}
+          >
             報酬を受け取る
           </button>
         </div>
+        
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+          }
+          @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+          }
+          @keyframes celebrate {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+          }
+        `}</style>
       </div>
 
       {/* ボトムナビゲーション */}
