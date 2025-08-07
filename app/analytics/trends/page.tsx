@@ -1,309 +1,480 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Badge } from '@/components/ui/badge'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Calendar, 
-  Clock,
-  Heart,
-  Brain,
-  Moon,
-  Users,
-  BarChart3,
-  LineChart,
-  PieChart,
-  Activity
-} from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Mock trend data
-const trendData = {
-  mood: {
-    data: [6.5, 7.2, 6.8, 7.5, 7.8, 8.1, 7.9],
-    labels: ['月', '火', '水', '木', '金', '土', '日'],
-    average: 7.4,
-    trend: 'up' as const,
-    change: 12
-  },
-  stress: {
-    data: [4.2, 3.8, 4.1, 3.5, 3.2, 2.9, 3.1],
-    labels: ['月', '火', '水', '木', '金', '土', '日'],
-    average: 3.5,
-    trend: 'down' as const,
-    change: -26
-  },
-  sleep: {
-    data: [7.5, 8.0, 7.8, 8.2, 8.5, 8.1, 8.3],
-    labels: ['月', '火', '水', '木', '金', '土', '日'],
-    average: 8.1,
-    trend: 'up' as const,
-    change: 11
-  }
-}
-
-const patterns = [
-  {
-    id: 1,
-    title: '平日のストレス傾向',
-    description: '火曜日と木曜日にストレスレベルが高くなる傾向があります',
-    insights: ['会議が多い日', 'タスクの期限が重なる'],
-    recommendation: '火曜・木曜は余裕のあるスケジュールを組む',
-    strength: 'strong'
-  },
-  {
-    id: 2,
-    title: '週末の回復パターン',
-    description: '土日にかけて気分と睡眠の質が改善しています',
-    insights: ['週末のリラックス効果', '十分な休息時間'],
-    recommendation: '平日にも同じようなリラックス時間を設ける',
-    strength: 'medium'
-  },
-  {
-    id: 3,
-    title: '睡眠の質向上',
-    description: '今週は全体的に睡眠の質が向上しています',
-    insights: ['就寝時間の規則化', '夜のスクリーンタイム削減'],
-    recommendation: '現在の睡眠習慣を継続する',
-    strength: 'strong'
-  }
-]
-
-const correlations = [
-  {
-    id: 1,
-    factor1: 'ストレス',
-    factor2: '睡眠の質',
-    correlation: -0.73,
-    description: 'ストレスが高い日は睡眠の質が低下する傾向'
-  },
-  {
-    id: 2,
-    factor1: '運動',
-    factor2: '気分',
-    correlation: 0.68,
-    description: '運動をした日は気分が向上する傾向'
-  },
-  {
-    id: 3,
-    factor1: 'チーム交流',
-    factor2: '仕事満足度',
-    correlation: 0.55,
-    description: 'チーム内コミュニケーションが多い日は満足度が高い'
-  }
-]
-
-export default function AnalyticsTrends() {
+export default function TrendsPage() {
   const router = useRouter()
-  const [selectedMetric, setSelectedMetric] = useState('mood')
-  const [viewType, setViewType] = useState('week')
+  const [selectedMetric, setSelectedMetric] = useState<'mood' | 'energy' | 'stress' | 'sleep'>('mood')
+  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
 
-  const metrics = [
-    { id: 'mood', label: '気分', icon: Heart, color: 'text-pink-500' },
-    { id: 'stress', label: 'ストレス', icon: Brain, color: 'text-purple-500' },
-    { id: 'sleep', label: '睡眠', icon: Moon, color: 'text-indigo-500' }
-  ]
+  const trendData = {
+    mood: {
+      current: 78,
+      previous: 72,
+      change: 8.3,
+      trend: 'up',
+      data: [65, 68, 70, 72, 75, 78, 78],
+      prediction: 82,
+      factors: ['睡眠改善', '運動習慣', '瞑想']
+    },
+    energy: {
+      current: 82,
+      previous: 75,
+      change: 9.3,
+      trend: 'up',
+      data: [70, 72, 75, 78, 80, 82, 82],
+      prediction: 85,
+      factors: ['朝活', '栄養バランス', '休息']
+    },
+    stress: {
+      current: 35,
+      previous: 48,
+      change: -27.1,
+      trend: 'down',
+      data: [55, 52, 48, 45, 40, 38, 35],
+      prediction: 30,
+      factors: ['深呼吸', 'タスク管理', '休憩']
+    },
+    sleep: {
+      current: 85,
+      previous: 78,
+      change: 9.0,
+      trend: 'up',
+      data: [72, 75, 78, 80, 82, 85, 85],
+      prediction: 88,
+      factors: ['就寝時間固定', 'スクリーン制限', '室温調整']
+    }
+  }
 
-  const viewTypes = [
-    { id: 'week', label: '週間' },
-    { id: 'month', label: '月間' },
-    { id: 'quarter', label: '四半期' }
-  ]
+  const currentData = trendData[selectedMetric]
 
-  const currentData = trendData[selectedMetric as keyof typeof trendData]
+  const getMetricLabel = (metric: string) => {
+    switch(metric) {
+      case 'mood': return '気分'
+      case 'energy': return 'エネルギー'
+      case 'stress': return 'ストレス'
+      case 'sleep': return '睡眠'
+      default: return metric
+    }
+  }
+
+  const getPeriodLabel = (period: string) => {
+    switch(period) {
+      case 'week': return '1週間'
+      case 'month': return '1ヶ月'
+      case 'quarter': return '3ヶ月'
+      case 'year': return '1年'
+      default: return period
+    }
+  }
+
+  // Simple chart component
+  const MiniChart = ({ data, color }: { data: number[], color: string }) => {
+    const maxValue = Math.max(...data)
+    const minValue = Math.min(...data)
+    const range = maxValue - minValue || 1
+
+    return (
+      <div style={{
+        width: '100%',
+        height: '120px',
+        display: 'flex',
+        alignItems: 'flex-end',
+        gap: '4px',
+        padding: '10px 0'
+      }}>
+        {data.map((value, index) => (
+          <div
+            key={index}
+            style={{
+              flex: 1,
+              height: `${((value - minValue) / range) * 100}%`,
+              minHeight: '4px',
+              backgroundColor: color,
+              borderRadius: '4px 4px 0 0',
+              opacity: 0.6 + (index / data.length) * 0.4,
+              transition: 'all 0.3s ease'
+            }}
+          />
+        ))}
+      </div>
+    )
+  }
 
   return (
-    <AppLayout title="トレンド分析" showBackButton>
-      <div className="px-4 py-6 space-y-6">
-        
-        {/* Metric Selector */}
-        <div className="flex space-x-2">
-          {metrics.map((metric) => (
-            <Button
-              key={metric.id}
-              variant={selectedMetric === metric.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedMetric(metric.id)}
-              className="flex-1"
-            >
-              <metric.icon className={`h-4 w-4 mr-2 ${metric.color}`} />
-              {metric.label}
-            </Button>
-          ))}
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Header */}
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginBottom: '8px'
+        }}>
+          <button
+            onClick={() => router.push('/analytics')}
+            style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#9ca3af',
+              fontSize: '20px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ←
+          </button>
+          <h1 style={{
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            margin: 0
+          }}>
+            トレンド分析
+          </h1>
         </div>
+        <p style={{
+          fontSize: '14px',
+          color: '#9ca3af',
+          marginLeft: '44px'
+        }}>
+          長期的な傾向と予測
+        </p>
+      </div>
 
-        {/* Time Period Selector */}
-        <div className="flex space-x-2">
-          {viewTypes.map((type) => (
-            <Button
-              key={type.id}
-              variant={viewType === type.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewType(type.id)}
-              className="flex-1"
+      {/* Period selector */}
+      <div style={{
+        padding: '16px',
+        display: 'flex',
+        gap: '8px',
+        borderBottom: '1px solid #374151'
+      }}>
+        {(['week', 'month', 'quarter', 'year'] as const).map(period => (
+          <button
+            key={period}
+            onClick={() => setSelectedPeriod(period)}
+            style={{
+              flex: 1,
+              padding: '10px',
+              backgroundColor: selectedPeriod === period ? '#a3e635' : '#374151',
+              color: selectedPeriod === period ? '#111827' : '#d1d5db',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {getPeriodLabel(period)}
+          </button>
+        ))}
+      </div>
+
+      {/* Metrics selector */}
+      <div style={{
+        padding: '16px',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '12px'
+      }}>
+        {(['mood', 'energy', 'stress', 'sleep'] as const).map(metric => {
+          const data = trendData[metric]
+          const isSelected = selectedMetric === metric
+          
+          return (
+            <button
+              key={metric}
+              onClick={() => setSelectedMetric(metric)}
+              style={{
+                backgroundColor: isSelected ? '#1f2937' : '#1f2937',
+                border: isSelected ? '2px solid #a3e635' : '2px solid transparent',
+                borderRadius: '12px',
+                padding: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                textAlign: 'left'
+              }}
+              onMouseEnter={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.borderColor = '#4b5563'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isSelected) {
+                  e.currentTarget.style.borderColor = 'transparent'
+                }
+              }}
             >
-              {type.label}
-            </Button>
-          ))}
-        </div>
-
-        {/* Trend Chart Placeholder */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>{metrics.find(m => m.id === selectedMetric)?.label}のトレンド</span>
-              <div className="flex items-center space-x-2">
-                {currentData.trend === 'up' ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <Badge variant={currentData.trend === 'up' ? 'default' : 'destructive'}>
-                  {currentData.change > 0 ? '+' : ''}{currentData.change}%
-                </Badge>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '8px'
+              }}>
+                <span style={{
+                  fontSize: '14px',
+                  color: '#9ca3af',
+                  fontWeight: '500'
+                }}>
+                  {getMetricLabel(metric)}
+                </span>
+                <span style={{
+                  fontSize: '12px',
+                  color: data.trend === 'up' ? '#a3e635' : '#ef4444',
+                  fontWeight: '600'
+                }}>
+                  {data.trend === 'up' ? '↑' : '↓'} {Math.abs(data.change)}%
+                </span>
               </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Simulated chart area */}
-            <div className="h-48 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center space-y-2">
-                <LineChart className="h-12 w-12 text-blue-400 mx-auto" />
-                <p className="text-sm text-gray-600">
-                  {currentData.labels.join(' → ')}
-                </p>
-                <p className="text-xs text-gray-500">
-                  平均値: {currentData.average}
-                </p>
+              <div style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: isSelected ? '#a3e635' : '#f3f4f6'
+              }}>
+                {data.current}%
+              </div>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Main content */}
+      <div style={{ padding: '16px' }}>
+        {/* Current trend card */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '16px'
+          }}>
+            {getMetricLabel(selectedMetric)}の推移
+          </h3>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <div style={{
+                fontSize: '32px',
+                fontWeight: '700',
+                color: '#a3e635',
+                marginBottom: '4px'
+              }}>
+                {currentData.current}%
+              </div>
+              <div style={{
+                fontSize: '14px',
+                color: currentData.trend === 'up' ? '#a3e635' : '#ef4444',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <span>{currentData.trend === 'up' ? '↑' : '↓'}</span>
+                <span>{Math.abs(currentData.change)}%</span>
+                <span style={{ color: '#9ca3af' }}>前期比</span>
+              </div>
+            </div>
+
+            <div style={{
+              textAlign: 'right'
+            }}>
+              <div style={{
+                fontSize: '14px',
+                color: '#9ca3af',
+                marginBottom: '4px'
+              }}>
+                予測値
+              </div>
+              <div style={{
+                fontSize: '24px',
+                fontWeight: '600',
+                color: '#60a5fa'
+              }}>
+                {currentData.prediction}%
+              </div>
+            </div>
+          </div>
+
+          <MiniChart 
+            data={currentData.data} 
+            color={selectedMetric === 'stress' ? '#ef4444' : '#a3e635'}
+          />
+        </div>
+
+        {/* Contributing factors */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '16px'
+          }}>
+            改善要因
+          </h3>
+          
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            {currentData.factors.map((factor, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px',
+                  backgroundColor: '#111827',
+                  borderRadius: '8px'
+                }}
+              >
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#a3e635',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#111827'
+                }}>
+                  {index + 1}
+                </div>
+                <span style={{
+                  fontSize: '14px',
+                  color: '#f3f4f6',
+                  fontWeight: '500'
+                }}>
+                  {factor}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Comparison with others */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '20px'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '16px'
+          }}>
+            他のユーザーとの比較
+          </h3>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '16px'
+          }}>
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#a3e635',
+                marginBottom: '4px'
+              }}>
+                上位 15%
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                同年代の中で
               </div>
             </div>
             
-            {/* Data Points */}
-            <div className="grid grid-cols-7 gap-2">
-              {currentData.data.map((value, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-xs text-gray-500 mb-1">
-                    {currentData.labels[index]}
-                  </div>
-                  <div className="text-sm font-semibold text-gray-800">
-                    {value}
-                  </div>
-                </div>
-              ))}
+            <div style={{
+              backgroundColor: '#111827',
+              borderRadius: '8px',
+              padding: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#60a5fa',
+                marginBottom: '4px'
+              }}>
+                +12%
+              </div>
+              <div style={{
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}>
+                平均より高い
+              </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Pattern Recognition */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Activity className="h-5 w-5 text-orange-500" />
-              <span>パターン分析</span>
-            </CardTitle>
-            <CardDescription>
-              データから発見されたパターンと傾向
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {patterns.map((pattern) => (
-              <div
-                key={pattern.id}
-                className="p-4 border rounded-lg hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-medium text-gray-900">{pattern.title}</h4>
-                  <Badge variant={pattern.strength === 'strong' ? 'default' : 'secondary'}>
-                    {pattern.strength === 'strong' ? '強い' : '中程度'}
-                  </Badge>
-                </div>
-                <p className="text-sm text-gray-700 mb-3">{pattern.description}</p>
-                
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-xs font-medium text-gray-600 mb-1">関連要因:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {pattern.insights.map((insight, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {insight}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="bg-blue-50 p-2 rounded border border-blue-200">
-                    <p className="text-xs font-medium text-blue-800 mb-1">推奨アクション:</p>
-                    <p className="text-xs text-blue-700">{pattern.recommendation}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Correlations */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <BarChart3 className="h-5 w-5 text-green-500" />
-              <span>相関分析</span>
-            </CardTitle>
-            <CardDescription>
-              異なる要因間の関係性
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {correlations.map((corr) => (
-              <div key={corr.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="text-sm font-medium">{corr.factor1}</span>
-                    <span className="text-xs text-gray-500">↔</span>
-                    <span className="text-sm font-medium">{corr.factor2}</span>
-                  </div>
-                  <p className="text-xs text-gray-600">{corr.description}</p>
-                </div>
-                <div className="text-right">
-                  <div className={`text-sm font-bold ${
-                    Math.abs(corr.correlation) > 0.6 
-                      ? corr.correlation > 0 ? 'text-green-600' : 'text-red-600'
-                      : 'text-gray-600'
-                  }`}>
-                    {corr.correlation > 0 ? '+' : ''}{corr.correlation.toFixed(2)}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {Math.abs(corr.correlation) > 0.6 ? '強い' : '中程度'}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Navigation */}
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant="outline"
-            onClick={() => router.push('/analytics/insights')}
-            className="h-16 flex flex-col items-center justify-center space-y-1"
-          >
-            <PieChart className="h-5 w-5" />
-            <span className="text-xs">インサイト</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push('/analytics/reports')}
-            className="h-16 flex flex-col items-center justify-center space-y-1"
-          >
-            <Calendar className="h-5 w-5" />
-            <span className="text-xs">レポート</span>
-          </Button>
+          </div>
         </div>
+
+        {/* Action button */}
+        <button
+          onClick={() => router.push('/analytics/insights')}
+          style={{
+            width: '100%',
+            padding: '16px',
+            backgroundColor: '#a3e635',
+            color: '#111827',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+        >
+          詳細なインサイトを見る
+        </button>
       </div>
-    </AppLayout>
+
+      <MobileBottomNav />
+    </div>
   )
 }

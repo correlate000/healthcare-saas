@@ -1,301 +1,536 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { AppLayout } from '@/components/layout/AppLayout'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Target, 
-  Heart, 
-  Brain, 
-  Zap, 
-  Calendar,
-  Clock,
-  Users,
-  AlertCircle,
-  CheckCircle,
-  Info
-} from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Mock insights data
-const insights = {
-  moodTrends: {
-    current: 7.2,
-    previous: 6.8,
-    change: 0.4,
-    trend: 'up' as const
-  },
-  stressLevels: {
-    current: 3.1,
-    previous: 3.8,
-    change: -0.7,
-    trend: 'down' as const
-  },
-  sleepQuality: {
-    current: 8.1,
-    previous: 7.9,
-    change: 0.2,
-    trend: 'up' as const
-  },
-  socialConnections: {
-    current: 6.5,
-    previous: 6.2,
-    change: 0.3,
-    trend: 'up' as const
-  }
-}
-
-const personalizedInsights = [
-  {
-    id: 1,
-    type: 'positive',
-    icon: CheckCircle,
-    title: 'ストレス管理が改善',
-    description: '先週と比べて、ストレスレベルが22%改善しています。深呼吸の練習が効果的だったようです。',
-    action: '引き続き呼吸法を実践',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-200'
-  },
-  {
-    id: 2,
-    type: 'warning',
-    icon: AlertCircle,
-    title: '睡眠パターンの変化',
-    description: '過去3日間、就寝時間が1時間遅くなっています。睡眠の質に影響する可能性があります。',
-    action: '睡眠スケジュールを見直す',
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-200'
-  },
-  {
-    id: 3,
-    type: 'info',
-    icon: Info,
-    title: 'チーム交流の増加',
-    description: 'チーム内での交流が増え、社会的つながりが向上しています。',
-    action: 'この調子で継続',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-200'
-  }
-]
-
-const weeklyGoals = [
-  { id: 1, title: 'ストレス軽減', progress: 78, target: 100 },
-  { id: 2, title: '睡眠改善', progress: 65, target: 100 },
-  { id: 3, title: '運動習慣', progress: 45, target: 100 },
-  { id: 4, title: 'マインドフルネス', progress: 89, target: 100 }
-]
-
-export default function AnalyticsInsights() {
+export default function InsightsPage() {
   const router = useRouter()
-  const [selectedTimeframe, setSelectedTimeframe] = useState('week')
+  const [selectedTab, setSelectedTab] = useState<'personal' | 'ai' | 'recommendations'>('personal')
 
-  const timeframes = [
-    { id: 'week', label: '1週間' },
-    { id: 'month', label: '1ヶ月' },
-    { id: 'quarter', label: '3ヶ月' }
+  const personalInsights = [
+    {
+      id: 1,
+      title: '睡眠と気分の相関',
+      type: 'positive',
+      icon: '😴',
+      description: '良質な睡眠を取った日は、気分スコアが平均25%高くなっています',
+      recommendation: '22:00までに就寝準備を始めることをおすすめします',
+      data: { sleep: 85, mood: 78 }
+    },
+    {
+      id: 2,
+      title: '週末のストレスレベル',
+      type: 'warning',
+      icon: '📈',
+      description: '日曜日の夕方にストレスレベルが上昇する傾向があります',
+      recommendation: '日曜日の午後にリラックス時間を設けてみましょう',
+      data: { weekday: 45, weekend: 62 }
+    },
+    {
+      id: 3,
+      title: '運動習慣の効果',
+      type: 'positive',
+      icon: '🏃',
+      description: '運動した日は翌日のエネルギーレベルが15%向上しています',
+      recommendation: '週3回、20分以上の軽い運動を継続しましょう',
+      data: { withExercise: 82, without: 67 }
+    },
+    {
+      id: 4,
+      title: '社交活動の影響',
+      type: 'positive',
+      icon: '👥',
+      description: '友人と交流した週は幸福度が20%高い傾向があります',
+      recommendation: '週に1回は友人との時間を作ってみてください',
+      data: { social: 85, alone: 65 }
+    }
+  ]
+
+  const aiInsights = [
+    {
+      id: 1,
+      character: 'Luna',
+      avatar: '🌙',
+      message: 'あなたの記録を分析したところ、朝の時間帯に瞑想を行うと、その日の集中力が格段に向上することがわかりました。明日の朝、5分だけでも試してみませんか？',
+      confidence: 92
+    },
+    {
+      id: 2,
+      character: 'Aria',
+      avatar: '⭐',
+      message: '最近の頑張りは素晴らしいです！特に継続日数が伸びていることは、あなたの意志の強さを示しています。この調子で一緒に頑張りましょう！',
+      confidence: 88
+    },
+    {
+      id: 3,
+      character: 'Zen',
+      avatar: '🧘',
+      message: '内なる声に耳を傾けることで、本当の自分と向き合えます。毎日の記録から、あなたは既に答えを持っていることがわかります。',
+      confidence: 85
+    }
+  ]
+
+  const recommendations = [
+    {
+      id: 1,
+      priority: 'high',
+      title: '睡眠習慣の改善',
+      actions: [
+        '就寝1時間前のスマートフォン使用を控える',
+        '寝室の温度を18-20度に保つ',
+        'カフェインは14時以降摂取しない'
+      ],
+      expectedImpact: 30
+    },
+    {
+      id: 2,
+      priority: 'medium',
+      title: 'ストレス管理テクニック',
+      actions: [
+        '毎日10分の深呼吸エクササイズ',
+        'ストレス日記をつける',
+        '週1回のデジタルデトックス'
+      ],
+      expectedImpact: 25
+    },
+    {
+      id: 3,
+      priority: 'low',
+      title: '社会的つながりの強化',
+      actions: [
+        '月2回の友人との食事',
+        'オンラインコミュニティへの参加',
+        '家族との定期的な連絡'
+      ],
+      expectedImpact: 20
+    }
   ]
 
   return (
-    <AppLayout title="インサイト" showBackButton>
-      <div className="px-4 py-6 space-y-6">
-        
-        {/* Time period selector */}
-        <div className="flex space-x-2">
-          {timeframes.map((timeframe) => (
-            <Button
-              key={timeframe.id}
-              variant={selectedTimeframe === timeframe.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedTimeframe(timeframe.id)}
-              className="flex-1"
-            >
-              {timeframe.label}
-            </Button>
-          ))}
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Header */}
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginBottom: '8px'
+        }}>
+          <button
+            onClick={() => router.push('/analytics')}
+            style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#9ca3af',
+              fontSize: '20px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            ←
+          </button>
+          <h1 style={{
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            margin: 0
+          }}>
+            インサイト
+          </h1>
         </div>
+        <p style={{
+          fontSize: '14px',
+          color: '#9ca3af',
+          marginLeft: '44px'
+        }}>
+          あなたのパターンと改善ポイント
+        </p>
+      </div>
 
-        {/* Key Metrics Overview */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <Heart className="h-4 w-4 text-pink-500" />
-                <span className="text-sm font-medium">気分</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                {insights.moodTrends.trend === 'up' ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className="text-xs text-gray-500">
-                  {insights.moodTrends.change > 0 ? '+' : ''}{insights.moodTrends.change}
-                </span>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {insights.moodTrends.current}/10
-            </div>
-          </Card>
+      {/* Tabs */}
+      <div style={{
+        padding: '16px',
+        display: 'flex',
+        gap: '8px',
+        borderBottom: '1px solid #374151'
+      }}>
+        {[
+          { key: 'personal', label: 'パーソナル' },
+          { key: 'ai', label: 'AIアドバイス' },
+          { key: 'recommendations', label: '推奨アクション' }
+        ].map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setSelectedTab(tab.key as any)}
+            style={{
+              flex: 1,
+              padding: '10px',
+              backgroundColor: selectedTab === tab.key ? '#a3e635' : '#374151',
+              color: selectedTab === tab.key ? '#111827' : '#d1d5db',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <Brain className="h-4 w-4 text-purple-500" />
-                <span className="text-sm font-medium">ストレス</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                {insights.stressLevels.trend === 'down' ? (
-                  <TrendingDown className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingUp className="h-4 w-4 text-red-500" />
-                )}
-                <span className="text-xs text-gray-500">
-                  {insights.stressLevels.change > 0 ? '+' : ''}{insights.stressLevels.change}
-                </span>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {insights.stressLevels.current}/10
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4 text-indigo-500" />
-                <span className="text-sm font-medium">睡眠</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                {insights.sleepQuality.trend === 'up' ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className="text-xs text-gray-500">
-                  {insights.sleepQuality.change > 0 ? '+' : ''}{insights.sleepQuality.change}
-                </span>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {insights.sleepQuality.current}/10
-            </div>
-          </Card>
-
-          <Card className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
-                <Users className="h-4 w-4 text-teal-500" />
-                <span className="text-sm font-medium">社会性</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                {insights.socialConnections.trend === 'up' ? (
-                  <TrendingUp className="h-4 w-4 text-green-500" />
-                ) : (
-                  <TrendingDown className="h-4 w-4 text-red-500" />
-                )}
-                <span className="text-xs text-gray-500">
-                  {insights.socialConnections.change > 0 ? '+' : ''}{insights.socialConnections.change}
-                </span>
-              </div>
-            </div>
-            <div className="text-2xl font-bold text-gray-900">
-              {insights.socialConnections.current}/10
-            </div>
-          </Card>
-        </div>
-
-        {/* Personalized Insights */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Zap className="h-5 w-5 text-yellow-500" />
-              <span>パーソナライズされたインサイト</span>
-            </CardTitle>
-            <CardDescription>
-              あなたのデータから見つかった重要な傾向とアドバイス
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {personalizedInsights.map((insight) => (
+      <div style={{ padding: '16px' }}>
+        {/* Personal Insights */}
+        {selectedTab === 'personal' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {personalInsights.map(insight => (
               <div
                 key={insight.id}
-                className={`p-4 rounded-lg border-2 ${insight.bgColor} ${insight.borderColor}`}
+                style={{
+                  backgroundColor: '#1f2937',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  borderLeft: `4px solid ${insight.type === 'positive' ? '#a3e635' : '#fbbf24'}`
+                }}
               >
-                <div className="flex items-start space-x-3">
-                  <insight.icon className={`h-5 w-5 ${insight.color} flex-shrink-0 mt-0.5`} />
-                  <div className="flex-1 space-y-2">
-                    <h4 className="font-medium text-gray-900">{insight.title}</h4>
-                    <p className="text-sm text-gray-700">{insight.description}</p>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="text-xs">
-                        {insight.action}
-                      </Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-xs h-6 px-2"
-                        onClick={() => router.push('/analytics/trends')}
-                      >
-                        詳細を見る
-                      </Button>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{ fontSize: '24px' }}>{insight.icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: '#f3f4f6',
+                      marginBottom: '8px'
+                    }}>
+                      {insight.title}
+                    </h3>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#d1d5db',
+                      lineHeight: '1.5',
+                      marginBottom: '12px'
+                    }}>
+                      {insight.description}
+                    </p>
+                    
+                    <div style={{
+                      backgroundColor: '#111827',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      marginBottom: '12px'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        textAlign: 'center'
+                      }}>
+                        {Object.entries(insight.data).map(([key, value]) => (
+                          <div key={key}>
+                            <div style={{
+                              fontSize: '20px',
+                              fontWeight: '700',
+                              color: '#a3e635',
+                              marginBottom: '4px'
+                            }}>
+                              {value}%
+                            </div>
+                            <div style={{
+                              fontSize: '12px',
+                              color: '#9ca3af',
+                              textTransform: 'capitalize'
+                            }}>
+                              {key === 'sleep' ? '睡眠' :
+                               key === 'mood' ? '気分' :
+                               key === 'weekday' ? '平日' :
+                               key === 'weekend' ? '週末' :
+                               key === 'withExercise' ? '運動あり' :
+                               key === 'without' ? '運動なし' :
+                               key === 'social' ? '交流あり' :
+                               key === 'alone' ? '交流なし' : key}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div style={{
+                      backgroundColor: insight.type === 'positive' ? 'rgba(163,230,53,0.1)' : 'rgba(251,191,36,0.1)',
+                      borderRadius: '8px',
+                      padding: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <span style={{ fontSize: '14px' }}>💡</span>
+                      <p style={{
+                        fontSize: '13px',
+                        color: insight.type === 'positive' ? '#a3e635' : '#fbbf24',
+                        margin: 0
+                      }}>
+                        {insight.recommendation}
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        )}
 
-        {/* Weekly Goals Progress */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Target className="h-5 w-5 text-blue-500" />
-              <span>今週の目標進捗</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {weeklyGoals.map((goal) => (
-              <div key={goal.id} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-700">{goal.title}</span>
-                  <span className="text-sm text-gray-500">{goal.progress}%</span>
+        {/* AI Insights */}
+        {selectedTab === 'ai' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {aiInsights.map(insight => (
+              <div
+                key={insight.id}
+                style={{
+                  backgroundColor: '#1f2937',
+                  borderRadius: '12px',
+                  padding: '20px'
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                  marginBottom: '12px'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    backgroundColor: '#374151',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    flexShrink: 0
+                  }}>
+                    {insight.avatar}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '8px'
+                    }}>
+                      <h3 style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#f3f4f6'
+                      }}>
+                        {insight.character}からのアドバイス
+                      </h3>
+                      <span style={{
+                        fontSize: '12px',
+                        backgroundColor: '#374151',
+                        color: '#a3e635',
+                        padding: '4px 8px',
+                        borderRadius: '12px'
+                      }}>
+                        確信度 {insight.confidence}%
+                      </span>
+                    </div>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#d1d5db',
+                      lineHeight: '1.6'
+                    }}>
+                      {insight.message}
+                    </p>
+                  </div>
                 </div>
-                <Progress value={goal.progress} className="h-2" />
               </div>
             ))}
-          </CardContent>
-        </Card>
+            
+            <button
+              onClick={() => router.push('/chat')}
+              style={{
+                width: '100%',
+                padding: '16px',
+                backgroundColor: '#374151',
+                color: '#d1d5db',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '15px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+            >
+              <span>💬</span>
+              AIと詳しく話す
+            </button>
+          </div>
+        )}
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <Button
-            variant="outline"
-            onClick={() => router.push('/analytics/trends')}
-            className="h-16 flex flex-col items-center justify-center space-y-1"
-          >
-            <TrendingUp className="h-5 w-5" />
-            <span className="text-xs">トレンド分析</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push('/analytics/reports')}
-            className="h-16 flex flex-col items-center justify-center space-y-1"
-          >
-            <Calendar className="h-5 w-5" />
-            <span className="text-xs">週間レポート</span>
-          </Button>
-        </div>
+        {/* Recommendations */}
+        {selectedTab === 'recommendations' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {recommendations.map(rec => (
+              <div
+                key={rec.id}
+                style={{
+                  backgroundColor: '#1f2937',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  borderTop: `3px solid ${
+                    rec.priority === 'high' ? '#ef4444' :
+                    rec.priority === 'medium' ? '#fbbf24' : '#60a5fa'
+                  }`
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '12px'
+                }}>
+                  <h3 style={{
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    color: '#f3f4f6'
+                  }}>
+                    {rec.title}
+                  </h3>
+                  <span style={{
+                    fontSize: '12px',
+                    backgroundColor: rec.priority === 'high' ? '#ef4444' :
+                                   rec.priority === 'medium' ? '#fbbf24' : '#60a5fa',
+                    color: rec.priority === 'high' ? 'white' : '#111827',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontWeight: '600'
+                  }}>
+                    {rec.priority === 'high' ? '優先度高' :
+                     rec.priority === 'medium' ? '優先度中' : '優先度低'}
+                  </span>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <p style={{
+                    fontSize: '13px',
+                    color: '#9ca3af',
+                    marginBottom: '12px'
+                  }}>
+                    推奨アクション:
+                  </p>
+                  <ul style={{
+                    margin: 0,
+                    paddingLeft: '20px'
+                  }}>
+                    {rec.actions.map((action, index) => (
+                      <li
+                        key={index}
+                        style={{
+                          fontSize: '14px',
+                          color: '#d1d5db',
+                          marginBottom: '6px',
+                          lineHeight: '1.4'
+                        }}
+                      >
+                        {action}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div style={{
+                  backgroundColor: '#111827',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}>
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#9ca3af'
+                  }}>
+                    期待される改善度
+                  </span>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <div style={{
+                      width: '100px',
+                      height: '6px',
+                      backgroundColor: '#374151',
+                      borderRadius: '3px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${rec.expectedImpact}%`,
+                        backgroundColor: '#a3e635',
+                        borderRadius: '3px'
+                      }}></div>
+                    </div>
+                    <span style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#a3e635'
+                    }}>
+                      {rec.expectedImpact}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button
+              onClick={() => router.push('/daily-challenge')}
+              style={{
+                width: '100%',
+                padding: '16px',
+                backgroundColor: '#a3e635',
+                color: '#111827',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+            >
+              今日のチャレンジを始める
+            </button>
+          </div>
+        )}
       </div>
-    </AppLayout>
+
+      <MobileBottomNav />
+    </div>
   )
 }
