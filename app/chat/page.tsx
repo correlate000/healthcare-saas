@@ -87,13 +87,7 @@ export default function ChatPage() {
     }
   }
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+  // Remove auto-scroll to prevent unwanted scrolling on character selection or page load
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
@@ -149,22 +143,28 @@ export default function ChatPage() {
         : '静寂の中へようこそ。Zenです。心を落ち着けて、ゆっくりと話していきましょう。',
       time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
     }])
+    
+    // Prevent scroll by resetting scroll position to top
+    const messagesArea = document.querySelector('[style*="overflowY"]')
+    if (messagesArea) {
+      messagesArea.scrollTop = 0
+    }
   }
 
   const currentCharacter = characters.find(c => c.id === selectedCharacter) || characters[0]
 
   return (
     <div style={{ 
-      minHeight: '100vh', 
+      height: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '160px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden'
     }}>
       {/* Header with character selection */}
-      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
+      <div style={{ padding: '16px', borderBottom: '1px solid #374151', flexShrink: 0 }}>
         <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: '0 0 16px 0' }}>
           チャット
         </h1>
@@ -252,7 +252,8 @@ export default function ChatPage() {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px'
+        gap: '16px',
+        minHeight: 0
       }}>
         {messages.map((message) => (
           <div
@@ -366,10 +367,10 @@ export default function ChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick responses - only show when conversation hasn't started much */}
-      {messages.length <= 2 && (
-        <div style={{ padding: '0 16px 16px' }}>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+      {/* Quick responses - only show for the very first message */}
+      {messages.length === 1 && (
+        <div style={{ padding: '0 16px 16px', flexShrink: 0 }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {quickResponses.map((response) => (
             <button
               key={response}
@@ -402,7 +403,7 @@ export default function ChatPage() {
       )}
 
       {/* Message input */}
-      <div style={{ padding: '0 16px 16px' }}>
+      <div style={{ padding: '16px', flexShrink: 0, paddingBottom: '80px' }}>
         <form id="chat-form" onSubmit={handleSendMessage} style={{ 
           display: 'flex', 
           alignItems: 'center', 

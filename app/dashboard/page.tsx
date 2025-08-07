@@ -16,6 +16,45 @@ export default function Dashboard() {
   const [currentMood] = useState('😊')
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
+  
+  // 強力な運勢メッセージをランダム取得
+  const getTodaysMessage = () => {
+    const messages = [
+      {
+        message: '運命の流れがあなたを強く支えている。今日は疑いを捨て、直感を信じて進め。',
+        subMessage: 'あなたの内なる声が最強の武器だ。',
+        color: '#ef4444',
+        emoji: '🔥'
+      },
+      {
+        message: '宇宙があなたの味方である。障害はすべて成長の種。恐れずに立ち向かえ。',
+        subMessage: '挑戦こそが、あなたを光らせる。',
+        color: '#a855f7',
+        emoji: '✨'
+      },
+      {
+        message: '今日のあなたは無敵だ。過去の痛みがあなたを鍛え、最強の盾となっている。',
+        subMessage: '破壊と再生の間で、真の力が生まれる。',
+        color: '#dc2626',
+        emoji: '⚡'
+      },
+      {
+        message: '星々があなたのために整列している。不可能を可能に変える時が来た。',
+        subMessage: '限界は幻想。あなたの可能性は無限だ。',
+        color: '#0ea5e9',
+        emoji: '🌌'
+      },
+      {
+        message: '深淵なる古の智恵があなたの中で覚醒している。今日の選択が運命を変える。',
+        subMessage: '答えは既にあなたの中にある。静寂に耳を傾けよ。',
+        color: '#059669',
+        emoji: '🔮'
+      }
+    ]
+    return messages[Math.floor(Math.random() * messages.length)]
+  }
+  
+  const todaysOracle = getTodaysMessage()
 
   const todaysChallenges = [
     { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', difficulty: '簡単' },
@@ -247,28 +286,84 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 今日の運勢・メッセージ */}
+      {/* 今日の運勢・オラクル */}
       <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '20px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease'
-        }}
-        onClick={() => router.push('/emotion-diary')}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '12px', margin: '0 0 12px 0' }}>今日の運勢・メッセージ</h3>
-          <p style={{ fontSize: '14px', color: '#d1d5db', marginBottom: '8px', margin: '0 0 8px 0', lineHeight: '1.5' }}>
-            あなたの存在自体が、誰かにとっての光になっています。
-          </p>
-          <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 12px 0', lineHeight: '1.5' }}>
-            今日も自分らしく、一歩ずつ前に進んでいきましょう。
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '16px' }}>🔵</span>
-            <span style={{ fontSize: '12px', color: '#60a5fa' }}>今日のラッキーカラー: ブルー</span>
+          background: `linear-gradient(135deg, #1f2937 0%, rgba(${todaysOracle.color === '#ef4444' ? '239, 68, 68' : todaysOracle.color === '#a855f7' ? '168, 85, 247' : todaysOracle.color === '#dc2626' ? '220, 38, 38' : todaysOracle.color === '#0ea5e9' ? '14, 165, 233' : '5, 150, 105'}, 0.1) 100%)`,
+          borderRadius: '16px',
+          padding: '24px',
+          position: 'relative',
+          border: `1px solid ${todaysOracle.color}30`,
+          boxShadow: `0 8px 32px ${todaysOracle.color}20`
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '-8px',
+            left: '24px',
+            backgroundColor: todaysOracle.color,
+            color: 'white',
+            padding: '4px 12px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: '700',
+            letterSpacing: '0.5px'
+          }}>
+            TODAY'S ORACLE
+          </div>
+          
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '8px' }}>
+            <div style={{
+              fontSize: '48px',
+              animation: 'mysticalGlow 3s ease-in-out infinite'
+            }}>
+              {todaysOracle.emoji}
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <p style={{ 
+                fontSize: '16px', 
+                color: '#f3f4f6', 
+                marginBottom: '12px', 
+                margin: '0 0 12px 0', 
+                lineHeight: '1.6',
+                fontWeight: '500'
+              }}>
+                {todaysOracle.message}
+              </p>
+              
+              <p style={{ 
+                fontSize: '14px', 
+                color: todaysOracle.color, 
+                margin: '0 0 16px 0', 
+                lineHeight: '1.5',
+                fontStyle: 'italic',
+                fontWeight: '600'
+              }}>
+                {todaysOracle.subMessage}
+              </p>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px',
+                padding: '8px 0'
+              }}>
+                <div style={{
+                  width: '4px',
+                  height: '20px',
+                  backgroundColor: todaysOracle.color,
+                  borderRadius: '2px'
+                }}></div>
+                <span style={{ 
+                  fontSize: '12px', 
+                  color: '#9ca3af',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase' 
+                }}>
+                  宇宙からのメッセージ
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -670,6 +765,17 @@ export default function Dashboard() {
             0% { transform: scale(1) rotate(0deg); }
             50% { transform: scale(1.2) rotate(5deg); }
             100% { transform: scale(1) rotate(0deg); }
+          }
+          
+          @keyframes mysticalGlow {
+            0%, 100% {
+              filter: drop-shadow(0 0 5px currentColor);
+              transform: scale(1);
+            }
+            50% {
+              filter: drop-shadow(0 0 20px currentColor);
+              transform: scale(1.05);
+            }
           }
           
           @keyframes completeChallenge {
