@@ -2,16 +2,12 @@
 
 import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { motion } from 'framer-motion'
 import { 
   Home, 
-  Heart, 
   MessageSquare, 
   BarChart3, 
-  User,
   Calendar,
-  Settings,
-  Bell
+  Settings
 } from 'lucide-react'
 
 interface NavItem {
@@ -30,12 +26,6 @@ const navItems: NavItem[] = [
     path: '/dashboard'
   },
   {
-    id: 'checkin',
-    label: 'チェックイン',
-    icon: Heart,
-    path: '/checkin'
-  },
-  {
     id: 'chat',
     label: 'チャット',
     icon: MessageSquare,
@@ -52,6 +42,12 @@ const navItems: NavItem[] = [
     label: '予約',
     icon: Calendar,
     path: '/booking'
+  },
+  {
+    id: 'settings',
+    label: '設定',
+    icon: Settings,
+    path: '/settings'
   }
 ]
 
@@ -64,82 +60,74 @@ export function MobileBottomNav() {
   }
 
   return (
-    <>
-      {/* ボトムナビゲーション */}
-      <motion.nav
-        className="fixed bottom-0 left-0 right-0 w-full max-w-[375px] mx-auto bg-gray-900/95 backdrop-blur-lg border-t border-gray-700/50 z-[100] shadow-2xl"
-        initial={{ y: 80 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 40, duration: 0.3 }}
-      >
-        <div className="px-2 py-2">
-          <div className="grid grid-cols-5 gap-1">
-            {navItems.map((item) => {
-              const IconComponent = item.icon
-              const isActive = pathname === item.path
-              
-              return (
-                <motion.button
-                  key={item.id}
-                  className={`relative flex flex-col items-center justify-center p-2 rounded-lg transition-all duration-200 touch-manipulation min-h-[60px] ${
-                    isActive 
-                      ? 'text-emerald-400' 
-                      : 'text-gray-500 hover:text-gray-300 active:text-emerald-400'
-                  }`}
-                  onClick={() => handleNavigation(item.path)}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  {/* アクティブ状態の背景 */}
-                  {isActive && (
-                    <motion.div
-                      className="absolute inset-0 bg-gray-800/80 rounded-lg border border-emerald-400/20"
-                      layoutId="activeBackground"
-                      initial={false}
-                      transition={{
-                        type: "spring",
-                        stiffness: 500,
-                        damping: 40,
-                        duration: 0.2
-                      }}
-                    />
-                  )}
-                  
-                  {/* アイコンとバッジ */}
-                  <div className="relative z-10">
-                    <div className="relative">
-                      <IconComponent 
-                        className={`h-5 w-5 transition-all duration-200 ${
-                          isActive ? 'scale-105 drop-shadow-sm' : ''
-                        }`}
-                      />
-                      
-                      {/* 通知バッジ */}
-                      {item.badge && item.badge > 0 && (
-                        <motion.div
-                          className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full min-w-[16px] h-[16px] flex items-center justify-center px-1"
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ type: "spring", stiffness: 500 }}
-                        >
-                          {item.badge > 99 ? '99+' : item.badge}
-                        </motion.div>
-                      )}
-                    </div>
-                    
-                    {/* ラベル */}
-                    <span className={`text-xs mt-1 font-medium transition-all duration-200 ${
-                      isActive ? 'opacity-100 text-emerald-400' : 'opacity-80 text-gray-500'
-                    }`}>
-                      {item.label}
-                    </span>
-                  </div>
-                </motion.button>
-              )
-            })}
-          </div>
-        </div>
-        
-      </motion.nav>
-    </>
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: '#111827',
+      borderTop: '1px solid #374151',
+      zIndex: 50,
+      padding: '8px 0'
+    }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(5, 1fr)',
+        maxWidth: '500px',
+        margin: '0 auto'
+      }}>
+        {navItems.map((item) => {
+          const IconComponent = item.icon
+          const isActive = pathname === item.path
+          
+          return (
+            <button
+              key={item.id}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '12px 8px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: isActive ? '#a3e635' : '#9ca3af',
+                transition: 'all 0.2s ease'
+              }}
+              onClick={() => handleNavigation(item.path)}
+            >
+              <div style={{
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '4px',
+                borderRadius: '50%',
+                backgroundColor: isActive ? '#a3e635' : 'transparent',
+                transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                transition: 'all 0.3s ease'
+              }}>
+                <IconComponent 
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    color: isActive ? '#111827' : '#9ca3af'
+                  }}
+                />
+              </div>
+              <span style={{
+                fontSize: '12px',
+                fontWeight: '500',
+                color: isActive ? '#a3e635' : '#9ca3af'
+              }}>
+                {item.label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
   )
 }

@@ -1,215 +1,290 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Send } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// AI Character data
-const characters = {
-  luna: {
-    name: 'Luna',
-    avatar: '🌙',
-    greeting: 'XXさん、今日も一日お疲れ様でした。継続して記録していることが素晴らしいですね。明日もよい一日になりますように。'
-  }
-}
-
-// Sample conversation based on wireframe
-const initialMessages = [
-  {
-    id: 1,
-    character: 'luna',
-    message: 'XXさん、今日も一日お疲れ様でした。継続して記録していることが素晴らしいですね。明日もよい一日になりますように。',
-    timestamp: '18:30',
-    type: 'character'
-  }
-]
-
 export default function ChatPage() {
-  const router = useRouter()
-  const [selectedCharacter] = useState<keyof typeof characters>('luna')
-  const [messages, setMessages] = useState(initialMessages)
   const [newMessage, setNewMessage] = useState('')
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [selectedCharacter, setSelectedCharacter] = useState('luna')
 
-  const character = characters[selectedCharacter]
+  const characters = [
+    { id: 'luna', name: 'Luna', color: '#a3e635' },
+    { id: 'aria', name: 'Aria', color: '#60a5fa' },
+    { id: 'zen', name: 'Zen', color: '#f59e0b' },
+  ]
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  const messages = [
+    {
+      id: 1,
+      type: 'character',
+      content: 'こんにちは！今日の調子はいかがですか？',
+      time: '10:30'
+    },
+    {
+      id: 2,
+      type: 'user',
+      content: 'おはようございます。今日は少し疲れています。',
+      time: '10:32'
+    },
+    {
+      id: 3,
+      type: 'character',
+      content: 'そうですね。疲れているときは無理をせず、ゆっくり休息を取ることが大切です。深呼吸をしてみましょう。',
+      time: '10:33'
+    }
+  ]
 
-  const handleSendMessage = async (e: React.FormEvent) => {
+  const quickResponses = [
+    '元気です',
+    '疲れています',
+    'ありがとう',
+    'もっと聞きたい'
+  ]
+
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (!newMessage.trim()) return
-
-    const userMessage = {
-      id: Date.now(),
-      character: 'user',
-      message: newMessage,
-      timestamp: new Date().toLocaleTimeString('ja-JP', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      }),
-      type: 'user' as const
-    }
-
-    setMessages(prev => [...prev, userMessage])
     setNewMessage('')
-    setIsTyping(true)
+  }
 
-    // Simulate AI response
-    setTimeout(() => {
-      const responses = [
-        'ありがとうございます。今日の気持ちはいかがでしたか？',
-        'お疲れ様です。明日もお互い頑張りましょう。',
-        '継続は力なりですね。素晴らしい取り組みです。',
-        '今日はどんなことがありましたか？'
-      ]
-
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-
-      const characterMessage = {
-        id: Date.now() + 1,
-        character: selectedCharacter,
-        message: randomResponse,
-        timestamp: new Date().toLocaleTimeString('ja-JP', { 
-          hour: '2-digit', 
-          minute: '2-digit' 
-        }),
-        type: 'character' as const
-      }
-
-      setMessages(prev => [...prev, characterMessage])
-      setIsTyping(false)
-    }, 1500)
+  const handleQuickResponse = (response: string) => {
+    setNewMessage(response)
   }
 
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col">
-      {/* Character area */}
-      <div className="p-6 flex flex-col items-center">
-        <div className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center mb-6 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-          <span className="text-white text-xl font-bold tracking-wide">キャラクター</span>
-        </div>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#111827', 
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* Header with character selection */}
+      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
+        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: '0 0 16px 0' }}>
+          チャット
+        </h1>
         
-        {/* Achievement message - improved typography */}
-        <div className="text-center mb-6">
-          <h2 className="text-white text-xl font-bold mb-3 tracking-wide">今日もお疲れ様でした</h2>
-          <p className="text-gray-200 text-sm font-medium">記録完了 - 15日連続ログイン達成！</p>
+        {/* Character selection */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+          {characters.map((character) => (
+            <button
+              key={character.id}
+              onClick={() => setSelectedCharacter(character.id)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                backgroundColor: selectedCharacter === character.id ? character.color : '#374151',
+                color: selectedCharacter === character.id ? '#111827' : '#d1d5db',
+                borderRadius: '20px',
+                border: 'none',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <div style={{
+                width: '24px',
+                height: '24px',
+                backgroundColor: selectedCharacter === character.id ? '#111827' : character.color,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <span style={{ 
+                  fontSize: '10px', 
+                  fontWeight: '600',
+                  color: selectedCharacter === character.id ? character.color : '#111827'
+                }}>
+                  AI
+                </span>
+              </div>
+              {character.name}
+            </button>
+          ))}
         </div>
-        
-        {/* Weekly records button - enhanced visual */}
-        <Button 
-          onClick={() => router.push('/analytics')}
-          className="w-full max-w-xs bg-gray-600/90 text-white hover:bg-gray-500 rounded-xl mb-6 font-semibold py-3 shadow-md hover:shadow-lg transition-all duration-200"
-        >
-          今週の記録を見る
-        </Button>
-      </div>
 
-      {/* Character comment section */}
-      <div className="px-4 mb-4">
-        <div className="flex items-start space-x-3 mb-4">
-          <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm">XX</span>
+        {/* Character info */}
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: '#a3e635',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <span style={{ color: '#111827', fontSize: '12px', fontWeight: '600' }}>
+              キャラクター
+            </span>
           </div>
-          <div className="flex-1">
-            <p className="text-white text-sm font-medium mb-1">XX:キャラクター名からのコメント</p>
-          </div>
-        </div>
-        
-        <div className="bg-gray-700/95 rounded-2xl p-5 mb-6 border border-gray-600/30 shadow-sm">
-          <p className="text-gray-100 text-sm leading-relaxed font-medium">
-            XXさん、今日も一日お疲れ様でした。継続して記録していることが素晴らしいですね。明日もよい一日になりますように。
-          </p>
-          <div className="mt-4 text-gray-400 text-xs font-medium">
-            健康管理を続けることで、心身のバランスが整ってきますよ。
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6' }}>Luna</div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>オンライン</div>
           </div>
         </div>
       </div>
 
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-4 space-y-4 mb-4 overscroll-contain">
-        <AnimatePresence>
-          {messages.slice(0, 0).map((message) => ( // Hide initial message since it's shown above
-            <motion.div
-              key={message.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`max-w-[80%] ${message.type === 'user' ? 'order-2' : 'order-1'}`}>
-                <div
-                  className={`px-4 py-3 rounded-2xl shadow-sm ${
-                    message.type === 'user'
-                      ? 'bg-gray-600/90 text-white border border-gray-500/30'
-                      : 'bg-gray-700/90 text-gray-100 border border-gray-600/30'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed">{message.message}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        
-        {/* Typing indicator */}
-        {isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-start"
+      <div style={{ 
+        flex: 1, 
+        padding: '16px', 
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            style={{
+              display: 'flex',
+              justifyContent: message.type === 'user' ? 'flex-end' : 'flex-start',
+              alignItems: 'flex-end',
+              gap: '8px'
+            }}
           >
-            <div className="bg-gray-700/90 px-4 py-3 rounded-2xl shadow-sm border border-gray-600/30">
-              <div className="flex space-x-1">
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 bg-gray-300 rounded-full"
-                    animate={{ opacity: [0.4, 1, 0.4] }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      delay: i * 0.15
-                    }}
-                  />
-                ))}
+            {message.type === 'character' && (
+              <div style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: '#a3e635',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <span style={{ color: '#111827', fontSize: '10px', fontWeight: '600' }}>AI</span>
               </div>
+            )}
+            
+            <div style={{
+              maxWidth: '70%',
+              padding: '12px 16px',
+              borderRadius: message.type === 'user' ? '18px 18px 6px 18px' : '18px 18px 18px 6px',
+              backgroundColor: message.type === 'user' ? '#a3e635' : '#374151',
+              color: message.type === 'user' ? '#111827' : '#f3f4f6'
+            }}>
+              <p style={{ 
+                fontSize: '14px', 
+                margin: '0 0 4px 0', 
+                lineHeight: '1.4',
+                fontWeight: message.type === 'user' ? '500' : '400'
+              }}>
+                {message.content}
+              </p>
+              <span style={{ 
+                fontSize: '11px', 
+                color: message.type === 'user' ? '#065f46' : '#9ca3af',
+                fontWeight: '500'
+              }}>
+                {message.time}
+              </span>
             </div>
-          </motion.div>
-        )}
-        
-        <div ref={messagesEndRef} />
+          </div>
+        ))}
+      </div>
+
+      {/* Quick responses */}
+      <div style={{ padding: '0 16px 16px' }}>
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+          {quickResponses.map((response) => (
+            <button
+              key={response}
+              onClick={() => handleQuickResponse(response)}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#374151',
+                color: '#d1d5db',
+                border: '1px solid #4b5563',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#4b5563'
+                e.currentTarget.style.color = '#f3f4f6'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#374151'
+                e.currentTarget.style.color = '#d1d5db'
+              }}
+            >
+              {response}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Message input */}
-      <div className="p-4 pt-0">
-        <form onSubmit={handleSendMessage} className="flex space-x-3">
+      <div style={{ padding: '0 16px 16px' }}>
+        <form onSubmit={handleSendMessage} style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px',
+          padding: '16px',
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          border: '1px solid #374151'
+        }}>
           <input
+            type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="メッセージを入力..."
-            className="flex-1 bg-gray-700/90 text-white placeholder-gray-400 px-4 py-3 rounded-2xl border border-gray-600/30 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-all duration-200 font-medium"
-            disabled={isTyping}
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#d1d5db',
+              fontSize: '14px',
+              outline: 'none',
+              fontFamily: 'inherit'
+            }}
           />
           <button
             type="submit"
-            disabled={!newMessage.trim() || isTyping}
-            className="w-12 h-12 bg-gray-600/90 hover:bg-gray-500 disabled:bg-gray-700/50 text-white rounded-full flex items-center justify-center transition-all duration-200 shadow-md hover:shadow-lg disabled:shadow-none hover:scale-105 disabled:scale-100"
+            style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: '#a3e635',
+              borderRadius: '50%',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#84cc16'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#a3e635'
+            }}
           >
-            <Send className="h-5 w-5" />
+            <span style={{ color: '#111827', fontSize: '18px', fontWeight: '600' }}>➤</span>
           </button>
         </form>
-        
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
       </div>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )

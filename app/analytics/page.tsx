@@ -1,54 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { 
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  Clock,
-  Heart,
-  Brain,
-  Target,
-  Award,
-  Activity,
-  BarChart3,
-  PieChart,
-  Zap,
-  Star,
-  ChevronRight,
-  Download,
-  Share,
-  Filter,
-  Info,
-  CheckCircle,
-  AlertCircle,
-  Smile,
-  Frown,
-  Meh
-} from 'lucide-react'
-
-interface MoodData {
-  day: string
-  mood: number
-  energy: number
-  stress: number
-  sleep: number
-}
-
 
 export default function AnalyticsPage() {
-  const router = useRouter()
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week')
-  const [selectedMetric, setSelectedMetric] = useState<'mood' | 'energy' | 'stress' | 'sleep'>('mood')
 
-  // Wireframe pages 21-22 exact data structure
-  const weeklyData: MoodData[] = [
+  const weeklyData = [
     { day: '月', mood: 75, energy: 80, stress: 40, sleep: 85 },
     { day: '火', mood: 80, energy: 75, stress: 35, sleep: 80 },
     { day: '水', mood: 85, energy: 90, stress: 30, sleep: 90 },
@@ -58,182 +16,287 @@ export default function AnalyticsPage() {
     { day: '日', mood: 88, energy: 90, stress: 15, sleep: 90 }
   ]
 
-  // Monthly emotion progress data from wireframe page 22
-  const monthlyProgressData = [
-    { week: '第1週', percentage: 65 },
-    { week: '第2週', percentage: 70 },
-    { week: '第3週', percentage: 72 },
-    { week: '第4週', percentage: 75 },
-    { week: '第5週', percentage: 78 }
+  const periods = [
+    { key: 'week', label: '1週間' },
+    { key: 'month', label: '1ヶ月' },
+    { key: 'year', label: '1年' }
   ]
 
-
-
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col">
-      {/* Header - exact wireframe */}
-      <div className="p-4">
-        <h1 className="text-white text-xl font-semibold tracking-wide mb-4">分析・統計レポート</h1>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#111827', 
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Header */}
+      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
+        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+          分析・統計
+        </h1>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-4 space-y-6">
+      <div style={{ padding: '16px' }}>
         {/* Period selector */}
-        <div className="flex space-x-2">
-          {[
-            {key: 'week', label: '1週間'}, 
-            {key: 'month', label: '1ヶ月'}, 
-            {key: 'year', label: '1年'}
-          ].map((period) => (
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+          {periods.map((period) => (
             <button
               key={period.key}
               onClick={() => setSelectedPeriod(period.key as any)}
-              className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 min-h-[48px] touch-manipulation ${
-                selectedPeriod === period.key
-                  ? 'bg-emerald-500 text-white shadow-lg'
-                  : 'bg-gray-700/90 text-gray-300 hover:bg-gray-600/90 border border-gray-600/30'
-              }`}
+              style={{
+                flex: 1,
+                padding: '12px 16px',
+                backgroundColor: selectedPeriod === period.key ? '#a3e635' : '#374151',
+                color: selectedPeriod === period.key ? '#111827' : '#d1d5db',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
             >
               {period.label}
             </button>
           ))}
         </div>
 
-        {/* Summary Stats - exact wireframe matching */}
-        <div className="grid grid-cols-2 gap-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">7日</div>
-              <div className="text-sm text-gray-400 font-medium">総セッション数</div>
+        {/* Summary stats */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(2, 1fr)', 
+          gap: '12px', 
+          marginBottom: '24px' 
+        }}>
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '16px', 
+            textAlign: 'center' 
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>
+              15
             </div>
-          </motion.div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>連続記録日数</div>
+          </div>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">21h</div>
-              <div className="text-sm text-gray-400 font-medium">総利用時間</div>
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '16px', 
+            textAlign: 'center' 
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>
+              82%
             </div>
-          </motion.div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>平均気分スコア</div>
+          </div>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">15日</div>
-              <div className="text-sm text-gray-400 font-medium">継続日数記録</div>
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '16px', 
+            textAlign: 'center' 
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>
+              7
             </div>
-          </motion.div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>総セッション数</div>
+          </div>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white mb-1">82%</div>
-              <div className="text-sm text-gray-400 font-medium">平均気分スコア</div>
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '16px', 
+            textAlign: 'center' 
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>
+              21h
             </div>
-          </motion.div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>総利用時間</div>
+          </div>
         </div>
 
-        {/* Weekly Trend - exact wireframe */}
-        <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">週間トレンド</h3>
-          <h4 className="text-white font-medium">気分スコア</h4>
+        {/* Weekly trend section */}
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            週間トレンド
+          </h3>
+          
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '20px',
+            marginBottom: '20px'
+          }}>
+            <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+              気分スコア
+            </h4>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {weeklyData.map((day) => (
+                <div
+                  key={day.day}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}
+                >
+                  <span style={{ fontSize: '14px', color: '#d1d5db', width: '20px', fontWeight: '500' }}>
+                    {day.day}
+                  </span>
+                  <div style={{
+                    flex: 1,
+                    height: '8px',
+                    backgroundColor: '#374151',
+                    borderRadius: '4px',
+                    position: 'relative'
+                  }}>
+                    <div style={{
+                      position: 'absolute',
+                      height: '100%',
+                      width: `${day.mood}%`,
+                      backgroundColor: '#a3e635',
+                      borderRadius: '4px',
+                      transition: 'width 0.5s ease'
+                    }}></div>
+                  </div>
+                  <span style={{ fontSize: '14px', color: '#d1d5db', width: '36px', textAlign: 'right', fontWeight: '500' }}>
+                    {day.mood}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Chart - exact wireframe layout */}
-        <div className="space-y-3">
-          {weeklyData.map((day, index) => (
-            <motion.div
-              key={day.day}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center space-x-4"
-            >
-              <span className="text-white text-sm font-medium w-6">{day.day}</span>
-              <div className="flex-1 bg-gray-600/70 rounded-full h-3">
-                <div 
-                  className="bg-gray-400 h-3 rounded-full transition-all duration-1000"
-                  style={{ width: `${day.mood}%` }}
-                />
+        {/* Weekly reflection */}
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            今週の振り返り
+          </h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px' 
+            }}>
+              <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
+                今週は安定した気持ちで過ごせていますね。特に木曜日の満足度が高く、週末に向けて良い流れができています。
+              </p>
+            </div>
+            
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px' 
+            }}>
+              <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6', marginBottom: '8px', margin: '0 0 8px 0' }}>
+                気分の向上
+              </h4>
+              <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
+                先週と比べて平均気分スコアが12%向上しています
+              </p>
+            </div>
+            
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px' 
+            }}>
+              <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6', marginBottom: '8px', margin: '0 0 8px 0' }}>
+                継続力アップ
+              </h4>
+              <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
+                7日連続でセッションを完了！素晴らしい継続力です！
+              </p>
+            </div>
+            
+            <div style={{ 
+              backgroundColor: '#1f2937', 
+              borderRadius: '12px', 
+              padding: '16px' 
+            }}>
+              <h4 style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6', marginBottom: '8px', margin: '0 0 8px 0' }}>
+                週間目標達成
+              </h4>
+              <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
+                今週の目標時間180分を20分オーバーで達成！
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Character insights */}
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            AIからのインサイト
+          </h3>
+          
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '20px' 
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <div style={{ 
+                width: '40px', 
+                height: '40px', 
+                backgroundColor: '#a3e635', 
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <span style={{ color: '#111827', fontSize: '12px', fontWeight: '600' }}>AI</span>
               </div>
-              <span className="text-white text-sm font-semibold w-10 text-right">{day.mood}%</span>
-            </motion.div>
-          ))}
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>Lunaからのアドバイス</span>
+            </div>
+            
+            <div style={{ 
+              backgroundColor: '#374151', 
+              borderRadius: '8px', 
+              padding: '16px' 
+            }}>
+              <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
+                あなたの記録を見ていると、規則正しい生活リズムが気分の安定に繋がっているようですね。特に睡眠時間と気分スコアに良い相関が見られます。この調子で続けていけば、さらに良い結果が期待できそうです。
+              </p>
+            </div>
+          </div>
         </div>
 
-
-        {/* Weekly reflection - exact wireframe */}
-        <div className="space-y-4">
-          <h3 className="text-white font-semibold tracking-wide">今週の振り返り</h3>
+        {/* Monthly progress comparison */}
+        <div style={{ marginBottom: '20px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            月間比較
+          </h3>
           
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <p className="text-gray-300 text-sm leading-relaxed">
-              今週は安定した気持ちで過ごせていますね。特に金曜日の満足度が高く、週末に向けて良い流れができています。
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <h4 className="text-white font-semibold mb-2">気分の向上</h4>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              先週と比べて平均気分スコアが12%向上しています
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <h4 className="text-white font-semibold mb-2">継続力アップ</h4>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              7日連続でセッションを完了！素晴らしい継続力です！
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-          >
-            <h4 className="text-white font-semibold mb-2">週間目標達成</h4>
-            <p className="text-gray-300 text-sm leading-relaxed">
-              今週の目標時間180分を20分オーバーで達成！
-            </p>
-          </motion.div>
+          <div style={{ 
+            backgroundColor: '#1f2937', 
+            borderRadius: '12px', 
+            padding: '20px' 
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635' }}>78%</div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>今月平均</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#6b7280' }}>72%</div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>前月平均</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635' }}>+6%</div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>改善度</div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
       </div>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )

@@ -1,336 +1,535 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { 
-  User,
-  Settings,
-  Bell,
-  Shield,
-  Moon,
-  Sun,
-  HelpCircle,
-  MessageSquare,
-  Star,
-  LogOut,
-  Edit,
-  ChevronRight,
-  Download,
-  Upload,
-  Trash2,
-  Mail,
-  Lock,
-  Eye,
-  Smartphone,
-  Globe,
-  Volume2,
-  VolumeX,
-  Palette,
-  Database,
-  Calendar,
-  Clock,
-  Award,
-  Target,
-  TrendingUp,
-  Heart
-} from 'lucide-react'
 
-// Wireframe page 28 exact data structure and layout
 export default function SettingsPage() {
-  const router = useRouter()
-  const [notificationSettings, setNotificationSettings] = useState({
+  const [notifications, setNotifications] = useState({
     checkinReminder: true,
-    morningReminder: true,
-    eveningReminder: true,
     weeklyReport: true,
-    encouragementMessages: true,
-    marketingInfo: false
+    encouragement: true,
+    marketing: false
   })
 
-  const toggleNotification = (key: string) => {
-    setNotificationSettings(prev => ({
+  const toggleNotification = (key: keyof typeof notifications) => {
+    setNotifications(prev => ({
       ...prev,
-      [key]: !prev[key as keyof typeof prev]
+      [key]: !prev[key]
     }))
   }
 
+  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      style={{
+        width: '48px',
+        height: '28px',
+        backgroundColor: checked ? '#a3e635' : '#4b5563',
+        borderRadius: '14px',
+        position: 'relative',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease'
+      }}
+    >
+      <div style={{
+        width: '24px',
+        height: '24px',
+        backgroundColor: 'white',
+        borderRadius: '50%',
+        position: 'absolute',
+        top: '2px',
+        left: checked ? '22px' : '2px',
+        transition: 'all 0.2s ease'
+      }}></div>
+    </button>
+  )
+
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col">
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#111827', 
+      color: 'white',
+      paddingBottom: '80px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Header */}
-      <div className="p-4">
-        <h1 className="text-white text-xl font-semibold text-center tracking-wide">設定</h1>
+      <div style={{ padding: '16px', textAlign: 'center', borderBottom: '1px solid #374151' }}>
+        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+          設定
+        </h1>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-4 space-y-6">
-        {/* Profile section - exact wireframe */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-700/95 rounded-2xl p-4 border border-gray-600/30"
-        >
-          <div className="flex items-center space-x-4 mb-4">
-            <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
-              <User className="w-6 h-6 text-gray-300" />
+      <div style={{ padding: '16px' }}>
+        {/* Profile section */}
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          marginBottom: '24px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              backgroundColor: '#a3e635',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <span style={{ color: '#111827', fontSize: '14px', fontWeight: '600' }}>
+                ユーザー
+              </span>
             </div>
-            <div className="flex-1">
-              <h3 className="text-white font-semibold">ユーザー名</h3>
-              <p className="text-sm text-gray-400">xxx@gmail.com</p>
-              <p className="text-xs text-gray-400">2025年6月から利用開始</p>
+            <div>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: '0 0 4px 0' }}>
+                ユーザー名
+              </h3>
+              <p style={{ fontSize: '14px', color: '#9ca3af', margin: '0 0 4px 0' }}>
+                xxx@gmail.com
+              </p>
+              <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+                2025年6月から利用開始
+              </p>
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', textAlign: 'center', marginBottom: '20px' }}>
             <div>
-              <div className="text-xl font-bold text-white">45</div>
-              <div className="text-xs text-gray-400">セッション</div>
+              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>45</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>セッション</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-white">12</div>
-              <div className="text-xs text-gray-400">連続記録</div>
+              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>15</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>連続記録</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-white">lv.8</div>
-              <div className="text-xs text-gray-400">レベル</div>
+              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>lv.8</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>レベル</div>
             </div>
           </div>
           
-          <div className="mt-4">
-            <div className="text-xs text-gray-400 mb-1">次のレベルまで</div>
-            <div className="text-sm text-white font-medium">850 / 1000 xp</div>
-            <div className="w-full bg-gray-600 rounded-full h-2 mt-2">
-              <div className="bg-white h-2 rounded-full" style={{ width: '85%' }}></div>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <span style={{ fontSize: '12px', color: '#9ca3af' }}>次のレベルまで</span>
+              <span style={{ fontSize: '12px', color: '#9ca3af' }}>850 / 1000 XP</span>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Account section */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">アカウント</h3>
-          <div className="bg-gray-700/95 rounded-2xl border border-gray-600/30">
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <User className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">プロフィール編集</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Settings className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">AIキャラクター設定</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Award className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">レベル・バッジ</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
+            <div style={{
+              width: '100%',
+              height: '8px',
+              backgroundColor: '#374151',
+              borderRadius: '4px',
+              position: 'relative'
+            }}>
+              <div style={{
+                position: 'absolute',
+                height: '100%',
+                width: '85%',
+                backgroundColor: '#a3e635',
+                borderRadius: '4px'
+              }}></div>
             </div>
           </div>
         </div>
 
-        {/* Settings section */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">設定</h3>
-          <div className="bg-gray-700/95 rounded-2xl border border-gray-600/30">
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Bell className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">通知設定</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+        {/* Account settings */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            アカウント
+          </h2>
+          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>👤</span>
+                <span>プロフィール編集</span>
               </div>
-            </div>
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Globe className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">言語設定</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Smartphone className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">デバイス設定</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Notification settings - exact wireframe toggles */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">通知設定</h3>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-white font-medium">チェックインリマインダー</span>
-              <Switch
-                checked={notificationSettings.checkinReminder}
-                onCheckedChange={() => toggleNotification('checkinReminder')}
-                className="data-[state=checked]:bg-emerald-500"
-              />
-            </div>
-            <div className="text-sm text-gray-400 mb-4">毎日決まった時間にリマインダーを送信</div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
             
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <div className="text-sm text-gray-400 mb-1">朝のリマインダー</div>
-                <div className="bg-gray-700 rounded-lg px-3 py-2 text-white text-sm">9:00</div>
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🤖</span>
+                <span>AIキャラクター設定</span>
               </div>
-              <div>
-                <div className="text-sm text-gray-400 mb-1">夜のリマインダー</div>
-                <div className="bg-gray-700 rounded-lg px-3 py-2 text-white text-sm">21:00</div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🏆</span>
+                <span>レベル・バッジ</span>
               </div>
-            </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+          </div>
+        </div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-white font-medium">週次レポート</span>
-              <Switch
-                checked={notificationSettings.weeklyReport}
-                onCheckedChange={() => toggleNotification('weeklyReport')}
-                className="data-[state=checked]:bg-emerald-500"
+        {/* App settings */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            設定
+          </h2>
+          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🔔</span>
+                <span>通知設定</span>
+              </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🌐</span>
+                <span>言語設定</span>
+              </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>📱</span>
+                <span>デバイス設定</span>
+              </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Notification settings */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            通知設定
+          </h2>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
+                  チェックインリマインダー
+                </div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+                  毎日決まった時間にリマインダーを送信
+                </div>
+              </div>
+              <Toggle
+                checked={notifications.checkinReminder}
+                onChange={() => toggleNotification('checkinReminder')}
               />
             </div>
-            <div className="text-sm text-gray-400 mb-4">週の振り返りレポート</div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-white font-medium">励ましメッセージ</span>
-              <Switch
-                checked={notificationSettings.encouragementMessages}
-                onCheckedChange={() => toggleNotification('encouragementMessages')}
-                className="data-[state=checked]:bg-emerald-500"
+            {notifications.checkinReminder && (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginTop: '12px' }}>
+                <div>
+                  <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px' }}>朝のリマインダー</div>
+                  <div style={{ 
+                    backgroundColor: '#374151', 
+                    borderRadius: '8px', 
+                    padding: '12px', 
+                    textAlign: 'center',
+                    color: '#f3f4f6',
+                    fontSize: '14px'
+                  }}>
+                    9:00
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px' }}>夜のリマインダー</div>
+                  <div style={{ 
+                    backgroundColor: '#374151', 
+                    borderRadius: '8px', 
+                    padding: '12px', 
+                    textAlign: 'center',
+                    color: '#f3f4f6',
+                    fontSize: '14px'
+                  }}>
+                    21:00
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
+                  週次レポート
+                </div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+                  週の振り返りレポート
+                </div>
+              </div>
+              <Toggle
+                checked={notifications.weeklyReport}
+                onChange={() => toggleNotification('weeklyReport')}
               />
             </div>
-            <div className="text-sm text-gray-400 mb-4">AIからの応援メッセージ</div>
 
-            <div className="flex items-center justify-between">
-              <span className="text-white font-medium">マーケティング情報</span>
-              <Switch
-                checked={notificationSettings.marketingInfo}
-                onCheckedChange={() => toggleNotification('marketingInfo')}
-                className="data-[state=checked]:bg-emerald-500"
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
+                  励ましメッセージ
+                </div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+                  AIからの応援メッセージ
+                </div>
+              </div>
+              <Toggle
+                checked={notifications.encouragement}
+                onChange={() => toggleNotification('encouragement')}
               />
             </div>
-            <div className="text-sm text-gray-400">新しいサービスやお知らせ</div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
+                  マーケティング情報
+                </div>
+                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
+                  新しいサービスやお知らせ
+                </div>
+              </div>
+              <Toggle
+                checked={notifications.marketing}
+                onChange={() => toggleNotification('marketing')}
+              />
+            </div>
           </div>
         </div>
 
         {/* Data & Account Management */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">データ・アカウント管理</h3>
-          <div className="bg-gray-700/95 rounded-2xl border border-gray-600/30">
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Download className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">データCSVエクスポート</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            データ・アカウント管理
+          </h2>
+          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>💾</span>
+                <span>データCSVエクスポート</span>
               </div>
-            </div>
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Shield className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">プライバシー設定</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🔒</span>
+                <span>プライバシー設定</span>
               </div>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Trash2 className="w-5 h-5 text-red-400" />
-                  <span className="text-red-400 font-medium">アカウント削除</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#ef4444',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🗑️</span>
+                <span>アカウント削除</span>
               </div>
-            </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
           </div>
         </div>
 
         {/* Support & Help */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">サポート・ヘルプ</h3>
-          <div className="bg-gray-700/95 rounded-2xl border border-gray-600/30">
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <HelpCircle className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">ヘルプ・FAQ</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            サポート・ヘルプ
+          </h2>
+          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>❓</span>
+                <span>ヘルプ・FAQ</span>
               </div>
-            </div>
-            <div className="p-4 border-b border-gray-600/30">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <LogOut className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">ログアウト</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: '1px solid #374151',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>🚪</span>
+                <span>ログアウト</span>
               </div>
-            </div>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Star className="w-5 h-5 text-gray-300" />
-                  <span className="text-white font-medium">アプリを評価</span>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
+            
+            <button style={{
+              width: '100%',
+              padding: '16px',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: '#d1d5db',
+              textAlign: 'left',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>⭐</span>
+                <span>アプリを評価</span>
               </div>
-            </div>
+              <span style={{ color: '#9ca3af' }}>›</span>
+            </button>
           </div>
         </div>
 
-        {/* App info - exact wireframe */}
-        <div className="space-y-3">
-          <h3 className="text-white font-semibold px-2">アプリ情報</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-400">バージョン</span>
-              <span className="text-white">1.0.0</span>
+        {/* App info */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
+            アプリ情報
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#9ca3af', fontSize: '14px' }}>バージョン</span>
+              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>1.0.0</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">ビルド</span>
-              <span className="text-white">20240619</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#9ca3af', fontSize: '14px' }}>ビルド</span>
+              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>20250806</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">最終更新</span>
-              <span className="text-white">2024年6月19日</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: '#9ca3af', fontSize: '14px' }}>最終更新</span>
+              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>2025年8月6日</span>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="text-center text-xs text-gray-500 py-4">
-          © 2025 Healthcare SaaS. All rights reserved.
+        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+          <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+            © 2025 Healthcare SaaS. All rights reserved.
+          </p>
         </div>
-
-        {/* Bottom spacing for navigation */}
-        <div className="h-24"></div>
       </div>
 
-      {/* Bottom Navigation */}
       <MobileBottomNav />
     </div>
   )
