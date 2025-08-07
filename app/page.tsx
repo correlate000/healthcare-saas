@@ -2,77 +2,166 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion } from 'framer-motion'
 
 export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    // 一時的に常にダッシュボードへリダイレクト
-    router.push('/dashboard')
+    // スプラッシュ画面を2秒表示
+    const timer = setTimeout(() => {
+      // オンボーディング完了チェック
+      const onboardingComplete = localStorage.getItem('onboardingComplete')
+      
+      if (onboardingComplete === 'true') {
+        // 既存ユーザーはダッシュボードへ
+        router.push('/dashboard')
+      } else {
+        // 新規ユーザーはオンボーディングへ
+        router.push('/onboarding')
+      }
+    }, 2000)
+
+    return () => clearTimeout(timer)
   }, [router])
 
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col items-center justify-center relative">
-      {/* メインコンテンツ - ワイヤーフレーム通りの配置 */}
-      <div className="flex flex-col items-center space-y-8">
-        {/* キャラクターエリア - ライムグリーンの大きな丸 */}
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ 
-            duration: 0.8, 
-            type: "spring", 
-            stiffness: 200,
-            delay: 0.2
-          }}
-          className="w-80 h-80 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center shadow-xl"
-        >
-          <span className="text-gray-800 text-xl font-medium">キャラクター</span>
-        </motion.div>
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* メインコンテンツ */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '32px'
+      }}>
+        {/* キャラクターエリア - 鳥のSVG */}
+        <div style={{
+          width: '200px',
+          height: '200px',
+          backgroundColor: '#374151',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+          animation: 'fadeInScale 0.8s ease-out'
+        }}>
+          <svg width="140" height="140" viewBox="0 0 100 100" style={{ display: 'block' }}>
+            <ellipse cx="50" cy="55" rx="35" ry="38" fill="#a3e635" />
+            <ellipse cx="50" cy="60" rx="25" ry="28" fill="#ecfccb" />
+            <ellipse cx="25" cy="50" rx="15" ry="25" fill="#a3e635" transform="rotate(-20 25 50)" />
+            <ellipse cx="75" cy="50" rx="15" ry="25" fill="#a3e635" transform="rotate(20 75 50)" />
+            <circle cx="40" cy="45" r="8" fill="white" />
+            <circle cx="42" cy="45" r="5" fill="#111827" />
+            <circle cx="43" cy="44" r="2" fill="white" />
+            <circle cx="60" cy="45" r="8" fill="white" />
+            <circle cx="58" cy="45" r="5" fill="#111827" />
+            <circle cx="59" cy="44" r="2" fill="white" />
+            <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+          </svg>
+        </div>
 
         {/* サービスロゴテキスト */}
-        <motion.div
-          initial={{ y: 30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="text-center"
-        >
-          <h1 className="text-white text-2xl font-bold tracking-wide">
+        <div style={{
+          textAlign: 'center',
+          animation: 'fadeInUp 0.8s ease-out 0.3s both'
+        }}>
+          <h1 style={{
+            color: '#f3f4f6',
+            fontSize: '32px',
+            fontWeight: '800',
+            letterSpacing: '-0.5px',
+            marginBottom: '8px'
+          }}>
             MindCare
           </h1>
-          <p className="text-gray-300 text-base font-medium mt-2">
+          <p style={{
+            color: '#9ca3af',
+            fontSize: '16px',
+            fontWeight: '500'
+          }}>
             あなたの心の健康をサポート
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* ローディングアニメーション */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-20"
-      >
-        {/* シンプルなローディングドット */}
-        <div className="flex justify-center space-x-2">
+      <div style={{
+        position: 'absolute',
+        bottom: '80px',
+        animation: 'fadeIn 0.5s ease-out 1s both'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '8px'
+        }}>
           {[0, 1, 2].map((i) => (
-            <motion.div
+            <div
               key={i}
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 1, 0.3]
+              style={{
+                width: '8px',
+                height: '8px',
+                backgroundColor: '#a3e635',
+                borderRadius: '50%',
+                animation: `pulse 1.5s ease-in-out infinite ${i * 0.2}s`
               }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                delay: i * 0.2
-              }}
-              className="w-2 h-2 bg-emerald-400 rounded-full"
             />
           ))}
         </div>
-      </motion.div>
+      </div>
+
+      <style jsx>{`
+        @keyframes fadeInScale {
+          0% {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes fadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.2);
+          }
+        }
+      `}</style>
     </div>
   )
 }
