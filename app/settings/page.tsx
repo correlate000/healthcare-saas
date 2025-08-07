@@ -52,7 +52,7 @@ export default function SettingsPage() {
       minHeight: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '80px',
+      paddingBottom: '140px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}

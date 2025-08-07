@@ -51,7 +51,7 @@ export default function Dashboard() {
       minHeight: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '80px',
+      paddingBottom: '100px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* ヘッダー */}

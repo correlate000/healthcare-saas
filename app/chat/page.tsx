@@ -158,7 +158,7 @@ export default function ChatPage() {
       minHeight: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '80px',
+      paddingBottom: '160px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       display: 'flex',
       flexDirection: 'column'

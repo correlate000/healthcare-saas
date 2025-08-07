@@ -50,7 +50,9 @@
       "Bash(echo:*)",
       "Bash(else)",
       "Bash(fi)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(do sed -i '' \"s/paddingBottom: ''80px''/paddingBottom: ''140px''/g\" \"$file\")"
     ],
     "deny": []
   }
