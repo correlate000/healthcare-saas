@@ -9,6 +9,24 @@ export default function CheckIn() {
   const [currentStep, setCurrentStep] = useState(0)
   const [responses, setResponses] = useState<Record<string, any>>({})
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false)
+  const [streakDays] = useState(15) // TODO: Get from user data
+
+  // Bird character SVG component
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 100 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
 
   const steps = [
     {
@@ -90,8 +108,51 @@ export default function CheckIn() {
   const currentStepData = steps[currentStep]
   const progress = ((currentStep + 1) / steps.length) * 100
 
+  // Get personalized message based on mood
+  const getPersonalizedMessage = () => {
+    const mood = responses.mood
+    const physical = responses.physical
+    
+    // Select character based on mood
+    let character = { name: 'Luna', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
+    let message = ''
+    
+    if (mood === '素晴らしい' || mood === 'いい感じ') {
+      character = { name: 'Aria', bodyColor: '#60a5fa', bellyColor: '#dbeafe' }
+      const messages = [
+        'すごい！今日も絶好調ですね！この調子を維持していきましょう！',
+        'キラキラ輝いていますね！あなたのポジティブなエネルギーが周りも明るくします！',
+        'やったー！今日も素敵な一日になりそうですね！',
+        '最高の調子ですね！今日の良い気分を大切にしてください。'
+      ]
+      message = messages[Math.floor(Math.random() * messages.length)]
+    } else if (mood === '普通') {
+      character = { name: 'Luna', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
+      const messages = [
+        'お疲れ様です。普通の日こそ、実は大切な一日なんですよ。',
+        '今日も一歩ずつ前進していますね。それで十分素晴らしいです。',
+        '穏やかな一日も良いものです。自分のペースを大切に。',
+        'バランスが取れている証拠です。無理せず進んでいきましょう。'
+      ]
+      message = messages[Math.floor(Math.random() * messages.length)]
+    } else {
+      character = { name: 'Zen', bodyColor: '#f59e0b', bellyColor: '#fed7aa' }
+      const messages = [
+        '今日は休息が必要かもしれません。自分を大切にする時間を作りましょう。',
+        'お疲れ様です。しっかり記録することが、明日への第一歩です。',
+        '辛い時こそ、自分に優しくしてあげてください。私たちがついています。',
+        '今日を乗り越えたあなたは強い。ゆっくり休んでくださいね。'
+      ]
+      message = messages[Math.floor(Math.random() * messages.length)]
+    }
+    
+    return { character, message }
+  }
+
   if (currentStep === -1) {
-    // Completion screen
+    const { character, message } = getPersonalizedMessage()
+    
+    // Completion screen with character message
     return (
       <div style={{ 
         minHeight: '100vh',
@@ -101,76 +162,211 @@ export default function CheckIn() {
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
         <div style={{ 
-          padding: '16px',
+          padding: '20px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
           alignItems: 'center',
           minHeight: 'calc(100vh - 140px)'
         }}>
-          {/* Success animation */}
-          <div style={{ 
-            width: '100px', 
-            height: '100px', 
-            backgroundColor: '#a3e635', 
-            borderRadius: '50%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
+          {/* Character with animation */}
+          <div style={{
             marginBottom: '24px',
-            animation: 'pulse 1s ease-in-out'
+            animation: 'bounceIn 0.6s ease-out'
           }}>
-            <span style={{ color: '#111827', fontSize: '48px' }}>✓</span>
+            <div style={{
+              width: '120px',
+              height: '120px',
+              backgroundColor: '#374151',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
+            }}>
+              <BirdCharacter 
+                bodyColor={character.bodyColor} 
+                bellyColor={character.bellyColor}
+                size={100}
+              />
+            </div>
           </div>
 
-          <h1 style={{ 
-            fontSize: '24px', 
-            fontWeight: '700', 
-            color: '#f3f4f6', 
-            marginBottom: '12px',
-            textAlign: 'center'
+          {/* Character name */}
+          <div style={{
+            backgroundColor: character.bodyColor,
+            color: '#111827',
+            padding: '4px 12px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: '600',
+            marginBottom: '16px'
           }}>
-            今日もお疲れ様でした
-          </h1>
-          
-          <h2 style={{ 
-            fontSize: '18px', 
-            fontWeight: '600', 
-            color: '#a3e635', 
-            marginBottom: '24px',
-            textAlign: 'center'
-          }}>
-            記録完了 - 15日連続ログイン達成！
-          </h2>
+            {character.name}
+          </div>
 
-          <p style={{ 
-            fontSize: '14px', 
-            color: '#9ca3af',
-            textAlign: 'center',
+          {/* Personalized message */}
+          <div style={{
+            backgroundColor: '#1f2937',
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '32px',
+            maxWidth: '400px',
+            position: 'relative'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '-8px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '8px solid transparent',
+              borderRight: '8px solid transparent',
+              borderBottom: '8px solid #1f2937'
+            }}></div>
+            <p style={{
+              fontSize: '16px',
+              color: '#f3f4f6',
+              lineHeight: '1.6',
+              textAlign: 'center',
+              margin: 0
+            }}>
+              {message}
+            </p>
+          </div>
+
+          {/* Streak achievement */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             marginBottom: '32px'
           }}>
-            分析ページへ移動します...
-          </p>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px'
+            }}>
+              <span style={{ fontSize: '32px' }}>🔥</span>
+              <span style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#a3e635'
+              }}>
+                {streakDays}日
+              </span>
+            </div>
+            <p style={{
+              fontSize: '14px',
+              color: '#9ca3af'
+            }}>
+              連続チェックイン達成中！
+            </p>
+          </div>
 
-          <button
-            onClick={() => router.push('/analytics')}
-            style={{
-              padding: '16px 32px',
-              backgroundColor: '#a3e635',
-              color: '#111827',
-              border: 'none',
+          {/* Rewards earned today */}
+          <div style={{
+            display: 'flex',
+            gap: '16px',
+            marginBottom: '32px'
+          }}>
+            <div style={{
+              backgroundColor: '#374151',
               borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
-          >
-            今すぐ分析を見る
-          </button>
+              padding: '12px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '20px' }}>⭐</span>
+              <div>
+                <div style={{ fontSize: '16px', fontWeight: '600', color: '#fbbf24' }}>+50 XP</div>
+                <div style={{ fontSize: '11px', color: '#9ca3af' }}>獲得</div>
+              </div>
+            </div>
+            <div style={{
+              backgroundColor: '#374151',
+              borderRadius: '12px',
+              padding: '12px 20px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '20px' }}>🏆</span>
+              <div>
+                <div style={{ fontSize: '16px', fontWeight: '600', color: '#a3e635' }}>Lv.8</div>
+                <div style={{ fontSize: '11px', color: '#9ca3af' }}>まであと150XP</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            width: '100%',
+            maxWidth: '300px'
+          }}>
+            <button
+              onClick={() => router.push('/dashboard')}
+              style={{
+                padding: '14px',
+                backgroundColor: '#a3e635',
+                color: '#111827',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+            >
+              ダッシュボードへ
+            </button>
+            <button
+              onClick={() => router.push('/analytics')}
+              style={{
+                padding: '14px',
+                backgroundColor: '#374151',
+                color: '#d1d5db',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '16px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+            >
+              今日の分析を見る
+            </button>
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes bounceIn {
+            0% {
+              opacity: 0;
+              transform: scale(0.3);
+            }
+            50% {
+              transform: scale(1.05);
+            }
+            70% {
+              transform: scale(0.9);
+            }
+            100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+        `}</style>
 
         <MobileBottomNav />
       </div>
