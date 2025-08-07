@@ -4,6 +4,41 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
+const getRarityStyle = (rarity: string) => {
+  switch(rarity) {
+    case 'common': 
+      return {
+        gradient: 'linear-gradient(135deg, rgba(156, 163, 175, 0.2) 0%, rgba(75, 85, 99, 0.1) 100%)',
+        border: '1px solid rgba(156, 163, 175, 0.3)',
+        glow: '0 4px 16px rgba(156, 163, 175, 0.1)'
+      }
+    case 'rare': 
+      return {
+        gradient: 'linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%)',
+        border: '1px solid rgba(96, 165, 250, 0.4)',
+        glow: '0 4px 20px rgba(96, 165, 250, 0.2)'
+      }
+    case 'epic': 
+      return {
+        gradient: 'linear-gradient(135deg, rgba(167, 139, 250, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%)',
+        border: '1px solid rgba(167, 139, 250, 0.5)',
+        glow: '0 6px 24px rgba(167, 139, 250, 0.3)'
+      }
+    case 'legendary': 
+      return {
+        gradient: 'linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%)',
+        border: '1px solid rgba(251, 191, 36, 0.6)',
+        glow: '0 8px 32px rgba(251, 191, 36, 0.4)'
+      }
+    default: 
+      return {
+        gradient: 'linear-gradient(135deg, rgba(156, 163, 175, 0.2) 0%, rgba(75, 85, 99, 0.1) 100%)',
+        border: '1px solid rgba(156, 163, 175, 0.3)',
+        glow: '0 4px 16px rgba(156, 163, 175, 0.1)'
+      }
+  }
+}
+
 export default function AchievementsPage() {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState('all')
@@ -113,7 +148,7 @@ export default function AchievementsPage() {
     ? achievements 
     : achievements.filter(a => a.category === selectedCategory)
 
-  // Cute bird character component
+  // Bird character component
   const BirdCharacter = ({ emotion = 'happy' }: { emotion?: string }) => (
     <div style={{
       width: '60px',
@@ -121,74 +156,17 @@ export default function AchievementsPage() {
       position: 'relative',
       display: 'inline-block'
     }}>
-      {/* Body */}
-      <div style={{
-        position: 'absolute',
-        bottom: '5px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '40px',
-        height: '35px',
-        backgroundColor: '#a3e635',
-        borderRadius: '50% 50% 45% 45%',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}></div>
-      
-      {/* Wings */}
-      <div style={{
-        position: 'absolute',
-        bottom: '15px',
-        left: '5px',
-        width: '15px',
-        height: '20px',
-        backgroundColor: '#84cc16',
-        borderRadius: '50% 0 50% 50%',
-        transform: 'rotate(-15deg)'
-      }}></div>
-      <div style={{
-        position: 'absolute',
-        bottom: '15px',
-        right: '5px',
-        width: '15px',
-        height: '20px',
-        backgroundColor: '#84cc16',
-        borderRadius: '0 50% 50% 50%',
-        transform: 'rotate(15deg)'
-      }}></div>
-      
-      {/* Eyes */}
-      <div style={{
-        position: 'absolute',
-        bottom: '25px',
-        left: '18px',
-        width: '6px',
-        height: '8px',
-        backgroundColor: '#111827',
-        borderRadius: '50%'
-      }}></div>
-      <div style={{
-        position: 'absolute',
-        bottom: '25px',
-        right: '18px',
-        width: '6px',
-        height: '8px',
-        backgroundColor: '#111827',
-        borderRadius: '50%'
-      }}></div>
-      
-      {/* Beak */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '8px',
-        height: '6px',
-        backgroundColor: '#f59e0b',
-        borderRadius: '0 0 50% 50%'
-      }}></div>
-      
-      {/* Emotion indicator */}
+      <svg width="60" height="60" viewBox="0 0 100 100" style={{ display: 'block' }}>
+        <ellipse cx="50" cy="55" rx="30" ry="33" fill="#a3e635" />
+        <ellipse cx="50" cy="60" rx="22" ry="25" fill="#ecfccb" />
+        <ellipse cx="28" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(-20 28 50)" />
+        <ellipse cx="72" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(20 72 50)" />
+        <circle cx="40" cy="45" r="6" fill="white" />
+        <circle cx="42" cy="45" r="4" fill="#111827" />
+        <circle cx="60" cy="45" r="6" fill="white" />
+        <circle cx="58" cy="45" r="4" fill="#111827" />
+        <path d="M50 50 L45 55 L55 55 Z" fill="#fbbf24" />
+      </svg>
       {emotion === 'happy' && (
         <div style={{
           position: 'absolute',
@@ -199,41 +177,6 @@ export default function AchievementsPage() {
       )}
     </div>
   )
-
-  const getRarityStyle = (rarity: string) => {
-    switch(rarity) {
-      case 'common': 
-        return {
-          gradient: 'linear-gradient(135deg, rgba(156, 163, 175, 0.2) 0%, rgba(75, 85, 99, 0.1) 100%)',
-          border: '1px solid rgba(156, 163, 175, 0.3)',
-          glow: '0 4px 16px rgba(156, 163, 175, 0.1)'
-        }
-      case 'rare': 
-        return {
-          gradient: 'linear-gradient(135deg, rgba(96, 165, 250, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%)',
-          border: '1px solid rgba(96, 165, 250, 0.4)',
-          glow: '0 4px 20px rgba(96, 165, 250, 0.2)'
-        }
-      case 'epic': 
-        return {
-          gradient: 'linear-gradient(135deg, rgba(167, 139, 250, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%)',
-          border: '1px solid rgba(167, 139, 250, 0.5)',
-          glow: '0 6px 24px rgba(167, 139, 250, 0.3)'
-        }
-      case 'legendary': 
-        return {
-          gradient: 'linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.2) 100%)',
-          border: '1px solid rgba(251, 191, 36, 0.6)',
-          glow: '0 8px 32px rgba(251, 191, 36, 0.4)'
-        }
-      default: 
-        return {
-          gradient: 'linear-gradient(135deg, rgba(156, 163, 175, 0.2) 0%, rgba(75, 85, 99, 0.1) 100%)',
-          border: '1px solid rgba(156, 163, 175, 0.3)',
-          glow: '0 4px 16px rgba(156, 163, 175, 0.1)'
-        }
-    }
-  }
 
   return (
     <div style={{ 
@@ -647,7 +590,7 @@ export default function AchievementsPage() {
               )}
             </div>
           )
-          }))}
+          })}
         </div>
 
         {/* Stats Summary */}
