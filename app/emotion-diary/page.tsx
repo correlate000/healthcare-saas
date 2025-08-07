@@ -6,120 +6,194 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function EmotionDiaryPage() {
   const router = useRouter()
+  const [selectedDate, setSelectedDate] = useState(new Date())
   const [selectedEmotion, setSelectedEmotion] = useState('')
   const [diaryText, setDiaryText] = useState('')
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   const emotions = [
-    { id: 'happy', label: '嬉しい', emoji: '😊', color: '#fbbf24' },
-    { id: 'calm', label: '穏やか', emoji: '😌', color: '#60a5fa' },
-    { id: 'anxious', label: '不安', emoji: '😟', color: '#f87171' },
-    { id: 'sad', label: '悲しい', emoji: '😢', color: '#a78bfa' },
-    { id: 'angry', label: '怒り', emoji: '😠', color: '#fb923c' },
-    { id: 'tired', label: '疲れ', emoji: '😫', color: '#94a3b8' }
+    { emoji: '😊', label: '幸せ', color: '#fbbf24' },
+    { emoji: '😌', label: '穏やか', color: '#60a5fa' },
+    { emoji: '😔', label: '悲しい', color: '#818cf8' },
+    { emoji: '😰', label: '不安', color: '#f87171' },
+    { emoji: '😤', label: 'イライラ', color: '#fb923c' },
+    { emoji: '😴', label: '疲れた', color: '#a78bfa' }
   ]
 
-  const tags = ['仕事', '家族', '友達', '健康', '趣味', '運動', '食事', '睡眠']
-
-  const recentEntries = [
-    { date: '8月6日', emotion: '😊', preview: '今日は友達と楽しい時間を過ごせた...', mood: 85 },
-    { date: '8月5日', emotion: '😌', preview: '瞑想をして心が落ち着いた...', mood: 75 },
-    { date: '8月4日', emotion: '😟', preview: '仕事のプレッシャーを感じている...', mood: 60 }
+  const tags = [
+    '仕事', '家族', '友人', '健康', '趣味',
+    '運動', '食事', '睡眠', '天気', 'その他'
   ]
 
-  const handleSave = () => {
-    router.push('/analytics')
-  }
+  const diaryEntries = [
+    {
+      date: '2025/08/07',
+      emotion: '😊',
+      title: '充実した一日',
+      content: '今日は朝から調子が良く、仕事も順調に進んだ。昼休みに同僚と楽しく話せて気分転換になった。',
+      tags: ['仕事', '友人'],
+      mood: 85
+    },
+    {
+      date: '2025/08/06',
+      emotion: '😌',
+      title: '穏やかな休日',
+      content: '久しぶりにゆっくり過ごせた。読書と散歩で心が落ち着いた。',
+      tags: ['趣味', '運動'],
+      mood: 75
+    },
+    {
+      date: '2025/08/05',
+      emotion: '😰',
+      title: 'プレゼンの緊張',
+      content: '大事なプレゼンがあって緊張した。でも無事に終わってホッとしている。',
+      tags: ['仕事'],
+      mood: 60
+    }
+  ]
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
-      prev.includes(tag) 
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
-    )
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('ja-JP', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    })
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#111827', 
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
       color: 'white',
       paddingBottom: '80px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
-      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button
-            onClick={() => router.push('/dashboard')}
-            style={{
-              width: '32px',
-              height: '32px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#9ca3af',
-              fontSize: '20px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            ←
-          </button>
-          <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            margin: 0
+          }}>
             感情日記
           </h1>
+          <button
+            onClick={() => {/* カレンダービュー */}}
+            style={{
+              backgroundColor: '#374151',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              color: '#d1d5db',
+              fontSize: '14px',
+              cursor: 'pointer'
+            }}
+          >
+            📅 カレンダー
+          </button>
         </div>
       </div>
 
-      <div style={{ padding: '16px' }}>
-        {/* Date */}
-        <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '16px',
-          marginBottom: '20px',
-          textAlign: 'center'
+      {/* New entry section */}
+      <div style={{
+        padding: '20px',
+        backgroundColor: '#1f2937',
+        marginBottom: '20px'
+      }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          color: '#f3f4f6',
+          marginBottom: '16px'
         }}>
-          <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>今日の日付</div>
-          <div style={{ fontSize: '20px', fontWeight: '600', color: '#f3f4f6' }}>2025年8月7日（水）</div>
+          今日の気持ちを記録
+        </h2>
+
+        {/* Date selector */}
+        <div style={{
+          marginBottom: '20px'
+        }}>
+          <label style={{
+            fontSize: '14px',
+            color: '#9ca3af',
+            marginBottom: '8px',
+            display: 'block'
+          }}>
+            日付
+          </label>
+          <input
+            type="date"
+            value={formatDate(selectedDate)}
+            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+            style={{
+              width: '100%',
+              padding: '12px',
+              backgroundColor: '#111827',
+              border: '1px solid #374151',
+              borderRadius: '8px',
+              color: '#f3f4f6',
+              fontSize: '14px',
+              outline: 'none'
+            }}
+          />
         </div>
 
-        {/* Emotion selection */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            今日の気分を選んでください
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-            {emotions.map((emotion) => (
+        {/* Emotion selector */}
+        <div style={{
+          marginBottom: '20px'
+        }}>
+          <label style={{
+            fontSize: '14px',
+            color: '#9ca3af',
+            marginBottom: '12px',
+            display: 'block'
+          }}>
+            今の感情は？
+          </label>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px'
+          }}>
+            {emotions.map(emotion => (
               <button
-                key={emotion.id}
-                onClick={() => setSelectedEmotion(emotion.id)}
+                key={emotion.label}
+                onClick={() => setSelectedEmotion(emotion.emoji)}
                 style={{
-                  padding: '16px',
-                  backgroundColor: selectedEmotion === emotion.id ? emotion.color : '#374151',
-                  border: selectedEmotion === emotion.id ? `2px solid ${emotion.color}` : '2px solid transparent',
+                  backgroundColor: selectedEmotion === emotion.emoji ? emotion.color : '#374151',
+                  border: 'none',
                   borderRadius: '12px',
+                  padding: '16px',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  opacity: selectedEmotion === emotion.id ? 1 : 0.8
+                  opacity: selectedEmotion === emotion.emoji ? 1 : 0.7
                 }}
-                onMouseEnter={(e) => { 
-                  if (selectedEmotion !== emotion.id) {
-                    e.currentTarget.style.backgroundColor = '#4b5563'
+                onMouseEnter={(e) => {
+                  if (selectedEmotion !== emotion.emoji) {
+                    e.currentTarget.style.opacity = '1'
                   }
                 }}
-                onMouseLeave={(e) => { 
-                  if (selectedEmotion !== emotion.id) {
-                    e.currentTarget.style.backgroundColor = '#374151'
+                onMouseLeave={(e) => {
+                  if (selectedEmotion !== emotion.emoji) {
+                    e.currentTarget.style.opacity = '0.7'
                   }
                 }}
               >
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>{emotion.emoji}</div>
-                <div style={{ 
-                  fontSize: '14px', 
-                  color: selectedEmotion === emotion.id ? '#111827' : '#d1d5db',
+                <div style={{ fontSize: '32px', marginBottom: '4px' }}>
+                  {emotion.emoji}
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  color: selectedEmotion === emotion.emoji ? '#111827' : '#d1d5db',
                   fontWeight: '500'
                 }}>
                   {emotion.label}
@@ -129,129 +203,96 @@ export default function EmotionDiaryPage() {
           </div>
         </div>
 
-        {/* Diary entry */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            今日の出来事を記録
-          </h2>
+        {/* Diary text */}
+        <div style={{
+          marginBottom: '20px'
+        }}>
+          <label style={{
+            fontSize: '14px',
+            color: '#9ca3af',
+            marginBottom: '8px',
+            display: 'block'
+          }}>
+            今日の出来事や気持ち
+          </label>
           <textarea
             value={diaryText}
             onChange={(e) => setDiaryText(e.target.value)}
-            placeholder="今日はどんな一日でしたか？感じたことを自由に書いてください..."
+            placeholder="今日はどんな一日でしたか？"
             style={{
               width: '100%',
-              minHeight: '150px',
-              padding: '16px',
-              backgroundColor: '#1f2937',
+              minHeight: '120px',
+              padding: '12px',
+              backgroundColor: '#111827',
               border: '1px solid #374151',
-              borderRadius: '12px',
-              color: '#d1d5db',
+              borderRadius: '8px',
+              color: '#f3f4f6',
               fontSize: '14px',
-              fontFamily: 'inherit',
+              outline: 'none',
               resize: 'vertical',
-              outline: 'none'
+              fontFamily: 'inherit',
+              lineHeight: '1.5'
             }}
             onFocus={(e) => { e.currentTarget.style.borderColor = '#a3e635' }}
             onBlur={(e) => { e.currentTarget.style.borderColor = '#374151' }}
           />
-          <div style={{ textAlign: 'right', marginTop: '8px' }}>
-            <span style={{ fontSize: '12px', color: '#6b7280' }}>{diaryText.length} 文字</span>
-          </div>
         </div>
 
         {/* Tags */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            タグを追加
-          </h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {tags.map((tag) => (
+        <div style={{
+          marginBottom: '20px'
+        }}>
+          <label style={{
+            fontSize: '14px',
+            color: '#9ca3af',
+            marginBottom: '12px',
+            display: 'block'
+          }}>
+            タグを選択
+          </label>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px'
+          }}>
+            {tags.map(tag => (
               <button
                 key={tag}
-                onClick={() => toggleTag(tag)}
+                onClick={() => {
+                  if (selectedTags.includes(tag)) {
+                    setSelectedTags(selectedTags.filter(t => t !== tag))
+                  } else {
+                    setSelectedTags([...selectedTags, tag])
+                  }
+                }}
                 style={{
-                  padding: '8px 16px',
+                  padding: '6px 12px',
                   backgroundColor: selectedTags.includes(tag) ? '#a3e635' : '#374151',
                   color: selectedTags.includes(tag) ? '#111827' : '#d1d5db',
-                  border: selectedTags.includes(tag) ? '1px solid #a3e635' : '1px solid #4b5563',
-                  borderRadius: '20px',
-                  fontSize: '14px',
+                  border: 'none',
+                  borderRadius: '16px',
+                  fontSize: '13px',
                   fontWeight: '500',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
               >
-                #{tag}
+                {tag}
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Recent entries */}
-        <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
-              最近の記録
-            </h2>
-            <button
-              onClick={() => router.push('/analytics')}
-              style={{
-                fontSize: '14px',
-                color: '#a3e635',
-                backgroundColor: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontWeight: '500'
-              }}
-            >
-              すべて見る →
-            </button>
-          </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {recentEntries.map((entry, index) => (
-              <div
-                key={index}
-                style={{
-                  backgroundColor: '#1f2937',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1f2937' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '24px' }}>{entry.emotion}</span>
-                    <span style={{ fontSize: '14px', color: '#9ca3af' }}>{entry.date}</span>
-                  </div>
-                  <div style={{
-                    backgroundColor: '#374151',
-                    padding: '4px 12px',
-                    borderRadius: '12px'
-                  }}>
-                    <span style={{ fontSize: '12px', color: '#a3e635', fontWeight: '600' }}>
-                      {entry.mood}%
-                    </span>
-                  </div>
-                </div>
-                <p style={{ fontSize: '14px', color: '#d1d5db', margin: 0, lineHeight: '1.5' }}>
-                  {entry.preview}
-                </p>
-              </div>
             ))}
           </div>
         </div>
 
         {/* Save button */}
         <button
-          onClick={handleSave}
+          onClick={() => {
+            // Save diary entry
+            alert('日記を保存しました！')
+          }}
           disabled={!selectedEmotion || !diaryText}
           style={{
             width: '100%',
-            padding: '16px',
+            padding: '14px',
             backgroundColor: selectedEmotion && diaryText ? '#a3e635' : '#374151',
             color: selectedEmotion && diaryText ? '#111827' : '#6b7280',
             border: 'none',
@@ -264,6 +305,126 @@ export default function EmotionDiaryPage() {
         >
           記録を保存
         </button>
+      </div>
+
+      {/* Past entries */}
+      <div style={{
+        padding: '0 20px 20px'
+      }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          color: '#f3f4f6',
+          marginBottom: '16px'
+        }}>
+          過去の記録
+        </h2>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          {diaryEntries.map((entry, index) => (
+            <div
+              key={index}
+              style={{
+                backgroundColor: '#1f2937',
+                borderRadius: '12px',
+                padding: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                borderLeft: `4px solid ${emotions.find(e => e.emoji === entry.emotion)?.color || '#374151'}`
+              }}
+              onClick={() => {/* View detail */}}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '8px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{ fontSize: '24px' }}>{entry.emotion}</span>
+                  <div>
+                    <h3 style={{
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      color: '#f3f4f6',
+                      marginBottom: '2px'
+                    }}>
+                      {entry.title}
+                    </h3>
+                    <span style={{
+                      fontSize: '12px',
+                      color: '#9ca3af'
+                    }}>
+                      {entry.date}
+                    </span>
+                  </div>
+                </div>
+                <div style={{
+                  backgroundColor: '#374151',
+                  borderRadius: '8px',
+                  padding: '4px 8px'
+                }}>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#a3e635',
+                    fontWeight: '600'
+                  }}>
+                    {entry.mood}%
+                  </span>
+                </div>
+              </div>
+
+              <p style={{
+                fontSize: '14px',
+                color: '#d1d5db',
+                lineHeight: '1.5',
+                marginBottom: '12px',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden'
+              }}>
+                {entry.content}
+              </p>
+
+              <div style={{
+                display: 'flex',
+                gap: '6px'
+              }}>
+                {entry.tags.map(tag => (
+                  <span
+                    key={tag}
+                    style={{
+                      padding: '4px 8px',
+                      backgroundColor: '#374151',
+                      borderRadius: '12px',
+                      fontSize: '11px',
+                      color: '#9ca3af'
+                    }}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <MobileBottomNav />
