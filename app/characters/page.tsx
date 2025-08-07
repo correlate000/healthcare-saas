@@ -396,11 +396,11 @@ export default function CharactersPage() {
                       fontSize: '48px',
                       marginBottom: '16px'
                     }}>
-                      {char.id === 'luna' ? (
-                        <BirdCharacter size={80} mood="happy" />
-                      ) : (
-                        char.avatar
-                      )}
+                      <BirdCharacter 
+                        bodyColor={char.bodyColor} 
+                        bellyColor={char.bellyColor}
+                        size={70}
+                      />
                     </div>
                     <h2 style={{
                       fontSize: '24px',
