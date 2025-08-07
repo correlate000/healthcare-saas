@@ -9,16 +9,36 @@ import { Check } from 'lucide-react'
 export default function Dashboard() {
   const router = useRouter()
   const [friendLevel] = useState(85)
-  const [todayProgress] = useState(50)
+  const [todayProgress] = useState(75)
   const [weeklyContinuation] = useState(5)
   const [totalXP] = useState(850)
   const [maxXP] = useState(1000)
+  const [currentMood] = useState('😊')
+  const [currentTime] = useState(new Date().getHours())
 
   const todaysChallenges = [
-    { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', completed: true },
-    { id: 2, title: '感謝の記録', xp: 30, time: '1分', completed: true },
-    { id: 3, title: '3分間の深呼吸', xp: 40, time: '3分', completed: false },
+    { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', completed: true, difficulty: '簡単' },
+    { id: 2, title: '感謝の記録', xp: 30, time: '1分', completed: true, difficulty: '簡単' },
+    { id: 3, title: '3分間の深呼吸', xp: 40, time: '3分', completed: false, difficulty: '簡単' },
+    { id: 4, title: '夜の振り返り', xp: 25, time: '2分', completed: false, difficulty: '簡単' },
   ]
+  
+  const getGreeting = () => {
+    if (currentTime < 5) return '深夜ですね。良い休息を'
+    if (currentTime < 11) return 'おはようございます'
+    if (currentTime < 17) return 'こんにちは'
+    if (currentTime < 21) return 'こんばんは'
+    return 'お疲れ様でした'
+  }
+  
+  const getDifficultyColor = (difficulty: string) => {
+    switch(difficulty) {
+      case '簡単': return '#65a30d'
+      case '普通': return '#fbbf24'
+      case '難しい': return '#ef4444'
+      default: return '#65a30d'
+    }
+  }
 
   const achievements = [
     { id: 1, title: '7日継続達成！', icon: '🔥', new: true },
@@ -34,63 +54,130 @@ export default function Dashboard() {
       paddingBottom: '80px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {/* クイックアクションボタン */}
-      <div style={{ padding: '16px', display: 'flex', gap: '12px' }}>
-        <button
-          onClick={() => router.push('/checkin')}
-          style={{
-            flex: 1,
-            padding: '16px',
-            backgroundColor: '#a3e635',
-            color: '#111827',
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
-        >
-          今日のチェックイン
-        </button>
-        <button
-          onClick={() => router.push('/chat')}
-          style={{
-            flex: 1,
-            padding: '16px',
+      {/* ヘッダー */}
+      <div style={{ 
+        padding: '20px',
+        background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div>
+            <h1 style={{ fontSize: '24px', fontWeight: '700', color: '#f3f4f6', margin: '0 0 4px 0' }}>
+              {getGreeting()}
+            </h1>
+            <p style={{ fontSize: '14px', color: '#9ca3af', margin: 0 }}>
+              今日も一歩ずつ前進しましょう
+            </p>
+          </div>
+          <div style={{
+            width: '48px',
+            height: '48px',
             backgroundColor: '#374151',
-            color: '#f3f4f6',
-            border: 'none',
-            borderRadius: '12px',
-            fontSize: '16px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-        >
-          AIと話す
-        </button>
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '24px'
+          }}>
+            {currentMood}
+          </div>
+        </div>
+        
+        {/* クイックアクションボタン */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            onClick={() => router.push('/checkin')}
+            style={{
+              flex: 1,
+              padding: '14px',
+              backgroundColor: '#a3e635',
+              color: '#111827',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+          >
+            <span>✓</span>
+            チェックイン
+          </button>
+          <button
+            onClick={() => router.push('/chat')}
+            style={{
+              flex: 1,
+              padding: '14px',
+              backgroundColor: '#374151',
+              color: '#f3f4f6',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '15px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
+          >
+            <span>💬</span>
+            AIと話す
+          </button>
+        </div>
       </div>
 
       {/* ヘッダー部分 - キャラクターとメッセージ */}
       <div style={{ padding: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
-          {/* キャラクターアイコン */}
+          {/* キャラクターアイコン - 鳥のSVG */}
           <div style={{ 
             width: '80px', 
             height: '80px', 
-            backgroundColor: '#a3e635', 
+            backgroundColor: '#374151', 
             borderRadius: '20px', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            flexShrink: 0
+            flexShrink: 0,
+            position: 'relative'
           }}>
-            <span style={{ color: '#111827', fontSize: '14px', fontWeight: '600' }}>キャラクター</span>
+            <svg width="60" height="60" viewBox="0 0 100 100" style={{ display: 'block' }}>
+              <ellipse cx="50" cy="55" rx="30" ry="33" fill="#a3e635" />
+              <ellipse cx="50" cy="60" rx="22" ry="25" fill="#ecfccb" />
+              <ellipse cx="28" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(-20 28 50)" />
+              <ellipse cx="72" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(20 72 50)" />
+              <circle cx="40" cy="45" r="6" fill="white" />
+              <circle cx="42" cy="45" r="4" fill="#111827" />
+              <circle cx="60" cy="45" r="6" fill="white" />
+              <circle cx="58" cy="45" r="4" fill="#111827" />
+              <path d="M50 50 L45 55 L55 55 Z" fill="#fbbf24" />
+            </svg>
+            <div style={{
+              position: 'absolute',
+              bottom: '-4px',
+              right: '-4px',
+              width: '24px',
+              height: '24px',
+              backgroundColor: '#a3e635',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '12px',
+              border: '2px solid #111827'
+            }}>
+              💚
+            </div>
           </div>
           
           {/* メッセージ吹き出し */}
@@ -111,8 +198,10 @@ export default function Dashboard() {
               borderBottom: '8px solid transparent',
               borderRight: '8px solid #374151'
             }}></div>
-            <p style={{ fontSize: '14px', color: '#e5e7eb', margin: 0, lineHeight: '1.5' }}>
-              おかえりなさい。今日はどんな一日でしたか？午後の時間はいかがお過ごしですか？少し休憩してみましょう。...
+            <p style={{ fontSize: '14px', color: '#e5e7eb', margin: 0, lineHeight: '1.6' }}>
+              今日もよく頑張っていますね！{todayProgress}%の達成率、素晴らしいです。
+              {todayProgress < 100 ? 'もう少しで今日の目標達成です。' : '今日の目標を達成しました！'}
+              無理せず、自分のペースで進みましょう。
             </p>
           </div>
         </div>
@@ -136,7 +225,7 @@ export default function Dashboard() {
               borderRadius: '3px' 
             }}></div>
           </div>
-          <span style={{ fontSize: '12px', color: '#9ca3af' }}>lv.8 {totalXP} / {maxXP} xp</span>
+          <span style={{ fontSize: '12px', color: '#a3e635', fontWeight: '600' }}>Lv.8 {totalXP}/{maxXP} XP</span>
         </div>
       </div>
 
@@ -211,30 +300,41 @@ export default function Dashboard() {
           {/* 今週のチェックイン */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週のチェックイン</span>
-            <div style={{ display: 'flex', gap: '4px' }}>
-              {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {['月', '火', '水', '木', '金', '土', '日'].map((day, index) => (
                 <div
-                  key={day}
+                  key={index}
                   style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '4px',
-                    backgroundColor: day <= weeklyContinuation ? '#a3e635' : '#374151',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    gap: '4px'
                   }}
                 >
-                  {day <= weeklyContinuation && (
-                    <Check style={{ width: '12px', height: '12px', color: '#111827' }} />
-                  )}
+                  <span style={{ fontSize: '10px', color: '#6b7280' }}>{day}</span>
+                  <div
+                    style={{
+                      width: '28px',
+                      height: '28px',
+                      borderRadius: '6px',
+                      backgroundColor: index < weeklyContinuation ? '#a3e635' : '#374151',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: index === weeklyContinuation ? '2px solid #a3e635' : 'none'
+                    }}
+                  >
+                    {index < weeklyContinuation && (
+                      <Check style={{ width: '14px', height: '14px', color: '#111827' }} />
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
           
-          <div style={{ textAlign: 'right', marginTop: '8px' }}>
-            <span style={{ fontSize: '14px', color: '#9ca3af' }}>5 /7日</span>
+          <div style={{ textAlign: 'right', marginTop: '12px' }}>
+            <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>{weeklyContinuation}/7日達成</span>
           </div>
         </div>
       </div>
@@ -253,7 +353,9 @@ export default function Dashboard() {
         onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>今日のチャレンジ</h3>
-            <span style={{ fontSize: '14px', color: '#9ca3af' }}>2/4</span>
+            <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>
+              {todaysChallenges.filter(c => c.completed).length}/{todaysChallenges.length}
+            </span>
           </div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -297,13 +399,14 @@ export default function Dashboard() {
                         {challenge.title}
                       </span>
                       <span style={{
-                        fontSize: '12px',
-                        backgroundColor: '#65a30d',
+                        fontSize: '11px',
+                        backgroundColor: getDifficultyColor(challenge.difficulty),
                         color: 'white',
-                        padding: '2px 8px',
-                        borderRadius: '12px'
+                        padding: '3px 8px',
+                        borderRadius: '12px',
+                        fontWeight: '500'
                       }}>
-                        簡単
+                        {challenge.difficulty}
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
