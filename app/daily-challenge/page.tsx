@@ -7,359 +7,478 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 export default function DailyChallengePage() {
   const router = useRouter()
   const [selectedChallenge, setSelectedChallenge] = useState<number | null>(null)
+  const [completedChallenges, setCompletedChallenges] = useState<number[]>([])
 
   const challenges = [
     {
       id: 1,
-      title: '朝の瞑想',
-      description: '5分間の呼吸瞑想を行いましょう',
-      xp: 50,
-      time: '5分',
       category: 'マインドフルネス',
-      difficulty: '簡単',
-      completed: false,
-      locked: false
+      title: '3分間の深呼吸',
+      description: '静かな場所で3分間、深い呼吸に集中しましょう',
+      duration: '3分',
+      difficulty: 'easy',
+      xp: 20,
+      icon: '🫁',
+      steps: [
+        '快適な姿勢で座る',
+        '目を閉じるか一点を見つめる',
+        '4秒吸って、7秒止めて、8秒吐く',
+        'これを3分間繰り返す'
+      ]
     },
     {
       id: 2,
-      title: '感謝日記を書く',
-      description: '今日感謝したい3つのことを記録',
-      xp: 40,
-      time: '3分',
-      category: '記録',
-      difficulty: '簡単',
-      completed: false,
-      locked: false
+      category: '運動',
+      title: '軽いストレッチ',
+      description: '体をほぐして血流を改善しましょう',
+      duration: '5分',
+      difficulty: 'easy',
+      xp: 25,
+      icon: '🧘',
+      steps: [
+        '首を左右にゆっくり回す',
+        '肩を前後に回す',
+        '腕を大きく伸ばす',
+        '前屈して背中を伸ばす'
+      ]
     },
     {
       id: 3,
-      title: '15分ウォーキング',
-      description: '外に出て軽い散歩をしましょう',
-      xp: 60,
-      time: '15分',
-      category: '運動',
-      difficulty: '普通',
-      completed: false,
-      locked: false
+      category: '感謝',
+      title: '感謝のリスト',
+      description: '今日感謝できる3つのことを書き出しましょう',
+      duration: '5分',
+      difficulty: 'easy',
+      xp: 30,
+      icon: '📝',
+      steps: [
+        'ノートやアプリを開く',
+        '今日あった良いことを思い出す',
+        '3つ書き出す',
+        'それぞれについて少し詳しく書く'
+      ]
     },
     {
       id: 4,
-      title: 'チームに投稿',
-      description: '今日の気分をチームと共有',
-      xp: 30,
-      time: '2分',
-      category: 'ソーシャル',
-      difficulty: '簡単',
-      completed: false,
-      locked: false
+      category: '瞑想',
+      title: 'ボディスキャン瞑想',
+      description: '体の各部位に意識を向けて緊張を解きましょう',
+      duration: '10分',
+      difficulty: 'medium',
+      xp: 40,
+      icon: '🧘‍♀️',
+      steps: [
+        '仰向けに横になる',
+        '足先から頭まで順番に意識を向ける',
+        '各部位の緊張を感じて解放する',
+        '全身をスキャンしたら深呼吸'
+      ]
     },
     {
       id: 5,
-      title: 'ストレッチ',
-      description: '仕事の合間に体をほぐしましょう',
-      xp: 40,
-      time: '5分',
-      category: '運動',
-      difficulty: '簡単',
-      completed: false,
-      locked: true
+      category: '社交',
+      title: '友人にメッセージ',
+      description: '大切な人に感謝や応援のメッセージを送りましょう',
+      duration: '2分',
+      difficulty: 'easy',
+      xp: 15,
+      icon: '💬',
+      steps: [
+        '連絡を取りたい友人を選ぶ',
+        '短いメッセージを考える',
+        '送信する',
+        '返信を楽しみに待つ'
+      ]
     },
     {
       id: 6,
-      title: 'デジタルデトックス',
-      description: '1時間スマホから離れる',
-      xp: 80,
-      time: '60分',
-      category: 'ウェルビーイング',
-      difficulty: '難しい',
-      completed: false,
-      locked: true
+      category: '創造',
+      title: '5分間スケッチ',
+      description: '何でもいいので5分間描いてみましょう',
+      duration: '5分',
+      difficulty: 'medium',
+      xp: 35,
+      icon: '🎨',
+      steps: [
+        '紙とペンを用意',
+        '周りにあるものを観察',
+        '完璧を求めず自由に描く',
+        '楽しむことを優先する'
+      ]
     }
   ]
 
-  const streakData = {
-    current: 15,
-    best: 23,
-    weeklyGoal: 5,
-    weeklyProgress: 4
-  }
-
   const getDifficultyColor = (difficulty: string) => {
     switch(difficulty) {
-      case '簡単': return '#65a30d'
-      case '普通': return '#facc15'
-      case '難しい': return '#ef4444'
-      default: return '#6b7280'
+      case 'easy': return '#a3e635'
+      case 'medium': return '#fbbf24'
+      case 'hard': return '#f87171'
+      default: return '#9ca3af'
     }
   }
 
-  const handleStartChallenge = (id: number) => {
-    if (id === 1) {
-      router.push('/meditation')
-    } else if (id === 3) {
-      router.push('/walking')
-    } else if (id === 4) {
-      router.push('/team-connect')
-    } else {
-      setSelectedChallenge(id)
+  const getDifficultyLabel = (difficulty: string) => {
+    switch(difficulty) {
+      case 'easy': return '簡単'
+      case 'medium': return '普通'
+      case 'hard': return '難しい'
+      default: return difficulty
     }
+  }
+
+  const handleStartChallenge = (challengeId: number) => {
+    setSelectedChallenge(challengeId)
+    // Start timer or redirect to challenge detail
+  }
+
+  const handleCompleteChallenge = (challengeId: number) => {
+    setCompletedChallenges([...completedChallenges, challengeId])
+    setSelectedChallenge(null)
   }
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      backgroundColor: '#111827', 
+    <div style={{
+      minHeight: '100vh',
+      backgroundColor: '#111827',
       color: 'white',
       paddingBottom: '80px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
-      <div style={{ padding: '16px', borderBottom: '1px solid #374151' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
-            デイリーチャレンジ
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid #374151'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '700',
+            color: '#f3f4f6',
+            margin: 0
+          }}>
+            今日のチャレンジ
           </h1>
-          <button
-            onClick={() => router.push('/daily-challenge/streak')}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#374151',
-              color: '#d1d5db',
-              border: 'none',
-              borderRadius: '8px',
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: '#1f2937',
+            padding: '8px 12px',
+            borderRadius: '8px'
+          }}>
+            <span style={{ fontSize: '16px' }}>🔥</span>
+            <span style={{
               fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-          >
-            🔥 ストリーク
-          </button>
+              fontWeight: '600',
+              color: '#a3e635'
+            }}>
+              {completedChallenges.length}/{challenges.length}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div style={{ padding: '16px' }}>
-        {/* Streak overview */}
-        <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '20px',
-          marginBottom: '24px',
-          border: '2px solid #a3e635'
+      {/* Daily progress */}
+      <div style={{
+        padding: '20px',
+        backgroundColor: '#1f2937',
+        marginBottom: '20px'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '12px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>現在のストリーク</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                <span style={{ fontSize: '32px', fontWeight: '700', color: '#a3e635' }}>🔥 {streakData.current}</span>
-                <span style={{ fontSize: '16px', color: '#d1d5db' }}>日</span>
-              </div>
-            </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>最高記録</div>
-              <div style={{ fontSize: '20px', fontWeight: '600', color: '#f3f4f6' }}>{streakData.best}日</div>
-            </div>
-          </div>
-          
+          <h2 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6'
+          }}>
+            今日の進捗
+          </h2>
+          <span style={{
+            fontSize: '14px',
+            color: '#9ca3af'
+          }}>
+            {Math.round((completedChallenges.length / challenges.length) * 100)}% 完了
+          </span>
+        </div>
+        <div style={{
+          width: '100%',
+          height: '8px',
+          backgroundColor: '#374151',
+          borderRadius: '4px',
+          overflow: 'hidden'
+        }}>
+          <div style={{
+            height: '100%',
+            width: `${(completedChallenges.length / challenges.length) * 100}%`,
+            backgroundColor: '#a3e635',
+            borderRadius: '4px',
+            transition: 'width 0.3s ease'
+          }}></div>
+        </div>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginTop: '16px'
+        }}>
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週の目標</span>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>{streakData.weeklyProgress}/{streakData.weeklyGoal}日</span>
+            <div style={{
+              fontSize: '12px',
+              color: '#9ca3af',
+              marginBottom: '4px'
+            }}>
+              獲得XP
             </div>
             <div style={{
-              width: '100%',
-              height: '8px',
-              backgroundColor: '#374151',
-              borderRadius: '4px',
-              position: 'relative'
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#a3e635'
             }}>
-              <div style={{
-                position: 'absolute',
-                height: '100%',
-                width: `${(streakData.weeklyProgress / streakData.weeklyGoal) * 100}%`,
-                backgroundColor: '#a3e635',
-                borderRadius: '4px'
-              }}></div>
+              {completedChallenges.reduce((sum, id) => {
+                const challenge = challenges.find(c => c.id === id)
+                return sum + (challenge?.xp || 0)
+              }, 0)}
+            </div>
+          </div>
+          <div>
+            <div style={{
+              fontSize: '12px',
+              color: '#9ca3af',
+              marginBottom: '4px'
+            }}>
+              完了時間
+            </div>
+            <div style={{
+              fontSize: '20px',
+              fontWeight: '700',
+              color: '#60a5fa'
+            }}>
+              {completedChallenges.reduce((sum, id) => {
+                const challenge = challenges.find(c => c.id === id)
+                const duration = parseInt(challenge?.duration || '0')
+                return sum + duration
+              }, 0)}分
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Today's challenges */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            今日のチャレンジ
-          </h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {challenges.map((challenge) => (
+      {/* Challenges list */}
+      <div style={{
+        padding: '0 20px 20px'
+      }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '600',
+          color: '#f3f4f6',
+          marginBottom: '16px'
+        }}>
+          利用可能なチャレンジ
+        </h2>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px'
+        }}>
+          {challenges.map(challenge => {
+            const isCompleted = completedChallenges.includes(challenge.id)
+            const isSelected = selectedChallenge === challenge.id
+
+            return (
               <div
                 key={challenge.id}
                 style={{
-                  backgroundColor: challenge.locked ? '#1a1f2e' : '#1f2937',
+                  backgroundColor: '#1f2937',
                   borderRadius: '12px',
                   padding: '16px',
-                  opacity: challenge.locked ? 0.6 : 1,
-                  cursor: challenge.locked ? 'not-allowed' : 'pointer',
+                  cursor: isCompleted ? 'default' : 'pointer',
                   transition: 'all 0.2s ease',
-                  border: selectedChallenge === challenge.id ? '2px solid #a3e635' : '2px solid transparent'
+                  opacity: isCompleted ? 0.6 : 1,
+                  border: isSelected ? '2px solid #a3e635' : '2px solid transparent'
                 }}
-                onClick={() => !challenge.locked && handleStartChallenge(challenge.id)}
-                onMouseEnter={(e) => { 
-                  if (!challenge.locked) {
-                    e.currentTarget.style.backgroundColor = '#374151'
+                onClick={() => !isCompleted && handleStartChallenge(challenge.id)}
+                onMouseEnter={(e) => {
+                  if (!isCompleted) {
                     e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
                   }
                 }}
-                onMouseLeave={(e) => { 
-                  if (!challenge.locked) {
-                    e.currentTarget.style.backgroundColor = '#1f2937'
+                onMouseLeave={(e) => {
+                  if (!isCompleted) {
                     e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
                   }
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <h3 style={{ 
-                        fontSize: '16px', 
-                        fontWeight: '600', 
-                        color: challenge.locked ? '#6b7280' : '#f3f4f6',
-                        margin: 0
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: '12px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px'
+                  }}>
+                    <div style={{
+                      width: '48px',
+                      height: '48px',
+                      backgroundColor: isCompleted ? '#374151' : '#111827',
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '24px'
+                    }}>
+                      {isCompleted ? '✓' : challenge.icon}
+                    </div>
+                    <div>
+                      <h3 style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
                       }}>
                         {challenge.title}
                       </h3>
-                      {challenge.locked && (
-                        <span style={{ fontSize: '16px' }}>🔒</span>
-                      )}
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#9ca3af',
+                        marginBottom: '8px'
+                      }}>
+                        {challenge.description}
+                      </p>
+                      <div style={{
+                        display: 'flex',
+                        gap: '12px',
+                        alignItems: 'center'
+                      }}>
+                        <span style={{
+                          fontSize: '12px',
+                          backgroundColor: '#374151',
+                          color: '#9ca3af',
+                          padding: '4px 8px',
+                          borderRadius: '4px'
+                        }}>
+                          {challenge.category}
+                        </span>
+                        <span style={{
+                          fontSize: '12px',
+                          color: '#9ca3af'
+                        }}>
+                          ⏱ {challenge.duration}
+                        </span>
+                        <span style={{
+                          fontSize: '12px',
+                          color: '#a3e635',
+                          fontWeight: '600'
+                        }}>
+                          +{challenge.xp} XP
+                        </span>
+                      </div>
                     </div>
-                    <p style={{ 
-                      fontSize: '14px', 
-                      color: challenge.locked ? '#4b5563' : '#9ca3af',
-                      margin: 0,
-                      lineHeight: '1.4'
-                    }}>
-                      {challenge.description}
-                    </p>
                   </div>
-                  <span style={{
-                    padding: '4px 12px',
+                  <div style={{
                     backgroundColor: getDifficultyColor(challenge.difficulty),
-                    color: 'white',
-                    borderRadius: '12px',
+                    color: '#111827',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
                     fontSize: '12px',
                     fontWeight: '600'
                   }}>
-                    {challenge.difficulty}
-                  </span>
+                    {getDifficultyLabel(challenge.difficulty)}
+                  </div>
                 </div>
-                
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '14px' }}>⚡</span>
-                    <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '500' }}>
-                      +{challenge.xp} XP
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '14px' }}>⏱</span>
-                    <span style={{ fontSize: '14px', color: '#9ca3af' }}>
-                      {challenge.time}
-                    </span>
-                  </div>
+
+                {isSelected && !isCompleted && (
                   <div style={{
-                    padding: '4px 8px',
-                    backgroundColor: '#374151',
-                    borderRadius: '6px'
+                    borderTop: '1px solid #374151',
+                    paddingTop: '12px',
+                    marginTop: '12px'
                   }}>
-                    <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                      {challenge.category}
+                    <h4 style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: '#f3f4f6',
+                      marginBottom: '12px'
+                    }}>
+                      手順:
+                    </h4>
+                    <ol style={{
+                      margin: 0,
+                      paddingLeft: '20px'
+                    }}>
+                      {challenge.steps.map((step, index) => (
+                        <li
+                          key={index}
+                          style={{
+                            fontSize: '13px',
+                            color: '#d1d5db',
+                            marginBottom: '6px',
+                            lineHeight: '1.4'
+                          }}
+                        >
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleCompleteChallenge(challenge.id)
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        backgroundColor: '#a3e635',
+                        color: '#111827',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        marginTop: '16px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
+                    >
+                      完了にする
+                    </button>
+                  </div>
+                )}
+
+                {isCompleted && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '12px',
+                    padding: '8px',
+                    backgroundColor: '#374151',
+                    borderRadius: '8px'
+                  }}>
+                    <span style={{
+                      fontSize: '14px',
+                      color: '#a3e635',
+                      fontWeight: '600'
+                    }}>
+                      ✓ 完了済み
                     </span>
                   </div>
-                </div>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Quick stats */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            今日の進捗
-          </h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-            <div style={{ 
-              backgroundColor: '#1f2937', 
-              borderRadius: '12px', 
-              padding: '16px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0/6</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>完了</div>
-            </div>
-            <div style={{ 
-              backgroundColor: '#1f2937', 
-              borderRadius: '12px', 
-              padding: '16px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>獲得XP</div>
-            </div>
-            <div style={{ 
-              backgroundColor: '#1f2937', 
-              borderRadius: '12px', 
-              padding: '16px',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>0分</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>活動時間</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button
-            onClick={() => router.push('/daily-challenge/leaderboard')}
-            style={{
-              flex: 1,
-              padding: '16px',
-              backgroundColor: '#374151',
-              color: '#d1d5db',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-          >
-            🏆 ランキング
-          </button>
-          <button
-            onClick={() => router.push('/achievements')}
-            style={{
-              flex: 1,
-              padding: '16px',
-              backgroundColor: '#a3e635',
-              color: '#111827',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
-          >
-            🎖️ 実績を見る
-          </button>
+            )
+          })}
         </div>
       </div>
 
