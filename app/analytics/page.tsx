@@ -141,47 +141,17 @@ export default function AnalyticsPage() {
         backdropFilter: 'blur(10px)',
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ 
-            fontSize: '24px', 
-            fontWeight: '800', 
-            background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            margin: 0 
-          }}>
-            分析・インサイト
-          </h1>
-          <button
-            onClick={() => router.push('/export')}
-            style={{
-              padding: '10px 20px',
-              background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-              color: '#111827',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 12px rgba(163, 230, 53, 0.3)'
-            }}
-            onMouseEnter={(e) => { 
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
-            }}
-            onMouseLeave={(e) => { 
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ExportIcon size={18} color="#111827" />
-              エクスポート
-            </div>
-          </button>
-        </div>
+        <h1 style={{ 
+          fontSize: '24px', 
+          fontWeight: '800', 
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          margin: 0 
+        }}>
+          分析・インサイト
+        </h1>
       </div>
 
       <div style={{ padding: '20px' }}>
@@ -553,6 +523,45 @@ export default function AnalyticsPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Export Section */}
+        <div style={{ 
+          marginBottom: '28px',
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}>
+          <button
+            onClick={() => router.push('/export')}
+            style={{
+              padding: '12px 24px',
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              color: '#d1d5db',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+            onMouseEnter={(e) => { 
+              e.currentTarget.style.background = 'rgba(55, 65, 81, 0.6)'
+              e.currentTarget.style.borderColor = 'rgba(163, 230, 53, 0.3)'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={(e) => { 
+              e.currentTarget.style.background = 'rgba(31, 41, 55, 0.6)'
+              e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.3)'
+              e.currentTarget.style.transform = 'translateY(0)'
+            }}
+          >
+            <ExportIcon size={18} color="#9ca3af" />
+            <span>データをエクスポート</span>
+          </button>
         </div>
 
         {/* AI Character Insights */}
