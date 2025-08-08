@@ -328,7 +328,7 @@ export default function CharactersPage() {
           margin: 0,
           marginBottom: '8px'
         }}>
-          AIキャラクター
+          キャラクター
         </h1>
         <p style={{
           fontSize: '14px',

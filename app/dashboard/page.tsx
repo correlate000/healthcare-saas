@@ -188,7 +188,7 @@ export default function Dashboard() {
             }}
           >
             <span>💬</span>
-            AIと話す
+            キャラクターと話す
           </button>
         </div>
       </div>

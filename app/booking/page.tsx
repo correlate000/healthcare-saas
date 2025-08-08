@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { DoctorFemaleIcon, DoctorMaleIcon, PsychiatristIcon, AlarmClockIcon, StarIcon } from '@/components/icons/illustrations'
 
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -9,6 +10,16 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [consultationType, setConsultationType] = useState<'video' | 'phone'>('video')
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const specialists = [
     {
@@ -21,7 +32,7 @@ export default function BookingPage() {
       experience: '8年',
       description: '職場でのストレスや人間関係の悩みを専門としています。認知行動療法を中心とした治療を行っています。',
       nextAvailable: '今日 14:00',
-      image: '👩‍⚕️'
+      image: <DoctorFemaleIcon size={30} primaryColor="#60a5fa" />
     },
     {
       id: 2,
@@ -33,7 +44,7 @@ export default function BookingPage() {
       experience: '6年',
       description: 'トラウマやパニック障害の治療を専門としています。EMDRなどの専門的な治療法も提供しています。',
       nextAvailable: '明日 10:00',
-      image: '👨‍⚕️'
+      image: <DoctorMaleIcon size={30} primaryColor="#60a5fa" />
     },
     {
       id: 3,
@@ -45,7 +56,7 @@ export default function BookingPage() {
       experience: '12年',
       description: '薬物療法と心理療法を組み合わせた包括的な治療を行っています。重篤な精神疾患の治療経験が豊富です。',
       nextAvailable: '明後日 9:00',
-      image: '👩‍💼'
+      image: <PsychiatristIcon size={30} primaryColor="#a78bfa" />
     }
   ]
 
@@ -152,23 +163,29 @@ export default function BookingPage() {
           marginBottom: '24px'
         }}>
           <span style={{
-            fontSize: '12px',
+            fontSize: isMobile ? '11px' : '12px',
             color: currentStep === 1 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 1 ? '600' : '400'
+            fontWeight: currentStep === 1 ? '600' : '400',
+            textAlign: 'center',
+            flex: 1
           }}>
             専門家選択
           </span>
           <span style={{
-            fontSize: '12px',
+            fontSize: isMobile ? '11px' : '12px',
             color: currentStep === 2 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 2 ? '600' : '400'
+            fontWeight: currentStep === 2 ? '600' : '400',
+            textAlign: 'center',
+            flex: 1
           }}>
             日時選択
           </span>
           <span style={{
-            fontSize: '12px',
+            fontSize: isMobile ? '11px' : '12px',
             color: currentStep === 3 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 3 ? '600' : '400'
+            fontWeight: currentStep === 3 ? '600' : '400',
+            textAlign: 'center',
+            flex: 1
           }}>
             確認・決済
           </span>
@@ -209,20 +226,21 @@ export default function BookingPage() {
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: isMobile ? '12px' : '16px' }}>
                     <div style={{
-                      width: '60px',
-                      height: '60px',
+                      width: isMobile ? '50px' : '60px',
+                      height: isMobile ? '50px' : '60px',
                       background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '30px'
+                      fontSize: isMobile ? '24px' : '30px',
+                      flexShrink: 0
                     }}>
                       {specialist.image}
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                         <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
                           {specialist.name}
@@ -239,23 +257,30 @@ export default function BookingPage() {
                         </span>
                       </div>
                       
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        flexWrap: 'wrap',
+                        alignItems: 'center', 
+                        gap: isMobile ? '8px' : '12px', 
+                        marginBottom: '8px' 
+                      }}>
                         <span style={{
                           padding: '4px 8px',
                           backgroundColor: 'rgba(96, 165, 250, 0.2)',
                           color: '#60a5fa',
                           borderRadius: '8px',
-                          fontSize: '12px',
-                          fontWeight: '500'
+                          fontSize: isMobile ? '11px' : '12px',
+                          fontWeight: '500',
+                          whiteSpace: 'nowrap'
                         }}>
                           {specialist.title}
                         </span>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                        <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#9ca3af', whiteSpace: 'nowrap' }}>
                           {specialist.experience}の経験
                         </span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span style={{ color: '#fbbf24' }}>⭐</span>
-                          <span style={{ fontSize: '12px', color: '#fbbf24', fontWeight: '500' }}>
+                          <StarIcon size={14} color="#fbbf24" filled />
+                          <span style={{ fontSize: isMobile ? '11px' : '12px', color: '#fbbf24', fontWeight: '500', whiteSpace: 'nowrap' }}>
                             {specialist.rating} ({specialist.reviews}件)
                           </span>
                         </div>
@@ -283,7 +308,7 @@ export default function BookingPage() {
                       </p>
                       
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>⏰</span>
+                        <AlarmClockIcon size={12} color="#9ca3af" />
                         <span style={{ fontSize: '12px', color: '#9ca3af' }}>{specialist.nextAvailable}</span>
                       </div>
                     </div>

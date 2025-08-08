@@ -1354,3 +1354,225 @@ export const RelaxIcon = ({ size = 24, color = '#a78bfa' }: { size?: number, col
     </circle>
   </svg>
 )
+
+// 専門家のアイコン
+export const DoctorFemaleIcon = ({ size = 48, primaryColor = '#60a5fa' }: { size?: number, primaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 髪 */}
+    <path d="M 30 35 Q 30 20 50 20 Q 70 20 70 35 L 70 45 Q 65 48 60 45 L 60 35 Q 55 38 50 38 Q 45 38 40 35 L 40 45 Q 35 48 30 45 Z" fill="#6b4423"/>
+    
+    {/* 顔 */}
+    <ellipse cx="50" cy="40" rx="18" ry="20" fill="#fdbcb4"/>
+    
+    {/* 目 */}
+    <ellipse cx="43" cy="38" rx="2" ry="3" fill="#111827"/>
+    <ellipse cx="57" cy="38" rx="2" ry="3" fill="#111827"/>
+    
+    {/* 口 */}
+    <path d="M 45 46 Q 50 48 55 46" stroke="#e11d48" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+    
+    {/* 白衣 */}
+    <path d="M 35 58 L 35 85 L 65 85 L 65 58 Q 65 55 60 55 L 40 55 Q 35 55 35 58 Z" fill="white"/>
+    <rect x="33" y="55" width="34" height="32" rx="3" fill="white"/>
+    
+    {/* 聴診器 */}
+    <circle cx="50" cy="70" r="4" fill={primaryColor}/>
+    <path d="M 46 70 Q 45 65 42 65" stroke={primaryColor} strokeWidth="2" fill="none" strokeLinecap="round"/>
+    <path d="M 54 70 Q 55 65 58 65" stroke={primaryColor} strokeWidth="2" fill="none" strokeLinecap="round"/>
+    <circle cx="42" cy="65" r="2" fill={primaryColor}/>
+    <circle cx="58" cy="65" r="2" fill={primaryColor}/>
+    
+    {/* 名札 */}
+    <rect x="38" y="58" width="8" height="5" fill={primaryColor} opacity="0.3"/>
+  </svg>
+)
+
+export const DoctorMaleIcon = ({ size = 48, primaryColor = '#60a5fa' }: { size?: number, primaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 髪 */}
+    <path d="M 35 30 Q 35 22 50 22 Q 65 22 65 30 L 65 35 L 35 35 Z" fill="#4a4a4a"/>
+    
+    {/* 顔 */}
+    <ellipse cx="50" cy="40" rx="18" ry="20" fill="#fdbcb4"/>
+    
+    {/* メガネ */}
+    <circle cx="42" cy="38" r="7" fill="none" stroke="#374151" strokeWidth="1.5"/>
+    <circle cx="58" cy="38" r="7" fill="none" stroke="#374151" strokeWidth="1.5"/>
+    <path d="M 49 38 L 51 38" stroke="#374151" strokeWidth="1.5"/>
+    
+    {/* 目 */}
+    <circle cx="42" cy="38" r="2" fill="#111827"/>
+    <circle cx="58" cy="38" r="2" fill="#111827"/>
+    
+    {/* 口 */}
+    <path d="M 45 46 Q 50 48 55 46" stroke="#374151" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+    
+    {/* 白衣 */}
+    <path d="M 35 58 L 35 85 L 65 85 L 65 58 Q 65 55 60 55 L 40 55 Q 35 55 35 58 Z" fill="white"/>
+    <rect x="33" y="55" width="34" height="32" rx="3" fill="white"/>
+    
+    {/* ネクタイ */}
+    <path d="M 48 55 L 48 72 L 50 75 L 52 72 L 52 55 Z" fill={primaryColor}/>
+    
+    {/* 聴診器 */}
+    <circle cx="50" cy="70" r="4" fill={primaryColor} opacity="0.5"/>
+    <path d="M 46 70 Q 45 65 42 65" stroke={primaryColor} strokeWidth="2" fill="none" strokeLinecap="round"/>
+    <path d="M 54 70 Q 55 65 58 65" stroke={primaryColor} strokeWidth="2" fill="none" strokeLinecap="round"/>
+    <circle cx="42" cy="65" r="2" fill={primaryColor}/>
+    <circle cx="58" cy="65" r="2" fill={primaryColor}/>
+  </svg>
+)
+
+export const PsychiatristIcon = ({ size = 48, primaryColor = '#a78bfa' }: { size?: number, primaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 髪 */}
+    <path d="M 32 32 Q 32 22 50 22 Q 68 22 68 32 L 68 40 Q 65 42 62 40 L 62 38 Q 58 40 50 40 Q 42 40 38 38 L 38 40 Q 35 42 32 40 Z" fill="#8b7355"/>
+    
+    {/* 顔 */}
+    <ellipse cx="50" cy="40" rx="18" ry="20" fill="#fdbcb4"/>
+    
+    {/* 目 */}
+    <ellipse cx="43" cy="38" rx="2" ry="3" fill="#111827"/>
+    <ellipse cx="57" cy="38" rx="2" ry="3" fill="#111827"/>
+    
+    {/* 口 */}
+    <path d="M 44 46 Q 50 49 56 46" stroke="#e11d48" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+    
+    {/* スーツ */}
+    <path d="M 35 58 L 35 85 L 65 85 L 65 58 Q 65 55 60 55 L 40 55 Q 35 55 35 58 Z" fill="#4b5563"/>
+    <rect x="33" y="55" width="34" height="32" rx="3" fill="#4b5563"/>
+    
+    {/* シャツ */}
+    <path d="M 45 55 L 45 75 L 55 75 L 55 55 Z" fill="white"/>
+    
+    {/* バッジ */}
+    <circle cx="40" cy="62" r="3" fill={primaryColor}/>
+    
+    {/* ノート */}
+    <rect x="55" y="68" width="8" height="10" fill="#fbbf24" opacity="0.8"/>
+    <rect x="56" y="70" width="6" height="1" fill="#374151"/>
+    <rect x="56" y="72" width="5" height="1" fill="#374151"/>
+    <rect x="56" y="74" width="6" height="1" fill="#374151"/>
+  </svg>
+)
+
+// 星評価アイコン
+export const StarIcon = ({ size = 24, color = '#fbbf24', filled = true }: { size?: number, color?: string, filled?: boolean }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path 
+      d="M 50 15 L 58 35 L 80 35 L 62 48 L 70 68 L 50 55 L 30 68 L 38 48 L 20 35 L 42 35 Z" 
+      fill={filled ? color : 'none'}
+      stroke={color}
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    {filled && (
+      <path 
+        d="M 50 25 L 54 35 L 65 35 L 56 42 L 60 52 L 50 45 L 40 52 L 44 42 L 35 35 L 46 35 Z" 
+        fill="white"
+        opacity="0.3"
+      />
+    )}
+  </svg>
+)
+
+// データベース・保存アイコン  
+export const DatabaseIcon = ({ size = 24, color = '#60a5fa' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* データベースの形状 */}
+    <ellipse cx="50" cy="25" rx="25" ry="8" fill={color}/>
+    <rect x="25" y="25" width="50" height="50" fill={color} opacity="0.8"/>
+    <ellipse cx="50" cy="75" rx="25" ry="8" fill={color}/>
+    
+    {/* 保存されたデータ */}
+    <ellipse cx="50" cy="35" rx="22" ry="6" fill="white" opacity="0.3"/>
+    <ellipse cx="50" cy="45" rx="22" ry="6" fill="white" opacity="0.3"/>
+    <ellipse cx="50" cy="55" rx="22" ry="6" fill="white" opacity="0.3"/>
+    <ellipse cx="50" cy="65" rx="22" ry="6" fill="white" opacity="0.3"/>
+    
+    {/* 光る効果 */}
+    <rect x="30" y="30" width="3" height="40" fill="white" opacity="0.4"/>
+    <ellipse cx="45" cy="20" rx="3" ry="2" fill="white" opacity="0.5"/>
+    
+    {/* セキュリティシールド */}
+    <path d="M 75 15 Q 82 15 82 22 L 82 30 Q 75 35 68 30 L 68 22 Q 68 15 75 15 Z" fill="#10b981"/>
+    <path d="M 72 22 L 74 24 L 78 20" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+  </svg>
+)
+
+// コード・JSONアイコン
+export const CodeIcon = ({ size = 24, color = '#60a5fa' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="25" width="60" height="50" rx="8" fill={color} opacity="0.2"/>
+    <rect x="20" y="25" width="60" height="50" rx="8" fill="none" stroke={color} strokeWidth="2"/>
+    
+    {/* 中括弧 */}
+    <path d="M 35 35 Q 30 35 30 40 L 30 50 Q 25 50 25 55 Q 25 60 30 60 L 30 65 Q 30 70 35 70" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    <path d="M 65 35 Q 70 35 70 40 L 70 50 Q 75 50 75 55 Q 75 60 70 60 L 70 65 Q 70 70 65 70" stroke={color} strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+    
+    {/* コード行 */}
+    <rect x="35" y="40" width="15" height="2" fill={color} opacity="0.6"/>
+    <rect x="35" y="45" width="20" height="2" fill={color} opacity="0.6"/>
+    <rect x="35" y="50" width="12" height="2" fill={color} opacity="0.6"/>
+    <rect x="35" y="55" width="18" height="2" fill={color} opacity="0.6"/>
+    <rect x="35" y="60" width="10" height="2" fill={color} opacity="0.6"/>
+  </svg>
+)
+
+// 書類・PDFアイコン
+export const DocumentIcon = ({ size = 24, color = '#ef4444' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* ページ */}
+    <path d="M 25 15 L 25 85 L 75 85 L 75 30 L 60 15 Z" fill={color} opacity="0.2"/>
+    <path d="M 25 15 L 25 85 L 75 85 L 75 30 L 60 15 Z" fill={color}/>
+    
+    {/* 折り返し部分 */}
+    <path d="M 60 15 L 60 30 L 75 30" fill="none" stroke="white" strokeWidth="2"/>
+    
+    {/* 内容 */}
+    <rect x="32" y="40" width="36" height="3" fill="white" opacity="0.8"/>
+    <rect x="32" y="48" width="30" height="3" fill="white" opacity="0.8"/>
+    <rect x="32" y="56" width="34" height="3" fill="white" opacity="0.8"/>
+    <rect x="32" y="64" width="28" height="3" fill="white" opacity="0.8"/>
+    <rect x="32" y="72" width="32" height="3" fill="white" opacity="0.8"/>
+    
+    {/* PDF記号 */}
+    <circle cx="65" cy="20" r="8" fill="white" opacity="0.9"/>
+    <text x="65" y="24" fontSize="8" fill={color} fontWeight="bold" textAnchor="middle">PDF</text>
+  </svg>
+)
+
+// ターゲット・目標アイコン
+export const TargetIcon = ({ size = 24, primaryColor = '#f59e0b' }: { size?: number, primaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 外側の円 */}
+    <circle cx="50" cy="50" r="35" fill="none" stroke={primaryColor} strokeWidth="3"/>
+    <circle cx="50" cy="50" r="25" fill="none" stroke={primaryColor} strokeWidth="2.5"/>
+    <circle cx="50" cy="50" r="15" fill="none" stroke={primaryColor} strokeWidth="2"/>
+    <circle cx="50" cy="50" r="8" fill={primaryColor}/>
+    
+    {/* 矢印 */}
+    <path d="M 20 30 L 35 45" stroke={primaryColor} strokeWidth="3" strokeLinecap="round"/>
+    <path d="M 20 30 L 25 35" stroke={primaryColor} strokeWidth="3" strokeLinecap="round"/>
+    <path d="M 20 30 L 25 25" stroke={primaryColor} strokeWidth="3" strokeLinecap="round"/>
+    
+    {/* 光る効果 */}
+    <circle cx="45" cy="45" r="2" fill="white" opacity="0.8"/>
+    <circle cx="55" cy="40" r="1.5" fill="white" opacity="0.6"/>
+  </svg>
+)
+
+// ユーザー・人物アイコン
+export const UserIcon = ({ size = 24, primaryColor = '#6b7280' }: { size?: number, primaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 頭 */}
+    <circle cx="50" cy="35" r="15" fill={primaryColor}/>
+    
+    {/* 体 */}
+    <path d="M 30 85 Q 30 70 40 70 L 60 70 Q 70 70 70 85 Z" fill={primaryColor}/>
+    
+    {/* 光る効果 */}
+    <circle cx="45" cy="30" r="3" fill="white" opacity="0.5"/>
+    <ellipse cx="50" cy="75" rx="8" ry="4" fill="white" opacity="0.3"/>
+  </svg>
+)

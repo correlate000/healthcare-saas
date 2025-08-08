@@ -20,7 +20,7 @@ import {
   Activity
 } from 'lucide-react'
 
-interface AIInsight {
+interface Insight {
   id: string
   title: string
   description: string
@@ -33,7 +33,7 @@ interface AIInsight {
   timestamp: string
 }
 
-interface AIPrediction {
+interface Prediction {
   id: string
   title: string
   prediction: string
@@ -42,21 +42,21 @@ interface AIPrediction {
   preventiveActions: string[]
 }
 
-interface AIInsightsCardProps {
-  insights: AIInsight[]
-  predictions?: AIPrediction[]
-  onInsightClick?: (insight: AIInsight) => void
+interface InsightsCardProps {
+  insights: Insight[]
+  predictions?: Prediction[]
+  onInsightClick?: (insight: Insight) => void
   onViewAll?: () => void
   isLoading?: boolean
 }
 
-export function AIInsightsCard({ 
+export function InsightsCard({ 
   insights, 
   predictions = [], 
   onInsightClick, 
   onViewAll,
   isLoading = false 
-}: AIInsightsCardProps) {
+}: InsightsCardProps) {
   const [activeTab, setActiveTab] = useState<'insights' | 'predictions'>('insights')
 
   const getPriorityColor = (priority: string) => {
@@ -85,11 +85,11 @@ export function AIInsightsCard({
       case 'recommendation': return '推奨事項'
       case 'prediction': return '予測'
       case 'achievement': return '達成事項'
-      default: return 'AI分析'
+      default: return 'キャラクター分析'
     }
   }
 
-  const renderInsight = (insight: AIInsight, index: number) => (
+  const renderInsight = (insight: Insight, index: number) => (
     <motion.div
       key={insight.id}
       initial={{ opacity: 0, x: -20 }}
@@ -154,7 +154,7 @@ export function AIInsightsCard({
     </motion.div>
   )
 
-  const renderPrediction = (prediction: AIPrediction, index: number) => (
+  const renderPrediction = (prediction: Prediction, index: number) => (
     <motion.div
       key={prediction.id}
       initial={{ opacity: 0, x: -20 }}
@@ -200,7 +200,7 @@ export function AIInsightsCard({
         <CardHeader className="pb-3">
           <CardTitle className="text-white text-lg font-semibold flex items-center">
             <Brain className="h-5 w-5 mr-2 text-emerald-400" />
-            AI健康分析
+            キャラクター健康分析
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -224,7 +224,7 @@ export function AIInsightsCard({
         <div className="flex items-center justify-between">
           <CardTitle className="text-white text-lg font-semibold flex items-center">
             <Brain className="h-5 w-5 mr-2 text-emerald-400" />
-            AI健康分析
+            キャラクター健康分析
             <Sparkles className="h-4 w-4 ml-2 text-yellow-400" />
           </CardTitle>
           <Button
@@ -278,7 +278,7 @@ export function AIInsightsCard({
                 <div className="text-center py-8 text-gray-400">
                   <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">分析結果はありません</p>
-                  <p className="text-xs">健康データを記録すると、AI分析が表示されます</p>
+                  <p className="text-xs">健康データを記録すると、キャラクター分析が表示されます</p>
                 </div>
               )}
             </motion.div>
@@ -307,8 +307,8 @@ export function AIInsightsCard({
   )
 }
 
-// サンプルAI洞察データジェネレーター
-export function generateSampleInsights(): AIInsight[] {
+// サンプル洞察データジェネレーター
+export function generateSampleInsights(): Insight[] {
   return [
     {
       id: 'insight_1',
@@ -348,7 +348,7 @@ export function generateSampleInsights(): AIInsight[] {
   ]
 }
 
-export function generateSamplePredictions(): AIPrediction[] {
+export function generateSamplePredictions(): Prediction[] {
   return [
     {
       id: 'prediction_1',

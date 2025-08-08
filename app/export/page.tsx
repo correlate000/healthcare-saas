@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { DatabaseIcon, MoodHappyIcon, ChartIcon, ChatIcon, TrophySimpleIcon, UserIcon, LockIcon, CodeIcon, DocumentIcon, TargetIcon } from '@/components/icons/illustrations'
 
 export default function ExportPage() {
   const router = useRouter()
@@ -14,18 +15,18 @@ export default function ExportPage() {
   })
 
   const dataTypes = [
-    { id: 'mood', label: '気分データ', icon: '😊', size: '2.3 MB' },
-    { id: 'activities', label: 'アクティビティ', icon: '📊', size: '1.8 MB' },
-    { id: 'chats', label: 'チャット履歴', icon: '💬', size: '3.5 MB' },
-    { id: 'achievements', label: '実績・バッジ', icon: '🏆', size: '0.5 MB' },
-    { id: 'challenges', label: 'チャレンジ記録', icon: '🎯', size: '1.2 MB' },
-    { id: 'profile', label: 'プロフィール', icon: '👤', size: '0.1 MB' }
+    { id: 'mood', label: '気分データ', icon: <MoodHappyIcon size={20} color="#a3e635" />, size: '2.3 MB' },
+    { id: 'activities', label: 'アクティビティ', icon: <ChartIcon size={20} primaryColor="#60a5fa" />, size: '1.8 MB' },
+    { id: 'chats', label: 'チャット履歴', icon: <ChatIcon size={20} primaryColor="#a78bfa" />, size: '3.5 MB' },
+    { id: 'achievements', label: '実績・バッジ', icon: <TrophySimpleIcon size={20} color="#fbbf24" />, size: '0.5 MB' },
+    { id: 'challenges', label: 'チャレンジ記録', icon: <TargetIcon size={20} primaryColor="#f59e0b" />, size: '1.2 MB' },
+    { id: 'profile', label: 'プロフィール', icon: <UserIcon size={20} primaryColor="#6b7280" />, size: '0.1 MB' }
   ]
 
   const formats = [
-    { id: 'json', label: 'JSON', description: '開発者向け', icon: '{ }' },
-    { id: 'csv', label: 'CSV', description: 'Excel対応', icon: '📊' },
-    { id: 'pdf', label: 'PDF', description: '印刷用', icon: '📄' }
+    { id: 'json', label: 'JSON', description: '開発者向け', icon: <CodeIcon size={20} color="#60a5fa" /> },
+    { id: 'csv', label: 'CSV', description: 'Excel対応', icon: <ChartIcon size={20} primaryColor="#10b981" /> },
+    { id: 'pdf', label: 'PDF', description: '印刷用', icon: <DocumentIcon size={20} color="#ef4444" /> }
   ]
 
   const toggleDataType = (typeId: string) => {
@@ -94,7 +95,7 @@ export default function ExportPage() {
             gap: '12px',
             marginBottom: '12px'
           }}>
-            <span style={{ fontSize: '24px' }}>💾</span>
+            <DatabaseIcon size={24} color="#60a5fa" />
             <h3 style={{
               fontSize: '16px',
               fontWeight: '600',
@@ -219,7 +220,7 @@ export default function ExportPage() {
                   alignItems: 'center',
                   gap: '12px'
                 }}>
-                  <span style={{ fontSize: '20px' }}>{type.icon}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px' }}>{type.icon}</div>
                   <div style={{ textAlign: 'left' }}>
                     <div style={{
                       fontSize: '14px',
@@ -287,7 +288,7 @@ export default function ExportPage() {
                   textAlign: 'center'
                 }}
               >
-                <div style={{ fontSize: '20px', marginBottom: '4px' }}>{format.icon}</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px', height: '20px' }}>{format.icon}</div>
                 <div style={{
                   fontSize: '13px',
                   fontWeight: '600',
@@ -391,7 +392,7 @@ export default function ExportPage() {
             alignItems: 'flex-start',
             gap: '8px'
           }}>
-            <span style={{ fontSize: '16px' }}>🔒</span>
+            <LockIcon size={16} primaryColor="#60a5fa" />
             <div>
               <h4 style={{
                 fontSize: '13px',

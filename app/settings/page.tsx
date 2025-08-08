@@ -299,7 +299,7 @@ export default function SettingsPage() {
             { icon: '🏆', label: 'バッジ', count: userStats.badges, path: '/achievements' },
             { icon: <TeamIcon size={24} primaryColor="#8b5cf6" />, label: '友達', count: userStats.friendsCount, path: '/team-connect' },
             { icon: <ChartIcon size={24} color="#10b981" />, label: '分析', count: userStats.totalTime, path: '/analytics' },
-            { icon: <EnergyIcon size={24} primaryColor="#f59e0b" />, label: 'AI設定', count: '6体', path: '/characters' }
+            { icon: <EnergyIcon size={24} primaryColor="#f59e0b" />, label: 'キャラクター設定', count: '6体', path: '/characters' }
           ].map((action) => (
             <button
               key={action.label}
@@ -388,7 +388,7 @@ export default function SettingsPage() {
                 {[
                   { key: 'checkinReminder', label: 'チェックインリマインダー', desc: '毎日の健康チェック', icon: <NoteIcon size={20} /> },
                   { key: 'weeklyReport', label: '週次レポート', desc: '週間の振り返りと分析', icon: <ChartIcon size={20} color="#10b981" /> },
-                  { key: 'encouragement', label: '励ましメッセージ', desc: 'AIからの応援', icon: <HeartHandsIcon size={20} /> },
+                  { key: 'encouragement', label: '励ましメッセージ', desc: 'キャラクターからの応援', icon: <HeartHandsIcon size={20} /> },
                   { key: 'achievements', label: '実績通知', desc: 'バッジやレベルアップ', icon: <TrophyIcon size={20} color="#fbbf24" /> },
                   { key: 'teamUpdates', label: 'チーム更新', desc: 'チームメンバーの活動', icon: <TeamIcon size={20} primaryColor="#8b5cf6" /> },
                   { key: 'marketing', label: 'お知らせ', desc: '新機能やアップデート', icon: <BellIcon size={20} color="#ef4444" /> }

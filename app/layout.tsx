@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'MindCare - ヘルスケアSaaS',
-  description: 'AIキャラクターとの温かい対話で毎日の心の健康をサポート',
+  description: 'キャラクターとの温かい対話で毎日の心の健康をサポート',
 }
 
 export const viewport = {
