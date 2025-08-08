@@ -15,8 +15,8 @@ export default function CharactersPage() {
     aria: 'excited',
     zen: 'calm',
     spark: 'energetic',
-    nova: 'curious',
-    sage: 'thoughtful'
+    mochi: 'curious',
+    hakase: 'thoughtful'
   })
 
   // Enhanced Bird character SVG component with mood animations
@@ -92,7 +92,7 @@ export default function CharactersPage() {
   const characters = [
     {
       id: 'luna',
-      name: 'Luna',
+      name: 'ルナちゃん',
       bodyColor: '#a3e635',
       bellyColor: '#ecfccb',
       role: '睡眠の守護者',
@@ -129,7 +129,7 @@ export default function CharactersPage() {
     },
     {
       id: 'aria',
-      name: 'Aria',
+      name: 'そらちゃん',
       bodyColor: '#60a5fa',
       bellyColor: '#dbeafe',
       role: 'モチベーションコーチ',
@@ -166,7 +166,7 @@ export default function CharactersPage() {
     },
     {
       id: 'zen',
-      name: 'Zen',
+      name: 'ゼンさん',
       bodyColor: '#f59e0b',
       bellyColor: '#fed7aa',
       role: '瞑想マスター',
@@ -196,7 +196,7 @@ export default function CharactersPage() {
     },
     {
       id: 'spark',
-      name: 'Spark',
+      name: 'ぴかりん',
       bodyColor: '#ef4444',
       bellyColor: '#fecaca',
       role: 'エナジーブースター',
@@ -225,18 +225,18 @@ export default function CharactersPage() {
       badge: '🔥'
     },
     {
-      id: 'nova',
-      name: 'Nova',
+      id: 'mochi',
+      name: 'もちもち',
       bodyColor: '#a78bfa',
       bellyColor: '#e9d5ff',
-      role: '創造性の妖精',
-      personality: '好奇心旺盛で創造的',
-      specialty: 'クリエイティビティ・問題解決',
+      role: 'やる気の応援団',
+      personality: 'ふわふわ優しい',
+      specialty: 'やる気アップ・癒し',
       level: 5,
       xp: 950,
       nextLevelXp: 1200,
       relationshipLevel: 30,
-      description: '新しいアイデアと可能性を一緒に探求しましょう',
+      description: 'もちもちパワーであなたを応援します！',
       stats: {
         empathy: 78,
         wisdom: 72,
@@ -244,9 +244,9 @@ export default function CharactersPage() {
         humor: 92
       },
       skills: [
-        { name: 'ブレインストーミング', level: '5', description: 'アイデアの泉を解き放つ' },
-        { name: 'クリエイティブ思考', level: '4', description: '枠を超えた発想力' },
-        { name: 'インスピレーション', level: '3', description: 'ひらめきの瞬間を創造' }
+        { name: 'もちもちパワー', level: '5', description: 'ふわふわのやる気をお届け' },
+        { name: '癒しのハグ', level: '4', description: '心をぽかぽかに' },
+        { name: '応援ダンス', level: '3', description: '元気100倍！' }
       ],
       dialogue: [],
       memories: [],
@@ -255,18 +255,18 @@ export default function CharactersPage() {
       badge: '💡'
     },
     {
-      id: 'sage',
-      name: 'Sage',
+      id: 'hakase',
+      name: 'はかせ',
       bodyColor: '#10b981',
       bellyColor: '#d1fae5',
-      role: '知恵の守護者',
-      personality: '博識で思慮深い',
-      specialty: '学習サポート・成長促進',
+      role: '健康の博士',
+      personality: '物知りで優しい',
+      specialty: '健康アドバイス・知識共有',
       level: 20,
       xp: 8500,
       nextLevelXp: 10000,
       relationshipLevel: 10,
-      description: '人生の教訓と深い洞察を共有します',
+      description: 'なんでも知ってる健康博士です！',
       stats: {
         empathy: 88,
         wisdom: 95,
@@ -274,9 +274,9 @@ export default function CharactersPage() {
         humor: 75
       },
       skills: [
-        { name: '知識の伝授', level: 'MAX', description: '深い理解への道を示す' },
-        { name: '成長コーチング', level: '10', description: '継続的な自己改善をサポート' },
-        { name: '人生相談', level: '8', description: '人生の岐路での賢明な助言' }
+        { name: '健康豆知識', level: 'MAX', description: '毎日の健康情報' },
+        { name: 'お悩み相談', level: '10', description: '何でも聞いてください' },
+        { name: '栄養アドバイス', level: '8', description: '体に良い食事のコツ' }
       ],
       dialogue: [],
       memories: [],

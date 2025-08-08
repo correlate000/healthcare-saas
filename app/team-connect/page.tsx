@@ -6,137 +6,177 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function TeamConnectPage() {
   const router = useRouter()
-  const [selectedTab, setSelectedTab] = useState<'groups' | 'events' | 'messages'>('groups')
-  const [joinedGroups, setJoinedGroups] = useState<number[]>([1, 3])
+  const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'discover'>('friends')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(null)
+
+  const friends = [
+    {
+      id: 1,
+      name: 'みゆきさん',
+      avatar: '🦝',
+      status: 'オンライン',
+      lastActive: '今',
+      level: 12,
+      streak: 23,
+      mutualGoals: ['瞑想', 'ストレス管理'],
+      mood: 'happy'
+    },
+    {
+      id: 2,
+      name: 'たくやさん',
+      avatar: '🦊',
+      status: 'オフライン',
+      lastActive: '3時間前',
+      level: 8,
+      streak: 15,
+      mutualGoals: ['運動', '睡眠改善'],
+      mood: 'neutral'
+    },
+    {
+      id: 3,
+      name: 'さくらさん',
+      avatar: '🐰',
+      status: 'オンライン',
+      lastActive: '今',
+      level: 15,
+      streak: 45,
+      mutualGoals: ['マインドフルネス', '瞑想'],
+      mood: 'happy'
+    },
+    {
+      id: 4,
+      name: 'けんたさん',
+      avatar: '🐸',
+      status: 'アクティブ',
+      lastActive: '30分前',
+      level: 10,
+      streak: 7,
+      mutualGoals: ['運動', 'ストレス管理'],
+      mood: 'energetic'
+    }
+  ]
 
   const groups = [
     {
       id: 1,
-      name: '朝活チーム',
-      category: 'ライフスタイル',
-      members: 234,
-      description: '早起きと朝の習慣で1日を充実させよう',
-      icon: '☀️',
-      activity: '非常に活発',
-      newPosts: 12,
-      joined: true
+      name: 'モーニングメディテーション',
+      icon: '🌅',
+      members: 24,
+      activeNow: 5,
+      description: '毎朝6時から瞑想セッション',
+      category: '瞑想',
+      isJoined: true,
+      nextSession: '明日 6:00'
     },
     {
       id: 2,
-      name: 'マインドフルネス部',
-      category: '瞑想',
-      members: 189,
-      description: '日々の瞑想と内省を共有する場所',
-      icon: '🧘',
-      activity: '活発',
-      newPosts: 5,
-      joined: false
+      name: 'ストレスフリーチャレンジ',
+      icon: '🎯',
+      members: 89,
+      activeNow: 12,
+      description: '30日間のストレス管理プログラム',
+      category: 'チャレンジ',
+      isJoined: true,
+      nextSession: '今日 20:00'
     },
     {
       id: 3,
-      name: '睡眠改善サークル',
-      category: '健康',
-      members: 456,
-      description: '良質な睡眠を目指して情報交換',
-      icon: '😴',
-      activity: '活発',
-      newPosts: 8,
-      joined: true
+      name: 'ヨガ＆ストレッチ',
+      icon: '🧘‍♀️',
+      members: 156,
+      activeNow: 23,
+      description: '初心者歓迎のヨガグループ',
+      category: '運動',
+      isJoined: false,
+      nextSession: '毎日 19:00'
     },
     {
       id: 4,
-      name: 'ストレス管理研究会',
-      category: 'メンタルヘルス',
-      members: 312,
-      description: 'ストレスと上手に付き合う方法を学ぶ',
-      icon: '💆',
-      activity: '普通',
-      newPosts: 3,
-      joined: false
+      name: '睡眠改善サークル',
+      icon: '😴',
+      members: 67,
+      activeNow: 3,
+      description: '良質な睡眠を目指す仲間たち',
+      category: '健康',
+      isJoined: false,
+      nextSession: '今夜 21:00'
     }
   ]
 
-  const events = [
+  const activities = [
     {
       id: 1,
-      title: '週末瞑想セッション',
-      date: '8月10日(土)',
-      time: '10:00 - 11:00',
-      type: 'オンライン',
-      host: 'マインドフルネス部',
-      participants: 45,
-      maxParticipants: 50,
-      icon: '🧘',
-      status: 'upcoming'
-    },
-    {
-      id: 2,
-      title: '睡眠習慣改善ワークショップ',
-      date: '8月12日(月)',
-      time: '20:00 - 21:30',
-      type: 'オンライン',
-      host: '睡眠改善サークル',
-      participants: 28,
-      maxParticipants: 100,
-      icon: '🛏️',
-      status: 'upcoming'
-    },
-    {
-      id: 3,
-      title: '朝ヨガチャレンジ',
-      date: '毎日',
-      time: '6:00 - 6:30',
-      type: '自主参加',
-      host: '朝活チーム',
-      participants: 156,
-      maxParticipants: null,
-      icon: '🧘‍♀️',
-      status: 'ongoing'
-    }
-  ]
-
-  const messages = [
-    {
-      id: 1,
-      group: '朝活チーム',
-      sender: 'Yuki',
-      avatar: '👤',
-      content: '今朝も5時起きできました！皆さんはどうでしたか？',
+      user: 'みゆきさん',
+      avatar: '🦝',
+      action: '7日間連続チャレンジを達成しました！',
       time: '5分前',
-      unread: true
+      type: 'achievement',
+      reactions: 12,
+      hasReacted: false
     },
     {
       id: 2,
-      group: '睡眠改善サークル',
-      sender: 'Mika',
-      avatar: '👤',
-      content: '新しい睡眠トラッカーアプリを見つけました。共有しますね！',
+      user: 'さくらさん',
+      avatar: '🐰',
+      action: '「モーニングメディテーション」に参加しました',
       time: '1時間前',
-      unread: true
+      type: 'activity',
+      reactions: 5,
+      hasReacted: true
     },
     {
       id: 3,
-      group: '朝活チーム',
-      sender: 'Taro',
-      avatar: '👤',
-      content: '明日の朝ランニング、参加者募集中です',
-      time: '3時間前',
-      unread: false
+      user: 'けんたさん',
+      avatar: '🐸',
+      action: 'レベル10に到達しました！',
+      time: '2時間前',
+      type: 'levelup',
+      reactions: 23,
+      hasReacted: false
     }
   ]
 
-  const handleJoinGroup = (groupId: number) => {
-    if (joinedGroups.includes(groupId)) {
-      setJoinedGroups(joinedGroups.filter(id => id !== groupId))
-    } else {
-      setJoinedGroups([...joinedGroups, groupId])
+  const challenges = [
+    {
+      id: 1,
+      title: '週間瞑想マラソン',
+      participants: 45,
+      daysLeft: 3,
+      progress: 60,
+      reward: '限定バッジ'
+    },
+    {
+      id: 2,
+      title: '早起きチャレンジ',
+      participants: 89,
+      daysLeft: 5,
+      progress: 40,
+      reward: '100 XP'
+    }
+  ]
+
+  const getMoodColor = (mood: string) => {
+    switch(mood) {
+      case 'happy': return '#a3e635'
+      case 'energetic': return '#fbbf24'
+      case 'neutral': return '#60a5fa'
+      default: return '#9ca3af'
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'オンライン': return '#a3e635'
+      case 'アクティブ': return '#fbbf24'
+      default: return '#6b7280'
     }
   }
 
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#111827',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
       paddingBottom: '140px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
@@ -144,97 +184,249 @@ export default function TeamConnectPage() {
       {/* Header */}
       <div style={{
         padding: '20px',
-        borderBottom: '1px solid #374151'
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
       }}>
-        <h1 style={{
-          fontSize: '24px',
-          fontWeight: '700',
-          color: '#f3f4f6',
-          margin: 0,
-          marginBottom: '8px'
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '16px'
         }}>
-          チームコネクト
-        </h1>
-        <p style={{
-          fontSize: '14px',
-          color: '#9ca3af'
-        }}>
-          仲間と一緒に目標達成
-        </p>
-      </div>
-
-      {/* Tabs */}
-      <div style={{
-        display: 'flex',
-        padding: '16px',
-        gap: '8px',
-        borderBottom: '1px solid #374151'
-      }}>
-        {[
-          { key: 'groups', label: 'グループ', badge: groups.length },
-          { key: 'events', label: 'イベント', badge: events.filter(e => e.status === 'upcoming').length },
-          { key: 'messages', label: 'メッセージ', badge: messages.filter(m => m.unread).length }
-        ].map(tab => (
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '800',
+            background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            margin: 0
+          }}>
+            チームコネクト
+          </h1>
           <button
-            key={tab.key}
-            onClick={() => setSelectedTab(tab.key as any)}
+            onClick={() => router.push('/notifications')}
             style={{
-              flex: 1,
-              padding: '10px',
-              backgroundColor: selectedTab === tab.key ? '#a3e635' : '#374151',
-              color: selectedTab === tab.key ? '#111827' : '#d1d5db',
-              border: 'none',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
+              width: '40px',
+              height: '40px',
+              backgroundColor: 'rgba(163, 230, 53, 0.2)',
+              border: '1px solid rgba(163, 230, 53, 0.3)',
+              borderRadius: '12px',
+              color: '#a3e635',
+              fontSize: '18px',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               position: 'relative'
             }}
           >
-            {tab.label}
-            {tab.badge > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-4px',
-                right: '-4px',
-                backgroundColor: '#ef4444',
-                color: 'white',
-                fontSize: '10px',
-                fontWeight: '600',
-                padding: '2px 6px',
-                borderRadius: '10px',
-                minWidth: '18px'
-              }}>
-                {tab.badge}
-              </span>
-            )}
+            🔔
+            <span style={{
+              position: 'absolute',
+              top: '6px',
+              right: '6px',
+              width: '8px',
+              height: '8px',
+              backgroundColor: '#ef4444',
+              borderRadius: '50%',
+              border: '2px solid #111827'
+            }}></span>
           </button>
-        ))}
+        </div>
+
+        {/* Search Bar */}
+        <div style={{
+          position: 'relative',
+          marginBottom: '16px'
+        }}>
+          <input
+            type="text"
+            placeholder="友達やグループを検索..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 40px 12px 16px',
+              backgroundColor: 'rgba(55, 65, 81, 0.6)',
+              border: '1px solid rgba(55, 65, 81, 0.5)',
+              borderRadius: '12px',
+              color: '#f3f4f6',
+              fontSize: '14px',
+              outline: 'none'
+            }}
+          />
+          <span style={{
+            position: 'absolute',
+            right: '16px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            fontSize: '16px'
+          }}>
+            🔍
+          </span>
+        </div>
+
+        {/* Tabs */}
+        <div style={{
+          display: 'flex',
+          gap: '8px'
+        }}>
+          {[
+            { id: 'friends', label: '友達', icon: '👥' },
+            { id: 'groups', label: 'グループ', icon: '🌟' },
+            { id: 'discover', label: '見つける', icon: '🔍' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              style={{
+                flex: 1,
+                padding: '10px',
+                backgroundColor: activeTab === tab.id
+                  ? 'rgba(163, 230, 53, 0.2)'
+                  : 'transparent',
+                color: activeTab === tab.id ? '#a3e635' : '#9ca3af',
+                border: activeTab === tab.id
+                  ? '1px solid rgba(163, 230, 53, 0.3)'
+                  : '1px solid transparent',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div style={{ padding: '16px' }}>
-        {/* Groups Tab */}
-        {selectedTab === 'groups' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {groups.map(group => {
-              const isJoined = joinedGroups.includes(group.id)
-              
-              return (
+      <div style={{ padding: '20px' }}>
+        {/* Friends Tab */}
+        {activeTab === 'friends' && (
+          <>
+            {/* Friend Activity Feed */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '20px',
+              padding: '20px',
+              marginBottom: '24px',
+              border: '1px solid rgba(96, 165, 250, 0.2)'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span>📢</span>
+                最近のアクティビティ
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {activities.map((activity) => (
+                  <div
+                    key={activity.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px',
+                      backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                      borderRadius: '12px'
+                    }}
+                  >
+                    <div style={{
+                      width: '40px',
+                      height: '40px',
+                      backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '20px'
+                    }}>
+                      {activity.avatar}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: '14px',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
+                      }}>
+                        <span style={{ fontWeight: '600' }}>{activity.user}</span>
+                        <span style={{ color: '#9ca3af' }}> {activity.action}</span>
+                      </div>
+                      <div style={{
+                        fontSize: '12px',
+                        color: '#6b7280'
+                      }}>
+                        {activity.time}
+                      </div>
+                    </div>
+                    <button
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: activity.hasReacted
+                          ? 'rgba(163, 230, 53, 0.2)'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        color: activity.hasReacted ? '#a3e635' : '#9ca3af',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <span>👍</span>
+                      {activity.reactions}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Friends List */}
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#f3f4f6',
+              marginBottom: '16px'
+            }}>
+              友達一覧（{friends.length}人）
+            </h3>
+            <div style={{
+              display: 'grid',
+              gap: '12px'
+            }}>
+              {friends.map((friend) => (
                 <div
-                  key={group.id}
+                  key={friend.id}
                   style={{
-                    backgroundColor: '#1f2937',
-                    borderRadius: '12px',
+                    background: 'rgba(31, 41, 55, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    borderRadius: '16px',
                     padding: '16px',
+                    border: '1px solid rgba(55, 65, 81, 0.3)',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    borderLeft: isJoined ? '4px solid #a3e635' : '4px solid transparent'
+                    transition: 'all 0.3s ease'
                   }}
-                  onClick={() => {/* View group details */}}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-2px)'
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.2)'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0)'
@@ -243,418 +435,468 @@ export default function TeamConnectPage() {
                 >
                   <div style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '12px'
+                    alignItems: 'center',
+                    gap: '12px'
                   }}>
                     <div style={{
-                      display: 'flex',
-                      gap: '12px',
-                      alignItems: 'flex-start'
+                      position: 'relative'
                     }}>
                       <div style={{
-                        width: '48px',
-                        height: '48px',
-                        backgroundColor: '#374151',
-                        borderRadius: '12px',
+                        width: '56px',
+                        height: '56px',
+                        backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                        borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '24px'
+                        fontSize: '28px',
+                        border: `2px solid ${getMoodColor(friend.mood)}`
                       }}>
-                        {group.icon}
+                        {friend.avatar}
                       </div>
-                      <div>
-                        <h3 style={{
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '0',
+                        right: '0',
+                        width: '16px',
+                        height: '16px',
+                        backgroundColor: getStatusColor(friend.status),
+                        borderRadius: '50%',
+                        border: '2px solid #111827'
+                      }}></div>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        marginBottom: '4px'
+                      }}>
+                        <span style={{
                           fontSize: '16px',
                           fontWeight: '600',
-                          color: '#f3f4f6',
-                          marginBottom: '4px'
+                          color: '#f3f4f6'
                         }}>
-                          {group.name}
-                        </h3>
-                        <p style={{
-                          fontSize: '13px',
-                          color: '#9ca3af',
-                          marginBottom: '8px'
-                        }}>
-                          {group.description}
-                        </p>
-                        <div style={{
-                          display: 'flex',
-                          gap: '12px',
-                          alignItems: 'center'
-                        }}>
-                          <span style={{
-                            fontSize: '12px',
-                            backgroundColor: '#374151',
-                            color: '#d1d5db',
-                            padding: '4px 8px',
-                            borderRadius: '4px'
-                          }}>
-                            {group.category}
-                          </span>
-                          <span style={{
-                            fontSize: '12px',
-                            color: '#9ca3af'
-                          }}>
-                            👥 {group.members}人
-                          </span>
-                          <span style={{
-                            fontSize: '12px',
-                            color: group.activity === '非常に活発' ? '#a3e635' : '#60a5fa'
-                          }}>
-                            • {group.activity}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {group.newPosts > 0 && (
-                      <span style={{
-                        backgroundColor: '#ef4444',
-                        color: 'white',
-                        fontSize: '11px',
-                        fontWeight: '600',
-                        padding: '4px 8px',
-                        borderRadius: '12px'
-                      }}>
-                        {group.newPosts} new
-                      </span>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleJoinGroup(group.id)
-                    }}
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      backgroundColor: isJoined ? '#374151' : '#a3e635',
-                      color: isJoined ? '#9ca3af' : '#111827',
-                      border: 'none',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = isJoined ? '#4b5563' : '#84cc16'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = isJoined ? '#374151' : '#a3e635'
-                    }}
-                  >
-                    {isJoined ? '参加済み' : 'グループに参加'}
-                  </button>
-                </div>
-              )
-            })}
-
-            {/* Create new group button */}
-            <button
-              style={{
-                width: '100%',
-                padding: '16px',
-                backgroundColor: 'transparent',
-                color: '#9ca3af',
-                border: '2px dashed #374151',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#4b5563'
-                e.currentTarget.style.color = '#d1d5db'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#374151'
-                e.currentTarget.style.color = '#9ca3af'
-              }}
-            >
-              <span style={{ fontSize: '20px' }}>+</span>
-              新しいグループを作成
-            </button>
-          </div>
-        )}
-
-        {/* Events Tab */}
-        {selectedTab === 'events' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {events.map(event => (
-              <div
-                key={event.id}
-                style={{
-                  backgroundColor: '#1f2937',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  borderTop: event.status === 'ongoing' ? '3px solid #a3e635' : 'none'
-                }}
-                onClick={() => {/* View event details */}}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  alignItems: 'flex-start'
-                }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: event.status === 'ongoing' ? '#a3e635' : '#374151',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '24px'
-                  }}>
-                    {event.icon}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: '#f3f4f6',
-                      marginBottom: '4px'
-                    }}>
-                      {event.title}
-                    </h3>
-                    
-                    <div style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      marginBottom: '12px'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '13px',
-                        color: '#9ca3af'
-                      }}>
-                        <span>📅 {event.date}</span>
-                        <span>⏰ {event.time}</span>
-                      </div>
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        fontSize: '13px',
-                        color: '#9ca3af'
-                      }}>
-                        <span style={{
-                          backgroundColor: '#374151',
-                          color: '#d1d5db',
-                          padding: '2px 8px',
-                          borderRadius: '4px',
-                          fontSize: '11px'
-                        }}>
-                          {event.type}
-                        </span>
-                        <span>主催: {event.host}</span>
-                      </div>
-                    </div>
-
-                    {/* Participant progress */}
-                    {event.maxParticipants && (
-                      <div style={{ marginBottom: '12px' }}>
-                        <div style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginBottom: '4px'
-                        }}>
-                          <span style={{
-                            fontSize: '12px',
-                            color: '#9ca3af'
-                          }}>
-                            参加者
-                          </span>
-                          <span style={{
-                            fontSize: '12px',
-                            color: '#a3e635',
-                            fontWeight: '600'
-                          }}>
-                            {event.participants}/{event.maxParticipants}人
-                          </span>
-                        </div>
-                        <div style={{
-                          width: '100%',
-                          height: '4px',
-                          backgroundColor: '#374151',
-                          borderRadius: '2px',
-                          overflow: 'hidden'
-                        }}>
-                          <div style={{
-                            height: '100%',
-                            width: `${(event.participants / event.maxParticipants) * 100}%`,
-                            backgroundColor: event.participants >= event.maxParticipants ? '#ef4444' : '#a3e635',
-                            borderRadius: '2px'
-                          }}></div>
-                        </div>
-                      </div>
-                    )}
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        backgroundColor: event.status === 'ongoing' ? '#a3e635' : '#374151',
-                        color: event.status === 'ongoing' ? '#111827' : '#d1d5db',
-                        border: 'none',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {event.status === 'ongoing' ? '参加中' : '参加する'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Messages Tab */}
-        {selectedTab === 'messages' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {messages.map(message => (
-              <div
-                key={message.id}
-                style={{
-                  backgroundColor: '#1f2937',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  borderLeft: message.unread ? '4px solid #a3e635' : '4px solid transparent'
-                }}
-                onClick={() => router.push('/chat')}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-2px)'
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  gap: '12px',
-                  alignItems: 'flex-start'
-                }}>
-                  <div style={{
-                    width: '40px',
-                    height: '40px',
-                    backgroundColor: '#374151',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '18px'
-                  }}>
-                    {message.avatar}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '4px'
-                    }}>
-                      <div>
-                        <span style={{
-                          fontSize: '14px',
-                          fontWeight: '600',
-                          color: '#f3f4f6',
-                          marginRight: '8px'
-                        }}>
-                          {message.sender}
+                          {friend.name}
                         </span>
                         <span style={{
                           fontSize: '12px',
-                          color: '#9ca3af'
+                          backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                          color: '#a3e635',
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          fontWeight: '600'
                         }}>
-                          in {message.group}
+                          Lv.{friend.level}
                         </span>
                       </div>
-                      <span style={{
-                        fontSize: '11px',
+                      <div style={{
+                        fontSize: '12px',
+                        color: '#9ca3af',
+                        marginBottom: '8px'
+                      }}>
+                        {friend.status} • {friend.lastActive}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px'
+                      }}>
+                        <span style={{
+                          fontSize: '12px',
+                          color: '#fbbf24',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}>
+                          🔥 {friend.streak}日
+                        </span>
+                        <div style={{
+                          display: 'flex',
+                          gap: '4px'
+                        }}>
+                          {friend.mutualGoals.map((goal, index) => (
+                            <span
+                              key={index}
+                              style={{
+                                fontSize: '11px',
+                                backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                                color: '#60a5fa',
+                                padding: '2px 6px',
+                                borderRadius: '4px'
+                              }}
+                            >
+                              {goal}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                        border: '1px solid rgba(163, 230, 53, 0.3)',
+                        borderRadius: '10px',
+                        color: '#a3e635',
+                        fontSize: '16px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        router.push('/chat')
+                      }}
+                    >
+                      💬
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Groups Tab */}
+        {activeTab === 'groups' && (
+          <>
+            {/* Active Challenges */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '20px',
+              padding: '20px',
+              marginBottom: '24px',
+              border: '1px solid rgba(251, 191, 36, 0.2)'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span>🏆</span>
+                参加中のチャレンジ
+              </h3>
+              <div style={{ display: 'grid', gap: '12px' }}>
+                {challenges.map((challenge) => (
+                  <div
+                    key={challenge.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px',
+                      backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                      borderRadius: '12px'
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
+                      }}>
+                        {challenge.title}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        fontSize: '12px',
                         color: '#9ca3af'
                       }}>
-                        {message.time}
-                      </span>
+                        <span>👥 {challenge.participants}人</span>
+                        <span>⏱️ 残り{challenge.daysLeft}日</span>
+                        <span style={{ color: '#fbbf24' }}>🎁 {challenge.reward}</span>
+                      </div>
+                      <div style={{
+                        marginTop: '8px',
+                        height: '6px',
+                        backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                        borderRadius: '3px',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{
+                          height: '100%',
+                          width: `${challenge.progress}%`,
+                          backgroundColor: '#fbbf24',
+                          borderRadius: '3px'
+                        }}></div>
+                      </div>
                     </div>
-                    <p style={{
-                      fontSize: '14px',
-                      color: message.unread ? '#f3f4f6' : '#9ca3af',
-                      margin: 0,
-                      lineHeight: '1.4',
-                      fontWeight: message.unread ? '500' : '400'
-                    }}>
-                      {message.content}
-                    </p>
                   </div>
-                  {message.unread && (
+                ))}
+              </div>
+            </div>
+
+            {/* Groups List */}
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#f3f4f6',
+              marginBottom: '16px'
+            }}>
+              参加中のグループ
+            </h3>
+            <div style={{
+              display: 'grid',
+              gap: '12px'
+            }}>
+              {groups.filter(g => g.isJoined).map((group) => (
+                <div
+                  key={group.id}
+                  style={{
+                    background: selectedGroup === group.id
+                      ? 'linear-gradient(135deg, rgba(163, 230, 53, 0.2) 0%, rgba(31, 41, 55, 0.6) 100%)'
+                      : 'rgba(31, 41, 55, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    border: selectedGroup === group.id
+                      ? '2px solid rgba(163, 230, 53, 0.4)'
+                      : '1px solid rgba(55, 65, 81, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onClick={() => setSelectedGroup(selectedGroup === group.id ? null : group.id)}
+                >
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}>
                     <div style={{
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: '#a3e635',
-                      borderRadius: '50%',
-                      marginTop: '6px'
-                    }}></div>
+                      width: '56px',
+                      height: '56px',
+                      backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                      borderRadius: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '28px'
+                    }}>
+                      {group.icon}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
+                      }}>
+                        {group.name}
+                      </div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#9ca3af',
+                        marginBottom: '8px'
+                      }}>
+                        {group.description}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                        fontSize: '12px'
+                      }}>
+                        <span style={{ color: '#a3e635' }}>
+                          🟢 {group.activeNow}人がアクティブ
+                        </span>
+                        <span style={{ color: '#9ca3af' }}>
+                          👥 {group.members}人
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  {selectedGroup === group.id && (
+                    <div style={{
+                      marginTop: '16px',
+                      paddingTop: '16px',
+                      borderTop: '1px solid rgba(55, 65, 81, 0.3)'
+                    }}>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#f3f4f6',
+                        marginBottom: '12px'
+                      }}>
+                        次のセッション: <span style={{ color: '#a3e635', fontWeight: '600' }}>{group.nextSession}</span>
+                      </div>
+                      <button
+                        style={{
+                          width: '100%',
+                          padding: '12px',
+                          backgroundColor: '#a3e635',
+                          color: '#111827',
+                          border: 'none',
+                          borderRadius: '10px',
+                          fontSize: '14px',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        セッションに参加
+                      </button>
+                    </div>
                   )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </>
+        )}
 
-            {/* View all messages button */}
-            <button
-              onClick={() => router.push('/chat')}
-              style={{
-                width: '100%',
-                padding: '14px',
-                backgroundColor: '#374151',
-                color: '#d1d5db',
-                border: 'none',
-                borderRadius: '12px',
+        {/* Discover Tab */}
+        {activeTab === 'discover' && (
+          <>
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#f3f4f6',
+              marginBottom: '16px'
+            }}>
+              おすすめのグループ
+            </h3>
+            <div style={{
+              display: 'grid',
+              gap: '12px'
+            }}>
+              {groups.filter(g => !g.isJoined).map((group) => (
+                <div
+                  key={group.id}
+                  style={{
+                    background: 'rgba(31, 41, 55, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    border: '1px solid rgba(55, 65, 81, 0.3)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}>
+                    <div style={{
+                      width: '56px',
+                      height: '56px',
+                      backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                      borderRadius: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '28px'
+                    }}>
+                      {group.icon}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
+                      }}>
+                        {group.name}
+                      </div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#9ca3af',
+                        marginBottom: '8px'
+                      }}>
+                        {group.description}
+                      </div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                        fontSize: '12px'
+                      }}>
+                        <span style={{
+                          backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                          color: '#60a5fa',
+                          padding: '2px 8px',
+                          borderRadius: '6px'
+                        }}>
+                          {group.category}
+                        </span>
+                        <span style={{ color: '#9ca3af' }}>
+                          👥 {group.members}人
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                        color: '#a3e635',
+                        border: '1px solid rgba(163, 230, 53, 0.3)',
+                        borderRadius: '10px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      参加
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Invite Friends */}
+            <div style={{
+              marginTop: '32px',
+              background: 'linear-gradient(135deg, rgba(163, 230, 53, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '20px',
+              padding: '24px',
+              textAlign: 'center',
+              border: '1px solid rgba(163, 230, 53, 0.2)'
+            }}>
+              <div style={{
+                fontSize: '40px',
+                marginBottom: '16px'
+              }}>
+                🎉
+              </div>
+              <h3 style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#f3f4f6',
+                marginBottom: '8px'
+              }}>
+                友達を招待しよう！
+              </h3>
+              <p style={{
                 fontSize: '14px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-            >
-              すべてのメッセージを見る
-            </button>
-          </div>
+                color: '#9ca3af',
+                marginBottom: '20px'
+              }}>
+                一緒に健康目標を達成する仲間を増やしましょう
+              </p>
+              <button
+                style={{
+                  padding: '14px 32px',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  color: '#111827',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                招待リンクをシェア
+              </button>
+            </div>
+          </>
         )}
       </div>
 

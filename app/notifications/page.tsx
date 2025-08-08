@@ -1,372 +1,479 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { 
-  ArrowLeft, 
-  Bell, 
-  Heart, 
-  MessageCircle, 
-  Calendar, 
-  Star,
-  AlertCircle,
-  Gift,
-  TrendingUp,
-  Settings,
-  Check,
-  X,
-  Trash2
-} from 'lucide-react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Mock notifications data
-const notificationsData = [
-  {
-    id: '1',
-    type: 'checkin_reminder',
-    title: 'チェックインのお時間です',
-    message: 'Lunaがあなたをお待ちしています。今日の気分を聞かせてください。',
-    timestamp: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
-    read: false,
-    urgent: false,
-    action: {
-      label: 'チェックイン',
-      url: '/checkin'
-    }
-  },
-  {
-    id: '2',
-    type: 'achievement',
-    title: '新しいバッジを獲得！',
-    message: '「一週間の継続」バッジを獲得しました。素晴らしい継続力です！',
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    read: false,
-    urgent: false,
-    action: {
-      label: 'バッジを見る',
-      url: '/achievements'
-    }
-  },
-  {
-    id: '3',
-    type: 'ai_message',
-    title: 'Lunaからのメッセージ',
-    message: '最近よく頑張っていますね。今日は少し休憩してみませんか？',
-    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    read: true,
-    urgent: false,
-    action: {
-      label: '返信する',
-      url: '/chat'
-    }
-  },
-  {
-    id: '4',
-    type: 'expert_booking',
-    title: '面談予約の確認',
-    message: '明日14:00の田中先生との面談が予約されています。',
-    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
-    read: true,
-    urgent: true,
-    action: {
-      label: '詳細を見る',
-      url: '/booking'
-    }
-  },
-  {
-    id: '5',
-    type: 'weekly_report',
-    title: '週次レポートが完成しました',
-    message: 'この一週間のあなたの成長記録をご覧ください。',
-    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-    read: true,
-    urgent: false,
-    action: {
-      label: 'レポートを見る',
-      url: '/analytics'
-    }
-  },
-  {
-    id: '6',
-    type: 'encouragement',
-    title: '今日も素敵な一日を',
-    message: 'あなたの存在自体が誰かの励みになっています。今日も自分らしく過ごしましょう。',
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-    read: true,
-    urgent: false
-  }
-]
-
-export default function Notifications() {
+export default function NotificationsPage() {
   const router = useRouter()
-  const [notifications, setNotifications] = useState(notificationsData)
-  const [filter, setFilter] = useState<'all' | 'unread'>('all')
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'checkin_reminder': return <Heart className="h-5 w-5 text-blue-500" />
-      case 'achievement': return <Star className="h-5 w-5 text-yellow-500" />
-      case 'ai_message': return <MessageCircle className="h-5 w-5 text-purple-500" />
-      case 'expert_booking': return <Calendar className="h-5 w-5 text-green-500" />
-      case 'weekly_report': return <TrendingUp className="h-5 w-5 text-indigo-500" />
-      case 'encouragement': return <Gift className="h-5 w-5 text-pink-500" />
-      default: return <Bell className="h-5 w-5 text-gray-500" />
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'unread'>('all')
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      type: 'achievement',
+      title: '新しいバッジを獲得！',
+      message: '「7日間連続ログイン」バッジを獲得しました',
+      time: '5分前',
+      isRead: false,
+      icon: '🏆',
+      color: '#fbbf24'
+    },
+    {
+      id: 2,
+      type: 'friend',
+      title: 'みゆきさんが友達リクエストを送信',
+      message: 'プロフィールを見て承認しましょう',
+      time: '1時間前',
+      isRead: false,
+      icon: '👥',
+      color: '#60a5fa'
+    },
+    {
+      id: 3,
+      type: 'reminder',
+      title: 'チェックインの時間です',
+      message: '今日の気分を記録しましょう',
+      time: '2時間前',
+      isRead: false,
+      icon: '🔔',
+      color: '#a3e635'
+    },
+    {
+      id: 4,
+      type: 'message',
+      title: 'ルナちゃんからメッセージ',
+      message: '最近の調子はどうですか？話を聞かせてください',
+      time: '3時間前',
+      isRead: true,
+      icon: '💬',
+      color: '#a78bfa'
+    },
+    {
+      id: 5,
+      type: 'group',
+      title: 'モーニングメディテーション開始',
+      message: '朝の瞑想セッションが始まります',
+      time: '昨日',
+      isRead: true,
+      icon: '🧘',
+      color: '#f87171'
+    },
+    {
+      id: 6,
+      type: 'system',
+      title: 'アプリアップデートのお知らせ',
+      message: '新機能が追加されました',
+      time: '2日前',
+      isRead: true,
+      icon: '📱',
+      color: '#9ca3af'
     }
-  }
+  ])
 
-  const getNotificationBg = (type: string) => {
-    switch (type) {
-      case 'checkin_reminder': return 'bg-blue-50 border-blue-200'
-      case 'achievement': return 'bg-yellow-50 border-yellow-200'
-      case 'ai_message': return 'bg-purple-50 border-purple-200'
-      case 'expert_booking': return 'bg-green-50 border-green-200'
-      case 'weekly_report': return 'bg-indigo-50 border-indigo-200'
-      case 'encouragement': return 'bg-pink-50 border-pink-200'
-      default: return 'bg-gray-50 border-gray-200'
-    }
-  }
+  const unreadCount = notifications.filter(n => !n.isRead).length
+  const filteredNotifications = selectedCategory === 'unread' 
+    ? notifications.filter(n => !n.isRead)
+    : notifications
 
-  const formatTimestamp = (timestamp: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - timestamp.getTime()
-    const minutes = Math.floor(diff / (1000 * 60))
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-
-    if (days > 0) return `${days}日前`
-    if (hours > 0) return `${hours}時間前`
-    if (minutes > 0) return `${minutes}分前`
-    return 'たった今'
-  }
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notif =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
+  const markAsRead = (id: number) => {
+    setNotifications(prev => 
+      prev.map(n => n.id === id ? { ...n, isRead: true } : n)
     )
   }
 
   const markAllAsRead = () => {
-    setNotifications(prev =>
-      prev.map(notif => ({ ...notif, read: true }))
+    setNotifications(prev => 
+      prev.map(n => ({ ...n, isRead: true }))
     )
   }
 
-  const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(notif => notif.id !== id))
+  const deleteNotification = (id: number) => {
+    setNotifications(prev => prev.filter(n => n.id !== id))
   }
 
   const handleNotificationClick = (notification: any) => {
-    if (!notification.read) {
-      markAsRead(notification.id)
-    }
-    if (notification.action?.url) {
-      router.push(notification.action.url)
+    markAsRead(notification.id)
+    
+    switch(notification.type) {
+      case 'message':
+        router.push('/chat')
+        break
+      case 'achievement':
+        router.push('/achievements')
+        break
+      case 'friend':
+        router.push('/team-connect')
+        break
+      case 'group':
+        router.push('/team-connect')
+        break
+      case 'reminder':
+        router.push('/dashboard')
+        break
     }
   }
 
-  const filteredNotifications = notifications.filter(notif => 
-    filter === 'all' || (filter === 'unread' && !notif.read)
-  )
-
-  const unreadCount = notifications.filter(notif => !notif.read).length
-
-  // Simulate real-time notifications
-  useEffect(() => {
-    const interval = setInterval(() => {
-      // Randomly add a new notification (for demo purposes)
-      if (Math.random() < 0.1) { // 10% chance every 5 seconds
-        const newNotification = {
-          id: Date.now().toString(),
-          type: 'encouragement',
-          title: 'リアルタイムメッセージ',
-          message: 'お疲れ様です！少し休憩してみませんか？',
-          timestamp: new Date(),
-          read: false,
-          urgent: false
-        }
-        setNotifications(prev => [newNotification, ...prev])
-      }
-    }, 5000)
-
-    return () => clearInterval(interval)
-  }, [])
-
   return (
-    <div className="min-h-screen bg-gray-50 pb-6">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
+      color: 'white',
+      paddingBottom: '140px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => router.back()}
-              className="mr-3"
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginBottom: '16px'
+        }}>
+          <h1 style={{
+            fontSize: '24px',
+            fontWeight: '800',
+            background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            margin: 0
+          }}>
+            通知センター
+          </h1>
+          {unreadCount > 0 && (
+            <button
+              onClick={markAllAsRead}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                color: '#a3e635',
+                border: '1px solid rgba(163, 230, 53, 0.3)',
+                borderRadius: '10px',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
             >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="font-medium text-gray-900">通知</h1>
-              {unreadCount > 0 && (
-                <p className="text-xs text-gray-500">{unreadCount}件の未読通知</p>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm" onClick={markAllAsRead}>
-              <Check className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="sm">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </div>
+              すべて既読にする
+            </button>
+          )}
         </div>
-      </div>
 
-      <div className="max-w-md mx-auto px-4 py-6 space-y-4">
-        {/* Filter Tabs */}
-        <div className="flex bg-gray-100 rounded-lg p-1">
+        {/* Category Tabs */}
+        <div style={{
+          display: 'flex',
+          gap: '8px'
+        }}>
           <button
-            onClick={() => setFilter('all')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              filter === 'all'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            onClick={() => setSelectedCategory('all')}
+            style={{
+              flex: 1,
+              padding: '10px',
+              backgroundColor: selectedCategory === 'all'
+                ? 'rgba(163, 230, 53, 0.2)'
+                : 'transparent',
+              color: selectedCategory === 'all' ? '#a3e635' : '#9ca3af',
+              border: selectedCategory === 'all'
+                ? '1px solid rgba(163, 230, 53, 0.3)'
+                : '1px solid transparent',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
           >
             すべて ({notifications.length})
           </button>
           <button
-            onClick={() => setFilter('unread')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-              filter === 'unread'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
+            onClick={() => setSelectedCategory('unread')}
+            style={{
+              flex: 1,
+              padding: '10px',
+              backgroundColor: selectedCategory === 'unread'
+                ? 'rgba(163, 230, 53, 0.2)'
+                : 'transparent',
+              color: selectedCategory === 'unread' ? '#a3e635' : '#9ca3af',
+              border: selectedCategory === 'unread'
+                ? '1px solid rgba(163, 230, 53, 0.3)'
+                : '1px solid transparent',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              position: 'relative'
+            }}
           >
-            未読 ({unreadCount})
+            未読
+            {unreadCount > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '4px',
+                right: '12px',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                fontSize: '10px',
+                fontWeight: '700',
+                padding: '2px 6px',
+                borderRadius: '10px',
+                minWidth: '18px'
+              }}>
+                {unreadCount}
+              </span>
+            )}
           </button>
         </div>
+      </div>
 
-        {/* Notifications List */}
+      <div style={{ padding: '20px' }}>
         {filteredNotifications.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="font-medium text-gray-900 mb-2">通知がありません</h3>
-              <p className="text-sm text-gray-500">
-                {filter === 'unread' ? '未読の通知はありません' : '新しい通知はありません'}
-              </p>
-            </CardContent>
-          </Card>
+          <div style={{
+            textAlign: 'center',
+            padding: '60px 20px'
+          }}>
+            <div style={{
+              fontSize: '48px',
+              marginBottom: '16px',
+              opacity: 0.5
+            }}>
+              🔔
+            </div>
+            <p style={{
+              fontSize: '16px',
+              color: '#9ca3af'
+            }}>
+              {selectedCategory === 'unread' ? '未読の通知はありません' : '通知はありません'}
+            </p>
+          </div>
         ) : (
-          <div className="space-y-3">
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
             {filteredNotifications.map((notification) => (
-              <Card 
+              <div
                 key={notification.id}
-                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  !notification.read 
-                    ? `border-l-4 border-l-blue-500 ${getNotificationBg(notification.type)}`
-                    : 'bg-white border-gray-200'
-                } ${notification.urgent ? 'ring-2 ring-red-200' : ''}`}
+                style={{
+                  background: notification.isRead
+                    ? 'rgba(31, 41, 55, 0.6)'
+                    : `linear-gradient(135deg, ${notification.color}10 0%, rgba(31, 41, 55, 0.8) 100%)`,
+                  backdropFilter: 'blur(12px)',
+                  borderRadius: '16px',
+                  padding: '16px',
+                  border: notification.isRead
+                    ? '1px solid rgba(55, 65, 81, 0.3)'
+                    : `2px solid ${notification.color}40`,
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  position: 'relative'
+                }}
                 onClick={() => handleNotificationClick(notification)}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = `0 8px 24px ${notification.color}20`
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
               >
-                <CardContent className="p-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 mt-1">
-                      {getNotificationIcon(notification.type)}
+                {!notification.isRead && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: notification.color,
+                    borderRadius: '50%',
+                    animation: 'pulse 2s infinite'
+                  }}></div>
+                )}
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    backgroundColor: `${notification.color}20`,
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '24px',
+                    flexShrink: 0
+                  }}>
+                    {notification.icon}
+                  </div>
+                  
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      justifyContent: 'space-between',
+                      marginBottom: '4px'
+                    }}>
+                      <h3 style={{
+                        fontSize: '15px',
+                        fontWeight: notification.isRead ? '500' : '600',
+                        color: notification.isRead ? '#d1d5db' : '#f3f4f6',
+                        margin: 0
+                      }}>
+                        {notification.title}
+                      </h3>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteNotification(notification.id)
+                        }}
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          backgroundColor: 'transparent',
+                          border: 'none',
+                          color: '#6b7280',
+                          fontSize: '16px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderRadius: '6px',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'
+                          e.currentTarget.style.color = '#ef4444'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                          e.currentTarget.style.color = '#6b7280'
+                        }}
+                      >
+                        ×
+                      </button>
                     </div>
                     
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between mb-1">
-                        <h3 className={`font-medium ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
-                          {notification.title}
-                        </h3>
-                        <div className="flex items-center space-x-1 ml-2">
-                          {notification.urgent && (
-                            <AlertCircle className="h-4 w-4 text-red-500" />
-                          )}
-                          {!notification.read && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          )}
-                        </div>
-                      </div>
+                    <p style={{
+                      fontSize: '13px',
+                      color: notification.isRead ? '#9ca3af' : '#d1d5db',
+                      margin: '0 0 8px 0',
+                      lineHeight: '1.4'
+                    }}>
+                      {notification.message}
+                    </p>
+                    
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}>
+                      <span style={{
+                        fontSize: '12px',
+                        color: '#6b7280'
+                      }}>
+                        {notification.time}
+                      </span>
                       
-                      <p className={`text-sm ${!notification.read ? 'text-gray-700' : 'text-gray-600'} mb-2`}>
-                        {notification.message}
-                      </p>
-                      
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-500">
-                          {formatTimestamp(notification.timestamp)}
-                        </span>
-                        
-                        <div className="flex items-center space-x-2">
-                          {notification.action && (
-                            <Button variant="outline" size="sm" className="text-xs">
-                              {notification.action.label}
-                            </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              deleteNotification(notification.id)
-                            }}
-                            className="text-gray-400 hover:text-gray-600"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
+                      {!notification.isRead && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            markAsRead(notification.id)
+                          }}
+                          style={{
+                            padding: '4px 12px',
+                            backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                            color: '#a3e635',
+                            border: '1px solid rgba(163, 230, 53, 0.3)',
+                            borderRadius: '6px',
+                            fontSize: '12px',
+                            fontWeight: '500',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          既読にする
+                        </button>
+                      )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         )}
 
-        {/* Notification Settings */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">通知設定</CardTitle>
-            <CardDescription>受け取りたい通知をカスタマイズ</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {[
-                { key: 'checkin', label: 'チェックインリマインダー', enabled: true },
-                { key: 'ai_messages', label: 'AIからのメッセージ', enabled: true },
-                { key: 'achievements', label: '達成・バッジ通知', enabled: true },
-                { key: 'expert', label: '専門家からのお知らせ', enabled: false },
-                { key: 'reports', label: 'レポート・分析結果', enabled: true },
-                { key: 'encouragement', label: '励ましメッセージ', enabled: true },
-              ].map((setting) => (
-                <div key={setting.key} className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">{setting.label}</span>
-                  <button
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      setting.enabled ? 'bg-blue-600' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        setting.enabled ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Notification Settings Card */}
+        <div style={{
+          marginTop: '32px',
+          background: 'rgba(31, 41, 55, 0.6)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '20px',
+          padding: '20px',
+          border: '1px solid rgba(55, 65, 81, 0.3)'
+        }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span>⚙️</span>
+            通知設定
+          </h3>
+          
+          <button
+            onClick={() => router.push('/settings')}
+            style={{
+              width: '100%',
+              padding: '12px',
+              backgroundColor: 'rgba(55, 65, 81, 0.6)',
+              color: '#d1d5db',
+              border: '1px solid rgba(55, 65, 81, 0.5)',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '500',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.6)'
+              e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.5)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+              e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+            }}
+          >
+            通知設定を管理する
+          </button>
+        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
+
+      <MobileBottomNav />
     </div>
   )
 }

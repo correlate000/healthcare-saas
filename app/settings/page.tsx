@@ -20,7 +20,7 @@ export default function SettingsPage() {
     evening: '21:00'
   })
   const [language, setLanguage] = useState('ja')
-  const [theme, setTheme] = useState<'dark' | 'light' | 'auto'>('dark')
+  const [theme, setTheme] = useState<'dark'>('dark')
   const [dataSharing, setDataSharing] = useState(false)
   const [autoBackup, setAutoBackup] = useState(true)
 
@@ -137,7 +137,7 @@ export default function SettingsPage() {
           }}></div>
           
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '24px' }}>
               <div style={{
                 width: '80px',
                 height: '80px',
@@ -174,7 +174,8 @@ export default function SettingsPage() {
                   margin: 0,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '4px',
+                  whiteSpace: 'nowrap'
                 }}>
                   📅 {userStats.joinDate}から利用開始
                 </p>
@@ -193,7 +194,8 @@ export default function SettingsPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  flexShrink: 0
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = 'rgba(163, 230, 53, 0.3)'
@@ -236,7 +238,8 @@ export default function SettingsPage() {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     backgroundClip: 'text',
-                    marginBottom: '4px' 
+                    marginBottom: '4px',
+                    wordBreak: 'keep-all' 
                   }}>
                     {stat.value}
                   </div>
@@ -253,11 +256,12 @@ export default function SettingsPage() {
                 alignItems: 'center', 
                 marginBottom: '8px' 
               }}>
-                <span style={{ fontSize: '13px', color: '#9ca3af' }}>次のレベルまで</span>
+                <span style={{ fontSize: '13px', color: '#9ca3af', whiteSpace: 'nowrap' }}>次のレベルまで</span>
                 <span style={{ 
                   fontSize: '13px', 
                   color: '#a3e635',
-                  fontWeight: '600' 
+                  fontWeight: '600',
+                  whiteSpace: 'nowrap' 
                 }}>
                   {userStats.currentXP} / {userStats.maxXP} XP
                 </span>
