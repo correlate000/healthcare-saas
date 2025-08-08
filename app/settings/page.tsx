@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { BellIcon, WarningIcon, LockIcon, FileIcon, CalendarIcon, TrophyIcon, MessageIcon, ChartIcon } from '@/components/icons'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -362,7 +363,7 @@ export default function SettingsPage() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>🔔</span>
+              <BellIcon size={20} color="#fbbf24" />
               通知設定
             </div>
             <span style={{
@@ -504,7 +505,7 @@ export default function SettingsPage() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>🎨</span>
+              <ChartIcon size={20} color="#a3e635" />
               外観とテーマ
             </div>
             <span style={{
@@ -622,7 +623,7 @@ export default function SettingsPage() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span style={{ fontSize: '20px' }}>🔒</span>
+              <LockIcon size={20} color="#ef4444" />
               プライバシーとセキュリティ
             </div>
             <span style={{
@@ -765,10 +766,10 @@ export default function SettingsPage() {
           marginBottom: '24px'
         }}>
           {[
-            { icon: '❓', label: 'ヘルプ・FAQ', path: '/help' },
-            { icon: '📧', label: 'お問い合わせ', path: '/contact' },
-            { icon: '⭐', label: 'アプリを評価', action: 'rate' },
-            { icon: '🚪', label: 'ログアウト', action: 'logout', danger: true }
+            { icon: <MessageIcon size={18} color="#60a5fa" />, label: 'ヘルプ・FAQ', path: '/help' },
+            { icon: <FileIcon size={18} color="#8b5cf6" />, label: 'お問い合わせ', path: '/contact' },
+            { icon: <TrophyIcon size={18} color="#fbbf24" />, label: 'アプリを評価', action: 'rate' },
+            { icon: <WarningIcon size={18} color="#ef4444" />, label: 'ログアウト', action: 'logout', danger: true }
           ].map((item, index) => (
             <button
               key={item.label}
@@ -805,7 +806,7 @@ export default function SettingsPage() {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                {item.icon}
                 <span style={{ fontSize: '14px', fontWeight: '500' }}>{item.label}</span>
               </div>
               <span style={{ color: item.danger ? '#ef4444' : '#9ca3af' }}>›</span>
