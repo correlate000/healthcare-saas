@@ -6,12 +6,23 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function SettingsPage() {
   const router = useRouter()
+  const [activeSection, setActiveSection] = useState<string | null>(null)
   const [notifications, setNotifications] = useState({
     checkinReminder: true,
     weeklyReport: true,
     encouragement: true,
-    marketing: false
+    marketing: false,
+    achievements: true,
+    teamUpdates: true
   })
+  const [reminderTimes, setReminderTimes] = useState({
+    morning: '09:00',
+    evening: '21:00'
+  })
+  const [language, setLanguage] = useState('ja')
+  const [theme, setTheme] = useState<'dark' | 'light' | 'auto'>('dark')
+  const [dataSharing, setDataSharing] = useState(false)
+  const [autoBackup, setAutoBackup] = useState(true)
 
   const toggleNotification = (key: keyof typeof notifications) => {
     setNotifications(prev => ({
@@ -20,517 +31,828 @@ export default function SettingsPage() {
     }))
   }
 
-  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
-    <button
-      onClick={onChange}
-      style={{
-        width: '48px',
-        height: '28px',
-        backgroundColor: checked ? '#a3e635' : '#4b5563',
-        borderRadius: '14px',
-        position: 'relative',
-        border: 'none',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease'
-      }}
-    >
-      <div style={{
-        width: '24px',
-        height: '24px',
-        backgroundColor: 'white',
-        borderRadius: '50%',
-        position: 'absolute',
-        top: '2px',
-        left: checked ? '22px' : '2px',
-        transition: 'all 0.2s ease'
-      }}></div>
-    </button>
-  )
+  const Toggle = ({ checked, onChange, size = 'medium' }: { checked: boolean; onChange: () => void; size?: 'small' | 'medium' | 'large' }) => {
+    const dimensions = {
+      small: { width: 40, height: 24, ball: 20 },
+      medium: { width: 48, height: 28, ball: 24 },
+      large: { width: 56, height: 32, ball: 28 }
+    }
+    const dim = dimensions[size]
+    
+    return (
+      <button
+        onClick={onChange}
+        style={{
+          width: `${dim.width}px`,
+          height: `${dim.height}px`,
+          background: checked 
+            ? 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)' 
+            : 'rgba(75, 85, 99, 0.6)',
+          borderRadius: `${dim.height / 2}px`,
+          position: 'relative',
+          border: 'none',
+          cursor: 'pointer',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: checked ? '0 2px 8px rgba(163, 230, 53, 0.3)' : 'none'
+        }}
+      >
+        <div style={{
+          width: `${dim.ball}px`,
+          height: `${dim.ball}px`,
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          position: 'absolute',
+          top: `${(dim.height - dim.ball) / 2}px`,
+          left: checked ? `${dim.width - dim.ball - 2}px` : '2px',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}></div>
+      </button>
+    )
+  }
+
+  const userStats = {
+    name: 'ユーザー名',
+    email: 'user@example.com',
+    joinDate: '2025年6月',
+    sessions: 45,
+    streak: 15,
+    level: 8,
+    currentXP: 850,
+    maxXP: 1000,
+    badges: 12,
+    friendsCount: 23,
+    totalTime: '21時間'
+  }
 
   return (
     <div style={{ 
       minHeight: '100vh', 
-      backgroundColor: '#111827', 
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
       paddingBottom: '140px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
-      <div style={{ padding: '16px', textAlign: 'center', borderBottom: '1px solid #374151' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>
+      <div style={{ 
+        padding: '20px', 
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
+      }}>
+        <h1 style={{ 
+          fontSize: '24px', 
+          fontWeight: '800', 
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          margin: 0 
+        }}>
           設定
         </h1>
       </div>
 
-      <div style={{ padding: '16px' }}>
-        {/* Profile section */}
+      <div style={{ padding: '20px' }}>
+        {/* Profile Card */}
         <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '20px',
+          background: 'linear-gradient(135deg, rgba(163, 230, 53, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '20px', 
+          padding: '24px',
+          marginBottom: '28px',
+          border: '1px solid rgba(163, 230, 53, 0.2)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Background decoration */}
+          <div style={{
+            position: 'absolute',
+            top: '-40px',
+            right: '-40px',
+            width: '120px',
+            height: '120px',
+            background: 'radial-gradient(circle, rgba(163, 230, 53, 0.2) 0%, transparent 70%)',
+            borderRadius: '50%'
+          }}></div>
+          
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
+              <div style={{
+                width: '80px',
+                height: '80px',
+                background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '32px',
+                boxShadow: '0 8px 24px rgba(163, 230, 53, 0.3)',
+                border: '3px solid rgba(255, 255, 255, 0.1)'
+              }}>
+                👤
+              </div>
+              <div style={{ flex: 1 }}>
+                <h3 style={{ 
+                  fontSize: '20px', 
+                  fontWeight: '700', 
+                  color: '#f3f4f6', 
+                  margin: '0 0 6px 0' 
+                }}>
+                  {userStats.name}
+                </h3>
+                <p style={{ 
+                  fontSize: '14px', 
+                  color: '#9ca3af', 
+                  margin: '0 0 4px 0' 
+                }}>
+                  {userStats.email}
+                </p>
+                <p style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280', 
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  📅 {userStats.joinDate}から利用開始
+                </p>
+              </div>
+              <button
+                onClick={() => router.push('/profile')}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                  border: '1px solid rgba(163, 230, 53, 0.3)',
+                  borderRadius: '12px',
+                  color: '#a3e635',
+                  fontSize: '18px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(163, 230, 53, 0.3)'
+                  e.currentTarget.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(163, 230, 53, 0.2)'
+                  e.currentTarget.style.transform = 'scale(1)'
+                }}
+              >
+                ✏️
+              </button>
+            </div>
+            
+            {/* Stats Grid */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: '16px', 
+              marginBottom: '20px' 
+            }}>
+              {[
+                { label: 'セッション', value: userStats.sessions, icon: '📱' },
+                { label: '連続記録', value: `${userStats.streak}日`, icon: '🔥' },
+                { label: 'レベル', value: `Lv.${userStats.level}`, icon: '⭐' }
+              ].map((stat) => (
+                <div key={stat.label} style={{
+                  backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  textAlign: 'center',
+                  backdropFilter: 'blur(8px)',
+                  border: '1px solid rgba(55, 65, 81, 0.3)'
+                }}>
+                  <div style={{ fontSize: '20px', marginBottom: '8px' }}>{stat.icon}</div>
+                  <div style={{ 
+                    fontSize: '24px', 
+                    fontWeight: '700', 
+                    background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    marginBottom: '4px' 
+                  }}>
+                    {stat.value}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#9ca3af' }}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Level Progress */}
+            <div>
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                marginBottom: '8px' 
+              }}>
+                <span style={{ fontSize: '13px', color: '#9ca3af' }}>次のレベルまで</span>
+                <span style={{ 
+                  fontSize: '13px', 
+                  color: '#a3e635',
+                  fontWeight: '600' 
+                }}>
+                  {userStats.currentXP} / {userStats.maxXP} XP
+                </span>
+              </div>
+              <div style={{
+                width: '100%',
+                height: '10px',
+                backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                borderRadius: '5px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  height: '100%',
+                  width: `${(userStats.currentXP / userStats.maxXP) * 100}%`,
+                  background: 'linear-gradient(90deg, #a3e635 0%, #84cc16 100%)',
+                  borderRadius: '5px',
+                  transition: 'width 0.5s ease',
+                  boxShadow: '0 0 10px rgba(163, 230, 53, 0.4)'
+                }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(2, 1fr)', 
+          gap: '12px', 
+          marginBottom: '28px' 
+        }}>
+          {[
+            { icon: '🏆', label: 'バッジ', count: userStats.badges, path: '/achievements' },
+            { icon: '👥', label: '友達', count: userStats.friendsCount, path: '/team-connect' },
+            { icon: '📊', label: '分析', count: userStats.totalTime, path: '/analytics' },
+            { icon: '🤖', label: 'AI設定', count: '6体', path: '/characters' }
+          ].map((action) => (
+            <button
+              key={action.label}
+              onClick={() => router.push(action.path)}
+              style={{
+                background: 'rgba(31, 41, 55, 0.6)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(55, 65, 81, 0.3)',
+                borderRadius: '16px',
+                padding: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(163, 230, 53, 0.2)'
+                e.currentTarget.style.borderColor = 'rgba(163, 230, 53, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = 'none'
+                e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.3)'
+              }}
+            >
+              <span style={{ fontSize: '24px' }}>{action.icon}</span>
+              <span style={{ fontSize: '13px', color: '#9ca3af' }}>{action.label}</span>
+              <span style={{ 
+                fontSize: '16px', 
+                fontWeight: '700', 
+                color: '#a3e635' 
+              }}>
+                {action.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Settings Sections */}
+        {/* Notifications */}
+        <div style={{ marginBottom: '24px' }}>
+          <button
+            onClick={() => setActiveSection(activeSection === 'notifications' ? null : 'notifications')}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 20px',
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderRadius: activeSection === 'notifications' ? '16px 16px 0 0' : '16px',
+              color: '#f3f4f6',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '20px' }}>🔔</span>
+              通知設定
+            </div>
+            <span style={{
+              color: '#9ca3af',
+              transform: activeSection === 'notifications' ? 'rotate(90deg)' : 'rotate(0)',
+              transition: 'transform 0.3s ease'
+            }}>›</span>
+          </button>
+          
+          {activeSection === 'notifications' && (
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderTop: 'none',
+              borderRadius: '0 0 16px 16px',
+              padding: '20px',
+              animation: 'slideDown 0.3s ease'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {[
+                  { key: 'checkinReminder', label: 'チェックインリマインダー', desc: '毎日の健康チェック', icon: '📝' },
+                  { key: 'weeklyReport', label: '週次レポート', desc: '週間の振り返りと分析', icon: '📊' },
+                  { key: 'encouragement', label: '励ましメッセージ', desc: 'AIからの応援', icon: '💝' },
+                  { key: 'achievements', label: '実績通知', desc: 'バッジやレベルアップ', icon: '🏆' },
+                  { key: 'teamUpdates', label: 'チーム更新', desc: 'チームメンバーの活動', icon: '👥' },
+                  { key: 'marketing', label: 'お知らせ', desc: '新機能やアップデート', icon: '📢' }
+                ].map((item) => (
+                  <div key={item.key} style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '12px',
+                    backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                    borderRadius: '12px'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                      <span style={{ fontSize: '20px' }}>{item.icon}</span>
+                      <div>
+                        <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '2px' }}>
+                          {item.label}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                          {item.desc}
+                        </div>
+                      </div>
+                    </div>
+                    <Toggle
+                      checked={notifications[item.key as keyof typeof notifications]}
+                      onChange={() => toggleNotification(item.key as keyof typeof notifications)}
+                      size="small"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Reminder Times */}
+              {notifications.checkinReminder && (
+                <div style={{
+                  marginTop: '20px',
+                  padding: '16px',
+                  backgroundColor: 'rgba(163, 230, 53, 0.1)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(163, 230, 53, 0.2)'
+                }}>
+                  <h4 style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#a3e635',
+                    marginBottom: '12px'
+                  }}>
+                    リマインダー時刻
+                  </h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+                    <div>
+                      <label style={{ fontSize: '12px', color: '#9ca3af', display: 'block', marginBottom: '6px' }}>
+                        朝のリマインダー
+                      </label>
+                      <input
+                        type="time"
+                        value={reminderTimes.morning}
+                        onChange={(e) => setReminderTimes({ ...reminderTimes, morning: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                          border: '1px solid rgba(55, 65, 81, 0.5)',
+                          borderRadius: '8px',
+                          color: '#f3f4f6',
+                          fontSize: '14px'
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '12px', color: '#9ca3af', display: 'block', marginBottom: '6px' }}>
+                        夜のリマインダー
+                      </label>
+                      <input
+                        type="time"
+                        value={reminderTimes.evening}
+                        onChange={(e) => setReminderTimes({ ...reminderTimes, evening: e.target.value })}
+                        style={{
+                          width: '100%',
+                          padding: '10px',
+                          backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                          border: '1px solid rgba(55, 65, 81, 0.5)',
+                          borderRadius: '8px',
+                          color: '#f3f4f6',
+                          fontSize: '14px'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Appearance */}
+        <div style={{ marginBottom: '24px' }}>
+          <button
+            onClick={() => setActiveSection(activeSection === 'appearance' ? null : 'appearance')}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 20px',
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderRadius: activeSection === 'appearance' ? '16px 16px 0 0' : '16px',
+              color: '#f3f4f6',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '20px' }}>🎨</span>
+              外観とテーマ
+            </div>
+            <span style={{
+              color: '#9ca3af',
+              transform: activeSection === 'appearance' ? 'rotate(90deg)' : 'rotate(0)',
+              transition: 'transform 0.3s ease'
+            }}>›</span>
+          </button>
+          
+          {activeSection === 'appearance' && (
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderTop: 'none',
+              borderRadius: '0 0 16px 16px',
+              padding: '20px',
+              animation: 'slideDown 0.3s ease'
+            }}>
+              {/* Theme Selection */}
+              <div style={{ marginBottom: '20px' }}>
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#f3f4f6',
+                  marginBottom: '12px'
+                }}>
+                  テーマ選択
+                </h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                  {[
+                    { value: 'dark', label: 'ダーク', icon: '🌙', color: '#111827' },
+                    { value: 'light', label: 'ライト', icon: '☀️', color: '#f3f4f6' },
+                    { value: 'auto', label: '自動', icon: '🌓', gradient: 'linear-gradient(135deg, #111827 0%, #f3f4f6 100%)' }
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setTheme(option.value as any)}
+                      style={{
+                        padding: '16px',
+                        background: option.gradient || option.color,
+                        border: theme === option.value 
+                          ? '2px solid #a3e635' 
+                          : '2px solid transparent',
+                        borderRadius: '12px',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '8px',
+                        color: option.value === 'light' ? '#111827' : '#f3f4f6'
+                      }}
+                    >
+                      <span style={{ fontSize: '24px' }}>{option.icon}</span>
+                      <span style={{ fontSize: '12px', fontWeight: '600' }}>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Language */}
+              <div>
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#f3f4f6',
+                  marginBottom: '12px'
+                }}>
+                  言語設定
+                </h4>
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '8px',
+                    color: '#f3f4f6',
+                    fontSize: '14px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="ja">日本語</option>
+                  <option value="en">English</option>
+                  <option value="zh">中文</option>
+                  <option value="ko">한국어</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Privacy & Security */}
+        <div style={{ marginBottom: '24px' }}>
+          <button
+            onClick={() => setActiveSection(activeSection === 'privacy' ? null : 'privacy')}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '16px 20px',
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderRadius: activeSection === 'privacy' ? '16px 16px 0 0' : '16px',
+              color: '#f3f4f6',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '20px' }}>🔒</span>
+              プライバシーとセキュリティ
+            </div>
+            <span style={{
+              color: '#9ca3af',
+              transform: activeSection === 'privacy' ? 'rotate(90deg)' : 'rotate(0)',
+              transition: 'transform 0.3s ease'
+            }}>›</span>
+          </button>
+          
+          {activeSection === 'privacy' && (
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(55, 65, 81, 0.3)',
+              borderTop: 'none',
+              borderRadius: '0 0 16px 16px',
+              padding: '20px',
+              animation: 'slideDown 0.3s ease'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px',
+                  backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                  borderRadius: '12px'
+                }}>
+                  <div>
+                    <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '2px' }}>
+                      データ共有
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      匿名データの品質向上への利用
+                    </div>
+                  </div>
+                  <Toggle
+                    checked={dataSharing}
+                    onChange={() => setDataSharing(!dataSharing)}
+                    size="small"
+                  />
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px',
+                  backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                  borderRadius: '12px'
+                }}>
+                  <div>
+                    <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '2px' }}>
+                      自動バックアップ
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      クラウドへの自動保存
+                    </div>
+                  </div>
+                  <Toggle
+                    checked={autoBackup}
+                    onChange={() => setAutoBackup(!autoBackup)}
+                    size="small"
+                  />
+                </div>
+
+                <button
+                  onClick={() => router.push('/export')}
+                  style={{
+                    padding: '14px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '12px',
+                    color: '#d1d5db',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.5)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>💾</span>
+                    データエクスポート
+                  </div>
+                  <span style={{ color: '#9ca3af' }}>›</span>
+                </button>
+
+                <button
+                  style={{
+                    padding: '14px',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    borderRadius: '12px',
+                    color: '#ef4444',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'
+                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'
+                    e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>🗑️</span>
+                    アカウント削除
+                  </div>
+                  <span style={{ color: '#ef4444' }}>›</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Support Links */}
+        <div style={{
+          background: 'rgba(31, 41, 55, 0.6)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '16px',
+          overflow: 'hidden',
           marginBottom: '24px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-            <div style={{
-              width: '60px',
-              height: '60px',
-              backgroundColor: '#a3e635',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <span style={{ color: '#111827', fontSize: '14px', fontWeight: '600' }}>
-                ユーザー
-              </span>
-            </div>
-            <div>
-              <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: '0 0 4px 0' }}>
-                ユーザー名
-              </h3>
-              <p style={{ fontSize: '14px', color: '#9ca3af', margin: '0 0 4px 0' }}>
-                xxx@gmail.com
-              </p>
-              <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
-                2025年6月から利用開始
-              </p>
-            </div>
-          </div>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', textAlign: 'center', marginBottom: '20px' }}>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>45</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>セッション</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>15</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>連続記録</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '20px', fontWeight: '700', color: '#a3e635', marginBottom: '4px' }}>lv.8</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>レベル</div>
-            </div>
-          </div>
-          
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>次のレベルまで</span>
-              <span style={{ fontSize: '12px', color: '#9ca3af' }}>850 / 1000 XP</span>
-            </div>
-            <div style={{
-              width: '100%',
-              height: '8px',
-              backgroundColor: '#374151',
-              borderRadius: '4px',
-              position: 'relative'
-            }}>
-              <div style={{
-                position: 'absolute',
-                height: '100%',
-                width: '85%',
-                backgroundColor: '#a3e635',
-                borderRadius: '4px'
-              }}></div>
-            </div>
-          </div>
+          {[
+            { icon: '❓', label: 'ヘルプ・FAQ', path: '/help' },
+            { icon: '📧', label: 'お問い合わせ', path: '/contact' },
+            { icon: '⭐', label: 'アプリを評価', action: 'rate' },
+            { icon: '🚪', label: 'ログアウト', action: 'logout', danger: true }
+          ].map((item, index) => (
+            <button
+              key={item.label}
+              onClick={() => {
+                if (item.path) {
+                  router.push(item.path)
+                } else if (item.action === 'logout') {
+                  // Handle logout
+                  console.log('Logout')
+                } else if (item.action === 'rate') {
+                  // Handle rating
+                  console.log('Rate app')
+                }
+              }}
+              style={{
+                width: '100%',
+                padding: '16px 20px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderBottom: index < 3 ? '1px solid rgba(55, 65, 81, 0.3)' : 'none',
+                color: item.danger ? '#ef4444' : '#d1d5db',
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                <span style={{ fontSize: '14px', fontWeight: '500' }}>{item.label}</span>
+              </div>
+              <span style={{ color: item.danger ? '#ef4444' : '#9ca3af' }}>›</span>
+            </button>
+          ))}
         </div>
 
-        {/* Account settings */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            アカウント
-          </h2>
-          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button onClick={() => router.push('/profile')} style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>👤</span>
-                <span>プロフィール編集</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button onClick={() => router.push('/characters')} style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🤖</span>
-                <span>AIキャラクター設定</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button onClick={() => router.push('/achievements')} style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🏆</span>
-                <span>レベル・バッジ</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
+        {/* App Info */}
+        <div style={{
+          textAlign: 'center',
+          padding: '24px',
+          color: '#6b7280'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '16px',
+            marginBottom: '16px',
+            fontSize: '12px'
+          }}>
+            <span>バージョン 1.0.0</span>
+            <span>•</span>
+            <span>ビルド 20250807</span>
           </div>
-        </div>
-
-        {/* App settings */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            設定
-          </h2>
-          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🔔</span>
-                <span>通知設定</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🌐</span>
-                <span>言語設定</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>📱</span>
-                <span>デバイス設定</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Notification settings */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            通知設定
-          </h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
-                  チェックインリマインダー
-                </div>
-                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
-                  毎日決まった時間にリマインダーを送信
-                </div>
-              </div>
-              <Toggle
-                checked={notifications.checkinReminder}
-                onChange={() => toggleNotification('checkinReminder')}
-              />
-            </div>
-
-            {notifications.checkinReminder && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginTop: '12px' }}>
-                <div>
-                  <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px' }}>朝のリマインダー</div>
-                  <div style={{ 
-                    backgroundColor: '#374151', 
-                    borderRadius: '8px', 
-                    padding: '12px', 
-                    textAlign: 'center',
-                    color: '#f3f4f6',
-                    fontSize: '14px'
-                  }}>
-                    9:00
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '8px' }}>夜のリマインダー</div>
-                  <div style={{ 
-                    backgroundColor: '#374151', 
-                    borderRadius: '8px', 
-                    padding: '12px', 
-                    textAlign: 'center',
-                    color: '#f3f4f6',
-                    fontSize: '14px'
-                  }}>
-                    21:00
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
-                  週次レポート
-                </div>
-                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
-                  週の振り返りレポート
-                </div>
-              </div>
-              <Toggle
-                checked={notifications.weeklyReport}
-                onChange={() => toggleNotification('weeklyReport')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
-                  励ましメッセージ
-                </div>
-                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
-                  AIからの応援メッセージ
-                </div>
-              </div>
-              <Toggle
-                checked={notifications.encouragement}
-                onChange={() => toggleNotification('encouragement')}
-              />
-            </div>
-
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '4px' }}>
-                  マーケティング情報
-                </div>
-                <div style={{ fontSize: '12px', color: '#9ca3af' }}>
-                  新しいサービスやお知らせ
-                </div>
-              </div>
-              <Toggle
-                checked={notifications.marketing}
-                onChange={() => toggleNotification('marketing')}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Data & Account Management */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            データ・アカウント管理
-          </h2>
-          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button onClick={() => router.push('/export')} style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>💾</span>
-                <span>データCSVエクスポート</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🔒</span>
-                <span>プライバシー設定</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#ef4444',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🗑️</span>
-                <span>アカウント削除</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Support & Help */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            サポート・ヘルプ
-          </h2>
-          <div style={{ backgroundColor: '#1f2937', borderRadius: '12px' }}>
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>❓</span>
-                <span>ヘルプ・FAQ</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              borderBottom: '1px solid #374151',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>🚪</span>
-                <span>ログアウト</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-            
-            <button style={{
-              width: '100%',
-              padding: '16px',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#d1d5db',
-              textAlign: 'left',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>⭐</span>
-                <span>アプリを評価</span>
-              </div>
-              <span style={{ color: '#9ca3af' }}>›</span>
-            </button>
-          </div>
-        </div>
-
-        {/* App info */}
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>
-            アプリ情報
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#9ca3af', fontSize: '14px' }}>バージョン</span>
-              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>1.0.0</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#9ca3af', fontSize: '14px' }}>ビルド</span>
-              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>20250806</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#9ca3af', fontSize: '14px' }}>最終更新</span>
-              <span style={{ color: '#f3f4f6', fontSize: '14px' }}>2025年8月6日</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+          <p style={{ fontSize: '11px', margin: 0 }}>
             © 2025 Healthcare SaaS. All rights reserved.
           </p>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '24px',
+            marginTop: '16px'
+          }}>
+            <a href="#" style={{ color: '#9ca3af', fontSize: '11px', textDecoration: 'none' }}>利用規約</a>
+            <a href="#" style={{ color: '#9ca3af', fontSize: '11px', textDecoration: 'none' }}>プライバシーポリシー</a>
+          </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       <MobileBottomNav />
     </div>
