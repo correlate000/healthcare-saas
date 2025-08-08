@@ -474,77 +474,262 @@ export default function InsightsPage() {
           <div style={{
             backgroundColor: 'rgba(31, 41, 55, 0.6)',
             borderRadius: '12px',
-            padding: '16px'
+            padding: '20px',
+            position: 'relative'
           }}>
-            {/* 7日間の気分データ */}
+            {/* グラフエリア */}
             <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              height: '120px',
-              marginBottom: '12px'
+              position: 'relative',
+              height: '200px',
+              marginBottom: '20px'
             }}>
-              {[
-                { day: '月', mood: 65, emoji: '😐' },
-                { day: '火', mood: 72, emoji: '🙂' },
-                { day: '水', mood: 68, emoji: '😐' },
-                { day: '木', mood: 78, emoji: '😊' },
-                { day: '金', mood: 82, emoji: '😄' },
-                { day: '土', mood: 88, emoji: '😄' },
-                { day: '日', mood: 75, emoji: '🙂' }
-              ].map((data, index) => (
-                <div key={index} style={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px'
+              {/* Y軸の目盛り線 */}
+              {[100, 75, 50, 25, 0].map((value) => (
+                <div key={value} style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: `${value}%`,
+                  borderBottom: '1px dashed rgba(55, 65, 81, 0.5)',
+                  height: '1px'
                 }}>
                   <span style={{
+                    position: 'absolute',
+                    left: '-30px',
+                    bottom: '-8px',
                     ...getTypographyStyles('caption'),
-                    marginBottom: '4px'
+                    color: '#6b7280'
                   }}>
-                    {data.emoji}
-                  </span>
-                  <div style={{
-                    width: '100%',
-                    maxWidth: '20px',
-                    height: `${data.mood}%`,
-                    background: data.mood >= 80 ? 'linear-gradient(180deg, #a3e635, #84cc16)' :
-                               data.mood >= 60 ? 'linear-gradient(180deg, #60a5fa, #3b82f6)' :
-                               'linear-gradient(180deg, #fbbf24, #f59e0b)',
-                    borderRadius: '4px 4px 0 0',
-                    transition: 'all 0.3s ease'
-                  }}></div>
-                  <span style={{
-                    ...getTypographyStyles('caption'),
-                    color: '#9ca3af'
-                  }}>
-                    {data.day}
+                    {value}
                   </span>
                 </div>
               ))}
+              
+              {/* 7日間の気分データ */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-end',
+                height: '100%',
+                paddingLeft: '10px',
+                paddingRight: '10px',
+                gap: '8px'
+              }}>
+                {[
+                  { day: '月', date: '12/2', mood: 65, emoji: '😐', color: '#60a5fa' },
+                  { day: '火', date: '12/3', mood: 72, emoji: '🙂', color: '#60a5fa' },
+                  { day: '水', date: '12/4', mood: 68, emoji: '😐', color: '#60a5fa' },
+                  { day: '木', date: '12/5', mood: 78, emoji: '😊', color: '#84cc16' },
+                  { day: '金', date: '12/6', mood: 82, emoji: '😄', color: '#a3e635' },
+                  { day: '土', date: '12/7', mood: 88, emoji: '😄', color: '#a3e635' },
+                  { day: '日', date: '12/8', mood: 75, emoji: '🙂', color: '#60a5fa', isToday: true }
+                ].map((data, index, array) => (
+                  <div key={index} style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    height: '100%',
+                    position: 'relative'
+                  }}>
+                    {/* 折れ線グラフの線 */}
+                    {index > 0 && (
+                      <svg style={{
+                        position: 'absolute',
+                        left: '-50%',
+                        bottom: 0,
+                        width: '100%',
+                        height: '100%',
+                        pointerEvents: 'none',
+                        overflow: 'visible'
+                      }}>
+                        <line
+                          x1="0"
+                          y1={`${100 - array[index - 1].mood}%`}
+                          x2="100%"
+                          y2={`${100 - data.mood}%`}
+                          stroke="rgba(163, 230, 53, 0.5)"
+                          strokeWidth="2"
+                          strokeDasharray={data.isToday ? "5,5" : "0"}
+                        />
+                      </svg>
+                    )}
+                    
+                    {/* バーグラフ */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      width: '100%',
+                      maxWidth: '30px',
+                      height: `${data.mood}%`,
+                      background: `linear-gradient(180deg, ${data.color} 0%, ${data.color}88 100%)`,
+                      borderRadius: '4px 4px 0 0',
+                      transition: 'all 0.3s ease',
+                      opacity: data.isToday ? 0.8 : 1,
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scaleY(1.05)'
+                      e.currentTarget.style.opacity = '1'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scaleY(1)'
+                      e.currentTarget.style.opacity = data.isToday ? '0.8' : '1'
+                    }}>
+                      {/* 数値表示 */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '-25px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        ...getTypographyStyles('caption'),
+                        color: data.color,
+                        fontWeight: '600',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {data.mood}%
+                      </div>
+                    </div>
+                    
+                    {/* ポイントマーカー */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: `${data.mood}%`,
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#a3e635',
+                      borderRadius: '50%',
+                      border: '2px solid #111827',
+                      transform: 'translate(-50%, 50%)',
+                      left: '50%',
+                      zIndex: 2
+                    }}></div>
+                    
+                    {/* 絵文字 */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: `${data.mood + 8}%`,
+                      fontSize: '20px',
+                      filter: data.isToday ? 'none' : 'grayscale(0.2)'
+                    }}>
+                      {data.emoji}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            {/* 平均値ライン */}
+            
+            {/* X軸ラベル */}
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
-              paddingTop: '12px',
-              borderTop: '1px solid rgba(55, 65, 81, 0.5)'
+              paddingLeft: '10px',
+              paddingRight: '10px',
+              marginBottom: '16px'
             }}>
-              <span style={{
-                ...getTypographyStyles('small'),
-                color: '#9ca3af'
-              }}>
-                週間平均: 75%
-              </span>
-              <span style={{
-                ...getTypographyStyles('small'),
-                color: '#a3e635'
-              }}>
-                先週比 +8%
-              </span>
+              {[
+                { day: '月', date: '12/2' },
+                { day: '火', date: '12/3' },
+                { day: '水', date: '12/4' },
+                { day: '木', date: '12/5' },
+                { day: '金', date: '12/6' },
+                { day: '土', date: '12/7' },
+                { day: '日', date: '12/8', isToday: true }
+              ].map((data, index) => (
+                <div key={index} style={{
+                  flex: 1,
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    ...getTypographyStyles('small'),
+                    color: data.isToday ? '#a3e635' : '#f3f4f6',
+                    fontWeight: data.isToday ? '600' : '500',
+                    marginBottom: '2px'
+                  }}>
+                    {data.day}
+                  </div>
+                  <div style={{
+                    ...getTypographyStyles('caption'),
+                    color: '#6b7280'
+                  }}>
+                    {data.date}
+                  </div>
+                  {data.isToday && (
+                    <div style={{
+                      ...getTypographyStyles('caption'),
+                      color: '#a3e635',
+                      fontWeight: '500',
+                      marginTop: '2px'
+                    }}>
+                      今日
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            {/* 統計情報 */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '12px',
+              padding: '16px',
+              backgroundColor: 'rgba(31, 41, 55, 0.4)',
+              borderRadius: '8px'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  ...getTypographyStyles('h4'),
+                  color: '#a3e635',
+                  fontWeight: '700',
+                  marginBottom: '4px'
+                }}>
+                  75%
+                </div>
+                <div style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  週間平均
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  ...getTypographyStyles('h4'),
+                  color: '#60a5fa',
+                  fontWeight: '700',
+                  marginBottom: '4px'
+                }}>
+                  88%
+                </div>
+                <div style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  最高値
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{
+                  ...getTypographyStyles('h4'),
+                  color: '#a3e635',
+                  fontWeight: '700',
+                  marginBottom: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '4px'
+                }}>
+                  <span style={{ fontSize: '12px' }}>↑</span>
+                  8%
+                </div>
+                <div style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  先週比
+                </div>
+              </div>
             </div>
           </div>
         </div>
