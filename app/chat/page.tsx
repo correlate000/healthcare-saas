@@ -164,84 +164,101 @@ export default function ChatPage() {
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {/* Header with character selection */}
-      <div style={{ padding: '16px', borderBottom: '1px solid #374151', flexShrink: 0 }}>
-        <h1 style={{ ...getTypographyStyles('h4'), fontWeight: '600', color: '#f3f4f6', margin: '0 0 16px 0' }}>
-          チャット
-        </h1>
-        
-        {/* Character selection */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+      {/* Header with large character display */}
+      <div style={{ 
+        background: `linear-gradient(180deg, ${currentCharacter.color}15 0%, #111827 100%)`,
+        borderBottom: '1px solid #374151', 
+        flexShrink: 0 
+      }}>
+        {/* Character selection tabs */}
+        <div style={{ 
+          padding: '12px 16px 0',
+          display: 'flex',
+          gap: '4px'
+        }}>
           {characters.map((character) => (
             <button
               key={character.id}
               onClick={() => handleCharacterChange(character.id)}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 16px',
-                backgroundColor: selectedCharacter === character.id ? character.color : '#374151',
-                color: selectedCharacter === character.id ? '#111827' : '#d1d5db',
-                borderRadius: '20px',
+                flex: 1,
+                padding: '10px 8px',
+                backgroundColor: selectedCharacter === character.id 
+                  ? 'rgba(31, 41, 55, 0.8)' 
+                  : 'transparent',
+                color: selectedCharacter === character.id ? '#f3f4f6' : '#9ca3af',
+                borderRadius: '12px 12px 0 0',
                 border: 'none',
-                ...getTypographyStyles('base'),
-                fontWeight: '500',
+                ...getTypographyStyles('small'),
+                fontWeight: selectedCharacter === character.id ? '600' : '500',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px'
               }}
             >
-              <div style={{
-                width: '28px',
-                height: '28px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <BirdCharacter 
-                  bodyColor={character.bodyColor} 
-                  bellyColor={character.bellyColor}
-                  size={24}
-                />
-              </div>
+              <BirdCharacter 
+                bodyColor={character.bodyColor} 
+                bellyColor={character.bellyColor}
+                size={20}
+              />
               {character.name}
             </button>
           ))}
         </div>
-
-        {/* Character info */}
+        
+        {/* Large character display */}
         <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '12px',
+          padding: '20px',
           display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease'
-        }}
-        onClick={() => router.push('/characters')}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#1f2937' }}>
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            backgroundColor: '#374151',
+            width: '100px',
+            height: '100px',
+            background: `radial-gradient(circle, ${currentCharacter.color}20 0%, transparent 70%)`,
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '4px'
+            marginBottom: '12px',
+            animation: 'float 3s ease-in-out infinite'
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={40}
+              size={80}
             />
           </div>
-          <div>
-            <div style={{ ...getTypographyStyles('base'), fontWeight: '500', color: '#f3f4f6' }}>{currentCharacter.name}</div>
-            <div style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>オンライン</div>
+          <h2 style={{ 
+            ...getTypographyStyles('h3'), 
+            fontWeight: '700', 
+            color: currentCharacter.color,
+            marginBottom: '4px'
+          }}>
+            {currentCharacter.name}
+          </h2>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <div style={{
+              width: '8px',
+              height: '8px',
+              backgroundColor: '#a3e635',
+              borderRadius: '50%',
+              animation: 'pulse 2s ease-in-out infinite'
+            }}></div>
+            <span style={{ 
+              ...getTypographyStyles('small'), 
+              color: '#9ca3af' 
+            }}>
+              話し相手になります
+            </span>
           </div>
         </div>
       </div>
@@ -249,12 +266,13 @@ export default function ChatPage() {
       {/* Messages area */}
       <div style={{ 
         flex: 1, 
-        padding: '16px', 
+        padding: '20px', 
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
-        minHeight: 0
+        gap: '20px',
+        minHeight: 0,
+        background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
         {messages.map((message) => (
           <div
@@ -268,30 +286,34 @@ export default function ChatPage() {
           >
             {message.type === 'character' && (
               <div style={{
-                width: '36px',
-                height: '36px',
-                backgroundColor: '#374151',
+                width: '44px',
+                height: '44px',
+                background: `linear-gradient(135deg, ${currentCharacter.color}30 0%, ${currentCharacter.color}10 100%)`,
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
-                padding: '2px'
+                boxShadow: `0 2px 8px ${currentCharacter.color}20`
               }}>
                 <BirdCharacter 
                   bodyColor={currentCharacter.bodyColor} 
                   bellyColor={currentCharacter.bellyColor}
-                  size={32}
+                  size={36}
                 />
               </div>
             )}
             
             <div style={{
               maxWidth: '70%',
-              padding: '12px 16px',
-              borderRadius: message.type === 'user' ? '18px 18px 6px 18px' : '18px 18px 18px 6px',
-              backgroundColor: message.type === 'user' ? '#a3e635' : '#374151',
-              color: message.type === 'user' ? '#111827' : '#f3f4f6'
+              padding: '14px 18px',
+              borderRadius: message.type === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
+              backgroundColor: message.type === 'user' ? '#a3e635' : '#1f2937',
+              color: message.type === 'user' ? '#111827' : '#f3f4f6',
+              boxShadow: message.type === 'user' 
+                ? '0 2px 8px rgba(163, 230, 53, 0.2)'
+                : '0 2px 8px rgba(0, 0, 0, 0.1)',
+              border: message.type === 'character' ? `1px solid ${currentCharacter.color}20` : 'none'
             }}>
               <p style={{ 
                 ...getTypographyStyles('base'),
@@ -319,16 +341,22 @@ export default function ChatPage() {
             gap: '8px'
           }}>
             <div style={{
-              width: '32px',
-              height: '32px',
-              backgroundColor: currentCharacter.color,
+              width: '44px',
+              height: '44px',
+              background: `linear-gradient(135deg, ${currentCharacter.color}30 0%, ${currentCharacter.color}10 100%)`,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0
+              flexShrink: 0,
+              boxShadow: `0 2px 8px ${currentCharacter.color}20`,
+              animation: 'pulse 1.5s ease-in-out infinite'
             }}>
-              <span style={{ color: '#111827', fontSize: '10px', fontWeight: '600' }}>AI</span>
+              <BirdCharacter 
+                bodyColor={currentCharacter.bodyColor} 
+                bellyColor={currentCharacter.bellyColor}
+                size={36}
+              />
             </div>
             <div style={{
               padding: '12px 16px',
@@ -470,6 +498,24 @@ export default function ChatPage() {
           }
           30% {
             transform: translateY(-10px);
+            opacity: 0.5;
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
             opacity: 0.5;
           }
         }
