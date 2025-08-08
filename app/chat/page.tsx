@@ -25,7 +25,9 @@ export default function ChatPage() {
     }
   ])
   const [isTyping, setIsTyping] = useState(false)
+  const [showScrollButton, setShowScrollButton] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   const characters = [
     { id: 'luna', name: 'Luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb' },
@@ -88,7 +90,37 @@ export default function ChatPage() {
     }
   }
 
-  // Remove auto-scroll to prevent unwanted scrolling on character selection or page load
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isTyping])
+
+  // Check scroll position to show/hide scroll button
+  useEffect(() => {
+    const checkScroll = () => {
+      if (messagesContainerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current
+        const isAtBottom = scrollHeight - scrollTop - clientHeight < 50
+        setShowScrollButton(!isAtBottom)
+      }
+    }
+
+    const container = messagesContainerRef.current
+    if (container) {
+      container.addEventListener('scroll', checkScroll)
+      checkScroll() // Initial check
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', checkScroll)
+      }
+    }
+  }, [])
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
@@ -145,10 +177,9 @@ export default function ChatPage() {
       time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
     }])
     
-    // Prevent scroll by resetting scroll position to top
-    const messagesArea = document.querySelector('[style*="overflowY"]')
-    if (messagesArea) {
-      messagesArea.scrollTop = 0
+    // Reset scroll to top for new character
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = 0
     }
   }
 
@@ -264,16 +295,20 @@ export default function ChatPage() {
       </div>
 
       {/* Messages area */}
-      <div style={{ 
-        flex: 1, 
-        padding: '20px', 
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        minHeight: 0,
-        background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
-      }}>
+      <div 
+        ref={messagesContainerRef}
+        style={{ 
+          flex: 1, 
+          padding: '20px', 
+          paddingBottom: '20px',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px',
+          minHeight: 0,
+          background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)',
+          position: 'relative'
+        }}>
         {messages.map((message) => (
           <div
             key={message.id}
@@ -393,8 +428,45 @@ export default function ChatPage() {
           </div>
         )}
         
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} style={{ height: '1px' }} />
       </div>
+
+      {/* Scroll to bottom button */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToBottom}
+          style={{
+            position: 'absolute',
+            bottom: '160px',
+            right: '20px',
+            width: '44px',
+            height: '44px',
+            backgroundColor: 'rgba(31, 41, 55, 0.9)',
+            border: '1px solid rgba(163, 230, 53, 0.3)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            transition: 'all 0.3s ease',
+            zIndex: 10
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(163, 230, 53, 0.2)'
+            e.currentTarget.style.transform = 'scale(1.1)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.9)'
+            e.currentTarget.style.transform = 'scale(1)'
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 14L5 9L6.41 7.59L10 11.17L13.59 7.59L15 9L10 14Z" fill="#a3e635"/>
+            <path d="M10 18L5 13L6.41 11.59L10 15.17L13.59 11.59L15 13L10 18Z" fill="#a3e635"/>
+          </svg>
+        </button>
+      )}
 
       {/* Quick responses - only show for the very first message */}
       {messages.length === 1 && (
@@ -432,7 +504,13 @@ export default function ChatPage() {
       )}
 
       {/* Message input */}
-      <div style={{ padding: '16px', flexShrink: 0, paddingBottom: '80px' }}>
+      <div style={{ 
+        padding: '16px', 
+        paddingBottom: '90px',
+        flexShrink: 0,
+        backgroundColor: '#111827',
+        borderTop: '1px solid rgba(55, 65, 81, 0.3)'
+      }}>
         <form id="chat-form" onSubmit={handleSendMessage} style={{ 
           display: 'flex', 
           alignItems: 'center', 
