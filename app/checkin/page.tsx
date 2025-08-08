@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { HappyFaceIcon, SadFaceIcon, CalmIcon, StressedIcon, EnergeticIcon, ThinkingIcon, MeditationIcon, SleepingIcon } from '@/components/icons/illustrations'
 
 export default function CheckIn() {
   const router = useRouter()
