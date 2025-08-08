@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { getTypographyStyles, typographyPresets, typography } from '@/styles/typography'
 
 export default function NotificationsPage() {
   const router = useRouter()
@@ -135,7 +136,7 @@ export default function NotificationsPage() {
           marginBottom: '16px'
         }}>
           <h1 style={{
-            fontSize: '24px',
+            ...typographyPresets.pageTitle(),
             fontWeight: '800',
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -154,7 +155,7 @@ export default function NotificationsPage() {
                 color: '#a3e635',
                 border: '1px solid rgba(163, 230, 53, 0.3)',
                 borderRadius: '10px',
-                fontSize: '13px',
+                ...getTypographyStyles('label'),
                 fontWeight: '600',
                 cursor: 'pointer'
               }}
@@ -182,7 +183,7 @@ export default function NotificationsPage() {
                 ? '1px solid rgba(163, 230, 53, 0.3)'
                 : '1px solid transparent',
               borderRadius: '10px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s ease'
@@ -203,7 +204,7 @@ export default function NotificationsPage() {
                 ? '1px solid rgba(163, 230, 53, 0.3)'
                 : '1px solid transparent',
               borderRadius: '10px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
@@ -218,7 +219,7 @@ export default function NotificationsPage() {
                 right: '12px',
                 backgroundColor: '#ef4444',
                 color: 'white',
-                fontSize: '10px',
+                ...typography.caption,
                 fontWeight: '700',
                 padding: '2px 6px',
                 borderRadius: '10px',
@@ -245,7 +246,7 @@ export default function NotificationsPage() {
               🔔
             </div>
             <p style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               color: '#9ca3af'
             }}>
               {selectedCategory === 'unread' ? '未読の通知はありません' : '通知はありません'}
@@ -324,7 +325,7 @@ export default function NotificationsPage() {
                       marginBottom: '4px'
                     }}>
                       <h3 style={{
-                        fontSize: '15px',
+                        ...getTypographyStyles('base'),
                         fontWeight: notification.isRead ? '500' : '600',
                         color: notification.isRead ? '#d1d5db' : '#f3f4f6',
                         margin: 0
@@ -342,7 +343,7 @@ export default function NotificationsPage() {
                           backgroundColor: 'transparent',
                           border: 'none',
                           color: '#6b7280',
-                          fontSize: '16px',
+                          ...getTypographyStyles('large'),
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
@@ -364,10 +365,9 @@ export default function NotificationsPage() {
                     </div>
                     
                     <p style={{
-                      fontSize: '13px',
+                      ...getTypographyStyles('label'),
                       color: notification.isRead ? '#9ca3af' : '#d1d5db',
-                      margin: '0 0 8px 0',
-                      lineHeight: '1.4'
+                      margin: '0 0 8px 0'
                     }}>
                       {notification.message}
                     </p>
@@ -378,7 +378,7 @@ export default function NotificationsPage() {
                       justifyContent: 'space-between'
                     }}>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#6b7280'
                       }}>
                         {notification.time}
@@ -396,7 +396,7 @@ export default function NotificationsPage() {
                             color: '#a3e635',
                             border: '1px solid rgba(163, 230, 53, 0.3)',
                             borderRadius: '6px',
-                            fontSize: '12px',
+                            ...getTypographyStyles('small'),
                             fontWeight: '500',
                             cursor: 'pointer'
                           }}
@@ -422,10 +422,8 @@ export default function NotificationsPage() {
           border: '1px solid rgba(55, 65, 81, 0.3)'
         }}>
           <h3 style={{
-            fontSize: '16px',
+            ...typographyPresets.cardTitle(),
             fontWeight: '600',
-            color: '#f3f4f6',
-            marginBottom: '16px',
             display: 'flex',
             alignItems: 'center',
             gap: '8px'
@@ -443,7 +441,7 @@ export default function NotificationsPage() {
               color: '#d1d5db',
               border: '1px solid rgba(55, 65, 81, 0.5)',
               borderRadius: '10px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '500',
               cursor: 'pointer',
               transition: 'all 0.2s ease'

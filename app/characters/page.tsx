@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function CharactersPage() {
   const router = useRouter()
@@ -82,8 +83,8 @@ export default function CharactersPage() {
       )}
       {mood === 'excited' && (
         <g>
-          <text x="15" y="25" fontSize="12" fill="#fbbf24">✨</text>
-          <text x="75" y="25" fontSize="12" fill="#fbbf24">✨</text>
+          <text x="15" y="25" fontSize={getTypographyStyles('small').fontSize.replace('px', '')} fill="#fbbf24">✨</text>
+          <text x="75" y="25" fontSize={getTypographyStyles('small').fontSize.replace('px', '')} fill="#fbbf24">✨</text>
         </g>
       )}
     </svg>
@@ -319,7 +320,7 @@ export default function CharactersPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -331,7 +332,7 @@ export default function CharactersPage() {
           キャラクター
         </h1>
         <p style={{
-          fontSize: '14px',
+          ...getTypographyStyles('base'),
           color: '#9ca3af'
         }}>
           あなたをサポートする仲間たち
@@ -354,7 +355,7 @@ export default function CharactersPage() {
               color: filter === 'すべて' ? '#a3e635' : '#d1d5db',
               border: filter === 'すべて' ? '1px solid rgba(163, 230, 53, 0.3)' : '1px solid transparent',
               borderRadius: '12px',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               fontWeight: '500',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
@@ -426,7 +427,7 @@ export default function CharactersPage() {
                     right: '12px',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    fontSize: '20px',
+                    ...getTypographyStyles('large'),
                     cursor: 'pointer',
                     zIndex: 20,
                     transition: 'transform 0.3s ease'
@@ -453,9 +454,9 @@ export default function CharactersPage() {
                   zIndex: 10,
                   backdropFilter: 'blur(4px)'
                 }}>
-                  <span style={{ fontSize: '32px', marginBottom: '12px' }}>🔒</span>
+                  <span style={{ ...getTypographyStyles('h1'), marginBottom: '12px' }}>🔒</span>
                   <span style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     color: '#9ca3af',
                     textAlign: 'center',
                     padding: '0 16px',
@@ -505,7 +506,7 @@ export default function CharactersPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       border: '2px solid #111827'
                     }}>
                       {character.badge}
@@ -515,7 +516,7 @@ export default function CharactersPage() {
 
                 {/* Name & Role */}
                 <h3 style={{
-                  fontSize: '18px',
+                  ...getTypographyStyles('h4'),
                   fontWeight: '700',
                   background: `linear-gradient(135deg, #f3f4f6 0%, ${character.bodyColor} 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -526,7 +527,7 @@ export default function CharactersPage() {
                   {character.name}
                 </h3>
                 <span style={{
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   color: '#9ca3af',
                   marginBottom: '12px'
                 }}>
@@ -546,13 +547,13 @@ export default function CharactersPage() {
                       marginBottom: '6px'
                     }}>
                       <span style={{
-                        fontSize: '11px',
+                        ...getTypographyStyles('caption'),
                         color: '#9ca3af'
                       }}>
                         関係性
                       </span>
                       <span style={{
-                        fontSize: '11px',
+                        ...getTypographyStyles('caption'),
                         color: getRelationshipColor(character.relationshipLevel),
                         fontWeight: '600'
                       }}>
@@ -591,14 +592,14 @@ export default function CharactersPage() {
                       marginBottom: '4px'
                     }}>
                       <span style={{
-                        fontSize: '13px',
+                        ...getTypographyStyles('label'),
                         color: '#a3e635',
                         fontWeight: '700'
                       }}>
                         Lv.{character.level}
                       </span>
                       <span style={{
-                        fontSize: '10px',
+                        ...getTypographyStyles('caption'),
                         color: '#6b7280'
                       }}>
                         {character.xp}/{character.nextLevelXp} XP
@@ -633,7 +634,7 @@ export default function CharactersPage() {
                     <span
                       key={index}
                       style={{
-                        fontSize: '10px',
+                        ...getTypographyStyles('caption'),
                         backgroundColor: 'rgba(55, 65, 81, 0.6)',
                         color: '#d1d5db',
                         padding: '3px 8px',
@@ -696,7 +697,7 @@ export default function CharactersPage() {
                       border: 'none',
                       borderRadius: '50%',
                       color: '#9ca3af',
-                      fontSize: '24px',
+                      ...getTypographyStyles('h2'),
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -762,7 +763,7 @@ export default function CharactersPage() {
                           backgroundColor: char.bodyColor,
                           border: '2px solid #111827',
                           borderRadius: '50%',
-                          fontSize: '18px',
+                          ...getTypographyStyles('h4'),
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
@@ -776,7 +777,7 @@ export default function CharactersPage() {
                       </button>
                     </div>
                     <h2 style={{
-                      fontSize: '28px',
+                      ...getTypographyStyles('h1'),
                       fontWeight: '800',
                       background: `linear-gradient(135deg, #f3f4f6 0%, ${char.bodyColor} 100%)`,
                       WebkitBackgroundClip: 'text',
@@ -787,14 +788,14 @@ export default function CharactersPage() {
                       {char.name}
                     </h2>
                     <span style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       color: '#9ca3af',
                       marginBottom: '8px'
                     }}>
                       {char.role} • {char.personality}
                     </span>
                     <p style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       color: '#d1d5db',
                       textAlign: 'center',
                       lineHeight: '1.6',
@@ -819,13 +820,13 @@ export default function CharactersPage() {
                         marginBottom: '8px'
                       }}>
                         <span style={{
-                          fontSize: '13px',
+                          ...getTypographyStyles('label'),
                           color: '#9ca3af'
                         }}>
                           関係性レベル
                         </span>
                         <span style={{
-                          fontSize: '14px',
+                          ...getTypographyStyles('base'),
                           color: getRelationshipColor(char.relationshipLevel),
                           fontWeight: '700'
                         }}>
@@ -870,7 +871,7 @@ export default function CharactersPage() {
                           color: activeTab === tab ? '#111827' : '#9ca3af',
                           border: 'none',
                           borderRadius: '8px',
-                          fontSize: '13px',
+                          ...getTypographyStyles('label'),
                           fontWeight: '600',
                           cursor: 'pointer',
                           transition: 'all 0.2s ease'
@@ -892,7 +893,7 @@ export default function CharactersPage() {
                       marginBottom: '20px'
                     }}>
                       <h3 style={{
-                        fontSize: '15px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '700',
                         color: '#f3f4f6',
                         marginBottom: '16px'
@@ -910,7 +911,7 @@ export default function CharactersPage() {
                             marginBottom: '6px'
                           }}>
                             <span style={{
-                              fontSize: '13px',
+                              ...getTypographyStyles('label'),
                               color: '#9ca3af',
                               display: 'flex',
                               alignItems: 'center',
@@ -922,7 +923,7 @@ export default function CharactersPage() {
                                stat === 'humor' ? '😄 ユーモア' : stat}
                             </span>
                             <span style={{
-                              fontSize: '14px',
+                              ...getTypographyStyles('base'),
                               color: value >= 90 ? '#a3e635' : value >= 70 ? '#60a5fa' : '#9ca3af',
                               fontWeight: '700'
                             }}>
@@ -961,14 +962,14 @@ export default function CharactersPage() {
                           marginBottom: '8px'
                         }}>
                           <span style={{
-                            fontSize: '16px',
+                            ...getTypographyStyles('large'),
                             color: '#a3e635',
                             fontWeight: '700'
                           }}>
                             レベル {char.level}
                           </span>
                           <span style={{
-                            fontSize: '12px',
+                            ...getTypographyStyles('small'),
                             color: '#9ca3af'
                           }}>
                             {char.xp} / {char.nextLevelXp} XP
@@ -1002,7 +1003,7 @@ export default function CharactersPage() {
                       marginBottom: '20px'
                     }}>
                       <h3 style={{
-                        fontSize: '15px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '700',
                         color: '#f3f4f6',
                         marginBottom: '16px'
@@ -1030,14 +1031,14 @@ export default function CharactersPage() {
                               marginBottom: '8px'
                             }}>
                               <span style={{
-                                fontSize: '14px',
+                                ...getTypographyStyles('base'),
                                 color: '#f3f4f6',
                                 fontWeight: '600'
                               }}>
                                 {skill.name}
                               </span>
                               <span style={{
-                                fontSize: '12px',
+                                ...getTypographyStyles('small'),
                                 background: skill.level === 'MAX' 
                                   ? `linear-gradient(135deg, ${char.bodyColor} 0%, ${char.bodyColor}80 100%)`
                                   : 'rgba(55, 65, 81, 0.8)',
@@ -1050,7 +1051,7 @@ export default function CharactersPage() {
                               </span>
                             </div>
                             <span style={{
-                              fontSize: '12px',
+                              ...getTypographyStyles('small'),
                               color: '#9ca3af',
                               lineHeight: '1.4'
                             }}>
@@ -1070,7 +1071,7 @@ export default function CharactersPage() {
                       marginBottom: '20px'
                     }}>
                       <h3 style={{
-                        fontSize: '15px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '700',
                         color: '#f3f4f6',
                         marginBottom: '16px'
@@ -1109,14 +1110,14 @@ export default function CharactersPage() {
                               </div>
                               <div style={{ flex: 1 }}>
                                 <div style={{
-                                  fontSize: '10px',
+                                  ...getTypographyStyles('caption'),
                                   color: '#6b7280',
                                   marginBottom: '4px'
                                 }}>
                                   {dialog.date}
                                 </div>
                                 <div style={{
-                                  fontSize: '13px',
+                                  ...getTypographyStyles('label'),
                                   color: '#d1d5db',
                                   lineHeight: '1.5'
                                 }}>
@@ -1132,7 +1133,7 @@ export default function CharactersPage() {
                           padding: '32px',
                           color: '#6b7280'
                         }}>
-                          <span style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>💬</span>
+                          <span style={{ ...getTypographyStyles('h1'), marginBottom: '8px', display: 'block' }}>💬</span>
                           まだ会話をしていません
                         </div>
                       )}
@@ -1147,7 +1148,7 @@ export default function CharactersPage() {
                       marginBottom: '20px'
                     }}>
                       <h3 style={{
-                        fontSize: '15px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '700',
                         color: '#f3f4f6',
                         marginBottom: '16px'
@@ -1180,13 +1181,13 @@ export default function CharactersPage() {
                               e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.8)'
                             }}>
                               <span style={{
-                                fontSize: '28px',
+                                ...getTypographyStyles('h1'),
                                 marginBottom: '8px'
                               }}>
                                 {memory.icon}
                               </span>
                               <span style={{
-                                fontSize: '12px',
+                                ...getTypographyStyles('small'),
                                 color: '#f3f4f6',
                                 textAlign: 'center',
                                 marginBottom: '4px',
@@ -1195,7 +1196,7 @@ export default function CharactersPage() {
                                 {memory.title}
                               </span>
                               <span style={{
-                                fontSize: '10px',
+                                ...getTypographyStyles('caption'),
                                 color: '#6b7280'
                               }}>
                                 {memory.date}
@@ -1209,7 +1210,7 @@ export default function CharactersPage() {
                           padding: '32px',
                           color: '#6b7280'
                         }}>
-                          <span style={{ fontSize: '32px', marginBottom: '8px', display: 'block' }}>📸</span>
+                          <span style={{ ...getTypographyStyles('h1'), marginBottom: '8px', display: 'block' }}>📸</span>
                           まだ思い出がありません
                         </div>
                       )}
@@ -1233,7 +1234,7 @@ export default function CharactersPage() {
                         color: '#111827',
                         border: 'none',
                         borderRadius: '14px',
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '700',
                         cursor: 'pointer',
                         transition: 'all 0.3s ease',
@@ -1258,7 +1259,7 @@ export default function CharactersPage() {
                         color: '#9ca3af',
                         border: '1px solid rgba(55, 65, 81, 0.5)',
                         borderRadius: '14px',
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '600',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease'

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 interface Message {
   id: number
@@ -165,7 +166,7 @@ export default function ChatPage() {
     }}>
       {/* Header with character selection */}
       <div style={{ padding: '16px', borderBottom: '1px solid #374151', flexShrink: 0 }}>
-        <h1 style={{ fontSize: '18px', fontWeight: '600', color: '#f3f4f6', margin: '0 0 16px 0' }}>
+        <h1 style={{ ...getTypographyStyles('h4'), fontWeight: '600', color: '#f3f4f6', margin: '0 0 16px 0' }}>
           チャット
         </h1>
         
@@ -184,7 +185,7 @@ export default function ChatPage() {
                 color: selectedCharacter === character.id ? '#111827' : '#d1d5db',
                 borderRadius: '20px',
                 border: 'none',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -239,8 +240,8 @@ export default function ChatPage() {
             />
           </div>
           <div>
-            <div style={{ fontSize: '14px', fontWeight: '500', color: '#f3f4f6' }}>{currentCharacter.name}</div>
-            <div style={{ fontSize: '12px', color: '#9ca3af' }}>オンライン</div>
+            <div style={{ ...getTypographyStyles('base'), fontWeight: '500', color: '#f3f4f6' }}>{currentCharacter.name}</div>
+            <div style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>オンライン</div>
           </div>
         </div>
       </div>
@@ -293,7 +294,7 @@ export default function ChatPage() {
               color: message.type === 'user' ? '#111827' : '#f3f4f6'
             }}>
               <p style={{ 
-                fontSize: '14px', 
+                ...getTypographyStyles('base'),
                 margin: '0 0 4px 0', 
                 lineHeight: '1.4',
                 fontWeight: message.type === 'user' ? '500' : '400'
@@ -301,7 +302,7 @@ export default function ChatPage() {
                 {message.content}
               </p>
               <span style={{ 
-                fontSize: '11px', 
+                ...getTypographyStyles('caption'), 
                 color: message.type === 'user' ? '#065f46' : '#9ca3af',
                 fontWeight: '500'
               }}>
@@ -381,7 +382,7 @@ export default function ChatPage() {
                 color: '#d1d5db',
                 border: '1px solid #4b5563',
                 borderRadius: '20px',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -423,7 +424,7 @@ export default function ChatPage() {
               backgroundColor: 'transparent',
               border: 'none',
               color: '#d1d5db',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               outline: 'none',
               fontFamily: 'inherit'
             }}
@@ -454,7 +455,7 @@ export default function ChatPage() {
               }
             }}
           >
-            <span style={{ color: newMessage.trim() ? '#111827' : '#6b7280', fontSize: '18px', fontWeight: '600' }}>➤</span>
+            <span style={{ color: newMessage.trim() ? '#111827' : '#6b7280', ...getTypographyStyles('h4'), fontWeight: '600' }}>➤</span>
           </button>
         </form>
       </div>

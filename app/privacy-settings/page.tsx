@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { ChartIcon, UsersIcon, MailIcon, LockIcon, SaveIcon, TrashIcon, FileIcon } from '@/components/icons'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function PrivacySettingsPage() {
   const router = useRouter()
@@ -216,7 +217,7 @@ export default function PrivacySettingsPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #60a5fa 100%)',
           WebkitBackgroundClip: 'text',
@@ -259,7 +260,7 @@ export default function PrivacySettingsPage() {
             }}>
               <div>
                 <h3 style={{
-                  fontSize: '16px',
+                  ...getTypographyStyles('large'),
                   fontWeight: '600',
                   color: '#f3f4f6',
                   marginBottom: '4px'
@@ -267,7 +268,7 @@ export default function PrivacySettingsPage() {
                   プライバシースコア
                 </h3>
                 <p style={{
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   color: '#9ca3af'
                 }}>
                   現在のプライバシー保護レベル
@@ -281,7 +282,7 @@ export default function PrivacySettingsPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '20px',
+                ...getTypographyStyles('h3'),
                 fontWeight: '700',
                 color: 'white',
                 boxShadow: '0 8px 24px rgba(96, 165, 250, 0.3)'
@@ -303,7 +304,7 @@ export default function PrivacySettingsPage() {
                     backgroundColor: 'rgba(96, 165, 250, 0.1)',
                     borderRadius: '8px',
                     textAlign: 'center',
-                    fontSize: '11px',
+                    ...getTypographyStyles('caption'),
                     color: '#60a5fa',
                     fontWeight: '500'
                   }}
@@ -339,7 +340,7 @@ export default function PrivacySettingsPage() {
               </div>
               <div>
                 <h3 style={{
-                  fontSize: '16px',
+                  ...getTypographyStyles('large'),
                   fontWeight: '600',
                   color: '#f3f4f6',
                   marginBottom: '2px'
@@ -347,7 +348,7 @@ export default function PrivacySettingsPage() {
                   {section.title}
                 </h3>
                 <p style={{
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   color: '#9ca3af',
                   margin: 0
                 }}>
@@ -375,7 +376,7 @@ export default function PrivacySettingsPage() {
                 >
                   <div style={{ flex: 1, marginRight: '12px' }}>
                     <div style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       fontWeight: '500',
                       color: '#f3f4f6',
                       marginBottom: '2px'
@@ -383,7 +384,7 @@ export default function PrivacySettingsPage() {
                       {setting.label}
                     </div>
                     <div style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       color: '#9ca3af'
                     }}>
                       {setting.description}
@@ -430,7 +431,7 @@ export default function PrivacySettingsPage() {
                         border: '1px solid rgba(55, 65, 81, 0.5)',
                         borderRadius: '8px',
                         color: '#f3f4f6',
-                        fontSize: '13px',
+                        ...getTypographyStyles('label'),
                         outline: 'none',
                         cursor: 'pointer'
                       }}
@@ -463,7 +464,7 @@ export default function PrivacySettingsPage() {
               color: '#60a5fa',
               border: '1px solid rgba(96, 165, 250, 0.3)',
               borderRadius: '12px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
@@ -484,7 +485,7 @@ export default function PrivacySettingsPage() {
               color: '#ef4444',
               border: '1px solid rgba(239, 68, 68, 0.3)',
               borderRadius: '12px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
@@ -515,7 +516,7 @@ export default function PrivacySettingsPage() {
             <FileIcon size={20} color="#a3e635" />
             <div>
               <h4 style={{
-                fontSize: '13px',
+                ...getTypographyStyles('label'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '4px'
@@ -523,7 +524,7 @@ export default function PrivacySettingsPage() {
                 プライバシーポリシー
               </h4>
               <p style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af',
                 lineHeight: '1.5',
                 margin: '0 0 8px 0'
@@ -537,7 +538,7 @@ export default function PrivacySettingsPage() {
                   color: '#a3e635',
                   border: '1px solid rgba(163, 230, 53, 0.3)',
                   borderRadius: '6px',
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   fontWeight: '500',
                   cursor: 'pointer'
                 }}

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function OnboardingPage() {
   const router = useRouter()
@@ -163,7 +164,7 @@ export default function OnboardingPage() {
         </h1>
         
         <p style={{
-          fontSize: '18px',
+          ...getTypographyStyles('h4'),
           color: '#d1d5db',
           marginBottom: '32px',
           lineHeight: '1.6',
@@ -173,7 +174,7 @@ export default function OnboardingPage() {
         </p>
         
         <p style={{
-          fontSize: '14px',
+          ...getTypographyStyles('base'),
           color: '#9ca3af',
           marginBottom: '48px',
           maxWidth: '320px',
@@ -190,7 +191,7 @@ export default function OnboardingPage() {
             color: '#111827',
             border: 'none',
             borderRadius: '12px',
-            fontSize: '18px',
+            ...getTypographyStyles('h4'),
             fontWeight: '700',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
@@ -209,7 +210,7 @@ export default function OnboardingPage() {
         </button>
         
         <p style={{
-          fontSize: '12px',
+          ...getTypographyStyles('small'),
           color: '#6b7280',
           marginTop: '24px'
         }}>
@@ -261,7 +262,7 @@ export default function OnboardingPage() {
         </div>
         
         <h1 style={{
-          fontSize: '32px',
+          fontSize: '32px', // Keep custom size for completion screen
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -274,7 +275,7 @@ export default function OnboardingPage() {
         </h1>
         
         <p style={{
-          fontSize: '18px',
+          ...getTypographyStyles('h4'),
           color: '#d1d5db',
           marginBottom: '20px',
           maxWidth: '360px',
@@ -284,7 +285,7 @@ export default function OnboardingPage() {
         </p>
         
         <p style={{
-          fontSize: '16px',
+          ...getTypographyStyles('large'),
           color: '#9ca3af',
           marginBottom: '40px',
           maxWidth: '360px',
@@ -312,8 +313,8 @@ export default function OnboardingPage() {
               <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <div>
-              <div style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '4px' }}>ウェルカムボーナス</div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#fbbf24' }}>+100 XP</div>
+              <div style={{ ...getTypographyStyles('base'), color: '#9ca3af', marginBottom: '4px' }}>ウェルカムボーナス</div>
+              <div style={{ ...getTypographyStyles('h2'), fontWeight: '700', color: '#fbbf24' }}>+100 XP</div>
             </div>
           </div>
         </div>
@@ -326,7 +327,7 @@ export default function OnboardingPage() {
             color: '#111827',
             border: 'none',
             borderRadius: '12px',
-            fontSize: '18px',
+            ...getTypographyStyles('h4'),
             fontWeight: '700',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
@@ -379,7 +380,7 @@ export default function OnboardingPage() {
           alignItems: 'center',
           marginBottom: '12px'
         }}>
-          <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+          <span style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>
             ステップ {currentStep + 1} / {steps.length}
           </span>
           <button
@@ -388,7 +389,7 @@ export default function OnboardingPage() {
               backgroundColor: 'transparent',
               border: 'none',
               color: '#9ca3af',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               cursor: 'pointer'
             }}
           >
@@ -425,7 +426,7 @@ export default function OnboardingPage() {
       }}>
         {/* Question */}
         <h2 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '700',
           color: '#f3f4f6',
           marginBottom: '8px',
@@ -435,7 +436,7 @@ export default function OnboardingPage() {
         </h2>
         {currentStepData.subtitle && (
           <p style={{
-            fontSize: '14px',
+            ...getTypographyStyles('base'),
             color: '#9ca3af',
             marginBottom: '32px',
             textAlign: 'center'
@@ -459,7 +460,7 @@ export default function OnboardingPage() {
               border: '2px solid rgba(55, 65, 81, 0.3)',
               borderRadius: '12px',
               color: '#f3f4f6',
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               outline: 'none',
               marginBottom: '32px',
               transition: 'all 0.3s ease'
@@ -500,7 +501,7 @@ export default function OnboardingPage() {
                       ? 'none'
                       : '1px solid rgba(55, 65, 81, 0.3)',
                     borderRadius: '12px',
-                    fontSize: '15px',
+                    ...getTypographyStyles('base'),
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease'
@@ -548,7 +549,7 @@ export default function OnboardingPage() {
                       ? '2px solid rgba(163, 230, 53, 0.4)'
                       : '1px solid rgba(55, 65, 81, 0.3)',
                     borderRadius: '12px',
-                    fontSize: '14px',
+                    ...getTypographyStyles('base'),
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
@@ -590,7 +591,7 @@ export default function OnboardingPage() {
                 color: '#d1d5db',
                 border: '1px solid rgba(55, 65, 81, 0.3)',
                 borderRadius: '12px',
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
@@ -613,7 +614,7 @@ export default function OnboardingPage() {
               color: '#111827',
               border: 'none',
               borderRadius: '12px',
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s ease',

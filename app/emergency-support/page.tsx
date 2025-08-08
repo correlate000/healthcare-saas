@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function EmergencySupportPage() {
   const router = useRouter()
   const [selectedReason, setSelectedReason] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   const emergencyContacts = [
     {
@@ -91,7 +103,7 @@ export default function EmergencySupportPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...typographyPresets.pageTitle(isMobile),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #ef4444 100%)',
           WebkitBackgroundClip: 'text',
@@ -121,10 +133,9 @@ export default function EmergencySupportPage() {
             <span style={{ fontSize: '24px' }}>⚠️</span>
             <div>
               <p style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base', isMobile),
                 color: '#fca5a5',
                 margin: 0,
-                lineHeight: '1.6',
                 fontWeight: '500'
               }}>
                 あなたは一人ではありません。私たちがサポートします。
@@ -144,10 +155,7 @@ export default function EmergencySupportPage() {
           border: '1px solid rgba(55, 65, 81, 0.3)'
         }}>
         <h2 style={{
-          fontSize: '18px',
-          fontWeight: '600',
-          color: '#f3f4f6',
-          marginBottom: '16px'
+          ...typographyPresets.sectionHeader(isMobile)
         }}>
           どのような状況ですか？
         </h2>
@@ -170,8 +178,7 @@ export default function EmergencySupportPage() {
                   ? '2px solid rgba(239, 68, 68, 0.4)' 
                   : '1px solid rgba(55, 65, 81, 0.3)',
                 borderRadius: '10px',
-                fontSize: '13px',
-                fontWeight: '500',
+                ...getTypographyStyles('label', isMobile),
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 textAlign: 'center'
@@ -188,10 +195,7 @@ export default function EmergencySupportPage() {
           marginBottom: '24px'
         }}>
         <h2 style={{
-          fontSize: '18px',
-          fontWeight: '600',
-          color: '#f3f4f6',
-          marginBottom: '16px'
+          ...typographyPresets.sectionHeader(isMobile)
         }}>
           すぐに相談できる窓口
         </h2>
@@ -230,15 +234,13 @@ export default function EmergencySupportPage() {
               }}>
                 <div>
                   <h3 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#f3f4f6',
+                    ...typographyPresets.cardTitle(isMobile),
                     marginBottom: '4px'
                   }}>
                     {contact.name}
                   </h3>
                   <p style={{
-                    fontSize: '14px',
+                    ...getTypographyStyles('base', isMobile),
                     color: '#9ca3af',
                     margin: 0
                   }}>
@@ -246,7 +248,7 @@ export default function EmergencySupportPage() {
                   </p>
                 </div>
                 <span style={{
-                  fontSize: '12px',
+                  ...getTypographyStyles('small', isMobile),
                   backgroundColor: contact.type === 'emergency' 
                     ? 'rgba(239, 68, 68, 0.3)' 
                     : 'rgba(163, 230, 53, 0.2)',
@@ -271,8 +273,7 @@ export default function EmergencySupportPage() {
                   {contact.type === 'chat' ? '💬' : '📞'}
                 </span>
                 <span style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
+                  ...getTypographyStyles('h4', isMobile),
                   color: '#f3f4f6'
                 }}>
                   {contact.number}
@@ -288,10 +289,7 @@ export default function EmergencySupportPage() {
           marginBottom: '24px'
         }}>
         <h2 style={{
-          fontSize: '18px',
-          fontWeight: '600',
-          color: '#f3f4f6',
-          marginBottom: '16px'
+          ...typographyPresets.sectionHeader(isMobile)
         }}>
           今すぐできる対処法
         </h2>
@@ -333,7 +331,7 @@ export default function EmergencySupportPage() {
                 {strategy.icon}
               </div>
               <h3 style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base', isMobile),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '4px'
@@ -341,10 +339,9 @@ export default function EmergencySupportPage() {
                 {strategy.title}
               </h3>
               <p style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small', isMobile),
                 color: '#9ca3af',
-                margin: 0,
-                lineHeight: '1.4'
+                margin: 0
               }}>
                 {strategy.description}
               </p>
@@ -363,7 +360,7 @@ export default function EmergencySupportPage() {
             color: '#111827',
             border: 'none',
             borderRadius: '12px',
-            fontSize: '16px',
+            ...getTypographyStyles('large', isMobile),
             fontWeight: '600',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
@@ -400,17 +397,15 @@ export default function EmergencySupportPage() {
             <span style={{ fontSize: '16px' }}>💙</span>
             <div>
               <h4 style={{
-                fontSize: '13px',
-                fontWeight: '600',
+                ...getTypographyStyles('label', isMobile),
                 color: '#f3f4f6',
                 marginBottom: '4px'
               }}>
                 セルフケアのヒント
               </h4>
               <p style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small', isMobile),
                 color: '#9ca3af',
-                lineHeight: '1.5',
                 margin: 0
               }}>
                 深呼吸をして、今この瞬間に集中しましょう。あなたの安全と健康が最優先です。必要なサポートを求めることは勇気ある行動です。

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function HelpPage() {
   const router = useRouter()
@@ -96,7 +97,7 @@ export default function HelpPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -123,7 +124,7 @@ export default function HelpPage() {
               border: '1px solid rgba(55, 65, 81, 0.5)',
               borderRadius: '12px',
               color: '#f3f4f6',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               outline: 'none'
             }}
           />
@@ -132,7 +133,7 @@ export default function HelpPage() {
             right: '16px',
             top: '50%',
             transform: 'translateY(-50%)',
-            fontSize: '16px'
+            ...getTypographyStyles('large')
           }}>
             🔍
           </span>
@@ -173,7 +174,7 @@ export default function HelpPage() {
             >
               <div style={{ fontSize: '24px', marginBottom: '8px' }}>{link.icon}</div>
               <div style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '4px'
@@ -181,7 +182,7 @@ export default function HelpPage() {
                 {link.label}
               </div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af'
               }}>
                 {link.description}
@@ -192,7 +193,7 @@ export default function HelpPage() {
 
         {/* Categories */}
         <h3 style={{
-          fontSize: '16px',
+          ...getTypographyStyles('large'),
           fontWeight: '600',
           color: '#f3f4f6',
           marginBottom: '16px'
@@ -218,7 +219,7 @@ export default function HelpPage() {
                 ? '1px solid rgba(163, 230, 53, 0.3)'
                 : '1px solid transparent',
               borderRadius: '12px',
-              fontSize: '13px',
+              ...getTypographyStyles('label'),
               fontWeight: '500',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
@@ -241,7 +242,7 @@ export default function HelpPage() {
                   ? '1px solid rgba(163, 230, 53, 0.3)'
                   : '1px solid transparent',
                 borderRadius: '12px',
-                fontSize: '13px',
+                ...getTypographyStyles('label'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -257,7 +258,7 @@ export default function HelpPage() {
                 backgroundColor: 'rgba(0, 0, 0, 0.2)',
                 padding: '2px 6px',
                 borderRadius: '6px',
-                fontSize: '11px'
+                ...getTypographyStyles('caption')
               }}>
                 {category.count}
               </span>
@@ -267,7 +268,7 @@ export default function HelpPage() {
 
         {/* FAQ Section */}
         <h3 style={{
-          fontSize: '16px',
+          ...getTypographyStyles('large'),
           fontWeight: '600',
           color: '#f3f4f6',
           marginBottom: '16px'
@@ -308,7 +309,7 @@ export default function HelpPage() {
               >
                 <div style={{ flex: 1 }}>
                   <div style={{
-                    fontSize: '14px',
+                    ...getTypographyStyles('base'),
                     fontWeight: '600',
                     marginBottom: '4px'
                   }}>
@@ -316,7 +317,7 @@ export default function HelpPage() {
                   </div>
                   {expandedFaq !== faq.id && (
                     <div style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       color: '#9ca3af',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -327,7 +328,7 @@ export default function HelpPage() {
                   )}
                 </div>
                 <span style={{
-                  fontSize: '20px',
+                  fontSize: '20px', // Keep larger size for chevron icon
                   color: '#9ca3af',
                   transform: expandedFaq === faq.id ? 'rotate(180deg)' : 'rotate(0)',
                   transition: 'transform 0.3s ease'
@@ -341,7 +342,7 @@ export default function HelpPage() {
                   animation: 'slideDown 0.3s ease'
                 }}>
                   <p style={{
-                    fontSize: '13px',
+                    ...getTypographyStyles('label'),
                     color: '#d1d5db',
                     lineHeight: '1.6',
                     margin: 0
@@ -357,7 +358,7 @@ export default function HelpPage() {
                     gap: '12px'
                   }}>
                     <span style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       color: '#9ca3af'
                     }}>
                       この回答は役に立ちましたか？
@@ -368,7 +369,7 @@ export default function HelpPage() {
                       color: '#a3e635',
                       border: 'none',
                       borderRadius: '6px',
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       cursor: 'pointer'
                     }}>
                       はい
@@ -379,7 +380,7 @@ export default function HelpPage() {
                       color: '#9ca3af',
                       border: 'none',
                       borderRadius: '6px',
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       cursor: 'pointer'
                     }}>
                       いいえ
@@ -402,13 +403,13 @@ export default function HelpPage() {
           border: '1px solid rgba(96, 165, 250, 0.2)'
         }}>
           <div style={{
-            fontSize: '32px',
+            fontSize: '32px', // Keep large size for emoji
             marginBottom: '12px'
           }}>
             🤝
           </div>
           <h3 style={{
-            fontSize: '18px',
+            ...getTypographyStyles('h4'),
             fontWeight: '700',
             color: '#f3f4f6',
             marginBottom: '8px'
@@ -416,7 +417,7 @@ export default function HelpPage() {
             さらにサポートが必要ですか？
           </h3>
           <p style={{
-            fontSize: '14px',
+            ...getTypographyStyles('base'),
             color: '#9ca3af',
             marginBottom: '20px'
           }}>
@@ -435,7 +436,7 @@ export default function HelpPage() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '10px',
-                fontSize: '14px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: 'pointer'
               }}
@@ -449,7 +450,7 @@ export default function HelpPage() {
                 color: '#a3e635',
                 border: '1px solid rgba(163, 230, 53, 0.3)',
                 borderRadius: '10px',
-                fontSize: '14px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: 'pointer'
               }}

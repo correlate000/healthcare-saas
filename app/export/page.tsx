@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { DatabaseIcon, MoodHappyIcon, ChartIcon, ChatIcon, TrophySimpleIcon, UserIcon, LockIcon, CodeIcon, DocumentIcon, TargetIcon } from '@/components/icons/illustrations'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function ExportPage() {
   const router = useRouter()
@@ -67,7 +68,7 @@ export default function ExportPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -97,7 +98,7 @@ export default function ExportPage() {
           }}>
             <DatabaseIcon size={24} color="#60a5fa" />
             <h3 style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               color: '#f3f4f6'
             }}>
@@ -105,7 +106,7 @@ export default function ExportPage() {
             </h3>
           </div>
           <p style={{
-            fontSize: '13px',
+            ...getTypographyStyles('label'),
             color: '#9ca3af',
             lineHeight: '1.6'
           }}>
@@ -116,7 +117,7 @@ export default function ExportPage() {
         {/* Date Range */}
         <div style={{ marginBottom: '24px' }}>
           <h3 style={{
-            fontSize: '16px',
+            ...getTypographyStyles('large'),
             fontWeight: '600',
             color: '#f3f4f6',
             marginBottom: '12px'
@@ -130,7 +131,7 @@ export default function ExportPage() {
           }}>
             <div>
               <label style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af',
                 display: 'block',
                 marginBottom: '6px'
@@ -148,14 +149,14 @@ export default function ExportPage() {
                   border: '1px solid rgba(55, 65, 81, 0.5)',
                   borderRadius: '8px',
                   color: '#f3f4f6',
-                  fontSize: '14px',
+                  ...getTypographyStyles('base'),
                   outline: 'none'
                 }}
               />
             </div>
             <div>
               <label style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af',
                 display: 'block',
                 marginBottom: '6px'
@@ -173,7 +174,7 @@ export default function ExportPage() {
                   border: '1px solid rgba(55, 65, 81, 0.5)',
                   borderRadius: '8px',
                   color: '#f3f4f6',
-                  fontSize: '14px',
+                  ...getTypographyStyles('base'),
                   outline: 'none'
                 }}
               />
@@ -184,7 +185,7 @@ export default function ExportPage() {
         {/* Data Types */}
         <div style={{ marginBottom: '24px' }}>
           <h3 style={{
-            fontSize: '16px',
+            ...getTypographyStyles('large'),
             fontWeight: '600',
             color: '#f3f4f6',
             marginBottom: '12px'
@@ -223,14 +224,14 @@ export default function ExportPage() {
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px' }}>{type.icon}</div>
                   <div style={{ textAlign: 'left' }}>
                     <div style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       fontWeight: '600',
                       color: selectedDataTypes.includes(type.id) ? '#f3f4f6' : '#d1d5db'
                     }}>
                       {type.label}
                     </div>
                     <div style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       color: '#9ca3af'
                     }}>
                       {type.size}
@@ -258,7 +259,7 @@ export default function ExportPage() {
         {/* Format Selection */}
         <div style={{ marginBottom: '24px' }}>
           <h3 style={{
-            fontSize: '16px',
+            ...getTypographyStyles('large'),
             fontWeight: '600',
             color: '#f3f4f6',
             marginBottom: '12px'
@@ -290,14 +291,14 @@ export default function ExportPage() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px', height: '20px' }}>{format.icon}</div>
                 <div style={{
-                  fontSize: '13px',
+                  ...getTypographyStyles('label'),
                   fontWeight: '600',
                   color: selectedFormat === format.id ? '#a3e635' : '#f3f4f6'
                 }}>
                   {format.label}
                 </div>
                 <div style={{
-                  fontSize: '11px',
+                  ...getTypographyStyles('caption'),
                   color: '#9ca3af'
                 }}>
                   {format.description}
@@ -323,13 +324,13 @@ export default function ExportPage() {
             marginBottom: '12px'
           }}>
             <span style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#9ca3af'
             }}>
               選択したデータ
             </span>
             <span style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               fontWeight: '600',
               color: '#f3f4f6'
             }}>
@@ -342,13 +343,13 @@ export default function ExportPage() {
             alignItems: 'center'
           }}>
             <span style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#9ca3af'
             }}>
               推定サイズ
             </span>
             <span style={{
-              fontSize: '18px',
+              ...getTypographyStyles('h4'),
               fontWeight: '700',
               color: '#a3e635'
             }}>
@@ -370,7 +371,7 @@ export default function ExportPage() {
             color: selectedDataTypes.length > 0 ? '#111827' : '#6b7280',
             border: 'none',
             borderRadius: '12px',
-            fontSize: '16px',
+            ...getTypographyStyles('large'),
             fontWeight: '600',
             cursor: selectedDataTypes.length > 0 ? 'pointer' : 'not-allowed',
             transition: 'all 0.3s ease'
@@ -395,7 +396,7 @@ export default function ExportPage() {
             <LockIcon size={16} primaryColor="#60a5fa" />
             <div>
               <h4 style={{
-                fontSize: '13px',
+                ...getTypographyStyles('label'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '4px'
@@ -403,7 +404,7 @@ export default function ExportPage() {
                 プライバシー保護
               </h4>
               <p style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af',
                 lineHeight: '1.5',
                 margin: 0

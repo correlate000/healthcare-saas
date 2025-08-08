@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function TeamConnectPage() {
   const router = useRouter()
@@ -195,7 +196,7 @@ export default function TeamConnectPage() {
           marginBottom: '16px'
         }}>
           <h1 style={{
-            fontSize: '24px',
+            ...getTypographyStyles('h2'),
             fontWeight: '800',
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -214,7 +215,7 @@ export default function TeamConnectPage() {
               border: '1px solid rgba(163, 230, 53, 0.3)',
               borderRadius: '12px',
               color: '#a3e635',
-              fontSize: '18px',
+              ...getTypographyStyles('h4'),
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -253,7 +254,7 @@ export default function TeamConnectPage() {
               border: '1px solid rgba(55, 65, 81, 0.5)',
               borderRadius: '12px',
               color: '#f3f4f6',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               outline: 'none'
             }}
           />
@@ -262,7 +263,7 @@ export default function TeamConnectPage() {
             right: '16px',
             top: '50%',
             transform: 'translateY(-50%)',
-            fontSize: '16px'
+            ...getTypographyStyles('large')
           }}>
             🔍
           </span>
@@ -292,7 +293,7 @@ export default function TeamConnectPage() {
                   ? '1px solid rgba(163, 230, 53, 0.3)'
                   : '1px solid transparent',
                 borderRadius: '10px',
-                fontSize: '14px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
@@ -323,7 +324,7 @@ export default function TeamConnectPage() {
               border: '1px solid rgba(96, 165, 250, 0.2)'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '16px',
@@ -355,13 +356,13 @@ export default function TeamConnectPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '20px'
+                      ...getTypographyStyles('h3')
                     }}>
                       {activity.avatar}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         color: '#f3f4f6',
                         marginBottom: '4px'
                       }}>
@@ -369,7 +370,7 @@ export default function TeamConnectPage() {
                         <span style={{ color: '#9ca3af' }}> {activity.action}</span>
                       </div>
                       <div style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#6b7280'
                       }}>
                         {activity.time}
@@ -384,7 +385,7 @@ export default function TeamConnectPage() {
                         color: activity.hasReacted ? '#a3e635' : '#9ca3af',
                         border: 'none',
                         borderRadius: '8px',
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -401,7 +402,7 @@ export default function TeamConnectPage() {
 
             {/* Friends List */}
             <h3 style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               color: '#f3f4f6',
               marginBottom: '16px'
@@ -449,7 +450,7 @@ export default function TeamConnectPage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '28px',
+                        ...getTypographyStyles('h1'),
                         border: `2px solid ${getMoodColor(friend.mood)}`
                       }}>
                         {friend.avatar}
@@ -473,14 +474,14 @@ export default function TeamConnectPage() {
                         marginBottom: '4px'
                       }}>
                         <span style={{
-                          fontSize: '16px',
+                          ...getTypographyStyles('large'),
                           fontWeight: '600',
                           color: '#f3f4f6'
                         }}>
                           {friend.name}
                         </span>
                         <span style={{
-                          fontSize: '12px',
+                          ...getTypographyStyles('small'),
                           backgroundColor: 'rgba(163, 230, 53, 0.2)',
                           color: '#a3e635',
                           padding: '2px 8px',
@@ -491,7 +492,7 @@ export default function TeamConnectPage() {
                         </span>
                       </div>
                       <div style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#9ca3af',
                         marginBottom: '8px'
                       }}>
@@ -503,7 +504,7 @@ export default function TeamConnectPage() {
                         gap: '12px'
                       }}>
                         <span style={{
-                          fontSize: '12px',
+                          ...getTypographyStyles('small'),
                           color: '#fbbf24',
                           display: 'flex',
                           alignItems: 'center',
@@ -519,7 +520,7 @@ export default function TeamConnectPage() {
                             <span
                               key={index}
                               style={{
-                                fontSize: '11px',
+                                ...getTypographyStyles('caption'),
                                 backgroundColor: 'rgba(96, 165, 250, 0.2)',
                                 color: '#60a5fa',
                                 padding: '2px 6px',
@@ -540,7 +541,7 @@ export default function TeamConnectPage() {
                         border: '1px solid rgba(163, 230, 53, 0.3)',
                         borderRadius: '10px',
                         color: '#a3e635',
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -573,7 +574,7 @@ export default function TeamConnectPage() {
               border: '1px solid rgba(251, 191, 36, 0.2)'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '16px',
@@ -599,7 +600,7 @@ export default function TeamConnectPage() {
                   >
                     <div style={{ flex: 1 }}>
                       <div style={{
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         fontWeight: '600',
                         color: '#f3f4f6',
                         marginBottom: '4px'
@@ -610,7 +611,7 @@ export default function TeamConnectPage() {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '12px',
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#9ca3af'
                       }}>
                         <span>👥 {challenge.participants}人</span>
@@ -639,7 +640,7 @@ export default function TeamConnectPage() {
 
             {/* Groups List */}
             <h3 style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               color: '#f3f4f6',
               marginBottom: '16px'
@@ -681,13 +682,13 @@ export default function TeamConnectPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '28px'
+                      ...getTypographyStyles('h1')
                     }}>
                       {group.icon}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '600',
                         color: '#f3f4f6',
                         marginBottom: '4px'
@@ -695,7 +696,7 @@ export default function TeamConnectPage() {
                         {group.name}
                       </div>
                       <div style={{
-                        fontSize: '13px',
+                        ...getTypographyStyles('label'),
                         color: '#9ca3af',
                         marginBottom: '8px'
                       }}>
@@ -705,7 +706,7 @@ export default function TeamConnectPage() {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '16px',
-                        fontSize: '12px'
+                        ...getTypographyStyles('small')
                       }}>
                         <span style={{ color: '#a3e635' }}>
                           🟢 {group.activeNow}人がアクティブ
@@ -723,7 +724,7 @@ export default function TeamConnectPage() {
                       borderTop: '1px solid rgba(55, 65, 81, 0.3)'
                     }}>
                       <div style={{
-                        fontSize: '13px',
+                        ...getTypographyStyles('label'),
                         color: '#f3f4f6',
                         marginBottom: '12px'
                       }}>
@@ -737,7 +738,7 @@ export default function TeamConnectPage() {
                           color: '#111827',
                           border: 'none',
                           borderRadius: '10px',
-                          fontSize: '14px',
+                          ...getTypographyStyles('button'),
                           fontWeight: '600',
                           cursor: 'pointer'
                         }}
@@ -756,7 +757,7 @@ export default function TeamConnectPage() {
         {activeTab === 'discover' && (
           <>
             <h3 style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               color: '#f3f4f6',
               marginBottom: '16px'
@@ -792,13 +793,13 @@ export default function TeamConnectPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '28px'
+                      ...getTypographyStyles('h1')
                     }}>
                       {group.icon}
                     </div>
                     <div style={{ flex: 1 }}>
                       <div style={{
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         fontWeight: '600',
                         color: '#f3f4f6',
                         marginBottom: '4px'
@@ -806,7 +807,7 @@ export default function TeamConnectPage() {
                         {group.name}
                       </div>
                       <div style={{
-                        fontSize: '13px',
+                        ...getTypographyStyles('label'),
                         color: '#9ca3af',
                         marginBottom: '8px'
                       }}>
@@ -816,7 +817,7 @@ export default function TeamConnectPage() {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '16px',
-                        fontSize: '12px'
+                        ...getTypographyStyles('small')
                       }}>
                         <span style={{
                           backgroundColor: 'rgba(96, 165, 250, 0.2)',
@@ -838,7 +839,7 @@ export default function TeamConnectPage() {
                         color: '#a3e635',
                         border: '1px solid rgba(163, 230, 53, 0.3)',
                         borderRadius: '10px',
-                        fontSize: '14px',
+                        ...getTypographyStyles('button'),
                         fontWeight: '600',
                         cursor: 'pointer'
                       }}
@@ -867,7 +868,7 @@ export default function TeamConnectPage() {
                 🎉
               </div>
               <h3 style={{
-                fontSize: '18px',
+                ...getTypographyStyles('h4'),
                 fontWeight: '700',
                 color: '#f3f4f6',
                 marginBottom: '8px'
@@ -875,7 +876,7 @@ export default function TeamConnectPage() {
                 友達を招待しよう！
               </h3>
               <p style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 color: '#9ca3af',
                 marginBottom: '20px'
               }}>
@@ -888,7 +889,7 @@ export default function TeamConnectPage() {
                   color: '#111827',
                   border: 'none',
                   borderRadius: '12px',
-                  fontSize: '16px',
+                  ...getTypographyStyles('large'),
                   fontWeight: '600',
                   cursor: 'pointer'
                 }}

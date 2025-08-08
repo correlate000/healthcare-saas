@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function ProfilePage() {
   const router = useRouter()
@@ -113,7 +114,7 @@ export default function ProfilePage() {
           justifyContent: 'space-between'
         }}>
           <h1 style={{
-            fontSize: '24px',
+            ...getTypographyStyles('h2'),
             fontWeight: '800',
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -131,7 +132,7 @@ export default function ProfilePage() {
               color: isEditing ? '#111827' : '#a3e635',
               border: isEditing ? 'none' : '1px solid rgba(163, 230, 53, 0.3)',
               borderRadius: '10px',
-              fontSize: '14px',
+              ...getTypographyStyles('button'),
               fontWeight: '600',
               cursor: 'pointer'
             }}
@@ -174,7 +175,7 @@ export default function ProfilePage() {
               {isEditing ? (
                 <div>
                   <div style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     color: '#9ca3af',
                     marginBottom: '8px'
                   }}>
@@ -231,7 +232,7 @@ export default function ProfilePage() {
               {!isEditing && (
                 <div>
                   <h2 style={{
-                    fontSize: '24px',
+                    ...getTypographyStyles('h2'),
                     fontWeight: '700',
                     color: '#f3f4f6',
                     marginBottom: '4px'
@@ -239,13 +240,13 @@ export default function ProfilePage() {
                     {profile.name}
                   </h2>
                   <p style={{
-                    fontSize: '14px',
+                    ...getTypographyStyles('base'),
                     color: '#9ca3af'
                   }}>
                     {profile.email}
                   </p>
                   <p style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     color: '#6b7280',
                     marginTop: '4px'
                   }}>
@@ -265,7 +266,7 @@ export default function ProfilePage() {
               }}>
                 <div>
                   <label style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('label'),
                     color: '#9ca3af',
                     display: 'block',
                     marginBottom: '6px'
@@ -283,7 +284,7 @@ export default function ProfilePage() {
                       border: '1px solid rgba(55, 65, 81, 0.5)',
                       borderRadius: '8px',
                       color: '#f3f4f6',
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       outline: 'none'
                     }}
                   />
@@ -291,7 +292,7 @@ export default function ProfilePage() {
 
                 <div>
                   <label style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('label'),
                     color: '#9ca3af',
                     display: 'block',
                     marginBottom: '6px'
@@ -309,7 +310,7 @@ export default function ProfilePage() {
                       border: '1px solid rgba(55, 65, 81, 0.5)',
                       borderRadius: '8px',
                       color: '#f3f4f6',
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       outline: 'none',
                       resize: 'none'
                     }}
@@ -323,7 +324,7 @@ export default function ProfilePage() {
                 }}>
                   <div>
                     <label style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('label'),
                       color: '#9ca3af',
                       display: 'block',
                       marginBottom: '6px'
@@ -340,7 +341,7 @@ export default function ProfilePage() {
                         border: '1px solid rgba(55, 65, 81, 0.5)',
                         borderRadius: '8px',
                         color: '#f3f4f6',
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         outline: 'none'
                       }}
                     >
@@ -353,7 +354,7 @@ export default function ProfilePage() {
 
                   <div>
                     <label style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('label'),
                       color: '#9ca3af',
                       display: 'block',
                       marginBottom: '6px'
@@ -370,7 +371,7 @@ export default function ProfilePage() {
                         border: '1px solid rgba(55, 65, 81, 0.5)',
                         borderRadius: '8px',
                         color: '#f3f4f6',
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         outline: 'none'
                       }}
                     >
@@ -386,7 +387,7 @@ export default function ProfilePage() {
             {/* Bio Display */}
             {!isEditing && profile.bio && (
               <p style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 color: '#d1d5db',
                 lineHeight: '1.6',
                 marginBottom: '20px',
@@ -406,9 +407,9 @@ export default function ProfilePage() {
                 alignItems: 'center',
                 marginBottom: '8px'
               }}>
-                <span style={{ fontSize: '13px', color: '#9ca3af' }}>レベル {stats.level}</span>
+                <span style={{ ...getTypographyStyles('label'), color: '#9ca3af' }}>レベル {stats.level}</span>
                 <span style={{
-                  fontSize: '13px',
+                  ...getTypographyStyles('label'),
                   color: '#a3e635',
                   fontWeight: '600'
                 }}>
@@ -456,7 +457,7 @@ export default function ProfilePage() {
             >
               <div style={{ fontSize: '24px', marginBottom: '8px' }}>{stat.icon}</div>
               <div style={{
-                fontSize: '24px',
+                ...getTypographyStyles('h2'),
                 fontWeight: '700',
                 color: '#a3e635',
                 marginBottom: '4px'
@@ -464,7 +465,7 @@ export default function ProfilePage() {
                 {stat.value}
               </div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af'
               }}>
                 {stat.label}
@@ -481,7 +482,7 @@ export default function ProfilePage() {
               marginBottom: '24px'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '12px'
@@ -507,7 +508,7 @@ export default function ProfilePage() {
                         ? '1px solid rgba(163, 230, 53, 0.3)'
                         : '1px solid transparent',
                       borderRadius: '20px',
-                      fontSize: '13px',
+                      ...getTypographyStyles('label'),
                       cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
@@ -523,7 +524,7 @@ export default function ProfilePage() {
               marginBottom: '24px'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '12px'
@@ -549,7 +550,7 @@ export default function ProfilePage() {
                         ? '1px solid rgba(96, 165, 250, 0.3)'
                         : '1px solid transparent',
                       borderRadius: '20px',
-                      fontSize: '13px',
+                      ...getTypographyStyles('label'),
                       cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
@@ -570,7 +571,7 @@ export default function ProfilePage() {
                 color: '#d1d5db',
                 border: '1px solid rgba(55, 65, 81, 0.5)',
                 borderRadius: '12px',
-                fontSize: '14px',
+                ...getTypographyStyles('button'),
                 fontWeight: '500',
                 cursor: 'pointer'
               }}
@@ -585,7 +586,7 @@ export default function ProfilePage() {
               marginBottom: '24px'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '12px'
@@ -605,7 +606,7 @@ export default function ProfilePage() {
                       backgroundColor: 'rgba(163, 230, 53, 0.2)',
                       color: '#a3e635',
                       borderRadius: '20px',
-                      fontSize: '13px',
+                      ...getTypographyStyles('label'),
                       fontWeight: '500'
                     }}
                   >
@@ -620,7 +621,7 @@ export default function ProfilePage() {
               marginBottom: '24px'
             }}>
               <h3 style={{
-                fontSize: '16px',
+                ...getTypographyStyles('large'),
                 fontWeight: '600',
                 color: '#f3f4f6',
                 marginBottom: '12px'
@@ -640,7 +641,7 @@ export default function ProfilePage() {
                       backgroundColor: 'rgba(96, 165, 250, 0.2)',
                       color: '#60a5fa',
                       borderRadius: '20px',
-                      fontSize: '13px',
+                      ...getTypographyStyles('label'),
                       fontWeight: '500'
                     }}
                   >
@@ -664,7 +665,7 @@ export default function ProfilePage() {
                   color: '#fbbf24',
                   border: '1px solid rgba(251, 191, 36, 0.3)',
                   borderRadius: '12px',
-                  fontSize: '14px',
+                  ...getTypographyStyles('button'),
                   fontWeight: '600',
                   cursor: 'pointer',
                   display: 'flex',
@@ -684,7 +685,7 @@ export default function ProfilePage() {
                   color: '#d1d5db',
                   border: '1px solid rgba(55, 65, 81, 0.5)',
                   borderRadius: '12px',
-                  fontSize: '14px',
+                  ...getTypographyStyles('button'),
                   fontWeight: '600',
                   cursor: 'pointer',
                   display: 'flex',

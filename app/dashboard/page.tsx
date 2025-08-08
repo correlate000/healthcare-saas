@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Check } from 'lucide-react'
 import { HappyFaceIcon, FireIcon, StarIcon, EnergyIcon, MoonIcon, BubbleIcon } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -18,38 +19,50 @@ export default function Dashboard() {
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
   
-  // 強力な運勢メッセージをランダム取得
+  // 今日の優しいメッセージをランダム取得
   const getTodaysMessage = () => {
     const messages = [
       {
-        message: '運命の流れがあなたを強く支えている。今日は疑いを捨て、直感を信じて進め。',
-        subMessage: 'あなたの内なる声が最強の武器だ。',
-        color: '#ef4444',
+        message: '今日も一歩ずつで大丈夫。小さな進歩も立派な成長です。',
+        subMessage: 'あなたのペースが、一番いいペースです。',
+        color: '#60a5fa',
         icon: FireIcon
       },
       {
-        message: '宇宙があなたの味方である。障害はすべて成長の種。恐れずに立ち向かえ。',
-        subMessage: '挑戦こそが、あなたを光らせる。',
-        color: '#a855f7',
+        message: 'うまくいかない日もありますね。でも、それも大切な経験の一つ。',
+        subMessage: '休むことも、前に進むための大切な準備です。',
+        color: '#a3e635',
         icon: StarIcon
       },
       {
-        message: '今日のあなたは無敵だ。過去の痛みがあなたを鍛え、最強の盾となっている。',
-        subMessage: '破壊と再生の間で、真の力が生まれる。',
-        color: '#dc2626',
+        message: '昨日より今日、少しでも笑顔になれたらそれで十分です。',
+        subMessage: '小さな幸せを見つける力が、あなたにはあります。',
+        color: '#fbbf24',
         icon: EnergyIcon
       },
       {
-        message: '星々があなたのために整列している。不可能を可能に変える時が来た。',
-        subMessage: '限界は幻想。あなたの可能性は無限だ。',
-        color: '#0ea5e9',
+        message: '深呼吸してみましょう。今この瞬間を大切に過ごせばいいんです。',
+        subMessage: '焦らなくて大丈夫。あなたのタイミングがきっと来ます。',
+        color: '#8b5cf6',
         icon: MoonIcon
       },
       {
-        message: '深淵なる古の智恵があなたの中で覚醒している。今日の選択が運命を変える。',
-        subMessage: '答えは既にあなたの中にある。静寂に耳を傾けよ。',
-        color: '#059669',
+        message: '今日の自分を褒めてあげてください。頑張っているあなたは素敵です。',
+        subMessage: '完璧じゃなくていい。今のあなたで十分素晴らしいです。',
+        color: '#10b981',
         icon: BubbleIcon
+      },
+      {
+        message: '疲れたら休んでいいんです。自分に優しくすることも勇気です。',
+        subMessage: '無理をしない選択も、賢い選択です。',
+        color: '#ec4899',
+        icon: FireIcon
+      },
+      {
+        message: '今日という日は二度と来ません。だから、今を楽しんでくださいね。',
+        subMessage: '小さな喜びを積み重ねて、素敵な一日にしましょう。',
+        color: '#f97316',
+        icon: StarIcon
       }
     ]
     return messages[Math.floor(Math.random() * messages.length)]
@@ -103,10 +116,10 @@ export default function Dashboard() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h1 style={{ fontSize: '28px', fontWeight: '700', color: '#f3f4f6', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
+            <h1 style={{ ...typographyPresets.pageTitle(), letterSpacing: '-0.5px' }}>
               {getGreeting()}
             </h1>
-            <p style={{ fontSize: '15px', color: '#9ca3af', margin: 0, lineHeight: '1.5' }}>
+            <p style={{ ...typographyPresets.subText(), margin: 0 }}>
               今日も一歩ずつ前進しましょう
             </p>
           </div>
@@ -124,71 +137,114 @@ export default function Dashboard() {
         </div>
         
         {/* クイックアクションボタン */}
-        <div style={{ display: 'flex', gap: '16px' }}>
+        <div style={{ display: 'flex', gap: '12px' }}>
           <button
             onClick={() => router.push('/checkin')}
             style={{
               flex: 1,
-              padding: '16px',
-              backgroundColor: '#a3e635',
+              padding: '20px 16px',
+              background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
               color: '#111827',
               border: 'none',
-              borderRadius: '14px',
-              fontSize: '16px',
-              fontWeight: '600',
+              borderRadius: '16px',
+              ...getTypographyStyles('base'),
+              fontWeight: '700',
               cursor: 'pointer',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 12px rgba(163, 230, 53, 0.2)',
-              transform: 'translateY(0)'
+              gap: '6px',
+              boxShadow: '0 8px 24px rgba(163, 230, 53, 0.25)',
+              transform: 'translateY(0)',
+              position: 'relative',
+              overflow: 'hidden'
             }}
             onMouseEnter={(e) => { 
-              e.currentTarget.style.backgroundColor = '#84cc16'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.3)'
+              e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)'
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(163, 230, 53, 0.35)'
             }}
             onMouseLeave={(e) => { 
-              e.currentTarget.style.backgroundColor = '#a3e635'
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.2)'
+              e.currentTarget.style.transform = 'translateY(0) scale(1)'
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(163, 230, 53, 0.25)'
             }}
           >
-            <span>✓</span>
-            チェックイン
+            <div style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              ✓
+            </div>
+            <span style={{ letterSpacing: '0.5px' }}>チェックイン</span>
+            <span style={{ 
+              ...getTypographyStyles('caption'), 
+              opacity: 0.8,
+              fontWeight: '500'
+            }}>
+              今日の気分を記録
+            </span>
           </button>
           <button
             onClick={() => router.push('/chat')}
             style={{
               flex: 1,
-              padding: '16px',
-              backgroundColor: '#374151',
-              color: '#f3f4f6',
+              padding: '20px 16px',
+              background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
+              color: 'white',
               border: 'none',
-              borderRadius: '14px',
-              fontSize: '16px',
-              fontWeight: '600',
+              borderRadius: '16px',
+              ...getTypographyStyles('base'),
+              fontWeight: '700',
               cursor: 'pointer',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
-              transform: 'translateY(0)'
+              gap: '6px',
+              boxShadow: '0 8px 24px rgba(96, 165, 250, 0.25)',
+              transform: 'translateY(0)',
+              position: 'relative',
+              overflow: 'hidden'
             }}
             onMouseEnter={(e) => { 
-              e.currentTarget.style.backgroundColor = '#4b5563'
-              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)'
+              e.currentTarget.style.boxShadow = '0 12px 32px rgba(96, 165, 250, 0.35)'
             }}
             onMouseLeave={(e) => { 
-              e.currentTarget.style.backgroundColor = '#374151'
-              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.transform = 'translateY(0) scale(1)'
+              e.currentTarget.style.boxShadow = '0 8px 24px rgba(96, 165, 250, 0.25)'
             }}
           >
-            <span>💬</span>
-            キャラクターと話す
+            <div style={{
+              width: '32px',
+              height: '32px',
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '18px',
+              backdropFilter: 'blur(10px)'
+            }}>
+              💬
+            </div>
+            <span style={{ letterSpacing: '0.5px' }}>AIキャラと話す</span>
+            <span style={{ 
+              ...getTypographyStyles('caption'), 
+              opacity: 0.9,
+              fontWeight: '500'
+            }}>
+              悩みを相談しよう
+            </span>
           </button>
         </div>
       </div>
@@ -230,7 +286,7 @@ export default function Dashboard() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '12px',
+              ...getTypographyStyles('small'),
               border: '2px solid #111827'
             }}>
               💚
@@ -255,7 +311,7 @@ export default function Dashboard() {
               borderBottom: '8px solid transparent',
               borderRight: '8px solid #374151'
             }}></div>
-            <p style={{ fontSize: '14px', color: '#e5e7eb', margin: 0, lineHeight: '1.6' }}>
+            <p style={{ ...typographyPresets.bodyText(), color: '#e5e7eb', margin: 0 }}>
               今日もよく頑張っていますね！{todayProgress}%の達成率、素晴らしいです。
               {todayProgress < 100 ? 'もう少しで今日の目標達成です。' : '今日の目標を達成しました！'}
               無理せず、自分のペースで進みましょう。
@@ -265,7 +321,7 @@ export default function Dashboard() {
 
         {/* フレンドレベル */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <span style={{ fontSize: '12px', color: '#9ca3af' }}>フレンドレベル {friendLevel}</span>
+          <span style={{ ...typographyPresets.subText() }}>フレンドレベル {friendLevel}</span>
           <div style={{ 
             flex: 1, 
             margin: '0 12px', 
@@ -282,7 +338,7 @@ export default function Dashboard() {
               borderRadius: '3px' 
             }}></div>
           </div>
-          <span style={{ fontSize: '12px', color: '#a3e635', fontWeight: '600' }}>Lv.8 {totalXP}/{maxXP} XP</span>
+          <span style={{ ...typographyPresets.activeText() }}>Lv.8 {totalXP}/{maxXP} XP</span>
         </div>
       </div>
 
@@ -323,7 +379,7 @@ export default function Dashboard() {
             
             <div style={{ flex: 1 }}>
               <p style={{ 
-                fontSize: '16px', 
+                ...getTypographyStyles('large'), 
                 color: '#f3f4f6', 
                 marginBottom: '12px', 
                 margin: '0 0 12px 0', 
@@ -334,10 +390,9 @@ export default function Dashboard() {
               </p>
               
               <p style={{ 
-                fontSize: '14px', 
+                ...getTypographyStyles('base'), 
                 color: todaysOracle.color, 
-                margin: '0 0 16px 0', 
-                lineHeight: '1.5',
+                margin: '0 0 16px 0',
                 fontStyle: 'italic',
                 fontWeight: '600'
               }}>
@@ -357,7 +412,7 @@ export default function Dashboard() {
                   borderRadius: '2px'
                 }}></div>
                 <span style={{ 
-                  fontSize: '12px', 
+                  ...getTypographyStyles('small'), 
                   color: '#9ca3af',
                   letterSpacing: '1px',
                   textTransform: 'uppercase' 
@@ -595,7 +650,7 @@ export default function Dashboard() {
                   </div>
                   {isCompleted && (
                     <span style={{
-                      fontSize: '12px',
+                      ...getTypographyStyles('small'),
                       backgroundColor: '#a3e635',
                       color: '#111827',
                       padding: '4px 8px',
@@ -646,7 +701,7 @@ export default function Dashboard() {
                 </div>
                 {achievement.new && (
                   <span style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     backgroundColor: '#a3e635',
                     color: '#111827',
                     padding: '4px 8px',

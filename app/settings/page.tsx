@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { BellIcon, WarningIcon, LockIcon, FileIcon, CalendarIcon, TrophyIcon, MessageIcon, ChartIcon } from '@/components/icons'
 import { MobileIcon, FireIcon, StarIcon, TeamIcon, NoteIcon, HeartHandsIcon, MoonIcon, EnergyIcon, ClockIcon, DataExportIcon, DeleteAccountIcon } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -103,7 +104,7 @@ export default function SettingsPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{ 
-          fontSize: '24px', 
+          ...typographyPresets.pageTitle(), 
           fontWeight: '800', 
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -156,7 +157,7 @@ export default function SettingsPage() {
               </div>
               <div style={{ flex: 1 }}>
                 <h3 style={{ 
-                  fontSize: '20px', 
+                  ...getTypographyStyles('h3'), 
                   fontWeight: '700', 
                   color: '#f3f4f6', 
                   margin: '0 0 6px 0' 
@@ -164,14 +165,14 @@ export default function SettingsPage() {
                   {userStats.name}
                 </h3>
                 <p style={{ 
-                  fontSize: '14px', 
+                  ...getTypographyStyles('base'), 
                   color: '#9ca3af', 
                   margin: '0 0 4px 0' 
                 }}>
                   {userStats.email}
                 </p>
                 <p style={{ 
-                  fontSize: '12px', 
+                  ...getTypographyStyles('small'), 
                   color: '#6b7280', 
                   margin: 0,
                   display: 'flex',

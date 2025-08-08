@@ -8,6 +8,7 @@ import {
   NatureIcon, WaterDropIcon, TargetIcon, BrainIcon, MusclePowerIcon, HandshakeIcon,
   LeafIcon, FireIcon, CheckIcon, StarIcon, ClockIcon, ChartIcon, ProgressIcon
 } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function DailyChallengePage() {
   const router = useRouter()
@@ -296,7 +297,7 @@ export default function DailyChallengePage() {
           justifyContent: 'space-between'
         }}>
           <h1 style={{
-            fontSize: '24px',
+            ...getTypographyStyles('h2'),
             fontWeight: '800',
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -317,15 +318,14 @@ export default function DailyChallengePage() {
               padding: '10px 16px',
               borderRadius: '12px',
               border: 'none',
-              fontSize: '14px',
-              fontWeight: '600',
+              ...getTypographyStyles('button'),
               cursor: 'pointer',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)' }}
             onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}
           >
-            <span style={{ fontSize: '16px' }}>🏆</span>
+            <span style={{ ...getTypographyStyles('large') }}>🏆</span>
             実績を見る
           </button>
         </div>
@@ -371,14 +371,15 @@ export default function DailyChallengePage() {
                   <FireIcon size={32} />
                   <div>
                     <div style={{
-                      fontSize: '32px',
+                      ...getTypographyStyles('h1'),
+                      fontSize: '32px', // Keep special size for streak counter
                       fontWeight: '800',
                       color: '#fbbf24'
                     }}>
                       {streakDays}日
                     </div>
                     <div style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       color: '#d1d5db'
                     }}>
                       連続達成中！
@@ -403,7 +404,7 @@ export default function DailyChallengePage() {
                 }}>
                   <CheckIcon size={16} />
                   <span style={{
-                    fontSize: '16px',
+                    ...getTypographyStyles('large'),
                     fontWeight: '600',
                     color: '#a3e635'
                   }}>
@@ -411,7 +412,7 @@ export default function DailyChallengePage() {
                   </span>
                 </div>
                 <div style={{
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   color: '#9ca3af'
                 }}>
                   今日の完了
@@ -422,7 +423,7 @@ export default function DailyChallengePage() {
             {/* Weekly Progress */}
             <div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af',
                 marginBottom: '8px'
               }}>
@@ -441,7 +442,7 @@ export default function DailyChallengePage() {
                     }}
                   >
                     <div style={{
-                      fontSize: '10px',
+                      ...getTypographyStyles('caption'),
                       color: '#6b7280',
                       marginBottom: '4px'
                     }}>
@@ -483,14 +484,14 @@ export default function DailyChallengePage() {
           }}>
             <StarIcon size={24} />
             <div style={{
-              fontSize: '24px',
+              ...getTypographyStyles('h2'),
               fontWeight: '700',
               color: '#a3e635'
             }}>
               {totalXP}
             </div>
             <div style={{
-              fontSize: '12px',
+              ...getTypographyStyles('small'),
               color: '#9ca3af'
             }}>
               獲得XP
@@ -507,14 +508,14 @@ export default function DailyChallengePage() {
           }}>
             <ClockIcon size={24} />
             <div style={{
-              fontSize: '24px',
+              ...getTypographyStyles('h2'),
               fontWeight: '700',
               color: '#60a5fa'
             }}>
               {totalTime}分
             </div>
             <div style={{
-              fontSize: '12px',
+              ...getTypographyStyles('small'),
               color: '#9ca3af'
             }}>
               実践時間
@@ -531,14 +532,14 @@ export default function DailyChallengePage() {
           }}>
             <ChartIcon size={24} />
             <div style={{
-              fontSize: '24px',
+              ...getTypographyStyles('h2'),
               fontWeight: '700',
               color: '#fbbf24'
             }}>
               {Math.round((completedChallenges.length / challenges.length) * 100)}%
             </div>
             <div style={{
-              fontSize: '12px',
+              ...getTypographyStyles('small'),
               color: '#9ca3af'
             }}>
               達成率
@@ -568,8 +569,7 @@ export default function DailyChallengePage() {
                   ? '1px solid rgba(163, 230, 53, 0.3)' 
                   : '1px solid transparent',
                 borderRadius: '12px',
-                fontSize: '14px',
-                fontWeight: '500',
+                ...getTypographyStyles('button'),
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 display: 'flex',
@@ -586,7 +586,7 @@ export default function DailyChallengePage() {
 
         {/* Challenges List */}
         <h2 style={{
-          fontSize: '18px',
+          ...getTypographyStyles('h4'),
           fontWeight: '700',
           color: '#f3f4f6',
           marginBottom: '16px'
@@ -670,14 +670,14 @@ export default function DailyChallengePage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '28px',
+                        fontSize: '28px', // Keep for icon display
                         flexShrink: 0
                       }}>
                         {isCompleted ? <CheckIcon size={28} /> : challenge.icon}
                       </div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{
-                          fontSize: '18px',
+                          ...getTypographyStyles('h4'),
                           fontWeight: '600',
                           color: '#f3f4f6',
                           marginBottom: '6px'
@@ -685,10 +685,9 @@ export default function DailyChallengePage() {
                           {challenge.title}
                         </h3>
                         <p style={{
-                          fontSize: '14px',
+                          ...getTypographyStyles('base'),
                           color: '#9ca3af',
-                          marginBottom: '12px',
-                          lineHeight: '1.5'
+                          marginBottom: '12px'
                         }}>
                           {challenge.description}
                         </p>
@@ -701,7 +700,7 @@ export default function DailyChallengePage() {
                           marginBottom: '12px'
                         }}>
                           <span style={{
-                            fontSize: '12px',
+                            ...getTypographyStyles('small'),
                             backgroundColor: getDifficultyColor(challenge.difficulty) + '20',
                             color: getDifficultyColor(challenge.difficulty),
                             padding: '4px 10px',
@@ -711,7 +710,7 @@ export default function DailyChallengePage() {
                             {getDifficultyLabel(challenge.difficulty)}
                           </span>
                           <span style={{
-                            fontSize: '12px',
+                            ...getTypographyStyles('small'),
                             backgroundColor: 'rgba(96, 165, 250, 0.2)',
                             color: '#60a5fa',
                             padding: '4px 10px',
@@ -723,7 +722,7 @@ export default function DailyChallengePage() {
                             <ClockIcon size={12} /> {challenge.duration}
                           </span>
                           <span style={{
-                            fontSize: '12px',
+                            ...getTypographyStyles('small'),
                             backgroundColor: 'rgba(163, 230, 53, 0.2)',
                             color: '#a3e635',
                             padding: '4px 10px',
@@ -744,7 +743,7 @@ export default function DailyChallengePage() {
                             <span
                               key={index}
                               style={{
-                                fontSize: '11px',
+                                ...getTypographyStyles('caption'),
                                 color: '#6b7280',
                                 padding: '2px 8px',
                                 backgroundColor: 'rgba(55, 65, 81, 0.3)',
@@ -769,14 +768,15 @@ export default function DailyChallengePage() {
                       textAlign: 'center'
                     }}>
                       <div style={{
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         color: '#9ca3af',
                         marginBottom: '8px'
                       }}>
                         実践中...
                       </div>
                       <div style={{
-                        fontSize: '36px',
+                        ...getTypographyStyles('h1'),
+                        fontSize: '36px', // Keep special size for timer display
                         fontWeight: '800',
                         color: '#a3e635',
                         fontFamily: 'monospace'
@@ -795,8 +795,7 @@ export default function DailyChallengePage() {
                           color: '#111827',
                           border: 'none',
                           borderRadius: '8px',
-                          fontSize: '14px',
-                          fontWeight: '600',
+                          ...getTypographyStyles('button'),
                           cursor: 'pointer'
                         }}
                       >
@@ -813,7 +812,7 @@ export default function DailyChallengePage() {
                       marginTop: '16px'
                     }}>
                       <h4 style={{
-                        fontSize: '14px',
+                        ...getTypographyStyles('base'),
                         fontWeight: '600',
                         color: '#f3f4f6',
                         marginBottom: '12px'
@@ -828,10 +827,9 @@ export default function DailyChallengePage() {
                           <li
                             key={index}
                             style={{
-                              fontSize: '13px',
+                              ...getTypographyStyles('label'),
                               color: '#d1d5db',
-                              marginBottom: '8px',
-                              lineHeight: '1.5'
+                              marginBottom: '8px'
                             }}
                           >
                             {step}
@@ -850,7 +848,7 @@ export default function DailyChallengePage() {
                           color: '#111827',
                           border: 'none',
                           borderRadius: '12px',
-                          fontSize: '16px',
+                          ...getTypographyStyles('large'),
                           fontWeight: '600',
                           cursor: 'pointer',
                           marginTop: '16px',
@@ -881,7 +879,7 @@ export default function DailyChallengePage() {
                       border: '1px solid rgba(163, 230, 53, 0.2)'
                     }}>
                       <span style={{
-                        fontSize: '16px',
+                        ...getTypographyStyles('large'),
                         color: '#a3e635',
                         fontWeight: '600'
                       }}>

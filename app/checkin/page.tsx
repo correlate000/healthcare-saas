@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { HappyFaceIcon, SadFaceIcon, CalmIcon, StressedIcon, EnergeticIcon, ThinkingIcon, MeditationIcon, SleepingIcon } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function CheckIn() {
   const router = useRouter()
@@ -199,7 +200,7 @@ export default function CheckIn() {
             color: '#111827',
             padding: '4px 12px',
             borderRadius: '12px',
-            fontSize: '12px',
+            ...getTypographyStyles('small'),
             fontWeight: '600',
             marginBottom: '16px'
           }}>
@@ -227,9 +228,8 @@ export default function CheckIn() {
               borderBottom: '8px solid #1f2937'
             }}></div>
             <p style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               color: '#f3f4f6',
-              lineHeight: '1.6',
               textAlign: 'center',
               margin: 0
             }}>
@@ -252,15 +252,14 @@ export default function CheckIn() {
             }}>
               <span style={{ fontSize: '32px' }}>🔥</span>
               <span style={{
-                fontSize: '28px',
-                fontWeight: '700',
+                ...getTypographyStyles('h1'),
                 color: '#a3e635'
               }}>
                 {streakDays}日
               </span>
             </div>
             <p style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#9ca3af'
             }}>
               連続チェックイン達成中！
@@ -298,8 +297,8 @@ export default function CheckIn() {
               }}></div>
               <span style={{ fontSize: '24px', animation: 'bounce 1.5s ease-in-out infinite', position: 'relative' }}>⭐</span>
               <div style={{ position: 'relative' }}>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: '#fbbf24', animation: 'countUp 1s ease-out 0.5s both' }}>+50 XP</div>
-                <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>獲得しました</div>
+                <div style={{ ...getTypographyStyles('h4'), fontWeight: '700', color: '#fbbf24', animation: 'countUp 1s ease-out 0.5s both' }}>+50 XP</div>
+                <div style={{ ...getTypographyStyles('small'), color: '#9ca3af', marginTop: '2px' }}>獲得しました</div>
               </div>
             </div>
             <div style={{
@@ -325,8 +324,8 @@ export default function CheckIn() {
               }}></div>
               <span style={{ fontSize: '24px', animation: 'rotate 2s ease-in-out infinite' }}>🏆</span>
               <div>
-                <div style={{ fontSize: '18px', fontWeight: '700', color: '#a3e635' }}>Lv.8</div>
-                <div style={{ fontSize: '12px', color: '#9ca3af', marginTop: '2px' }}>あと150XP</div>
+                <div style={{ ...getTypographyStyles('h4'), fontWeight: '700', color: '#a3e635' }}>Lv.8</div>
+                <div style={{ ...getTypographyStyles('small'), color: '#9ca3af', marginTop: '2px' }}>あと150XP</div>
               </div>
             </div>
           </div>
@@ -347,7 +346,7 @@ export default function CheckIn() {
                 color: '#111827',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '16px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -365,7 +364,7 @@ export default function CheckIn() {
                 color: '#d1d5db',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '16px',
+                ...getTypographyStyles('button'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -505,14 +504,14 @@ export default function CheckIn() {
           margin: '0 auto 16px',
           flexShrink: 0
         }}>
-          <span style={{ color: '#111827', fontSize: '12px', fontWeight: '600' }}>Luna</span>
+          <span style={{ color: '#111827', ...getTypographyStyles('small'), fontWeight: '600' }}>Luna</span>
         </div>
 
         {/* Progress bar */}
         <div style={{ marginBottom: '16px', flexShrink: 0 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>ステップ {currentStep + 1} / {steps.length}</span>
-            <span style={{ fontSize: '12px', color: '#9ca3af' }}>{Math.round(progress)}%</span>
+            <span style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>ステップ {currentStep + 1} / {steps.length}</span>
+            <span style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>{Math.round(progress)}%</span>
           </div>
           <div style={{ 
             width: '100%', 
@@ -534,11 +533,11 @@ export default function CheckIn() {
 
         {/* Question */}
         <div style={{ textAlign: 'center', marginBottom: '20px', flexShrink: 0 }}>
-          <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#f3f4f6', marginBottom: '4px' }}>
+          <h1 style={{ ...getTypographyStyles('h3'), color: '#f3f4f6', marginBottom: '4px' }}>
             {currentStepData.title}
           </h1>
           {currentStepData.subtitle && (
-            <p style={{ fontSize: '14px', color: '#9ca3af' }}>{currentStepData.subtitle}</p>
+            <p style={{ ...getTypographyStyles('base'), color: '#9ca3af' }}>{currentStepData.subtitle}</p>
           )}
         </div>
 
@@ -562,7 +561,7 @@ export default function CheckIn() {
                 borderRadius: '12px',
                 padding: '16px',
                 color: '#d1d5db',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontFamily: 'inherit',
                 resize: 'none',
                 outline: 'none'
@@ -601,7 +600,7 @@ export default function CheckIn() {
                       color: isSelected ? '#111827' : '#d1d5db',
                       border: isSelected ? '2px solid #a3e635' : '1px solid #374151',
                       borderRadius: '12px',
-                      fontSize: currentStepData.multiple ? '14px' : '16px',
+                      ...(currentStepData.multiple ? getTypographyStyles('base') : getTypographyStyles('large')),
                       fontWeight: '500',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease',
@@ -638,7 +637,7 @@ export default function CheckIn() {
                 color: '#d1d5db',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '16px',
+                ...getTypographyStyles('button'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -659,7 +658,7 @@ export default function CheckIn() {
                 color: '#d1d5db',
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
@@ -689,7 +688,7 @@ export default function CheckIn() {
                   '#111827', // Always enabled for textarea
                 border: 'none',
                 borderRadius: '12px',
-                fontSize: '16px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: currentStepData.multiple ? 
                   ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? 'pointer' : 'not-allowed') :

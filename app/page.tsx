@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { getTypographyStyles } from '@/styles/typography'
 
 export default function Home() {
   const router = useRouter()
@@ -75,17 +76,18 @@ export default function Home() {
           animation: 'fadeInUp 0.8s ease-out 0.3s both'
         }}>
           <h1 style={{
+            ...getTypographyStyles('h1'),
             color: '#f3f4f6',
-            fontSize: '32px',
-            fontWeight: '800',
             letterSpacing: '-0.5px',
-            marginBottom: '8px'
+            marginBottom: '8px',
+            fontSize: '32px', // Override for splash screen emphasis
+            fontWeight: '800'  // Override for brand emphasis
           }}>
             MindCare
           </h1>
           <p style={{
+            ...getTypographyStyles('large'),
             color: '#9ca3af',
-            fontSize: '16px',
             fontWeight: '500'
           }}>
             あなたの心の健康をサポート

@@ -9,6 +9,7 @@ import {
   RocketIcon, CelebrationIcon, MusclePowerIcon, SparkleIcon, ExportIcon,
   MoodHappyIcon, LightningIcon, StressIcon, SleepIcon, MobileIcon, ClockIcon
 } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -153,7 +154,7 @@ export default function AnalyticsPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{ 
-          fontSize: '24px', 
+          ...typographyPresets.pageTitle(isMobile),
           fontWeight: '800', 
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -184,7 +185,7 @@ export default function AnalyticsPage() {
                   ? '1px solid rgba(163, 230, 53, 0.3)' 
                   : '1px solid rgba(55, 65, 81, 0.3)',
                 borderRadius: '16px',
-                fontSize: '15px',
+                ...getTypographyStyles('button', isMobile),
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -238,17 +239,18 @@ export default function AnalyticsPage() {
             }}>
               <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
               <div style={{ 
-                fontSize: '32px', 
+                fontSize: isMobile ? '28px' : '32px', 
                 fontWeight: '800', 
                 background: `linear-gradient(135deg, ${stat.color} 0%, #f3f4f6 100%)`,
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                marginBottom: '8px' 
+                marginBottom: '8px',
+                lineHeight: '1.2'
               }}>
                 {stat.value}
               </div>
-              <div style={{ fontSize: '13px', color: '#9ca3af', fontWeight: '500' }}>
+              <div style={{ ...getTypographyStyles('label', isMobile), color: '#9ca3af' }}>
                 {stat.label}
               </div>
             </div>
@@ -258,10 +260,7 @@ export default function AnalyticsPage() {
         {/* Metric selector */}
         <div style={{ marginBottom: '24px' }}>
           <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: '700', 
-            color: '#f3f4f6', 
-            marginBottom: '16px' 
+            ...typographyPresets.sectionHeader(isMobile)
           }}>
             メトリクス分析
           </h3>
@@ -277,7 +276,7 @@ export default function AnalyticsPage() {
                   color: selectedMetric === metric.key ? '#111827' : '#d1d5db',
                   border: 'none',
                   borderRadius: '12px',
-                  fontSize: '14px',
+                  ...getTypographyStyles('button', isMobile),
                   fontWeight: '600',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
@@ -309,9 +308,7 @@ export default function AnalyticsPage() {
               marginBottom: '20px' 
             }}>
               <h4 style={{ 
-                fontSize: '16px', 
-                fontWeight: '600', 
-                color: '#f3f4f6',
+                ...typographyPresets.cardTitle(isMobile),
                 margin: 0 
               }}>
                 {selectedMetricInfo.label}トレンド
@@ -326,7 +323,7 @@ export default function AnalyticsPage() {
               }}>
                 {selectedMetricInfo.icon}
                 <span style={{ 
-                  fontSize: '14px', 
+                  ...getTypographyStyles('base', isMobile), 
                   color: selectedMetricInfo.color,
                   fontWeight: '600' 
                 }}>
@@ -385,7 +382,7 @@ export default function AnalyticsPage() {
                         top: '0',
                         width: '100%',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        ...getTypographyStyles('small', isMobile),
                         fontWeight: '600',
                         color: selectedMetricInfo.color,
                         opacity: 0,
@@ -411,7 +408,7 @@ export default function AnalyticsPage() {
                     
                     {/* Day label */}
                     <span style={{ 
-                      fontSize: '12px', 
+                      ...getTypographyStyles('small', isMobile), 
                       color: '#9ca3af',
                       fontWeight: '500',
                       marginTop: '8px'
@@ -433,9 +430,9 @@ export default function AnalyticsPage() {
               borderRadius: '12px',
               border: '1px solid rgba(163, 230, 53, 0.2)'
             }}>
-              <span style={{ fontSize: '14px', color: '#d1d5db' }}>平均値</span>
+              <span style={{ ...getTypographyStyles('base', isMobile), color: '#d1d5db' }}>平均値</span>
               <span style={{ 
-                fontSize: '18px', 
+                ...getTypographyStyles('h4', isMobile), 
                 fontWeight: '700', 
                 color: '#a3e635' 
               }}>
@@ -448,10 +445,8 @@ export default function AnalyticsPage() {
         {/* Insights with icons */}
         <div style={{ marginBottom: '28px' }}>
           <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: '700', 
-            color: '#f3f4f6', 
-            marginBottom: '20px' 
+            ...typographyPresets.sectionHeader(isMobile),
+            marginBottom: '20px'
           }}>
             {selectedPeriod === 'week' ? '今週のハイライト' : 
              selectedPeriod === 'month' ? '今月のハイライト' : '今年のハイライト'}
@@ -514,8 +509,7 @@ export default function AnalyticsPage() {
                       {insight.icon}
                     </div>
                     <h4 style={{ 
-                      fontSize: '16px', 
-                      fontWeight: '600', 
+                      ...typographyPresets.cardTitle(isMobile),
                       color: insight.color,
                       margin: 0 
                     }}>
@@ -523,8 +517,7 @@ export default function AnalyticsPage() {
                     </h4>
                   </div>
                   <p style={{ 
-                    fontSize: '14px', 
-                    color: '#d1d5db', 
+                    ...typographyPresets.bodyText(isMobile), 
                     margin: 0, 
                     lineHeight: '1.6' 
                   }}>
@@ -551,7 +544,7 @@ export default function AnalyticsPage() {
               color: '#d1d5db',
               border: '1px solid rgba(55, 65, 81, 0.3)',
               borderRadius: '12px',
-              fontSize: '14px',
+              ...getTypographyStyles('button', false),
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.3s ease',
@@ -578,10 +571,8 @@ export default function AnalyticsPage() {
         {/* Character Insights */}
         <div style={{ marginBottom: '28px' }}>
           <h3 style={{ 
-            fontSize: '18px', 
-            fontWeight: '700', 
-            color: '#f3f4f6', 
-            marginBottom: '20px' 
+            ...typographyPresets.sectionHeader(isMobile),
+            marginBottom: '20px'
           }}>
             キャラクターからのアドバイス
           </h3>
@@ -642,14 +633,14 @@ export default function AnalyticsPage() {
                   justifyContent: isMobile ? 'center' : 'flex-start'
                 }}>
                   <span style={{ 
-                    fontSize: '16px', 
+                    ...getTypographyStyles('large', isMobile), 
                     fontWeight: '600',
                     color: '#a3e635' 
                   }}>
                     ルナ
                   </span>
                   <span style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small', isMobile),
                     padding: '4px 8px',
                     backgroundColor: 'rgba(163, 230, 53, 0.2)',
                     color: '#a3e635',
@@ -661,11 +652,11 @@ export default function AnalyticsPage() {
                 </div>
                 
                 <p style={{ 
-                  fontSize: isMobile ? '14px' : '15px', 
+                  ...getTypographyStyles(isMobile ? 'base' : 'large', isMobile), 
                   color: '#e5e7eb', 
                   margin: 0, 
                   lineHeight: '1.7',
-                  textAlign: isMobile ? 'left' : 'left',
+                  textAlign: 'left',
                   padding: isMobile ? '0 8px' : '0'
                 }}>
                   {selectedPeriod === 'week' ? 
@@ -691,7 +682,7 @@ export default function AnalyticsPage() {
                       color: '#111827',
                       border: 'none',
                       borderRadius: '8px',
-                      fontSize: '14px',
+                      ...getTypographyStyles('button', isMobile),
                       fontWeight: '600',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
@@ -710,8 +701,7 @@ export default function AnalyticsPage() {
                       color: '#d1d5db',
                       border: '1px solid rgba(55, 65, 81, 0.3)',
                       borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
+                      ...getTypographyStyles('button', isMobile),
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       width: isMobile ? '100%' : 'auto'

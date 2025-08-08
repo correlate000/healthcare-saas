@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 const getRarityStyle = (rarity: string) => {
   switch(rarity) {
@@ -172,7 +173,7 @@ export default function AchievementsPage() {
           position: 'absolute',
           top: '0',
           right: '-5px',
-          fontSize: '16px'
+          ...getTypographyStyles('base')
         }}>✨</div>
       )}
     </div>
@@ -221,7 +222,7 @@ export default function AchievementsPage() {
               backgroundColor: 'transparent',
               border: 'none',
               color: '#9ca3af',
-              fontSize: '20px',
+              ...getTypographyStyles('h3'),
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -231,7 +232,7 @@ export default function AchievementsPage() {
             ←
           </button>
           <h1 style={{ 
-            fontSize: '24px', 
+            ...typographyPresets.pageTitle(),
             fontWeight: '800', 
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -285,7 +286,7 @@ export default function AchievementsPage() {
                 <BirdCharacter emotion="happy" />
                 <div>
                   <div style={{ 
-                    fontSize: '14px', 
+                    ...getTypographyStyles('base'),
                     color: 'rgba(17,24,39,0.7)',
                     fontWeight: '500',
                     marginBottom: '4px'
@@ -293,7 +294,7 @@ export default function AchievementsPage() {
                     {userStats.rank}ランク
                   </div>
                   <div style={{ 
-                    fontSize: '28px', 
+                    ...getTypographyStyles('h1'),
                     fontWeight: '800',
                     color: '#111827',
                     letterSpacing: '-1px'
@@ -311,14 +312,14 @@ export default function AchievementsPage() {
                   marginBottom: '8px'
                 }}>
                   <span style={{ 
-                    fontSize: '13px', 
+                    ...getTypographyStyles('label'),
                     color: 'rgba(17,24,39,0.8)',
                     fontWeight: '600'
                   }}>
                     次のレベルまで
                   </span>
                   <span style={{ 
-                    fontSize: '13px', 
+                    ...getTypographyStyles('label'),
                     color: 'rgba(17,24,39,0.8)',
                     fontWeight: '700'
                   }}>
@@ -350,7 +351,7 @@ export default function AchievementsPage() {
               padding: '12px 16px'
             }}>
               <div style={{ 
-                fontSize: '32px', 
+                ...getTypographyStyles('h1'),
                 fontWeight: '800',
                 color: '#111827',
                 marginBottom: '4px'
@@ -358,7 +359,7 @@ export default function AchievementsPage() {
                 {userStats.totalBadges}
               </div>
               <div style={{ 
-                fontSize: '12px', 
+                ...getTypographyStyles('small'),
                 color: 'rgba(17,24,39,0.7)',
                 fontWeight: '600'
               }}>
@@ -392,7 +393,7 @@ export default function AchievementsPage() {
                   ? '1px solid rgba(163, 230, 53, 0.3)' 
                   : '1px solid rgba(55, 65, 81, 0.3)',
                 borderRadius: '16px',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '700',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -411,7 +412,7 @@ export default function AchievementsPage() {
                 backgroundColor: selectedCategory === category.id ? 'rgba(17,24,39,0.2)' : 'rgba(255,255,255,0.1)',
                 padding: '2px 6px',
                 borderRadius: '8px',
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 fontWeight: '700'
               }}>
                 {category.count}
@@ -480,7 +481,7 @@ export default function AchievementsPage() {
 
               {/* Icon with enhanced styling */}
               <div style={{
-                fontSize: '40px',
+                fontSize: '40px', // Keep this as it's for emoji icons - not text
                 marginBottom: '16px',
                 filter: achievement.unlocked 
                   ? `drop-shadow(0 4px 8px ${getRarityColor(achievement.rarity)}40)` 
@@ -497,7 +498,7 @@ export default function AchievementsPage() {
 
               {/* Title */}
               <h3 style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 fontWeight: '600',
                 color: achievement.unlocked ? '#f3f4f6' : '#9ca3af',
                 marginBottom: '4px',
@@ -508,7 +509,7 @@ export default function AchievementsPage() {
 
               {/* Description */}
               <p style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: achievement.unlocked ? '#9ca3af' : '#6b7280',
                 marginBottom: '12px',
                 lineHeight: '1.4'
@@ -524,13 +525,13 @@ export default function AchievementsPage() {
                   justifyContent: 'space-between'
                 }}>
                   <span style={{
-                    fontSize: '11px',
+                    ...getTypographyStyles('caption'),
                     color: '#6b7280'
                   }}>
                     {achievement.date}
                   </span>
                   <span style={{
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     color: '#a3e635',
                     fontWeight: '600'
                   }}>
@@ -546,13 +547,13 @@ export default function AchievementsPage() {
                     marginBottom: '6px'
                   }}>
                     <span style={{
-                      fontSize: '11px',
+                      ...getTypographyStyles('caption'),
                       color: '#6b7280'
                     }}>
                       進捗
                     </span>
                     <span style={{
-                      fontSize: '11px',
+                      ...getTypographyStyles('caption'),
                       color: '#9ca3af',
                       fontWeight: '600'
                     }}>
@@ -582,7 +583,7 @@ export default function AchievementsPage() {
                   position: 'absolute',
                   top: '8px',
                   right: '8px',
-                  fontSize: '16px',
+                  fontSize: '16px', // Keep this as it's for emoji icon - not text
                   opacity: 0.5
                 }}>
                   🔒
@@ -604,7 +605,7 @@ export default function AchievementsPage() {
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
         }}>
           <h3 style={{
-            fontSize: '20px',
+            ...typographyPresets.sectionHeader(),
             fontWeight: '700',
             background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
             WebkitBackgroundClip: 'text',
@@ -624,7 +625,7 @@ export default function AchievementsPage() {
           }}>
             <div>
               <div style={{
-                fontSize: '24px',
+                ...getTypographyStyles('h2'),
                 fontWeight: '700',
                 color: '#a3e635',
                 marginBottom: '4px'
@@ -632,7 +633,7 @@ export default function AchievementsPage() {
                 {userStats.totalBadges}
               </div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af'
               }}>
                 総バッジ数
@@ -640,7 +641,7 @@ export default function AchievementsPage() {
             </div>
             <div>
               <div style={{
-                fontSize: '24px',
+                ...getTypographyStyles('h2'),
                 fontWeight: '700',
                 color: '#60a5fa',
                 marginBottom: '4px'
@@ -648,7 +649,7 @@ export default function AchievementsPage() {
                 {userStats.recentBadges}
               </div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af'
               }}>
                 今週獲得
@@ -656,7 +657,7 @@ export default function AchievementsPage() {
             </div>
             <div>
               <div style={{
-                fontSize: '24px',
+                ...getTypographyStyles('h2'),
                 fontWeight: '700',
                 color: '#fbbf24',
                 marginBottom: '4px'
@@ -664,7 +665,7 @@ export default function AchievementsPage() {
                 85%
               </div>
               <div style={{
-                fontSize: '12px',
+                ...getTypographyStyles('small'),
                 color: '#9ca3af'
               }}>
                 達成率

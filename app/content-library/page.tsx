@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function ContentLibraryPage() {
   const router = useRouter()
@@ -143,18 +144,12 @@ export default function ContentLibraryPage() {
         borderBottom: '1px solid #374151'
       }}>
         <h1 style={{
-          fontSize: '24px',
-          fontWeight: '700',
-          color: '#f3f4f6',
-          margin: 0,
-          marginBottom: '8px'
+          ...typographyPresets.pageTitle(),
+          margin: 0
         }}>
           コンテンツライブラリ
         </h1>
-        <p style={{
-          fontSize: '14px',
-          color: '#9ca3af'
-        }}>
+        <p style={typographyPresets.subText()}>
           瞑想、睡眠、リラクゼーションコンテンツ
         </p>
       </div>
@@ -179,7 +174,7 @@ export default function ContentLibraryPage() {
               border: '1px solid #374151',
               borderRadius: '12px',
               color: '#f3f4f6',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               outline: 'none'
             }}
             onFocus={(e) => { e.currentTarget.style.borderColor = '#a3e635' }}
@@ -190,7 +185,7 @@ export default function ContentLibraryPage() {
             left: '14px',
             top: '50%',
             transform: 'translateY(-50%)',
-            fontSize: '18px'
+            ...getTypographyStyles('h4')
           }}>
             🔍
           </span>
@@ -216,8 +211,7 @@ export default function ContentLibraryPage() {
               color: selectedCategory === category.key ? '#111827' : '#d1d5db',
               border: 'none',
               borderRadius: '20px',
-              fontSize: '13px',
-              fontWeight: '500',
+              ...getTypographyStyles('label'),
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
@@ -238,9 +232,7 @@ export default function ContentLibraryPage() {
           padding: '0 16px 16px'
         }}>
           <h2 style={{
-            fontSize: '16px',
-            fontWeight: '600',
-            color: '#f3f4f6',
+            ...typographyPresets.sectionHeader(),
             marginBottom: '12px'
           }}>
             おすすめコンテンツ
@@ -287,7 +279,7 @@ export default function ContentLibraryPage() {
                   {item.thumbnail}
                 </div>
                 <h3 style={{
-                  fontSize: '14px',
+                  ...getTypographyStyles('base'),
                   fontWeight: '600',
                   color: '#f3f4f6',
                   marginBottom: '4px',
@@ -301,7 +293,7 @@ export default function ContentLibraryPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  fontSize: '12px',
+                  ...getTypographyStyles('small'),
                   color: '#9ca3af'
                 }}>
                   <span>{getTypeIcon(item.type)}</span>
@@ -319,9 +311,7 @@ export default function ContentLibraryPage() {
         padding: '0 16px 16px'
       }}>
         <h2 style={{
-          fontSize: '16px',
-          fontWeight: '600',
-          color: '#f3f4f6',
+          ...typographyPresets.sectionHeader(),
           marginBottom: '16px'
         }}>
           {selectedCategory === 'all' ? 'すべてのコンテンツ' : 
@@ -384,7 +374,7 @@ export default function ContentLibraryPage() {
                     }}>
                       <div>
                         <h3 style={{
-                          fontSize: '15px',
+                          ...getTypographyStyles('large'),
                           fontWeight: '600',
                           color: '#f3f4f6',
                           marginBottom: '4px'
@@ -392,10 +382,10 @@ export default function ContentLibraryPage() {
                           {item.title}
                         </h3>
                         <p style={{
-                          fontSize: '13px',
+                          ...getTypographyStyles('label'),
                           color: '#9ca3af',
                           marginBottom: '8px',
-                          lineHeight: '1.4'
+                          fontWeight: '400'
                         }}>
                           {item.description}
                         </p>
@@ -430,7 +420,7 @@ export default function ContentLibraryPage() {
                       alignItems: 'center'
                     }}>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         backgroundColor: '#374151',
                         color: '#d1d5db',
                         padding: '4px 8px',
@@ -444,25 +434,25 @@ export default function ContentLibraryPage() {
                          item.type === 'video' ? '動画' : '記事'}
                       </span>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#9ca3af'
                       }}>
                         ⏱ {item.duration}
                       </span>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#9ca3af'
                       }}>
                         👤 {item.instructor}
                       </span>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#fbbf24'
                       }}>
                         ⭐ {item.rating}
                       </span>
                       <span style={{
-                        fontSize: '12px',
+                        ...getTypographyStyles('small'),
                         color: '#9ca3af'
                       }}>
                         👁 {item.views.toLocaleString()}
@@ -488,7 +478,7 @@ export default function ContentLibraryPage() {
               🔍
             </span>
             <p style={{
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               color: '#9ca3af'
             }}>
               コンテンツが見つかりませんでした

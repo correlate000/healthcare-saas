@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function VoiceChatPage() {
   const [isListening, setIsListening] = useState(false)
@@ -224,7 +225,7 @@ export default function VoiceChatPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -234,7 +235,7 @@ export default function VoiceChatPage() {
         }}>
           音声対話
         </h1>
-        <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px', margin: '8px 0 0 0' }}>
+        <p style={{ ...getTypographyStyles('base'), color: '#9ca3af', marginTop: '8px', margin: '8px 0 0 0' }}>
           {currentCharacter.name}と話してみましょう
         </p>
       </div>
@@ -259,7 +260,7 @@ export default function VoiceChatPage() {
                 color: selectedCharacter === key ? '#111827' : '#d1d5db',
                 border: 'none',
                 borderRadius: '20px',
-                fontSize: '14px',
+                ...getTypographyStyles('button'),
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease'
@@ -293,7 +294,7 @@ export default function VoiceChatPage() {
               padding: '4px 12px',
               background: isSpeaking ? currentCharacter.color : isListening ? '#ef4444' : 'rgba(55, 65, 81, 0.8)',
               borderRadius: '12px',
-              fontSize: '12px',
+              ...getTypographyStyles('small'),
               fontWeight: '500',
               color: isSpeaking || isListening ? '#111827' : '#d1d5db',
               display: 'flex',
@@ -326,7 +327,7 @@ export default function VoiceChatPage() {
             <div style={{
               textAlign: 'center',
               color: '#9ca3af',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               padding: '20px'
             }}>
               マイクボタンをタップして話しかけてください
@@ -349,7 +350,7 @@ export default function VoiceChatPage() {
                       : `linear-gradient(135deg, ${currentCharacter.color} 0%, ${currentCharacter.color}80 100%)`,
                     color: message.type === 'user' ? 'white' : '#111827',
                     borderRadius: '16px',
-                    fontSize: '14px',
+                    ...getTypographyStyles('base'),
                     fontWeight: '500'
                   }}>
                     {message.content}
@@ -367,7 +368,7 @@ export default function VoiceChatPage() {
             background: 'rgba(96, 165, 250, 0.1)',
             borderRadius: '12px',
             marginBottom: '16px',
-            fontSize: '14px',
+            ...getTypographyStyles('base'),
             color: '#60a5fa',
             textAlign: 'center'
           }}>
@@ -424,7 +425,7 @@ export default function VoiceChatPage() {
               border: '1px solid rgba(55, 65, 81, 0.3)',
               borderRadius: '12px',
               color: '#d1d5db',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
@@ -439,7 +440,7 @@ export default function VoiceChatPage() {
               border: '1px solid rgba(55, 65, 81, 0.3)',
               borderRadius: '12px',
               color: '#d1d5db',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}

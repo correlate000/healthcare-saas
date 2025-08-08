@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { DoctorFemaleIcon, DoctorMaleIcon, PsychiatristIcon, ClockIcon, StarIcon } from '@/components/icons/illustrations'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -97,7 +98,7 @@ export default function BookingPage() {
         background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...typographyPresets.pageTitle(),
           fontWeight: '800',
           background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
           WebkitBackgroundClip: 'text',
@@ -107,7 +108,7 @@ export default function BookingPage() {
         }}>
           専門家予約
         </h1>
-        <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px', margin: '8px 0 0 0' }}>
+        <p style={{ ...getTypographyStyles('base'), color: '#9ca3af', marginTop: '8px', margin: '8px 0 0 0' }}>
           最近のチェックイン内容から、ストレス管理が得意な専門家をおすすめします。
         </p>
       </div>

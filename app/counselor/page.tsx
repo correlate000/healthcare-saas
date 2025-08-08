@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
 export default function CounselorPage() {
   const router = useRouter()
@@ -105,7 +106,7 @@ export default function CounselorPage() {
             marginBottom: '20px'
           }}>
             <h2 style={{
-              fontSize: '20px',
+              ...getTypographyStyles('h3'),
               fontWeight: '700',
               color: '#f3f4f6'
             }}>
@@ -136,10 +137,10 @@ export default function CounselorPage() {
           }}>
             <span style={{ fontSize: '32px' }}>{counselor.image}</span>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6' }}>
+              <div style={{ ...getTypographyStyles('large'), fontWeight: '600', color: '#f3f4f6' }}>
                 {counselor.name}
               </div>
-              <div style={{ fontSize: '14px', color: '#9ca3af' }}>
+              <div style={{ ...getTypographyStyles('base'), color: '#9ca3af' }}>
                 {counselor.title}
               </div>
             </div>
@@ -147,7 +148,7 @@ export default function CounselorPage() {
 
           <div style={{ marginBottom: '20px' }}>
             <label style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#9ca3af',
               marginBottom: '8px',
               display: 'block'
@@ -165,7 +166,7 @@ export default function CounselorPage() {
                 border: '1px solid #374151',
                 borderRadius: '8px',
                 color: '#f3f4f6',
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 outline: 'none'
               }}
               onFocus={(e) => { e.currentTarget.style.borderColor = '#a3e635' }}
@@ -175,7 +176,7 @@ export default function CounselorPage() {
 
           <div style={{ marginBottom: '24px' }}>
             <label style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#9ca3af',
               marginBottom: '8px',
               display: 'block'
@@ -197,7 +198,7 @@ export default function CounselorPage() {
                     color: selectedTime === time ? '#111827' : '#d1d5db',
                     border: 'none',
                     borderRadius: '8px',
-                    fontSize: '14px',
+                    ...getTypographyStyles('base'),
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
@@ -232,7 +233,7 @@ export default function CounselorPage() {
               color: selectedDate && selectedTime ? '#111827' : '#6b7280',
               border: 'none',
               borderRadius: '12px',
-              fontSize: '16px',
+              ...getTypographyStyles('large'),
               fontWeight: '600',
               cursor: selectedDate && selectedTime ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s ease'
@@ -259,7 +260,7 @@ export default function CounselorPage() {
         borderBottom: '1px solid #374151'
       }}>
         <h1 style={{
-          fontSize: '24px',
+          ...getTypographyStyles('h2'),
           fontWeight: '700',
           color: '#f3f4f6',
           marginBottom: '8px'
@@ -267,7 +268,7 @@ export default function CounselorPage() {
           専門カウンセラー
         </h1>
         <p style={{
-          fontSize: '14px',
+          ...getTypographyStyles('base'),
           color: '#9ca3af'
         }}>
           資格を持つ専門家があなたをサポートします
@@ -291,7 +292,7 @@ export default function CounselorPage() {
               color: filter === 'すべて' ? '#111827' : '#d1d5db',
               border: 'none',
               borderRadius: '20px',
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               fontWeight: '500',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
@@ -358,7 +359,7 @@ export default function CounselorPage() {
                 }}>
                   <div>
                     <h3 style={{
-                      fontSize: '16px',
+                      ...getTypographyStyles('large'),
                       fontWeight: '600',
                       color: '#f3f4f6',
                       marginBottom: '4px'
@@ -366,7 +367,7 @@ export default function CounselorPage() {
                       {counselor.name}
                     </h3>
                     <p style={{
-                      fontSize: '14px',
+                      ...getTypographyStyles('base'),
                       color: '#9ca3af'
                     }}>
                       {counselor.title} • 経験{counselor.experience}
@@ -378,11 +379,11 @@ export default function CounselorPage() {
                     alignItems: 'center',
                     gap: '4px'
                   }}>
-                    <span style={{ color: '#fbbf24', fontSize: '14px' }}>⭐</span>
-                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#f3f4f6' }}>
+                    <span style={{ color: '#fbbf24', ...getTypographyStyles('base') }}>⭐</span>
+                    <span style={{ ...getTypographyStyles('base'), fontWeight: '600', color: '#f3f4f6' }}>
                       {counselor.rating}
                     </span>
-                    <span style={{ fontSize: '12px', color: '#9ca3af' }}>
+                    <span style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>
                       ({counselor.reviews})
                     </span>
                   </div>
@@ -391,7 +392,7 @@ export default function CounselorPage() {
             </div>
 
             <p style={{
-              fontSize: '14px',
+              ...getTypographyStyles('base'),
               color: '#d1d5db',
               marginBottom: '12px',
               lineHeight: '1.5'
@@ -413,7 +414,7 @@ export default function CounselorPage() {
                     backgroundColor: '#374151',
                     color: '#a3e635',
                     borderRadius: '12px',
-                    fontSize: '12px',
+                    ...getTypographyStyles('small'),
                     fontWeight: '500'
                   }}
                 >
@@ -439,7 +440,7 @@ export default function CounselorPage() {
                   borderRadius: '50%'
                 }}></div>
                 <span style={{
-                  fontSize: '14px',
+                  ...getTypographyStyles('base'),
                   color: counselor.available ? '#a3e635' : '#ef4444'
                 }}>
                   {counselor.available ? '対応可能' : '予約済み'}
@@ -447,7 +448,7 @@ export default function CounselorPage() {
               </div>
               
               <div style={{
-                fontSize: '14px',
+                ...getTypographyStyles('base'),
                 color: '#9ca3af'
               }}>
                 次回: {counselor.nextSlot}

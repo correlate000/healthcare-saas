@@ -3,134 +3,119 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { 
+  TrendingUp, TrendingDown, Activity, Heart, Brain, 
+  Moon, Sun, Coffee, Users, Target, AlertCircle,
+  ChevronRight, Calendar, Clock, BarChart3
+} from 'lucide-react'
 
 export default function InsightsPage() {
   const router = useRouter()
-  const [selectedTab, setSelectedTab] = useState<'personal' | 'ai' | 'recommendations'>('personal')
+  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week')
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'health' | 'mood' | 'activity'>('all')
 
-  // Bird character SVG component
-  const BirdCharacter = ({ bodyColor, bellyColor, size = 40 }: { bodyColor: string, bellyColor: string, size?: number }) => (
-    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
-      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
-      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
-      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
-      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
-      <circle cx="40" cy="45" r="6" fill="white" />
-      <circle cx="42" cy="45" r="4" fill="#111827" />
-      <circle cx="43" cy="44" r="2" fill="white" />
-      <circle cx="60" cy="45" r="6" fill="white" />
-      <circle cx="58" cy="45" r="4" fill="#111827" />
-      <circle cx="59" cy="44" r="2" fill="white" />
-      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
-    </svg>
-  )
+  // 総合スコアデータ
+  const overallScore = {
+    current: 78,
+    previous: 72,
+    trend: 'up',
+    change: 8.3
+  }
 
-  const personalInsights = [
+  // カテゴリ別スコア
+  const categoryScores = [
+    { category: '身体的健康', score: 82, trend: 'up', change: 5 },
+    { category: 'メンタルヘルス', score: 75, trend: 'up', change: 12 },
+    { category: '睡眠の質', score: 68, trend: 'down', change: -3 },
+    { category: '活動レベル', score: 85, trend: 'up', change: 8 }
+  ]
+
+  // 重要なインサイト
+  const keyInsights = [
     {
       id: 1,
-      title: '睡眠と気分の相関',
       type: 'positive',
-      icon: '😴',
-      description: '良質な睡眠を取った日は、気分スコアが平均25%高くなっています',
-      recommendation: '22:00までに就寝準備を始めることをおすすめします',
-      data: { sleep: 85, mood: 78 }
+      icon: <Moon className="h-5 w-5" />,
+      title: '睡眠パターンの改善',
+      description: '22:00前の就寝により、睡眠の質が15%向上',
+      impact: 'high',
+      metrics: { before: 65, after: 75 }
     },
     {
       id: 2,
-      title: '週末のストレスレベル',
       type: 'warning',
-      icon: '📈',
-      description: '日曜日の夕方にストレスレベルが上昇する傾向があります',
-      recommendation: '日曜日の午後にリラックス時間を設けてみましょう',
-      data: { weekday: 45, weekend: 62 }
+      icon: <Coffee className="h-5 w-5" />,
+      title: 'カフェイン摂取のタイミング',
+      description: '午後のカフェイン摂取が睡眠に影響',
+      impact: 'medium',
+      metrics: { quality: -12 }
     },
     {
       id: 3,
-      title: '運動習慣の効果',
       type: 'positive',
-      icon: '🏃',
-      description: '運動した日は翌日のエネルギーレベルが15%向上しています',
-      recommendation: '週3回、20分以上の軽い運動を継続しましょう',
-      data: { withExercise: 82, without: 67 }
+      icon: <Users className="h-5 w-5" />,
+      title: '社交活動の効果',
+      description: '週2回以上の交流で幸福度が20%上昇',
+      impact: 'high',
+      metrics: { happiness: 20 }
     },
     {
       id: 4,
-      title: '社交活動の影響',
-      type: 'positive',
-      icon: '👥',
-      description: '友人と交流した週は幸福度が20%高い傾向があります',
-      recommendation: '週に1回は友人との時間を作ってみてください',
-      data: { social: 85, alone: 65 }
+      type: 'neutral',
+      icon: <Activity className="h-5 w-5" />,
+      title: '運動習慣の定着',
+      description: '週3回の運動が習慣化されています',
+      impact: 'medium',
+      metrics: { consistency: 85 }
     }
   ]
 
-  const aiInsights = [
-    {
-      id: 1,
-      character: 'Luna',
-      bodyColor: '#a3e635',
-      bellyColor: '#ecfccb',
-      message: 'あなたの記録を分析したところ、朝の時間帯に瞑想を行うと、その日の集中力が格段に向上することがわかりました。明日の朝、5分だけでも試してみませんか？',
-      confidence: 92
-    },
-    {
-      id: 2,
-      character: 'Aria',
-      bodyColor: '#60a5fa',
-      bellyColor: '#dbeafe',
-      message: '最近の頑張りは素晴らしいです！特に継続日数が伸びていることは、あなたの意志の強さを示しています。この調子で一緒に頑張りましょう！',
-      confidence: 88
-    },
-    {
-      id: 3,
-      character: 'Zen',
-      bodyColor: '#f59e0b',
-      bellyColor: '#fed7aa',
-      message: '内なる声に耳を傾けることで、本当の自分と向き合えます。毎日の記録から、あなたは既に答えを持っていることがわかります。',
-      confidence: 85
-    }
+  // 時間帯別パフォーマンス
+  const timePerformance = [
+    { time: '朝', energy: 65, focus: 70, mood: 75 },
+    { time: '昼', energy: 80, focus: 85, mood: 82 },
+    { time: '夕', energy: 70, focus: 65, mood: 78 },
+    { time: '夜', energy: 45, focus: 40, mood: 68 }
   ]
 
-  const recommendations = [
+  // 相関分析
+  const correlations = [
+    { factor1: '睡眠時間', factor2: '翌日の生産性', correlation: 0.82, strength: 'strong' },
+    { factor1: '運動', factor2: 'ストレスレベル', correlation: -0.65, strength: 'moderate' },
+    { factor1: '社交活動', factor2: '幸福度', correlation: 0.78, strength: 'strong' },
+    { factor1: 'スクリーン時間', factor2: '睡眠の質', correlation: -0.71, strength: 'moderate' }
+  ]
+
+  // 改善提案
+  const improvements = [
     {
-      id: 1,
       priority: 'high',
-      title: '睡眠習慣の改善',
-      actions: [
-        '就寝1時間前のスマートフォン使用を控える',
-        '寝室の温度を18-20度に保つ',
-        'カフェインは14時以降摂取しない'
-      ],
-      expectedImpact: 30
+      area: '睡眠習慣',
+      current: '平均6.5時間',
+      target: '7-8時間',
+      actions: ['就寝1時間前のデジタルデトックス', '寝室の温度を18-20度に調整', '規則的な就寝時間の設定']
     },
     {
-      id: 2,
       priority: 'medium',
-      title: 'ストレス管理テクニック',
-      actions: [
-        '毎日10分の深呼吸エクササイズ',
-        'ストレス日記をつける',
-        '週1回のデジタルデトックス'
-      ],
-      expectedImpact: 25
+      area: 'ストレス管理',
+      current: 'レベル6/10',
+      target: 'レベル4/10以下',
+      actions: ['毎日10分の瞑想', '深呼吸エクササイズ', '週1回のデジタルデトックス']
     },
     {
-      id: 3,
       priority: 'low',
-      title: '社会的つながりの強化',
-      actions: [
-        '月2回の友人との食事',
-        'オンラインコミュニティへの参加',
-        '家族との定期的な連絡'
-      ],
-      expectedImpact: 20
+      area: '水分補給',
+      current: '1.5L/日',
+      target: '2L/日',
+      actions: ['起床時にコップ1杯の水', '食事前の水分補給', '運動前後の補給']
     }
   ]
 
   return (
-    <div style={{
+    <div style={{ 
       minHeight: '100vh',
-      backgroundColor: '#111827',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
       paddingBottom: '140px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
@@ -138,7 +123,9 @@ export default function InsightsPage() {
       {/* Header */}
       <div style={{
         padding: '20px',
-        borderBottom: '1px solid #374151'
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
       }}>
         <div style={{
           display: 'flex',
@@ -154,7 +141,7 @@ export default function InsightsPage() {
               backgroundColor: 'transparent',
               border: 'none',
               color: '#9ca3af',
-              fontSize: '20px',
+              ...getTypographyStyles('h3'),
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -164,394 +151,742 @@ export default function InsightsPage() {
             ←
           </button>
           <h1 style={{
-            fontSize: '20px',
-            fontWeight: '700',
-            color: '#f3f4f6',
+            ...typographyPresets.pageTitle(),
             margin: 0
           }}>
-            インサイト
+            分析インサイト
           </h1>
         </div>
         <p style={{
-          fontSize: '14px',
+          ...getTypographyStyles('base'),
           color: '#9ca3af',
           marginLeft: '44px'
         }}>
-          あなたのパターンと改善ポイント
+          データから見つかったパターンと改善機会
         </p>
       </div>
 
-      {/* Tabs */}
+      {/* Period Selector */}
       <div style={{
-        padding: '16px',
+        padding: '16px 20px',
         display: 'flex',
         gap: '8px',
-        borderBottom: '1px solid #374151'
+        borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
       }}>
-        {[
-          { key: 'personal', label: 'パーソナル' },
-          { key: 'ai', label: 'AIアドバイス' },
-          { key: 'recommendations', label: '推奨アクション' }
-        ].map(tab => (
+        {(['week', 'month', 'year'] as const).map(period => (
           <button
-            key={tab.key}
-            onClick={() => setSelectedTab(tab.key as any)}
+            key={period}
+            onClick={() => setSelectedPeriod(period)}
             style={{
               flex: 1,
-              padding: '10px',
-              backgroundColor: selectedTab === tab.key ? '#a3e635' : '#374151',
-              color: selectedTab === tab.key ? '#111827' : '#d1d5db',
-              border: 'none',
+              padding: '8px',
+              backgroundColor: selectedPeriod === period 
+                ? 'rgba(163, 230, 53, 0.2)' 
+                : 'rgba(55, 65, 81, 0.4)',
+              color: selectedPeriod === period ? '#a3e635' : '#9ca3af',
+              border: selectedPeriod === period 
+                ? '1px solid rgba(163, 230, 53, 0.3)' 
+                : '1px solid transparent',
               borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '500',
+              ...getTypographyStyles('button'),
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
           >
-            {tab.label}
+            {period === 'week' ? '週間' : period === 'month' ? '月間' : '年間'}
           </button>
         ))}
       </div>
 
-      <div style={{ padding: '16px' }}>
-        {/* Personal Insights */}
-        {selectedTab === 'personal' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {personalInsights.map(insight => (
-              <div
-                key={insight.id}
-                style={{
-                  backgroundColor: '#1f2937',
-                  borderRadius: '12px',
-                  padding: '20px',
-                  borderLeft: `4px solid ${insight.type === 'positive' ? '#a3e635' : '#fbbf24'}`
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  marginBottom: '12px'
+      <div style={{ padding: '20px' }}>
+        {/* Overall Score Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(163, 230, 53, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '20px',
+          padding: '24px',
+          marginBottom: '24px',
+          border: '1px solid rgba(163, 230, 53, 0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px'
+          }}>
+            <div>
+              <h2 style={{
+                ...getTypographyStyles('large'),
+                color: '#9ca3af',
+                marginBottom: '8px'
+              }}>
+                総合ウェルビーイングスコア
+              </h2>
+              <div style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: '12px'
+              }}>
+                <span style={{
+                  fontSize: '48px',
+                  fontWeight: '800',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
                 }}>
-                  <span style={{ fontSize: '24px' }}>{insight.icon}</span>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: '#f3f4f6',
-                      marginBottom: '8px'
-                    }}>
-                      {insight.title}
-                    </h3>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#d1d5db',
-                      lineHeight: '1.5',
-                      marginBottom: '12px'
-                    }}>
-                      {insight.description}
-                    </p>
-                    
-                    <div style={{
-                      backgroundColor: '#111827',
-                      borderRadius: '8px',
-                      padding: '12px',
-                      marginBottom: '12px'
-                    }}>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-around',
-                        textAlign: 'center'
-                      }}>
-                        {Object.entries(insight.data).map(([key, value]) => (
-                          <div key={key}>
-                            <div style={{
-                              fontSize: '20px',
-                              fontWeight: '700',
-                              color: '#a3e635',
-                              marginBottom: '4px'
-                            }}>
-                              {value}%
-                            </div>
-                            <div style={{
-                              fontSize: '12px',
-                              color: '#9ca3af',
-                              textTransform: 'capitalize'
-                            }}>
-                              {key === 'sleep' ? '睡眠' :
-                               key === 'mood' ? '気分' :
-                               key === 'weekday' ? '平日' :
-                               key === 'weekend' ? '週末' :
-                               key === 'withExercise' ? '運動あり' :
-                               key === 'without' ? '運動なし' :
-                               key === 'social' ? '交流あり' :
-                               key === 'alone' ? '交流なし' : key}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div style={{
-                      backgroundColor: insight.type === 'positive' ? 'rgba(163,230,53,0.1)' : 'rgba(251,191,36,0.1)',
-                      borderRadius: '8px',
-                      padding: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <span style={{ fontSize: '14px' }}>💡</span>
-                      <p style={{
-                        fontSize: '13px',
-                        color: insight.type === 'positive' ? '#a3e635' : '#fbbf24',
-                        margin: 0
-                      }}>
-                        {insight.recommendation}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* AI Insights */}
-        {selectedTab === 'ai' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {aiInsights.map(insight => (
-              <div
-                key={insight.id}
-                style={{
-                  backgroundColor: '#1f2937',
-                  borderRadius: '12px',
-                  padding: '20px'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '12px',
-                  marginBottom: '12px'
+                  {overallScore.current}
+                </span>
+                <span style={{
+                  ...getTypographyStyles('large'),
+                  color: '#6b7280'
                 }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    backgroundColor: '#374151',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px',
-                    flexShrink: 0
-                  }}>
-                    <BirdCharacter 
-                      bodyColor={insight.bodyColor} 
-                      bellyColor={insight.bellyColor}
-                      size={40}
-                    />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '8px'
-                    }}>
-                      <h3 style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        color: '#f3f4f6'
-                      }}>
-                        {insight.character}からのアドバイス
-                      </h3>
-                      <span style={{
-                        fontSize: '12px',
-                        backgroundColor: '#374151',
-                        color: '#a3e635',
-                        padding: '4px 8px',
-                        borderRadius: '12px'
-                      }}>
-                        確信度 {insight.confidence}%
-                      </span>
-                    </div>
-                    <p style={{
-                      fontSize: '14px',
-                      color: '#d1d5db',
-                      lineHeight: '1.6'
-                    }}>
-                      {insight.message}
-                    </p>
-                  </div>
-                </div>
+                  / 100
+                </span>
               </div>
-            ))}
-            
-            <button
-              onClick={() => router.push('/chat')}
-              style={{
-                width: '100%',
-                padding: '16px',
-                backgroundColor: '#374151',
-                color: '#d1d5db',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '15px',
-                fontWeight: '500',
-                cursor: 'pointer',
+            </div>
+            <div style={{
+              textAlign: 'right'
+            }}>
+              <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#4b5563' }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#374151' }}
-            >
-              <span>💬</span>
-              AIと詳しく話す
-            </button>
+                gap: '4px',
+                justifyContent: 'flex-end',
+                marginBottom: '8px',
+                color: overallScore.trend === 'up' ? '#a3e635' : '#ef4444'
+              }}>
+                {overallScore.trend === 'up' ? 
+                  <TrendingUp className="h-5 w-5" /> : 
+                  <TrendingDown className="h-5 w-5" />
+                }
+                <span style={{
+                  ...getTypographyStyles('large'),
+                  fontWeight: '600'
+                }}>
+                  {overallScore.change}%
+                </span>
+              </div>
+              <span style={{
+                ...getTypographyStyles('small'),
+                color: '#6b7280'
+              }}>
+                前週比
+              </span>
+            </div>
           </div>
-        )}
 
-        {/* Recommendations */}
-        {selectedTab === 'recommendations' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {recommendations.map(rec => (
+          {/* Score Progress Bar */}
+          <div style={{
+            height: '8px',
+            backgroundColor: 'rgba(55, 65, 81, 0.6)',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            marginBottom: '20px'
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${overallScore.current}%`,
+              background: 'linear-gradient(90deg, #a3e635 0%, #84cc16 100%)',
+              borderRadius: '4px',
+              transition: 'width 0.5s ease',
+              boxShadow: '0 0 10px rgba(163, 230, 53, 0.4)'
+            }}></div>
+          </div>
+
+          {/* Category Scores */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '12px'
+          }}>
+            {categoryScores.map((cat, index) => (
+              <div key={index} style={{
+                backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                borderRadius: '12px',
+                padding: '12px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{
+                    ...getTypographyStyles('small'),
+                    color: '#9ca3af'
+                  }}>
+                    {cat.category}
+                  </span>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                    color: cat.trend === 'up' ? '#a3e635' : '#ef4444'
+                  }}>
+                    {cat.trend === 'up' ? 
+                      <TrendingUp className="h-3 w-3" /> : 
+                      <TrendingDown className="h-3 w-3" />
+                    }
+                    <span style={{
+                      ...getTypographyStyles('caption'),
+                      fontWeight: '600'
+                    }}>
+                      {Math.abs(cat.change)}%
+                    </span>
+                  </div>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{
+                    ...getTypographyStyles('h3'),
+                    fontWeight: '700',
+                    color: '#f3f4f6'
+                  }}>
+                    {cat.score}
+                  </span>
+                  <div style={{
+                    flex: 1,
+                    height: '4px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+                    borderRadius: '2px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${cat.score}%`,
+                      backgroundColor: cat.score >= 80 ? '#a3e635' : 
+                                      cat.score >= 60 ? '#fbbf24' : '#ef4444',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Key Insights */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{
+            ...typographyPresets.sectionHeader(),
+            marginBottom: '16px'
+          }}>
+            重要な発見
+          </h2>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            {keyInsights.map(insight => (
               <div
-                key={rec.id}
+                key={insight.id}
                 style={{
-                  backgroundColor: '#1f2937',
+                  backgroundColor: 'rgba(31, 41, 55, 0.6)',
                   borderRadius: '12px',
-                  padding: '20px',
-                  borderTop: `3px solid ${
-                    rec.priority === 'high' ? '#ef4444' :
-                    rec.priority === 'medium' ? '#fbbf24' : '#60a5fa'
+                  padding: '16px',
+                  borderLeft: `3px solid ${
+                    insight.type === 'positive' ? '#a3e635' :
+                    insight.type === 'warning' ? '#fbbf24' : '#60a5fa'
                   }`
                 }}
               >
                 <div style={{
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'flex-start',
-                  marginBottom: '12px'
+                  gap: '12px'
                 }}>
-                  <h3 style={{
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    color: '#f3f4f6'
-                  }}>
-                    {rec.title}
-                  </h3>
-                  <span style={{
-                    fontSize: '12px',
-                    backgroundColor: rec.priority === 'high' ? '#ef4444' :
-                                   rec.priority === 'medium' ? '#fbbf24' : '#60a5fa',
-                    color: rec.priority === 'high' ? 'white' : '#111827',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontWeight: '600'
-                  }}>
-                    {rec.priority === 'high' ? '優先度高' :
-                     rec.priority === 'medium' ? '優先度中' : '優先度低'}
-                  </span>
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                  <p style={{
-                    fontSize: '13px',
-                    color: '#9ca3af',
-                    marginBottom: '12px'
-                  }}>
-                    推奨アクション:
-                  </p>
-                  <ul style={{
-                    margin: 0,
-                    paddingLeft: '20px'
-                  }}>
-                    {rec.actions.map((action, index) => (
-                      <li
-                        key={index}
-                        style={{
-                          fontSize: '14px',
-                          color: '#d1d5db',
-                          marginBottom: '6px',
-                          lineHeight: '1.4'
-                        }}
-                      >
-                        {action}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div style={{
-                  backgroundColor: '#111827',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                  <span style={{
-                    fontSize: '13px',
-                    color: '#9ca3af'
-                  }}>
-                    期待される改善度
-                  </span>
                   <div style={{
+                    width: '36px',
+                    height: '36px',
+                    backgroundColor: insight.type === 'positive' ? 'rgba(163, 230, 53, 0.2)' :
+                                     insight.type === 'warning' ? 'rgba(251, 191, 36, 0.2)' :
+                                     'rgba(96, 165, 250, 0.2)',
+                    borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px'
+                    justifyContent: 'center',
+                    color: insight.type === 'positive' ? '#a3e635' :
+                           insight.type === 'warning' ? '#fbbf24' : '#60a5fa',
+                    flexShrink: 0
                   }}>
-                    <div style={{
-                      width: '100px',
-                      height: '6px',
-                      backgroundColor: '#374151',
-                      borderRadius: '3px',
-                      overflow: 'hidden'
-                    }}>
-                      <div style={{
-                        height: '100%',
-                        width: `${rec.expectedImpact}%`,
-                        backgroundColor: '#a3e635',
-                        borderRadius: '3px'
-                      }}></div>
-                    </div>
-                    <span style={{
-                      fontSize: '14px',
+                    {insight.icon}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{
+                      ...getTypographyStyles('base'),
                       fontWeight: '600',
-                      color: '#a3e635'
+                      color: '#f3f4f6',
+                      marginBottom: '4px'
                     }}>
-                      {rec.expectedImpact}%
-                    </span>
+                      {insight.title}
+                    </h3>
+                    <p style={{
+                      ...getTypographyStyles('small'),
+                      color: '#9ca3af',
+                      marginBottom: '8px'
+                    }}>
+                      {insight.description}
+                    </p>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      {Object.entries(insight.metrics).map(([key, value]) => (
+                        <span
+                          key={key}
+                          style={{
+                            ...getTypographyStyles('caption'),
+                            backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                            color: typeof value === 'number' && value > 0 ? '#a3e635' : 
+                                   typeof value === 'number' && value < 0 ? '#ef4444' : '#9ca3af',
+                            padding: '2px 8px',
+                            borderRadius: '12px',
+                            fontWeight: '500'
+                          }}
+                        >
+                          {typeof value === 'number' && value > 0 && '+'}
+                          {value}
+                          {typeof value === 'number' && '%'}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
-
-            <button
-              onClick={() => router.push('/daily-challenge')}
-              style={{
-                width: '100%',
-                padding: '16px',
-                backgroundColor: '#a3e635',
-                color: '#111827',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
-            >
-              今日のチャレンジを始める
-            </button>
           </div>
-        )}
+        </div>
+
+        {/* Mood Trend Graph */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{
+            ...typographyPresets.sectionHeader(),
+            marginBottom: '16px'
+          }}>
+            気分トレンド
+          </h2>
+          <div style={{
+            backgroundColor: 'rgba(31, 41, 55, 0.6)',
+            borderRadius: '12px',
+            padding: '16px'
+          }}>
+            {/* 7日間の気分データ */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              height: '120px',
+              marginBottom: '12px'
+            }}>
+              {[
+                { day: '月', mood: 65, emoji: '😐' },
+                { day: '火', mood: 72, emoji: '🙂' },
+                { day: '水', mood: 68, emoji: '😐' },
+                { day: '木', mood: 78, emoji: '😊' },
+                { day: '金', mood: 82, emoji: '😄' },
+                { day: '土', mood: 88, emoji: '😄' },
+                { day: '日', mood: 75, emoji: '🙂' }
+              ].map((data, index) => (
+                <div key={index} style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <span style={{
+                    ...getTypographyStyles('caption'),
+                    marginBottom: '4px'
+                  }}>
+                    {data.emoji}
+                  </span>
+                  <div style={{
+                    width: '100%',
+                    maxWidth: '20px',
+                    height: `${data.mood}%`,
+                    background: data.mood >= 80 ? 'linear-gradient(180deg, #a3e635, #84cc16)' :
+                               data.mood >= 60 ? 'linear-gradient(180deg, #60a5fa, #3b82f6)' :
+                               'linear-gradient(180deg, #fbbf24, #f59e0b)',
+                    borderRadius: '4px 4px 0 0',
+                    transition: 'all 0.3s ease'
+                  }}></div>
+                  <span style={{
+                    ...getTypographyStyles('caption'),
+                    color: '#9ca3af'
+                  }}>
+                    {data.day}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {/* 平均値ライン */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              paddingTop: '12px',
+              borderTop: '1px solid rgba(55, 65, 81, 0.5)'
+            }}>
+              <span style={{
+                ...getTypographyStyles('small'),
+                color: '#9ca3af'
+              }}>
+                週間平均: 75%
+              </span>
+              <span style={{
+                ...getTypographyStyles('small'),
+                color: '#a3e635'
+              }}>
+                先週比 +8%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Time Performance */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{
+            ...typographyPresets.sectionHeader(),
+            marginBottom: '16px'
+          }}>
+            時間帯別パフォーマンス
+          </h2>
+          <div style={{
+            backgroundColor: 'rgba(31, 41, 55, 0.6)',
+            borderRadius: '12px',
+            padding: '16px'
+          }}>
+            {timePerformance.map((time, index) => (
+              <div key={index} style={{
+                marginBottom: index < timePerformance.length - 1 ? '16px' : 0
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '8px'
+                }}>
+                  <span style={{
+                    ...getTypographyStyles('label'),
+                    color: '#f3f4f6',
+                    fontWeight: '600'
+                  }}>
+                    {time.time}
+                  </span>
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px'
+                  }}>
+                    <span style={{
+                      ...getTypographyStyles('caption'),
+                      color: '#9ca3af'
+                    }}>
+                      E: {time.energy}
+                    </span>
+                    <span style={{
+                      ...getTypographyStyles('caption'),
+                      color: '#9ca3af'
+                    }}>
+                      F: {time.focus}
+                    </span>
+                    <span style={{
+                      ...getTypographyStyles('caption'),
+                      color: '#9ca3af'
+                    }}>
+                      M: {time.mood}
+                    </span>
+                  </div>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  gap: '4px',
+                  height: '6px'
+                }}>
+                  <div style={{
+                    flex: time.energy,
+                    backgroundColor: '#60a5fa',
+                    borderRadius: '3px'
+                  }}></div>
+                  <div style={{
+                    flex: time.focus,
+                    backgroundColor: '#a3e635',
+                    borderRadius: '3px'
+                  }}></div>
+                  <div style={{
+                    flex: time.mood,
+                    backgroundColor: '#fbbf24',
+                    borderRadius: '3px'
+                  }}></div>
+                </div>
+              </div>
+            ))}
+            <div style={{
+              display: 'flex',
+              gap: '16px',
+              marginTop: '16px',
+              paddingTop: '16px',
+              borderTop: '1px solid rgba(55, 65, 81, 0.5)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#60a5fa',
+                  borderRadius: '2px'
+                }}></div>
+                <span style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  エネルギー
+                </span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#a3e635',
+                  borderRadius: '2px'
+                }}></div>
+                <span style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  集中力
+                </span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  backgroundColor: '#fbbf24',
+                  borderRadius: '2px'
+                }}></div>
+                <span style={{
+                  ...getTypographyStyles('caption'),
+                  color: '#9ca3af'
+                }}>
+                  気分
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Correlations */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{
+            ...typographyPresets.sectionHeader(),
+            marginBottom: '16px'
+          }}>
+            相関分析
+          </h2>
+          <div style={{
+            backgroundColor: 'rgba(31, 41, 55, 0.6)',
+            borderRadius: '12px',
+            padding: '16px'
+          }}>
+            {correlations.map((corr, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: index < correlations.length - 1 ? '12px' : 0
+              }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '4px'
+                  }}>
+                    <span style={{
+                      ...getTypographyStyles('small'),
+                      color: '#f3f4f6'
+                    }}>
+                      {corr.factor1} × {corr.factor2}
+                    </span>
+                    <span style={{
+                      ...getTypographyStyles('caption'),
+                      color: Math.abs(corr.correlation) > 0.7 ? '#a3e635' : '#fbbf24',
+                      fontWeight: '600'
+                    }}>
+                      {corr.correlation > 0 ? '+' : ''}{(corr.correlation * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                  <div style={{
+                    height: '4px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.8)',
+                    borderRadius: '2px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      height: '100%',
+                      width: `${Math.abs(corr.correlation) * 100}%`,
+                      backgroundColor: corr.correlation > 0 ? '#a3e635' : '#ef4444',
+                      borderRadius: '2px'
+                    }}></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Improvement Suggestions */}
+        <div style={{ marginBottom: '24px' }}>
+          <h2 style={{
+            ...typographyPresets.sectionHeader(),
+            marginBottom: '16px'
+          }}>
+            改善提案
+          </h2>
+          {improvements.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '12px',
+                borderTop: `2px solid ${
+                  item.priority === 'high' ? '#ef4444' :
+                  item.priority === 'medium' ? '#fbbf24' : '#60a5fa'
+                }`
+              }}
+            >
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: '12px'
+              }}>
+                <div>
+                  <h3 style={{
+                    ...getTypographyStyles('base'),
+                    fontWeight: '600',
+                    color: '#f3f4f6',
+                    marginBottom: '4px'
+                  }}>
+                    {item.area}
+                  </h3>
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    ...getTypographyStyles('small'),
+                    color: '#9ca3af'
+                  }}>
+                    <span>現在: {item.current}</span>
+                    <span>→</span>
+                    <span style={{ color: '#a3e635' }}>目標: {item.target}</span>
+                  </div>
+                </div>
+                <span style={{
+                  ...getTypographyStyles('caption'),
+                  backgroundColor: item.priority === 'high' ? '#ef4444' :
+                                 item.priority === 'medium' ? '#fbbf24' : '#60a5fa',
+                  color: item.priority === 'high' ? 'white' : '#111827',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontWeight: '600'
+                }}>
+                  {item.priority === 'high' ? '優先' :
+                   item.priority === 'medium' ? '推奨' : '任意'}
+                </span>
+              </div>
+              <div>
+                <p style={{
+                  ...getTypographyStyles('small'),
+                  color: '#9ca3af',
+                  marginBottom: '8px'
+                }}>
+                  アクションアイテム:
+                </p>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}>
+                  {item.actions.map((action, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                    >
+                      <ChevronRight className="h-3 w-3" style={{ color: '#6b7280' }} />
+                      <span style={{
+                        ...getTypographyStyles('small'),
+                        color: '#d1d5db'
+                      }}>
+                        {action}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Action Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '12px'
+        }}>
+          <button
+            onClick={() => router.push('/daily-challenge')}
+            style={{
+              flex: 1,
+              padding: '16px',
+              background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+              color: '#111827',
+              border: 'none',
+              borderRadius: '12px',
+              ...getTypographyStyles('button'),
+              fontWeight: '700',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            改善を始める
+          </button>
+          <button
+            onClick={() => router.push('/export')}
+            style={{
+              padding: '16px',
+              backgroundColor: 'rgba(55, 65, 81, 0.6)',
+              color: '#9ca3af',
+              border: '1px solid rgba(55, 65, 81, 0.5)',
+              borderRadius: '12px',
+              ...getTypographyStyles('button'),
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            PDF出力
+          </button>
+        </div>
       </div>
 
       <MobileBottomNav />
