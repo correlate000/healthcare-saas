@@ -3,6 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { 
+  CalendarWeekIcon, CalendarMonthIcon, CalendarYearIcon, TrendUpIcon, FireIcon,
+  TargetIcon, RelaxIcon, TrophySimpleIcon, ChartIcon, MoonIcon, RunnerIcon, 
+  RocketIcon, CelebrationIcon, MusclePowerIcon, SparkleIcon, ExportIcon,
+  MoodHappyIcon, LightningIcon, StressIcon, SleepIcon, MobileIcon, ClockIcon
+} from '@/components/icons/illustrations'
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -32,10 +38,10 @@ export default function AnalyticsPage() {
         { day: '日', mood: 88, energy: 90, stress: 15, sleep: 90 }
       ],
       insights: [
-        { title: '気分の向上', content: '先週と比べて平均気分スコアが12%向上しています', icon: '📈', color: '#a3e635' },
-        { title: '継続力アップ', content: '7日連続でセッションを完了！素晴らしい継続力です！', icon: '🔥', color: '#f59e0b' },
-        { title: '週間目標達成', content: '今週の目標時間180分を20分オーバーで達成！', icon: '🎯', color: '#60a5fa' },
-        { title: 'ストレス軽減', content: '先週より平均ストレスレベルが15%減少しました', icon: '😌', color: '#a78bfa' }
+        { title: '気分の向上', content: '先週と比べて平均気分スコアが12%向上しています', icon: <TrendUpIcon size={20} />, color: '#a3e635' },
+        { title: '継続力アップ', content: '7日連続でセッションを完了！素晴らしい継続力です！', icon: <FireIcon size={20} />, color: '#f59e0b' },
+        { title: '週間目標達成', content: '今週の目標時間180分を20分オーバーで達成！', icon: <TargetIcon size={20} />, color: '#60a5fa' },
+        { title: 'ストレス軽減', content: '先週より平均ストレスレベルが15%減少しました', icon: <RelaxIcon size={20} />, color: '#a78bfa' }
       ]
     },
     month: {
@@ -50,10 +56,10 @@ export default function AnalyticsPage() {
         { day: '第4週', mood: 83, energy: 82, stress: 28, sleep: 86 }
       ],
       insights: [
-        { title: '月間達成', content: '28日間連続記録を達成！新記録です！', icon: '🏆', color: '#fbbf24' },
-        { title: '成長トレンド', content: '月初から11%の気分スコア改善を記録', icon: '📊', color: '#a3e635' },
-        { title: '睡眠改善', content: '平均睡眠の質が月初より8%向上しています', icon: '🌙', color: '#60a5fa' },
-        { title: '活動量増加', content: '先月より身体活動時間が25%増加しました', icon: '🏃', color: '#f87171' }
+        { title: '月間達成', content: '28日間連続記録を達成！新記録です！', icon: <TrophySimpleIcon size={20} />, color: '#fbbf24' },
+        { title: '成長トレンド', content: '月初から11%の気分スコア改善を記録', icon: <ChartIcon size={20} />, color: '#a3e635' },
+        { title: '睡眠改善', content: '平均睡眠の質が月初より8%向上しています', icon: <MoonIcon size={20} />, color: '#60a5fa' },
+        { title: '活動量増加', content: '先月より身体活動時間が25%増加しました', icon: <RunnerIcon size={20} />, color: '#f87171' }
       ]
     },
     year: {
@@ -72,10 +78,10 @@ export default function AnalyticsPage() {
         { day: '8月', mood: 82, energy: 84, stress: 32, sleep: 86 }
       ],
       insights: [
-        { title: '年間成長', content: '年初から気分スコアが20%向上しました', icon: '🚀', color: '#a3e635' },
-        { title: 'マイルストーン', content: '300セッション達成！素晴らしい継続です', icon: '🎊', color: '#fbbf24' },
-        { title: '健康改善', content: 'ストレスレベルが年初から36%減少', icon: '💪', color: '#60a5fa' },
-        { title: '習慣化成功', content: '85%の日でチェックインを完了しています', icon: '✨', color: '#a78bfa' }
+        { title: '年間成長', content: '年初から気分スコアが20%向上しました', icon: <RocketIcon size={20} />, color: '#a3e635' },
+        { title: 'マイルストーン', content: '300セッション達成！素晴らしい継続です', icon: <CelebrationIcon size={20} />, color: '#fbbf24' },
+        { title: '健康改善', content: 'ストレスレベルが年初から36%減少', icon: <MusclePowerIcon size={20} />, color: '#60a5fa' },
+        { title: '習慣化成功', content: '85%の日でチェックインを完了しています', icon: <SparkleIcon size={20} />, color: '#a78bfa' }
       ]
     }
   }
@@ -83,16 +89,16 @@ export default function AnalyticsPage() {
   const currentData = dataByPeriod[selectedPeriod]
 
   const periods = [
-    { key: 'week', label: '週間', icon: '📅' },
-    { key: 'month', label: '月間', icon: '📆' },
-    { key: 'year', label: '年間', icon: '🗓️' }
+    { key: 'week', label: '週間', icon: <CalendarWeekIcon size={16} /> },
+    { key: 'month', label: '月間', icon: <CalendarMonthIcon size={16} /> },
+    { key: 'year', label: '年間', icon: <CalendarYearIcon size={16} /> }
   ]
 
   const metrics = [
-    { key: 'mood', label: '気分', color: '#a3e635', icon: '😊' },
-    { key: 'energy', label: 'エネルギー', color: '#fbbf24', icon: '⚡' },
-    { key: 'stress', label: 'ストレス', color: '#f87171', icon: '😰', inverse: true },
-    { key: 'sleep', label: '睡眠', color: '#60a5fa', icon: '😴' }
+    { key: 'mood', label: '気分', color: '#a3e635', icon: <MoodHappyIcon size={16} /> },
+    { key: 'energy', label: 'エネルギー', color: '#fbbf24', icon: <LightningIcon size={16} /> },
+    { key: 'stress', label: 'ストレス', color: '#f87171', icon: <StressIcon size={16} />, inverse: true },
+    { key: 'sleep', label: '睡眠', color: '#60a5fa', icon: <SleepIcon size={16} /> }
   ]
 
   const selectedMetricInfo = metrics.find(m => m.key === selectedMetric) || metrics[0]
@@ -170,7 +176,10 @@ export default function AnalyticsPage() {
               e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
             }}
           >
-            📊 エクスポート
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ExportIcon size={16} />
+              エクスポート
+            </div>
           </button>
         </div>
       </div>
@@ -208,7 +217,7 @@ export default function AnalyticsPage() {
                 transform: selectedPeriod === period.key ? 'translateY(-2px)' : 'translateY(0)'
               }}
             >
-              <span style={{ fontSize: '18px' }}>{period.icon}</span>
+              {period.icon}
               {period.label}
             </button>
           ))}
@@ -222,10 +231,10 @@ export default function AnalyticsPage() {
           marginBottom: '32px' 
         }}>
           {[
-            { value: currentData.streak, label: selectedPeriod === 'week' ? '連続記録' : selectedPeriod === 'month' ? '月間記録' : '年間記録', icon: '🔥', color: '#f59e0b' },
-            { value: `${currentData.avgMood}%`, label: '平均気分', icon: '😊', color: '#a3e635' },
-            { value: currentData.sessions, label: 'セッション', icon: '📱', color: '#60a5fa' },
-            { value: currentData.totalTime, label: '総利用時間', icon: '⏱️', color: '#a78bfa' }
+            { value: currentData.streak, label: selectedPeriod === 'week' ? '連続記録' : selectedPeriod === 'month' ? '月間記録' : '年間記録', icon: <FireIcon size={28} />, color: '#f59e0b' },
+            { value: `${currentData.avgMood}%`, label: '平均気分', icon: <MoodHappyIcon size={28} />, color: '#a3e635' },
+            { value: currentData.sessions, label: 'セッション', icon: <MobileIcon size={28} />, color: '#60a5fa' },
+            { value: currentData.totalTime, label: '総利用時間', icon: <ClockIcon size={28} />, color: '#a78bfa' }
           ].map((stat, index) => (
             <div key={`${stat.label}-${animationKey}`} style={{ 
               background: 'rgba(31, 41, 55, 0.6)',
@@ -246,7 +255,7 @@ export default function AnalyticsPage() {
               e.currentTarget.style.transform = 'translateY(0) scale(1)'
               e.currentTarget.style.boxShadow = 'none'
             }}>
-              <div style={{ fontSize: '28px', marginBottom: '8px' }}>{stat.icon}</div>
+              <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
               <div style={{ 
                 fontSize: '32px', 
                 fontWeight: '800', 
@@ -297,7 +306,7 @@ export default function AnalyticsPage() {
                   whiteSpace: 'nowrap'
                 }}
               >
-                <span>{metric.icon}</span>
+                {metric.icon}
                 {metric.label}
               </button>
             ))}
@@ -334,7 +343,7 @@ export default function AnalyticsPage() {
                 backgroundColor: `${selectedMetricInfo.color}20`,
                 borderRadius: '8px'
               }}>
-                <span>{selectedMetricInfo.icon}</span>
+                {selectedMetricInfo.icon}
                 <span style={{ 
                   fontSize: '14px', 
                   color: selectedMetricInfo.color,

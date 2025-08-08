@@ -1172,3 +1172,149 @@ export const DeleteAccountIcon = ({ size = 48, primaryColor = '#ef4444', seconda
     <text x="70" y="74" fontSize="12" fill="white" fontWeight="bold" textAnchor="middle">!</text>
   </svg>
 )
+
+// Simplified Icons for better UI readability
+export const CalendarWeekIcon = ({ size = 24, color = '#9ca3af' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="6" width="18" height="15" rx="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M3 10H21" stroke={color} strokeWidth="1.5"/>
+    <path d="M7 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M17 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <rect x="6" y="13" width="3" height="3" rx="0.5" fill={color}/>
+    <rect x="10.5" y="13" width="3" height="3" rx="0.5" fill={color}/>
+    <rect x="15" y="13" width="3" height="3" rx="0.5" fill={color}/>
+  </svg>
+)
+
+export const CalendarMonthIcon = ({ size = 24, color = '#9ca3af' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="6" width="18" height="15" rx="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M3 10H21" stroke={color} strokeWidth="1.5"/>
+    <path d="M7 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M17 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <circle cx="8" cy="14" r="1" fill={color}/>
+    <circle cx="12" cy="14" r="1" fill={color}/>
+    <circle cx="16" cy="14" r="1" fill={color}/>
+    <circle cx="8" cy="18" r="1" fill={color}/>
+    <circle cx="12" cy="18" r="1" fill={color}/>
+  </svg>
+)
+
+export const CalendarYearIcon = ({ size = 24, color = '#9ca3af' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="6" width="18" height="15" rx="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M3 10H21" stroke={color} strokeWidth="1.5"/>
+    <path d="M7 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M17 3V7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <text x="12" y="16" fontSize="8" fill={color} textAnchor="middle">2025</text>
+  </svg>
+)
+
+export const TrendUpIcon = ({ size = 24, color = '#a3e635' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 17L9 11L13 15L21 7" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M15 7H21V13" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+export const TrophySimpleIcon = ({ size = 24, color = '#fbbf24' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 9V4H18V9C18 13 15 15 12 15C9 15 6 13 6 9Z" stroke={color} strokeWidth="1.5"/>
+    <path d="M12 15V19" stroke={color} strokeWidth="1.5"/>
+    <path d="M8 19H16" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M6 8H3V10C3 11 4 12 5 12H6" stroke={color} strokeWidth="1.5"/>
+    <path d="M18 8H21V10C21 11 20 12 19 12H18" stroke={color} strokeWidth="1.5"/>
+  </svg>
+)
+
+export const RunnerIcon = ({ size = 24, color = '#f87171' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="16" cy="5" r="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M12 12L8 16L6 21" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M12 12L16 16L18 21" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M12 12L10 8L14 6" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M10 8L6 10" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M14 9L18 11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const RocketIcon = ({ size = 24, color = '#a3e635' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C16 2 19 5 19 12V18L17 20H7L5 18V12C5 5 8 2 12 2Z" stroke={color} strokeWidth="1.5"/>
+    <circle cx="12" cy="9" r="2" stroke={color} strokeWidth="1.5"/>
+    <path d="M7 20L6 22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M17 20L18 22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M12 20V22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const SparkleIcon = ({ size = 24, color = '#a78bfa' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+    <path d="M5 3L5.5 5L7.5 5.5L5.5 6L5 8L4.5 6L2.5 5.5L4.5 5L5 3Z" fill={color}/>
+    <path d="M19 16L19.5 18L21.5 18.5L19.5 19L19 21L18.5 19L16.5 18.5L18.5 18L19 16Z" fill={color}/>
+  </svg>
+)
+
+export const ExportIcon = ({ size = 24, color = '#a3e635' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 3L12 15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M8 7L12 3L16 7" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M5 12V19C5 20 6 21 7 21H17C18 21 19 20 19 19V12" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const MoodHappyIcon = ({ size = 24, color = '#a3e635' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5"/>
+    <circle cx="9" cy="10" r="1" fill={color}/>
+    <circle cx="15" cy="10" r="1" fill={color}/>
+    <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const LightningIcon = ({ size = 24, color = '#fbbf24' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 2L4 14H11L10 22L19 10H12L13 2Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+  </svg>
+)
+
+export const StressIcon = ({ size = 24, color = '#f87171' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5"/>
+    <path d="M8 9L10 11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M10 9L8 11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M14 9L16 11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M16 9L14 11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M9 15H15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const SleepIcon = ({ size = 24, color = '#60a5fa' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21 12C21 17 17 21 12 21C7 21 3 17 3 12C3 7 7 3 12 3C12 3 9 6 9 10C9 14 12 17 16 17C20 17 21 12 21 12Z" stroke={color} strokeWidth="1.5"/>
+    <path d="M16 7L17 6" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+    <path d="M18 10L19 9" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+    <path d="M14 5L15 4" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+  </svg>
+)
+
+export const CelebrationIcon = ({ size = 24, color = '#fbbf24' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 12L7 4L9 12L11 6L13 12L15 4L17 12L19 8" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="6" cy="18" r="2" fill={color}/>
+    <circle cx="12" cy="19" r="2" fill={color}/>
+    <circle cx="18" cy="18" r="2" fill={color}/>
+    <path d="M4 14L5 15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M20 14L19 15" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const RelaxIcon = ({ size = 24, color = '#a78bfa' }: { size?: number, color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5"/>
+    <path d="M9 10C9 10 9.5 9 10 9C10.5 9 11 10 11 10" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M13 10C13 10 13.5 9 14 9C14.5 9 15 10 15 10" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M10 14C10 14 10.5 15 12 15C13.5 15 14 14 14 14" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
