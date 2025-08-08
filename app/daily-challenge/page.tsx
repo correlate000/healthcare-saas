@@ -3,6 +3,11 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { 
+  BreathingIcon, StretchIcon, NoteIcon, MeditationIcon, ChatIcon, ArtIcon, 
+  NatureIcon, WaterDropIcon, TargetIcon, BrainIcon, MusclePowerIcon, HandshakeIcon,
+  LeafIcon, FireIcon, CheckIcon, StarIcon, ClockIcon, ChartIcon, ProgressIcon
+} from '@/components/icons/illustrations'
 
 export default function DailyChallengePage() {
   const router = useRouter()
@@ -24,7 +29,7 @@ export default function DailyChallengePage() {
       durationMinutes: 3,
       difficulty: 'easy',
       xp: 20,
-      icon: '🫁',
+      icon: <BreathingIcon size={28} />,
       color: '#60a5fa',
       steps: [
         '快適な姿勢で座る',
@@ -43,7 +48,7 @@ export default function DailyChallengePage() {
       durationMinutes: 5,
       difficulty: 'easy',
       xp: 25,
-      icon: '🧘',
+      icon: <StretchIcon size={28} />,
       color: '#a3e635',
       steps: [
         '首を左右にゆっくり回す',
@@ -62,7 +67,7 @@ export default function DailyChallengePage() {
       durationMinutes: 5,
       difficulty: 'easy',
       xp: 30,
-      icon: '📝',
+      icon: <NoteIcon size={28} />,
       color: '#fbbf24',
       steps: [
         'ノートやアプリを開く',
@@ -81,7 +86,7 @@ export default function DailyChallengePage() {
       durationMinutes: 10,
       difficulty: 'medium',
       xp: 40,
-      icon: '🧘‍♀️',
+      icon: <MeditationIcon size={28} />,
       color: '#a78bfa',
       steps: [
         '仰向けに横になる',
@@ -100,7 +105,7 @@ export default function DailyChallengePage() {
       durationMinutes: 2,
       difficulty: 'easy',
       xp: 15,
-      icon: '💬',
+      icon: <ChatIcon size={28} />,
       color: '#f87171',
       steps: [
         '連絡を取りたい友人を選ぶ',
@@ -119,7 +124,7 @@ export default function DailyChallengePage() {
       durationMinutes: 5,
       difficulty: 'medium',
       xp: 35,
-      icon: '🎨',
+      icon: <ArtIcon size={28} />,
       color: '#ec4899',
       steps: [
         '紙とペンを用意',
@@ -138,7 +143,7 @@ export default function DailyChallengePage() {
       durationMinutes: 5,
       difficulty: 'easy',
       xp: 20,
-      icon: '🌳',
+      icon: <NatureIcon size={28} />,
       color: '#10b981',
       steps: [
         '窓の近くに座る',
@@ -157,7 +162,7 @@ export default function DailyChallengePage() {
       durationMinutes: 1,
       difficulty: 'easy',
       xp: 10,
-      icon: '💧',
+      icon: <WaterDropIcon size={28} />,
       color: '#06b6d4',
       steps: [
         'コップに水を注ぐ',
@@ -170,15 +175,15 @@ export default function DailyChallengePage() {
   ]
 
   const categories = [
-    { id: 'all', label: 'すべて', icon: '🎯' },
-    { id: 'mindfulness', label: 'マインドフルネス', icon: '🧠' },
-    { id: 'exercise', label: '運動', icon: '💪' },
-    { id: 'meditation', label: '瞑想', icon: '🧘' },
-    { id: 'gratitude', label: '感謝', icon: '🙏' },
-    { id: 'social', label: '社交', icon: '👥' },
-    { id: 'creative', label: '創造', icon: '🎨' },
-    { id: 'nature', label: '自然', icon: '🌿' },
-    { id: 'hydration', label: '水分', icon: '💧' }
+    { id: 'all', label: 'すべて', icon: <TargetIcon size={16} /> },
+    { id: 'mindfulness', label: 'マインドフルネス', icon: <BrainIcon size={16} /> },
+    { id: 'exercise', label: '運動', icon: <MusclePowerIcon size={16} /> },
+    { id: 'meditation', label: '瞑想', icon: <MeditationIcon size={16} /> },
+    { id: 'gratitude', label: '感謝', icon: <HandshakeIcon size={16} /> },
+    { id: 'social', label: '社交', icon: <ChatIcon size={16} /> },
+    { id: 'creative', label: '創造', icon: <ArtIcon size={16} /> },
+    { id: 'nature', label: '自然', icon: <LeafIcon size={16} /> },
+    { id: 'hydration', label: '水分', icon: <WaterDropIcon size={16} /> }
   ]
 
   const filteredChallenges = selectedCategory === 'all' 
@@ -363,7 +368,7 @@ export default function DailyChallengePage() {
                   gap: '12px',
                   marginBottom: '8px'
                 }}>
-                  <span style={{ fontSize: '32px' }}>🔥</span>
+                  <FireIcon size={32} />
                   <div>
                     <div style={{
                       fontSize: '32px',
@@ -396,7 +401,7 @@ export default function DailyChallengePage() {
                   backgroundColor: 'rgba(163, 230, 53, 0.2)',
                   borderRadius: '8px'
                 }}>
-                  <span>✅</span>
+                  <CheckIcon size={16} />
                   <span style={{
                     fontSize: '16px',
                     fontWeight: '600',
@@ -476,7 +481,7 @@ export default function DailyChallengePage() {
             textAlign: 'center',
             border: '1px solid rgba(55, 65, 81, 0.3)'
           }}>
-            <div style={{ fontSize: '24px', marginBottom: '4px' }}>⭐</div>
+            <StarIcon size={24} />
             <div style={{
               fontSize: '24px',
               fontWeight: '700',
@@ -500,7 +505,7 @@ export default function DailyChallengePage() {
             textAlign: 'center',
             border: '1px solid rgba(55, 65, 81, 0.3)'
           }}>
-            <div style={{ fontSize: '24px', marginBottom: '4px' }}>⏱️</div>
+            <ClockIcon size={24} />
             <div style={{
               fontSize: '24px',
               fontWeight: '700',
@@ -524,7 +529,7 @@ export default function DailyChallengePage() {
             textAlign: 'center',
             border: '1px solid rgba(55, 65, 81, 0.3)'
           }}>
-            <div style={{ fontSize: '24px', marginBottom: '4px' }}>📈</div>
+            <ChartIcon size={24} />
             <div style={{
               fontSize: '24px',
               fontWeight: '700',
@@ -573,7 +578,7 @@ export default function DailyChallengePage() {
                 whiteSpace: 'nowrap'
               }}
             >
-              <span>{category.icon}</span>
+              {category.icon}
               {category.label}
             </button>
           ))}
@@ -668,7 +673,7 @@ export default function DailyChallengePage() {
                         fontSize: '28px',
                         flexShrink: 0
                       }}>
-                        {isCompleted ? '✅' : challenge.icon}
+                        {isCompleted ? <CheckIcon size={28} /> : challenge.icon}
                       </div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{
@@ -715,7 +720,7 @@ export default function DailyChallengePage() {
                             alignItems: 'center',
                             gap: '4px'
                           }}>
-                            ⏱️ {challenge.duration}
+                            <ClockIcon size={12} /> {challenge.duration}
                           </span>
                           <span style={{
                             fontSize: '12px',
@@ -880,7 +885,7 @@ export default function DailyChallengePage() {
                         color: '#a3e635',
                         fontWeight: '600'
                       }}>
-                        ✅ 完了済み（+{challenge.xp} XP獲得）
+                        <CheckIcon size={16} /> 完了済み（+{challenge.xp} XP獲得）
                       </span>
                     </div>
                   )}

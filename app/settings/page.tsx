@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { BellIcon, WarningIcon, LockIcon, FileIcon, CalendarIcon, TrophyIcon, MessageIcon, ChartIcon } from '@/components/icons'
+import { MobileIcon, FireIcon, StarIcon, TeamIcon, NoteIcon, HeartHandsIcon, MoonIcon, EnergyIcon, ClockIcon, DataExportIcon, DeleteAccountIcon } from '@/components/icons/illustrations'
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -219,9 +220,9 @@ export default function SettingsPage() {
               marginBottom: '20px' 
             }}>
               {[
-                { label: 'セッション', value: userStats.sessions, icon: '📱' },
-                { label: '連続記録', value: `${userStats.streak}日`, icon: '🔥' },
-                { label: 'レベル', value: `Lv.${userStats.level}`, icon: '⭐' }
+                { label: 'セッション', value: userStats.sessions, icon: <MobileIcon size={20} primaryColor="#60a5fa" /> },
+                { label: '連続記録', value: `${userStats.streak}日`, icon: <FireIcon size={20} primaryColor="#ef4444" /> },
+                { label: 'レベル', value: `Lv.${userStats.level}`, icon: <StarIcon size={20} primaryColor="#fbbf24" /> }
               ].map((stat) => (
                 <div key={stat.label} style={{
                   backgroundColor: 'rgba(31, 41, 55, 0.6)',
@@ -231,7 +232,7 @@ export default function SettingsPage() {
                   backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
-                  <div style={{ fontSize: '20px', marginBottom: '8px' }}>{stat.icon}</div>
+                  <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
                   <div style={{ 
                     fontSize: '24px', 
                     fontWeight: '700', 
@@ -296,9 +297,9 @@ export default function SettingsPage() {
         }}>
           {[
             { icon: '🏆', label: 'バッジ', count: userStats.badges, path: '/achievements' },
-            { icon: '👥', label: '友達', count: userStats.friendsCount, path: '/team-connect' },
-            { icon: '📊', label: '分析', count: userStats.totalTime, path: '/analytics' },
-            { icon: '🤖', label: 'AI設定', count: '6体', path: '/characters' }
+            { icon: <TeamIcon size={24} primaryColor="#8b5cf6" />, label: '友達', count: userStats.friendsCount, path: '/team-connect' },
+            { icon: <ChartIcon size={24} color="#10b981" />, label: '分析', count: userStats.totalTime, path: '/analytics' },
+            { icon: <EnergyIcon size={24} primaryColor="#f59e0b" />, label: 'AI設定', count: '6体', path: '/characters' }
           ].map((action) => (
             <button
               key={action.label}
@@ -327,7 +328,7 @@ export default function SettingsPage() {
                 e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.3)'
               }}
             >
-              <span style={{ fontSize: '24px' }}>{action.icon}</span>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>{typeof action.icon === 'string' ? <span style={{ fontSize: '24px' }}>{action.icon}</span> : action.icon}</div>
               <span style={{ fontSize: '13px', color: '#9ca3af' }}>{action.label}</span>
               <span style={{ 
                 fontSize: '16px', 
@@ -385,12 +386,12 @@ export default function SettingsPage() {
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {[
-                  { key: 'checkinReminder', label: 'チェックインリマインダー', desc: '毎日の健康チェック', icon: '📝' },
-                  { key: 'weeklyReport', label: '週次レポート', desc: '週間の振り返りと分析', icon: '📊' },
-                  { key: 'encouragement', label: '励ましメッセージ', desc: 'AIからの応援', icon: '💝' },
-                  { key: 'achievements', label: '実績通知', desc: 'バッジやレベルアップ', icon: '🏆' },
-                  { key: 'teamUpdates', label: 'チーム更新', desc: 'チームメンバーの活動', icon: '👥' },
-                  { key: 'marketing', label: 'お知らせ', desc: '新機能やアップデート', icon: '📢' }
+                  { key: 'checkinReminder', label: 'チェックインリマインダー', desc: '毎日の健康チェック', icon: <NoteIcon size={20} /> },
+                  { key: 'weeklyReport', label: '週次レポート', desc: '週間の振り返りと分析', icon: <ChartIcon size={20} color="#10b981" /> },
+                  { key: 'encouragement', label: '励ましメッセージ', desc: 'AIからの応援', icon: <HeartHandsIcon size={20} /> },
+                  { key: 'achievements', label: '実績通知', desc: 'バッジやレベルアップ', icon: <TrophyIcon size={20} color="#fbbf24" /> },
+                  { key: 'teamUpdates', label: 'チーム更新', desc: 'チームメンバーの活動', icon: <TeamIcon size={20} primaryColor="#8b5cf6" /> },
+                  { key: 'marketing', label: 'お知らせ', desc: '新機能やアップデート', icon: <BellIcon size={20} color="#ef4444" /> }
                 ].map((item) => (
                   <div key={item.key} style={{
                     display: 'flex',
@@ -401,7 +402,7 @@ export default function SettingsPage() {
                     borderRadius: '12px'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                      <span style={{ fontSize: '20px' }}>{item.icon}</span>
+                      {item.icon}
                       <div>
                         <div style={{ fontSize: '14px', color: '#f3f4f6', marginBottom: '2px' }}>
                           {item.label}
@@ -537,9 +538,9 @@ export default function SettingsPage() {
                 </h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                   {[
-                    { value: 'dark', label: 'ダーク', icon: '🌙', color: '#111827' },
-                    { value: 'light', label: 'ライト', icon: '☀️', color: '#f3f4f6' },
-                    { value: 'auto', label: '自動', icon: '🌓', gradient: 'linear-gradient(135deg, #111827 0%, #f3f4f6 100%)' }
+                    { value: 'dark', label: 'ダーク', icon: <MoonIcon size={24} />, color: '#111827' },
+                    { value: 'light', label: 'ライト', icon: <EnergyIcon size={24} primaryColor="#fbbf24" />, color: '#f3f4f6' },
+                    { value: 'auto', label: '自動', icon: <ClockIcon size={24} />, gradient: 'linear-gradient(135deg, #111827 0%, #f3f4f6 100%)' }
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -560,7 +561,7 @@ export default function SettingsPage() {
                         color: option.value === 'light' ? '#111827' : '#f3f4f6'
                       }}
                     >
-                      <span style={{ fontSize: '24px' }}>{option.icon}</span>
+                      {option.icon}
                       <span style={{ fontSize: '12px', fontWeight: '600' }}>{option.label}</span>
                     </button>
                   ))}
@@ -716,7 +717,7 @@ export default function SettingsPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>💾</span>
+                    <DataExportIcon size={20} />
                     データエクスポート
                   </div>
                   <span style={{ color: '#9ca3af' }}>›</span>
@@ -747,7 +748,7 @@ export default function SettingsPage() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span>🗑️</span>
+                    <DeleteAccountIcon size={20} />
                     アカウント削除
                   </div>
                   <span style={{ color: '#ef4444' }}>›</span>
