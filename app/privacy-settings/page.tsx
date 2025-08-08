@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { ChartIcon, UsersIcon, MailIcon, LockIcon, SaveIcon, TrashIcon, FileIcon } from '@/components/icons'
 
 export default function PrivacySettingsPage() {
   const router = useRouter()
@@ -35,13 +36,16 @@ export default function PrivacySettingsPage() {
   })
 
   const handleToggle = (category: string, setting: string) => {
-    setPrivacySettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category as keyof typeof prev],
-        [setting]: !prev[category as keyof typeof prev][setting as keyof typeof prev[category as keyof typeof prev]]
+    setPrivacySettings(prev => {
+      const categoryData = prev[category as keyof typeof prev] as any
+      return {
+        ...prev,
+        [category]: {
+          ...categoryData,
+          [setting]: !categoryData[setting]
+        }
       }
-    }))
+    })
   }
 
   const handleSelectChange = (category: string, setting: string, value: string) => {
@@ -58,7 +62,7 @@ export default function PrivacySettingsPage() {
     {
       id: 'dataCollection',
       title: 'データ収集',
-      icon: '📊',
+      icon: <ChartIcon size={24} color="#60a5fa" />,
       description: 'アプリがどのようにデータを収集するか管理',
       settings: [
         {
@@ -90,7 +94,7 @@ export default function PrivacySettingsPage() {
     {
       id: 'dataSharing',
       title: 'データ共有',
-      icon: '👥',
+      icon: <UsersIcon size={24} color="#a3e635" />,
       description: '他のユーザーと共有する情報を選択',
       settings: [
         {
@@ -127,7 +131,7 @@ export default function PrivacySettingsPage() {
     {
       id: 'notifications',
       title: '通知とメール',
-      icon: '📧',
+      icon: <MailIcon size={24} color="#fbbf24" />,
       description: '受け取る通知とメールの種類を管理',
       settings: [
         {
@@ -159,7 +163,7 @@ export default function PrivacySettingsPage() {
     {
       id: 'security',
       title: 'セキュリティ',
-      icon: '🔐',
+      icon: <LockIcon size={24} color="#ef4444" />,
       description: 'アカウントのセキュリティ設定',
       settings: [
         {
@@ -330,7 +334,9 @@ export default function PrivacySettingsPage() {
               gap: '12px',
               marginBottom: '16px'
             }}>
-              <span style={{ fontSize: '24px' }}>{section.icon}</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {section.icon}
+              </div>
               <div>
                 <h3 style={{
                   fontSize: '16px',
@@ -390,7 +396,7 @@ export default function PrivacySettingsPage() {
                       style={{
                         width: '48px',
                         height: '26px',
-                        backgroundColor: privacySettings[section.id as keyof typeof privacySettings][setting.id as keyof typeof privacySettings[section.id as keyof typeof privacySettings]]
+                        backgroundColor: (privacySettings[section.id as keyof typeof privacySettings] as any)[setting.id]
                           ? '#a3e635'
                           : 'rgba(75, 85, 99, 0.6)',
                         borderRadius: '13px',
@@ -403,7 +409,7 @@ export default function PrivacySettingsPage() {
                       <div style={{
                         position: 'absolute',
                         top: '3px',
-                        left: privacySettings[section.id as keyof typeof privacySettings][setting.id as keyof typeof privacySettings[section.id as keyof typeof privacySettings]]
+                        left: (privacySettings[section.id as keyof typeof privacySettings] as any)[setting.id]
                           ? '25px'
                           : '3px',
                         width: '20px',
@@ -416,7 +422,7 @@ export default function PrivacySettingsPage() {
                     </button>
                   ) : (
                     <select
-                      value={privacySettings[section.id as keyof typeof privacySettings][setting.id as keyof typeof privacySettings[section.id as keyof typeof privacySettings]] as string}
+                      value={(privacySettings[section.id as keyof typeof privacySettings] as any)[setting.id] as string}
                       onChange={(e) => handleSelectChange(section.id, setting.id, e.target.value)}
                       style={{
                         padding: '6px 12px',
@@ -467,7 +473,7 @@ export default function PrivacySettingsPage() {
               transition: 'all 0.3s ease'
             }}
           >
-            <span>💾</span>
+            <SaveIcon size={20} color="#60a5fa" />
             データをエクスポート
           </button>
           
@@ -488,7 +494,7 @@ export default function PrivacySettingsPage() {
               transition: 'all 0.3s ease'
             }}
           >
-            <span>🗑️</span>
+            <TrashIcon size={20} color="#ef4444" />
             データを削除
           </button>
         </div>
@@ -506,7 +512,7 @@ export default function PrivacySettingsPage() {
             alignItems: 'flex-start',
             gap: '8px'
           }}>
-            <span style={{ fontSize: '16px' }}>📄</span>
+            <FileIcon size={20} color="#a3e635" />
             <div>
               <h4 style={{
                 fontSize: '13px',
