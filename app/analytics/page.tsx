@@ -15,11 +15,22 @@ export default function AnalyticsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('week')
   const [selectedMetric, setSelectedMetric] = useState<'mood' | 'energy' | 'stress' | 'sleep'>('mood')
   const [animationKey, setAnimationKey] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
 
   // Re-trigger animations when period changes
   useEffect(() => {
     setAnimationKey(prev => prev + 1)
   }, [selectedPeriod])
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Different data for different periods
   const dataByPeriod = {
@@ -564,7 +575,7 @@ export default function AnalyticsPage() {
           </button>
         </div>
 
-        {/* AI Character Insights */}
+        {/* Character Insights */}
         <div style={{ marginBottom: '28px' }}>
           <h3 style={{ 
             fontSize: '18px', 
@@ -572,7 +583,7 @@ export default function AnalyticsPage() {
             color: '#f3f4f6', 
             marginBottom: '20px' 
           }}>
-            AIからのアドバイス
+            キャラクターからのアドバイス
           </h3>
           
           <div style={{ 
@@ -597,14 +608,15 @@ export default function AnalyticsPage() {
             
             <div style={{ 
               display: 'flex', 
-              alignItems: 'flex-start', 
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'center' : 'flex-start',
               gap: '16px',
               position: 'relative',
               zIndex: 1
             }}>
               <div style={{ 
-                width: '60px', 
-                height: '60px', 
+                width: isMobile ? '50px' : '60px', 
+                height: isMobile ? '50px' : '60px', 
                 backgroundColor: 'rgba(55, 65, 81, 0.6)',
                 borderRadius: '16px',
                 display: 'flex',
@@ -613,22 +625,28 @@ export default function AnalyticsPage() {
                 flexShrink: 0,
                 border: '2px solid rgba(163, 230, 53, 0.3)'
               }}>
-                <BirdCharacter bodyColor="#a3e635" size={48} />
+                <BirdCharacter bodyColor="#a3e635" size={isMobile ? 40 : 48} />
               </div>
               
-              <div style={{ flex: 1 }}>
+              <div style={{ 
+                flex: 1,
+                width: '100%',
+                textAlign: isMobile ? 'center' : 'left'
+              }}>
                 <div style={{ 
                   display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row',
                   alignItems: 'center', 
                   gap: '8px',
-                  marginBottom: '12px' 
+                  marginBottom: '12px',
+                  justifyContent: isMobile ? 'center' : 'flex-start'
                 }}>
                   <span style={{ 
                     fontSize: '16px', 
                     fontWeight: '600',
                     color: '#a3e635' 
                   }}>
-                    Luna
+                    ルナ
                   </span>
                   <span style={{
                     fontSize: '12px',
@@ -643,10 +661,12 @@ export default function AnalyticsPage() {
                 </div>
                 
                 <p style={{ 
-                  fontSize: '15px', 
+                  fontSize: isMobile ? '14px' : '15px', 
                   color: '#e5e7eb', 
                   margin: 0, 
-                  lineHeight: '1.7' 
+                  lineHeight: '1.7',
+                  textAlign: isMobile ? 'left' : 'left',
+                  padding: isMobile ? '0 8px' : '0'
                 }}>
                   {selectedPeriod === 'week' ? 
                     'あなたの今週のデータを分析しました。特に木曜日のパフォーマンスが素晴らしいですね！睡眠の質と気分スコアに強い相関が見られます。週末も規則正しい生活リズムを保つことで、来週はさらに良い結果が期待できそうです。' :
@@ -658,13 +678,15 @@ export default function AnalyticsPage() {
                 {/* Action buttons */}
                 <div style={{ 
                   display: 'flex', 
+                  flexDirection: isMobile ? 'column' : 'row',
                   gap: '12px',
-                  marginTop: '16px' 
+                  marginTop: '16px',
+                  width: '100%'
                 }}>
                   <button
                     onClick={() => router.push('/chat')}
                     style={{
-                      padding: '8px 16px',
+                      padding: isMobile ? '12px 16px' : '8px 16px',
                       backgroundColor: '#a3e635',
                       color: '#111827',
                       border: 'none',
@@ -672,7 +694,8 @@ export default function AnalyticsPage() {
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      width: isMobile ? '100%' : 'auto'
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
@@ -682,7 +705,7 @@ export default function AnalyticsPage() {
                   <button
                     onClick={() => router.push('/insights')}
                     style={{
-                      padding: '8px 16px',
+                      padding: isMobile ? '12px 16px' : '8px 16px',
                       backgroundColor: 'rgba(55, 65, 81, 0.6)',
                       color: '#d1d5db',
                       border: '1px solid rgba(55, 65, 81, 0.3)',
@@ -690,7 +713,8 @@ export default function AnalyticsPage() {
                       fontSize: '14px',
                       fontWeight: '500',
                       cursor: 'pointer',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      width: isMobile ? '100%' : 'auto'
                     }}
                     onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.6)' }}
                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)' }}
