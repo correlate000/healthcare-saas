@@ -339,7 +339,8 @@ export default function AnalyticsPage() {
               justifyContent: 'space-between',
               height: '200px',
               gap: '8px',
-              marginBottom: '20px'
+              marginBottom: '20px',
+              position: 'relative'
             }}>
               {currentData.data.map((day, index) => {
                 const value = day[selectedMetric as keyof typeof day] as number
@@ -348,76 +349,74 @@ export default function AnalyticsPage() {
                 return (
                   <div key={`${day.day}-${animationKey}`} style={{
                     flex: 1,
+                    height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '8px',
+                    justifyContent: 'flex-end',
+                    position: 'relative',
                     cursor: 'pointer'
                   }}>
+                    {/* Value label */}
                     <div style={{
+                      position: 'absolute',
+                      bottom: `${height + 5}%`,
                       width: '100%',
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'flex-end',
-                      position: 'relative'
-                    }}
-                    onMouseEnter={(e) => {
-                      const bar = e.currentTarget.querySelector('[data-bar]') as HTMLElement
-                      if (bar) {
-                        bar.style.transform = 'scaleY(1.05)'
-                        bar.style.boxShadow = `0 -4px 20px ${selectedMetricInfo.color}40`
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const bar = e.currentTarget.querySelector('[data-bar]') as HTMLElement
-                      if (bar) {
-                        bar.style.transform = 'scaleY(1)'
-                        bar.style.boxShadow = 'none'
-                      }
+                      textAlign: 'center',
+                      ...getTypographyStyles('small', isMobile),
+                      fontWeight: '600',
+                      color: selectedMetricInfo.color,
+                      zIndex: 2
                     }}>
-                      {/* Value label */}
-                      <div style={{
-                        position: 'absolute',
-                        top: '0',
-                        width: '100%',
-                        textAlign: 'center',
-                        ...getTypographyStyles('small', isMobile),
-                        fontWeight: '600',
-                        color: selectedMetricInfo.color,
-                        opacity: 0,
-                        animation: `fadeIn 0.5s ease-out ${index * 0.1 + 0.3}s forwards`
-                      }}>
-                        {value}%
-                      </div>
-                      
-                      {/* Bar */}
-                      <div 
-                        data-bar
-                        style={{
-                          width: '100%',
-                          height: `${height}%`,
-                          background: `linear-gradient(180deg, ${selectedMetricInfo.color} 0%, ${selectedMetricInfo.color}80 100%)`,
-                          borderRadius: '8px 8px 0 0',
-                          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                          transformOrigin: 'bottom',
-                          animation: `growUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s both`
-                        }}
-                      ></div>
+                      {value}%
                     </div>
                     
-                    {/* Day label */}
-                    <span style={{ 
-                      ...getTypographyStyles('small', isMobile), 
-                      color: '#9ca3af',
-                      fontWeight: '500',
-                      marginTop: '8px'
-                    }}>
-                      {day.day}
-                    </span>
+                    {/* Bar */}
+                    <div 
+                      data-bar
+                      style={{
+                        width: '80%',
+                        height: `${height}%`,
+                        minHeight: '4px',
+                        background: `linear-gradient(180deg, ${selectedMetricInfo.color} 0%, ${selectedMetricInfo.color}88 100%)`,
+                        borderRadius: '8px 8px 0 0',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        transformOrigin: 'bottom'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scaleY(1.05)'
+                        e.currentTarget.style.boxShadow = `0 -4px 20px ${selectedMetricInfo.color}40`
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scaleY(1)'
+                        e.currentTarget.style.boxShadow = 'none'
+                      }}
+                    ></div>
                   </div>
                 )
               })}
+            </div>
+            
+            {/* Day labels */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '20px'
+            }}>
+              {currentData.data.map((day) => (
+                <div key={day.day} style={{
+                  flex: 1,
+                  textAlign: 'center'
+                }}>
+                  <span style={{ 
+                    ...getTypographyStyles('small', isMobile), 
+                    color: '#9ca3af',
+                    fontWeight: '500'
+                  }}>
+                    {day.day}
+                  </span>
+                </div>
+              ))}
             </div>
 
             {/* Average line */}

@@ -113,105 +113,79 @@ export default function BookingPage() {
         </p>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress Bar with Labels */}
       <div style={{ padding: '20px 20px 0' }}>
         <div style={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'space-between',
-          marginBottom: '24px'
+          marginBottom: '32px',
+          position: 'relative'
         }}>
-          {[1, 2, 3].map((step) => (
+          {[
+            { step: 1, label: '専門家選択' },
+            { step: 2, label: '日時選択' },
+            { step: 3, label: '確認・決済' }
+          ].map((item, index) => (
             <div
-              key={step}
+              key={item.step}
               style={{
                 flex: 1,
                 display: 'flex',
-                alignItems: 'center'
+                flexDirection: 'column',
+                alignItems: 'center',
+                position: 'relative'
               }}
             >
+              {/* Step circle and line */}
               <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: currentStep >= step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
-                color: currentStep >= step ? '#111827' : '#9ca3af',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: '600',
-                fontSize: '14px',
-                transition: 'all 0.3s ease'
+                width: '100%'
               }}>
-                {step}
-              </div>
-              {step < 3 && (
                 <div style={{
-                  flex: 1,
-                  height: '2px',
-                  backgroundColor: currentStep > step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
-                  marginLeft: '8px',
-                  transition: 'all 0.3s ease'
-                }}></div>
-              )}
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  backgroundColor: currentStep >= item.step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
+                  color: currentStep >= item.step ? '#111827' : '#9ca3af',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  transition: 'all 0.3s ease',
+                  zIndex: 2,
+                  border: currentStep === item.step ? '2px solid rgba(163, 230, 53, 0.3)' : 'none',
+                  flexShrink: 0
+                }}>
+                  {currentStep > item.step ? '✓' : item.step}
+                </div>
+                {index < 2 && (
+                  <div style={{
+                    flex: 1,
+                    height: '2px',
+                    backgroundColor: currentStep > item.step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
+                    marginLeft: '4px',
+                    marginRight: '4px',
+                    transition: 'all 0.3s ease'
+                  }}></div>
+                )}
+              </div>
+              
+              {/* Step label */}
+              <span style={{
+                fontSize: isMobile ? '11px' : '12px',
+                color: currentStep === item.step ? '#a3e635' : currentStep > item.step ? '#d1d5db' : '#9ca3af',
+                fontWeight: currentStep === item.step ? '600' : '400',
+                textAlign: 'center',
+                whiteSpace: 'nowrap',
+                marginTop: '8px'
+              }}>
+                {item.label}
+              </span>
             </div>
           ))}
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '8px',
-          marginBottom: '24px'
-        }}>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span style={{
-              fontSize: isMobile ? '11px' : '12px',
-              color: currentStep === 1 ? '#a3e635' : '#9ca3af',
-              fontWeight: currentStep === 1 ? '600' : '400',
-              textAlign: 'center',
-              whiteSpace: 'nowrap'
-            }}>
-              専門家選択
-            </span>
-          </div>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span style={{
-              fontSize: isMobile ? '11px' : '12px',
-              color: currentStep === 2 ? '#a3e635' : '#9ca3af',
-              fontWeight: currentStep === 2 ? '600' : '400',
-              textAlign: 'center',
-              whiteSpace: 'nowrap'
-            }}>
-              日時選択
-            </span>
-          </div>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            <span style={{
-              fontSize: isMobile ? '11px' : '12px',
-              color: currentStep === 3 ? '#a3e635' : '#9ca3af',
-              fontWeight: currentStep === 3 ? '600' : '400',
-              textAlign: 'center',
-              whiteSpace: 'nowrap'
-            }}>
-              確認・決済
-            </span>
-          </div>
         </div>
       </div>
 
