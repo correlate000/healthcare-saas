@@ -364,12 +364,11 @@ export default function Dashboard() {
             fontWeight: '700',
             letterSpacing: '0.5px'
           }}>
-            TODAY'S ORACLE
+            TODAY'S MESSAGE
           </div>
           
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '8px' }}>
             <div style={{
-              animation: 'mysticalGlow 3s ease-in-out infinite',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -414,10 +413,9 @@ export default function Dashboard() {
                 <span style={{ 
                   ...getTypographyStyles('small'), 
                   color: '#9ca3af',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase' 
+                  letterSpacing: '0.5px'
                 }}>
-                  宇宙からのメッセージ
+                  今日のあなたへ
                 </span>
               </div>
             </div>
