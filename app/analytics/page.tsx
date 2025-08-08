@@ -743,11 +743,11 @@ export default function AnalyticsPage() {
         
         @keyframes growUp {
           0% {
-            height: 0;
+            transform: scaleY(0);
             opacity: 0;
           }
           100% {
-            height: ${maxValue}%;
+            transform: scaleY(1);
             opacity: 1;
           }
         }
