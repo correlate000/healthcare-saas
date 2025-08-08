@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { Character3D } from './Character3D'
+import { MoonIcon, StarIcon, MeditationIcon, HappyFaceIcon, EnergeticIcon, CalmIcon, StressedIcon, ThinkingIcon, PartyIcon } from '@/components/icons/illustrations'
 
 interface CharacterAvatarProps {
   character: 'luna' | 'aria' | 'zen'
@@ -19,33 +20,33 @@ const characters = {
   luna: {
     name: 'Luna',
     color: 'from-purple-400 to-pink-400',
-    emoji: '🌙',
+    icon: MoonIcon,
     personality: 'gentle',
     voice: '優しく穏やかな声'
   },
   aria: {
     name: 'Aria',
     color: 'from-blue-400 to-cyan-400',
-    emoji: '✨',
+    icon: StarIcon,
     personality: 'energetic',
     voice: '明るく元気な声'
   },
   zen: {
     name: 'Zen',
     color: 'from-green-400 to-teal-400',
-    emoji: '🧘',
+    icon: MeditationIcon,
     personality: 'wise',
     voice: '落ち着いた知的な声'
   }
 }
 
 const emotions = {
-  happy: { emoji: '😊', scale: 1, bounce: true },
-  excited: { emoji: '🤩', scale: 1.1, bounce: true },
-  calm: { emoji: '😌', scale: 1, bounce: false },
-  concerned: { emoji: '😟', scale: 0.95, bounce: false },
-  thinking: { emoji: '🤔', scale: 1, bounce: false },
-  celebrating: { emoji: '🎉', scale: 1.2, bounce: true }
+  happy: { icon: HappyFaceIcon, scale: 1, bounce: true },
+  excited: { icon: EnergeticIcon, scale: 1.1, bounce: true },
+  calm: { icon: CalmIcon, scale: 1, bounce: false },
+  concerned: { icon: StressedIcon, scale: 0.95, bounce: false },
+  thinking: { icon: ThinkingIcon, scale: 1, bounce: false },
+  celebrating: { icon: PartyIcon, scale: 1.2, bounce: true }
 }
 
 const sizeConfig = {
@@ -138,15 +139,15 @@ export function CharacterAvatar({
         whileHover={{ scale: emo.scale * 1.05 }}
         whileTap={{ scale: emo.scale * 0.95 }}
       >
-        {/* キャラクター基本絵文字 */}
+        {/* キャラクター基本アイコン */}
         <motion.div
-          className={cn(size_config.text, "relative z-10")}
+          className="relative z-10 flex items-center justify-center"
           animate={{
             scaleY: isBlinking ? 0.1 : 1
           }}
           transition={{ duration: 0.1 }}
         >
-          {char.emoji}
+          <char.icon size={size === 'sm' ? 24 : size === 'md' ? 32 : size === 'lg' ? 48 : 64} />
         </motion.div>
 
         {/* グラデーションオーバーレイ */}
@@ -168,17 +169,17 @@ export function CharacterAvatar({
         )}
       </motion.div>
 
-      {/* 感情表示エモート */}
+      {/* 感情表示アイコン */}
       <AnimatePresence>
         <motion.div
           key={currentEmotion}
-          className="absolute -top-2 -right-2 text-lg"
+          className="absolute -top-2 -right-2"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           exit={{ scale: 0, rotate: 180 }}
           transition={{ type: "spring", stiffness: 500, damping: 25 }}
         >
-          {emo.emoji}
+          <emo.icon size={20} />
         </motion.div>
       </AnimatePresence>
 

@@ -259,3 +259,471 @@ export const ThinkingIcon = ({ size = 48, primaryColor = '#8b5cf6', secondaryCol
     <text x="25" y="30" fontSize="14" fill={primaryColor} fontWeight="bold" opacity="0.6">?</text>
   </svg>
 )
+
+export const MobileIcon = ({ size = 48, primaryColor = '#3b82f6', secondaryColor = '#93c5fd' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 電波 */}
+    <path d="M 15 20 Q 15 15, 20 15 Q 25 15, 25 20" stroke={primaryColor} strokeWidth="2" fill="none" opacity="0.6"/>
+    <path d="M 12 25 Q 12 18, 20 18 Q 28 18, 28 25" stroke={primaryColor} strokeWidth="2" fill="none" opacity="0.4"/>
+    
+    {/* スマホ本体 */}
+    <rect x="35" y="20" width="30" height="50" rx="5" fill="#374151"/>
+    <rect x="37" y="22" width="26" height="46" rx="3" fill="#111827"/>
+    
+    {/* 画面 */}
+    <rect x="39" y="28" width="22" height="34" rx="2" fill={secondaryColor}/>
+    <rect x="40" y="29" width="20" height="32" rx="1" fill="white"/>
+    
+    {/* ホームボタン */}
+    <circle cx="50" cy="66" r="2" fill="#6b7280"/>
+    
+    {/* 画面の内容 */}
+    <rect x="42" y="31" width="16" height="2" rx="1" fill={primaryColor}/>
+    <rect x="42" y="35" width="12" height="1" rx="0.5" fill="#9ca3af"/>
+    <rect x="42" y="38" width="14" height="1" rx="0.5" fill="#9ca3af"/>
+    
+    {/* アプリアイコン風 */}
+    <rect x="42" y="42" width="4" height="4" rx="1" fill={primaryColor} opacity="0.8"/>
+    <rect x="48" y="42" width="4" height="4" rx="1" fill="#10b981" opacity="0.8"/>
+    <rect x="54" y="42" width="4" height="4" rx="1" fill="#f59e0b" opacity="0.8"/>
+    
+    {/* キラキラ */}
+    <path d="M 70 35 L 71 37 L 73 36 L 71 38 L 72 40 L 70 38 L 68 40 L 69 38 L 67 36 L 69 37 Z" fill={primaryColor} opacity="0.6"/>
+  </svg>
+)
+
+export const FireIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor = '#fbbf24' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 炎の本体 */}
+    <path d="M 50 85 Q 35 75, 35 60 Q 35 45, 45 35 Q 50 30, 55 35 Q 65 45, 65 60 Q 65 75, 50 85" fill="#dc2626"/>
+    <path d="M 50 82 Q 38 72, 38 60 Q 38 48, 47 38 Q 50 35, 53 38 Q 62 48, 62 60 Q 62 72, 50 82" fill={primaryColor}/>
+    <path d="M 50 78 Q 42 70, 42 60 Q 42 50, 48 42 Q 50 40, 52 42 Q 58 50, 58 60 Q 58 70, 50 78" fill={secondaryColor}/>
+    
+    {/* 内側の炎 */}
+    <path d="M 50 70 Q 45 65, 45 55 Q 45 50, 48 47 Q 50 45, 52 47 Q 55 50, 55 55 Q 55 65, 50 70" fill="#fbbf24"/>
+    <path d="M 50 65 Q 47 62, 47 55 Q 47 52, 49 50 Q 50 49, 51 50 Q 53 52, 53 55 Q 53 62, 50 65" fill="#fde047"/>
+    
+    {/* コア */}
+    <ellipse cx="50" cy="58" rx="2" ry="4" fill="white" opacity="0.8"/>
+    
+    {/* 火花 */}
+    <circle cx="35" cy="45" r="1.5" fill={primaryColor} opacity="0.8">
+      <animate attributeName="r" from="1" to="3" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.8" to="0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="65" cy="50" r="1" fill={secondaryColor} opacity="0.6">
+      <animate attributeName="r" from="0.5" to="2" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.6" to="0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+)
+
+export const StarIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor = '#fde047' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 星の光 */}
+    <path d="M 50 10 L 52 25 L 50 40 L 48 25 Z" fill={primaryColor} opacity="0.4"/>
+    <path d="M 10 50 L 25 48 L 40 50 L 25 52 Z" fill={primaryColor} opacity="0.4"/>
+    <path d="M 60 50 L 75 48 L 90 50 L 75 52 Z" fill={primaryColor} opacity="0.4"/>
+    <path d="M 50 60 L 52 75 L 50 90 L 48 75 Z" fill={primaryColor} opacity="0.4"/>
+    
+    {/* 星本体 */}
+    <path d="M 50 20 L 55 40 L 75 40 L 60 52 L 65 72 L 50 60 L 35 72 L 40 52 L 25 40 L 45 40 Z" fill={primaryColor}/>
+    <path d="M 50 25 L 54 42 L 70 42 L 58 52 L 62 69 L 50 59 L 38 69 L 42 52 L 30 42 L 46 42 Z" fill={secondaryColor}/>
+    
+    {/* ハイライト */}
+    <path d="M 50 30 L 52 40 L 58 40 L 53 45 L 55 55 L 50 50 L 45 55 L 47 45 L 42 40 L 48 40 Z" fill="white" opacity="0.6"/>
+    
+    {/* 中心の輝き */}
+    <circle cx="50" cy="50" r="3" fill="white" opacity="0.8"/>
+    <circle cx="50" cy="50" r="1.5" fill="#fff7ed"/>
+    
+    {/* 周囲のキラキラ */}
+    <path d="M 20 25 L 21 27 L 23 26 L 21 28 L 22 30 L 20 28 L 18 30 L 19 28 L 17 26 L 19 27 Z" fill={secondaryColor} opacity="0.7"/>
+    <path d="M 78 30 L 79 31 L 80 30 L 79 32 L 80 33 L 78 32 L 77 33 L 78 32 L 76 30 L 78 31 Z" fill={primaryColor} opacity="0.6"/>
+  </svg>
+)
+
+export const PenIcon = ({ size = 48, primaryColor = '#6366f1', secondaryColor = '#a5b4fc' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* ペン軸 */}
+    <path d="M 25 75 L 70 30" stroke={primaryColor} strokeWidth="8" strokeLinecap="round"/>
+    <path d="M 25 75 L 70 30" stroke={secondaryColor} strokeWidth="6" strokeLinecap="round"/>
+    
+    {/* ペン先 */}
+    <path d="M 70 30 L 75 25 L 78 28 L 73 33 Z" fill="#374151"/>
+    <path d="M 75 25 L 77 23 L 80 26 L 78 28 Z" fill="#6b7280"/>
+    
+    {/* グリップ */}
+    <rect x="40" y="50" width="8" height="3" rx="1" fill="#e5e7eb" transform="rotate(-45 44 51.5)"/>
+    <rect x="45" y="45" width="8" height="3" rx="1" fill="#e5e7eb" transform="rotate(-45 49 46.5)"/>
+    
+    {/* インクの滴 */}
+    <circle cx="22" cy="78" r="2" fill={primaryColor} opacity="0.6"/>
+    <ellipse cx="20" cy="82" rx="1.5" ry="2" fill={primaryColor} opacity="0.4"/>
+    
+    {/* 書いた線 */}
+    <path d="M 15 85 Q 30 80, 40 85" stroke={primaryColor} strokeWidth="2" fill="none" opacity="0.5"/>
+    
+    {/* キラキラ */}
+    <path d="M 80 20 L 81 22 L 83 21 L 81 23 L 82 25 L 80 23 L 78 25 L 79 23 L 77 21 L 79 22 Z" fill={secondaryColor} opacity="0.6"/>
+  </svg>
+)
+
+export const BubbleIcon = ({ size = 48, primaryColor = '#06b6d4', secondaryColor = '#67e8f9' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* メインの泡 */}
+    <ellipse cx="50" cy="40" rx="25" ry="20" fill={secondaryColor} opacity="0.3"/>
+    <ellipse cx="50" cy="40" rx="23" ry="18" fill={primaryColor} opacity="0.4"/>
+    <ellipse cx="50" cy="40" rx="21" ry="16" fill="white"/>
+    
+    {/* 泡の尻尾 */}
+    <path d="M 40 55 Q 35 65, 30 70 Q 28 72, 30 74 Q 32 72, 35 68 Q 42 60, 45 55" fill="white"/>
+    
+    {/* 小さな泡 */}
+    <circle cx="20" cy="65" r="5" fill={secondaryColor} opacity="0.6"/>
+    <circle cx="20" cy="65" r="4" fill="white"/>
+    <circle cx="15" cy="75" r="3" fill={secondaryColor} opacity="0.4"/>
+    <circle cx="15" cy="75" r="2.5" fill="white"/>
+    
+    {/* 泡の中身（省略記号） */}
+    <circle cx="40" cy="40" r="2" fill={primaryColor} opacity="0.8"/>
+    <circle cx="50" cy="40" r="2" fill={primaryColor} opacity="0.8"/>
+    <circle cx="60" cy="40" r="2" fill={primaryColor} opacity="0.8"/>
+    
+    {/* ハイライト */}
+    <ellipse cx="45" cy="33" rx="8" ry="6" fill="white" opacity="0.7"/>
+    <circle cx="18" cy="63" r="1.5" fill="white" opacity="0.8"/>
+    
+    {/* キラキラ */}
+    <path d="M 75 25 L 76 27 L 78 26 L 76 28 L 77 30 L 75 28 L 73 30 L 74 28 L 72 26 L 74 27 Z" fill={primaryColor} opacity="0.6"/>
+  </svg>
+)
+
+export const TargetIcon = ({ size = 48, primaryColor = '#ef4444', secondaryColor = '#fca5a5' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 外側の円 */}
+    <circle cx="50" cy="50" r="35" fill="none" stroke={primaryColor} strokeWidth="3"/>
+    <circle cx="50" cy="50" r="25" fill="none" stroke={primaryColor} strokeWidth="2.5"/>
+    <circle cx="50" cy="50" r="15" fill="none" stroke={primaryColor} strokeWidth="2"/>
+    
+    {/* 中心 */}
+    <circle cx="50" cy="50" r="8" fill={primaryColor}/>
+    <circle cx="50" cy="50" r="5" fill={secondaryColor}/>
+    <circle cx="50" cy="50" r="2" fill="white"/>
+    
+    {/* 矢印 */}
+    <path d="M 15 50 L 25 45 L 25 48 L 35 48 L 35 52 L 25 52 L 25 55 Z" fill="#fbbf24"/>
+    <path d="M 17 50 L 25 46 L 25 48 L 33 48 L 33 52 L 25 52 L 25 54 Z" fill="#f59e0b"/>
+    
+    {/* スコア表示 */}
+    <circle cx="75" cy="25" r="12" fill="#10b981" opacity="0.9"/>
+    <circle cx="75" cy="25" r="10" fill="#22c55e"/>
+    <text x="75" y="28" fontSize="10" fill="white" fontWeight="bold" textAnchor="middle">100</text>
+    
+    {/* 動的効果 */}
+    <circle cx="50" cy="50" r="40" fill="none" stroke={primaryColor} strokeWidth="1" opacity="0.3">
+      <animate attributeName="r" from="35" to="45" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+)
+
+export const ChartIcon = ({ size = 48, primaryColor = '#10b981', secondaryColor = '#86efac' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* グラフの背景 */}
+    <rect x="20" y="20" width="60" height="60" fill="white" stroke="#e5e7eb" strokeWidth="1"/>
+    
+    {/* グリッド線 */}
+    <path d="M 20 35 L 80 35" stroke="#f3f4f6" strokeWidth="0.5"/>
+    <path d="M 20 50 L 80 50" stroke="#f3f4f6" strokeWidth="0.5"/>
+    <path d="M 20 65 L 80 65" stroke="#f3f4f6" strokeWidth="0.5"/>
+    <path d="M 35 20 L 35 80" stroke="#f3f4f6" strokeWidth="0.5"/>
+    <path d="M 50 20 L 50 80" stroke="#f3f4f6" strokeWidth="0.5"/>
+    <path d="M 65 20 L 65 80" stroke="#f3f4f6" strokeWidth="0.5"/>
+    
+    {/* グラフ線 */}
+    <path d="M 25 70 Q 30 60, 35 55 Q 45 45, 50 40 Q 60 30, 65 25 Q 70 20, 75 15" 
+          stroke={primaryColor} strokeWidth="3" fill="none" strokeLinecap="round"/>
+    
+    {/* データポイント */}
+    <circle cx="35" cy="55" r="3" fill={primaryColor}/>
+    <circle cx="50" cy="40" r="3" fill={primaryColor}/>
+    <circle cx="65" cy="25" r="3" fill={primaryColor}/>
+    <circle cx="75" cy="15" r="3" fill={primaryColor}/>
+    
+    {/* グラフの下のエリア（グラデーション風） */}
+    <path d="M 25 70 Q 30 60, 35 55 Q 45 45, 50 40 Q 60 30, 65 25 Q 70 20, 75 15 L 75 80 L 25 80 Z" 
+          fill={secondaryColor} opacity="0.3"/>
+    
+    {/* 軸 */}
+    <path d="M 20 80 L 80 80" stroke="#111827" strokeWidth="2"/>
+    <path d="M 20 80 L 20 20" stroke="#111827" strokeWidth="2"/>
+    
+    {/* 矢印 */}
+    <path d="M 78 82 L 82 80 L 78 78" fill="#111827"/>
+    <path d="M 18 22 L 20 18 L 22 22" fill="#111827"/>
+    
+    {/* 上昇アイコン */}
+    <circle cx="85" cy="15" r="8" fill={primaryColor}/>
+    <path d="M 81 17 L 85 13 L 89 17" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+    <path d="M 85 13 L 85 19" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
+export const NoteIcon = ({ size = 48, primaryColor = '#6366f1', secondaryColor = '#a5b4fc' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* ノート本体 */}
+    <rect x="25" y="15" width="50" height="70" rx="3" fill="white" stroke={primaryColor} strokeWidth="2"/>
+    <rect x="25" y="15" width="50" height="10" rx="3" fill={secondaryColor}/>
+    
+    {/* スパイラル（リング） */}
+    <circle cx="35" cy="20" r="2" fill="none" stroke={primaryColor} strokeWidth="1.5"/>
+    <circle cx="45" cy="20" r="2" fill="none" stroke={primaryColor} strokeWidth="1.5"/>
+    <circle cx="55" cy="20" r="2" fill="none" stroke={primaryColor} strokeWidth="1.5"/>
+    <circle cx="65" cy="20" r="2" fill="none" stroke={primaryColor} strokeWidth="1.5"/>
+    
+    {/* 罫線 */}
+    <path d="M 30 35 L 70 35" stroke="#e5e7eb" strokeWidth="1"/>
+    <path d="M 30 45 L 70 45" stroke="#e5e7eb" strokeWidth="1"/>
+    <path d="M 30 55 L 70 55" stroke="#e5e7eb" strokeWidth="1"/>
+    <path d="M 30 65 L 70 65" stroke="#e5e7eb" strokeWidth="1"/>
+    <path d="M 30 75 L 70 75" stroke="#e5e7eb" strokeWidth="1"/>
+    
+    {/* 書かれた文字（線で表現） */}
+    <path d="M 32 35 L 50 35" stroke={primaryColor} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M 32 45 L 65 45" stroke={primaryColor} strokeWidth="2" strokeLinecap="round"/>
+    <path d="M 32 55 L 45 55" stroke={primaryColor} strokeWidth="2" strokeLinecap="round"/>
+    
+    {/* ペン */}
+    <path d="M 75 60 L 85 70" stroke="#374151" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="87" cy="72" r="1.5" fill="#374151"/>
+    
+    {/* キラキラ */}
+    <path d="M 80 30 L 81 32 L 83 31 L 81 33 L 82 35 L 80 33 L 78 35 L 79 33 L 77 31 L 79 32 Z" fill={secondaryColor} opacity="0.6"/>
+    
+    {/* ページの影 */}
+    <path d="M 75 17 L 75 85 Q 75 85, 73 83 L 73 19 Q 73 17, 75 17" fill="#d1d5db" opacity="0.5"/>
+  </svg>
+)
+
+export const EnergyIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor = '#fde047' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 稲妻の光 */}
+    <path d="M 35 15 L 45 40 L 35 40 L 50 75 L 40 50 L 50 50 Z" fill={secondaryColor} opacity="0.3"/>
+    
+    {/* メインの稲妻 */}
+    <path d="M 40 20 L 50 45 L 40 45 L 55 80 L 45 55 L 55 55 Z" fill={primaryColor}/>
+    <path d="M 42 22 L 50 45 L 42 45 L 53 75 L 47 55 L 53 55 Z" fill={secondaryColor}/>
+    
+    {/* エネルギーのオーラ */}
+    <circle cx="50" cy="50" r="35" fill="none" stroke={primaryColor} strokeWidth="1" opacity="0.2">
+      <animate attributeName="r" from="30" to="40" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.4" to="0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="50" r="35" fill="none" stroke={secondaryColor} strokeWidth="1" opacity="0.2">
+      <animate attributeName="r" from="25" to="35" dur="1.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.6" to="0" dur="1.2s" repeatCount="indefinite"/>
+    </circle>
+    
+    {/* 小さな稲妻 */}
+    <path d="M 20 30 L 25 40 L 20 40 L 30 55 L 25 45 L 30 45 Z" fill={primaryColor} opacity="0.6"/>
+    <path d="M 70 35 L 75 45 L 70 45 L 80 60 L 75 50 L 80 50 Z" fill={primaryColor} opacity="0.6"/>
+    
+    {/* エネルギーパーティクル */}
+    <circle cx="25" cy="60" r="2" fill={secondaryColor} opacity="0.8">
+      <animate attributeName="cy" from="65" to="55" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0" to="1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="75" cy="70" r="1.5" fill={primaryColor} opacity="0.6">
+      <animate attributeName="cy" from="75" to="65" dur="1.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0" to="0.8" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+)
+
+export const MoonIcon = ({ size = 48, primaryColor = '#fbbf24', secondaryColor = '#fde047' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 月のオーラ */}
+    <circle cx="50" cy="50" r="40" fill={primaryColor} opacity="0.1"/>
+    <circle cx="50" cy="50" r="35" fill={primaryColor} opacity="0.15"/>
+    
+    {/* 三日月 */}
+    <path d="M 50 20 Q 35 25, 35 50 Q 35 75, 50 80 Q 45 75, 45 50 Q 45 25, 50 20" fill={primaryColor}/>
+    <path d="M 50 22 Q 37 27, 37 50 Q 37 73, 50 78 Q 47 73, 47 50 Q 47 27, 50 22" fill={secondaryColor}/>
+    
+    {/* 月の表面（クレーター） */}
+    <ellipse cx="45" cy="40" rx="2" ry="3" fill={primaryColor} opacity="0.3"/>
+    <circle cx="42" cy="55" r="1.5" fill={primaryColor} opacity="0.2"/>
+    <ellipse cx="46" cy="65" rx="1" ry="2" fill={primaryColor} opacity="0.3"/>
+    
+    {/* 顔 */}
+    <circle cx="42" cy="45" r="1" fill="#374151"/>
+    <circle cx="42" cy="55" r="1" fill="#374151"/>
+    <path d="M 40 60 Q 42 62, 44 60" stroke="#374151" strokeWidth="0.8" fill="none"/>
+    
+    {/* 星 */}
+    <path d="M 70 25 L 71 28 L 74 27 L 71 29 L 72 32 L 70 30 L 68 32 L 69 29 L 66 27 L 69 28 Z" fill={secondaryColor}/>
+    <path d="M 20 40 L 21 42 L 23 41 L 21 43 L 22 45 L 20 43 L 18 45 L 19 43 L 17 41 L 19 42 Z" fill={secondaryColor} opacity="0.7"/>
+    <path d="M 80 60 L 80.5 61 L 81.5 60.5 L 80.5 62 L 81 63 L 80 62 L 79 63 L 79.5 62 L 78.5 60.5 L 79.5 61 Z" fill={secondaryColor} opacity="0.5"/>
+    
+    {/* 夜の雲 */}
+    <ellipse cx="25" cy="70" rx="8" ry="4" fill="#6b7280" opacity="0.4"/>
+    <ellipse cx="75" cy="75" rx="6" ry="3" fill="#6b7280" opacity="0.3"/>
+  </svg>
+)
+
+export const PartyIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor = '#fde047' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* パーティーハット */}
+    <path d="M 45 25 L 55 25 L 50 10 Z" fill="#ef4444"/>
+    <circle cx="50" cy="10" r="3" fill="#fbbf24"/>
+    
+    {/* 紙吹雪 */}
+    <rect x="20" y="30" width="3" height="3" fill="#ef4444" transform="rotate(45 21.5 31.5)"/>
+    <rect x="75" y="25" width="2" height="2" fill="#10b981" transform="rotate(30 76 26)"/>
+    <rect x="80" y="45" width="3" height="3" fill="#3b82f6" transform="rotate(60 81.5 46.5)"/>
+    <rect x="25" y="50" width="2" height="2" fill="#f59e0b" transform="rotate(15 26 51)"/>
+    <rect x="70" y="70" width="3" height="3" fill="#8b5cf6" transform="rotate(75 71.5 71.5)"/>
+    <rect x="15" y="65" width="2" height="2" fill="#ef4444" transform="rotate(90 16 66)"/>
+    
+    {/* 風船 */}
+    <ellipse cx="30" cy="40" rx="5" ry="7" fill="#ef4444"/>
+    <path d="M 30 47 L 30 55" stroke="#374151" strokeWidth="1"/>
+    
+    <ellipse cx="70" cy="35" rx="5" ry="7" fill="#10b981"/>
+    <path d="M 70 42 L 70 50" stroke="#374151" strokeWidth="1"/>
+    
+    <ellipse cx="25" cy="75" rx="4" ry="6" fill="#3b82f6"/>
+    <path d="M 25 81 L 25 87" stroke="#374151" strokeWidth="1"/>
+    
+    {/* ストリーマー */}
+    <path d="M 40 20 Q 35 30, 40 40 Q 45 35, 40 45" stroke="#f59e0b" strokeWidth="2" fill="none"/>
+    <path d="M 60 20 Q 65 25, 60 35 Q 55 30, 60 40" stroke="#ef4444" strokeWidth="2" fill="none"/>
+    
+    {/* お祝いの星 */}
+    <path d="M 50 50 L 52 55 L 57 55 L 53 58 L 55 63 L 50 60 L 45 63 L 47 58 L 43 55 L 48 55 Z" fill={secondaryColor}/>
+    
+    {/* キラキラ */}
+    <path d="M 85 30 L 86 32 L 88 31 L 86 33 L 87 35 L 85 33 L 83 35 L 84 33 L 82 31 L 84 32 Z" fill={primaryColor}/>
+    <path d="M 15 40 L 16 41 L 17 40 L 16 42 L 17 43 L 15 42 L 14 43 L 15 42 L 13 40 L 15 41 Z" fill="#f59e0b"/>
+    
+    {/* パーティーポッパー */}
+    <rect x="80" y="55" width="8" height="15" rx="2" fill="#fbbf24" transform="rotate(-30 84 62.5)"/>
+    <circle cx="84" cy="55" r="2" fill="#ef4444" transform="rotate(-30 84 62.5)"/>
+  </svg>
+)
+
+export const ChatIcon = ({ size = 48, primaryColor = '#06b6d4', secondaryColor = '#67e8f9' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* メインの吹き出し */}
+    <ellipse cx="50" cy="40" rx="30" ry="20" fill={secondaryColor}/>
+    <ellipse cx="50" cy="40" rx="28" ry="18" fill="white"/>
+    
+    {/* 吹き出しの尻尾 */}
+    <path d="M 35 55 Q 30 65, 25 70 Q 23 72, 25 74 Q 27 72, 32 68 Q 40 58, 42 55" fill="white"/>
+    
+    {/* 小さな吹き出し */}
+    <ellipse cx="75" cy="60" rx="15" ry="10" fill={primaryColor} opacity="0.7"/>
+    <ellipse cx="75" cy="60" rx="13" ry="8" fill="white"/>
+    <path d="M 70 68 Q 68 72, 65 75 Q 64 76, 65 77 Q 66 76, 69 74 Q 72 70, 73 68" fill="white"/>
+    
+    {/* メッセージの内容（ハート） */}
+    <path d="M 50 35 C 47 32, 43 32, 43 36 C 43 40, 50 47, 50 47 C 50 47, 57 40, 57 36 C 57 32, 53 32, 50 35 Z" fill="#f87171"/>
+    
+    {/* 小さな吹き出しの内容（絵文字風） */}
+    <circle cx="73" cy="58" r="1" fill={primaryColor}/>
+    <circle cx="77" cy="58" r="1" fill={primaryColor}/>
+    <path d="M 72 62 Q 75 64, 78 62" stroke={primaryColor} strokeWidth="1" fill="none"/>
+    
+    {/* 通知ドット */}
+    <circle cx="65" cy="25" r="4" fill="#ef4444"/>
+    <circle cx="65" cy="25" r="3" fill="#fca5a5"/>
+    <text x="65" y="28" fontSize="6" fill="white" fontWeight="bold" textAnchor="middle">3</text>
+    
+    {/* キラキラエフェクト */}
+    <path d="M 20 50 L 21 52 L 23 51 L 21 53 L 22 55 L 20 53 L 18 55 L 19 53 L 17 51 L 19 52 Z" fill={primaryColor} opacity="0.6"/>
+    <circle cx="85" cy="30" r="1" fill={secondaryColor}>
+      <animate attributeName="r" from="0.5" to="2" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.8" to="0.2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+)
+
+export const TeamIcon = ({ size = 48, primaryColor = '#8b5cf6', secondaryColor = '#c4b5fd' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* チームの輪 */}
+    <circle cx="50" cy="50" r="35" fill="none" stroke={secondaryColor} strokeWidth="2" opacity="0.3"/>
+    
+    {/* 人物1（前面） */}
+    <circle cx="50" cy="40" r="8" fill="#fdbcb4"/>
+    <rect x="42" y="48" width="16" height="20" rx="8" fill={primaryColor}/>
+    <circle cx="46" cy="38" r="1" fill="#374151"/>
+    <circle cx="54" cy="38" r="1" fill="#374151"/>
+    <path d="M 47 42 Q 50 44, 53 42" stroke="#374151" strokeWidth="1" fill="none"/>
+    
+    {/* 人物2（左） */}
+    <circle cx="30" cy="50" r="7" fill="#fdbcb4"/>
+    <rect x="23" y="57" width="14" height="18" rx="7" fill="#10b981"/>
+    <circle cx="27" cy="48" r="1" fill="#374151"/>
+    <circle cx="33" cy="48" r="1" fill="#374151"/>
+    <path d="M 28 52 Q 30 53, 32 52" stroke="#374151" strokeWidth="0.8" fill="none"/>
+    
+    {/* 人物3（右） */}
+    <circle cx="70" cy="50" r="7" fill="#fdbcb4"/>
+    <rect x="63" y="57" width="14" height="18" rx="7" fill="#f59e0b"/>
+    <circle cx="67" cy="48" r="1" fill="#374151"/>
+    <circle cx="73" cy="48" r="1" fill="#374151"/>
+    <path d="M 68 52 Q 70 53, 72 52" stroke="#374151" strokeWidth="0.8" fill="none"/>
+    
+    {/* 人物4（後ろ左） */}
+    <circle cx="35" cy="30" r="6" fill="#fdbcb4"/>
+    <rect x="29" y="36" width="12" height="16" rx="6" fill="#ef4444"/>
+    
+    {/* 人物5（後ろ右） */}
+    <circle cx="65" cy="30" r="6" fill="#fdbcb4"/>
+    <rect x="59" y="36" width="12" height="16" rx="6" fill="#3b82f6"/>
+    
+    {/* 繋がりを示す線 */}
+    <path d="M 42 55 Q 35 52, 37 58" stroke={secondaryColor} strokeWidth="1.5" opacity="0.5"/>
+    <path d="M 58 55 Q 65 52, 63 58" stroke={secondaryColor} strokeWidth="1.5" opacity="0.5"/>
+    <path d="M 40 45 Q 37 40, 41 35" stroke={secondaryColor} strokeWidth="1" opacity="0.4"/>
+    <path d="M 60 45 Q 63 40, 59 35" stroke={secondaryColor} strokeWidth="1" opacity="0.4"/>
+    
+    {/* チームスピリット（上昇する星） */}
+    <path d="M 50 20 L 51 23 L 54 22 L 51 24 L 52 27 L 50 25 L 48 27 L 49 24 L 46 22 L 49 23 Z" fill={primaryColor} opacity="0.8"/>
+    
+    {/* サポートの手 */}
+    <ellipse cx="25" cy="65" rx="3" ry="2" fill="#fdbcb4" opacity="0.7"/>
+    <ellipse cx="75" cy="65" rx="3" ry="2" fill="#fdbcb4" opacity="0.7"/>
+  </svg>
+)
+
+export const LockIcon = ({ size = 48, primaryColor = '#6b7280', secondaryColor = '#9ca3af' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    {/* 鍵穴の背景 */}
+    <rect x="30" y="45" width="40" height="35" rx="5" fill={primaryColor}/>
+    <rect x="32" y="47" width="36" height="31" rx="3" fill={secondaryColor}/>
+    
+    {/* 南京錠のU字部分 */}
+    <path d="M 40 45 L 40 35 Q 40 25, 50 25 Q 60 25, 60 35 L 60 45" 
+          stroke={primaryColor} strokeWidth="4" fill="none"/>
+    <path d="M 42 45 L 42 35 Q 42 27, 50 27 Q 58 27, 58 35 L 58 45" 
+          stroke={secondaryColor} strokeWidth="3" fill="none"/>
+    
+    {/* 鍵穴 */}
+    <circle cx="50" cy="58" r="4" fill={primaryColor}/>
+    <rect x="48" y="62" width="4" height="8" rx="2" fill={primaryColor}/>
+    
+    {/* ハイライト */}
+    <rect x="35" y="50" width="2" height="20" rx="1" fill="white" opacity="0.3"/>
+    <ellipse cx="45" cy="30" rx="2" ry="3" fill="white" opacity="0.4"/>
+    
+    {/* セキュリティインジケーター */}
+    <circle cx="75" cy="25" r="8" fill="#10b981"/>
+    <path d="M 72 25 L 74 27 L 78 23" stroke="white" strokeWidth="2" fill="none" strokeLinecap="round"/>
+    
+    {/* プライベート印 */}
+    <circle cx="25" cy="75" r="6" fill="#ef4444" opacity="0.8"/>
+    <text x="25" y="78" fontSize="8" fill="white" fontWeight="bold" textAnchor="middle">P</text>
+  </svg>
+)

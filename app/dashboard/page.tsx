@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Check } from 'lucide-react'
+import { HappyFaceIcon, FireIcon, StarIcon, EnergyIcon, MoonIcon, BubbleIcon } from '@/components/icons/illustrations'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -13,7 +14,7 @@ export default function Dashboard() {
   const [weeklyContinuation] = useState(5)
   const [totalXP] = useState(850)
   const [maxXP] = useState(1000)
-  const [currentMood] = useState('😊')
+  const [currentMood] = useState('happy')
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
   
@@ -24,31 +25,31 @@ export default function Dashboard() {
         message: '運命の流れがあなたを強く支えている。今日は疑いを捨て、直感を信じて進め。',
         subMessage: 'あなたの内なる声が最強の武器だ。',
         color: '#ef4444',
-        emoji: '🔥'
+        icon: FireIcon
       },
       {
         message: '宇宙があなたの味方である。障害はすべて成長の種。恐れずに立ち向かえ。',
         subMessage: '挑戦こそが、あなたを光らせる。',
         color: '#a855f7',
-        emoji: '✨'
+        icon: StarIcon
       },
       {
         message: '今日のあなたは無敵だ。過去の痛みがあなたを鍛え、最強の盾となっている。',
         subMessage: '破壊と再生の間で、真の力が生まれる。',
         color: '#dc2626',
-        emoji: '⚡'
+        icon: EnergyIcon
       },
       {
         message: '星々があなたのために整列している。不可能を可能に変える時が来た。',
         subMessage: '限界は幻想。あなたの可能性は無限だ。',
         color: '#0ea5e9',
-        emoji: '🌌'
+        icon: MoonIcon
       },
       {
         message: '深淵なる古の智恵があなたの中で覚醒している。今日の選択が運命を変える。',
         subMessage: '答えは既にあなたの中にある。静寂に耳を傾けよ。',
         color: '#059669',
-        emoji: '🔮'
+        icon: BubbleIcon
       }
     ]
     return messages[Math.floor(Math.random() * messages.length)]
@@ -81,9 +82,9 @@ export default function Dashboard() {
   }
 
   const achievements = [
-    { id: 1, title: '7日継続達成！', icon: '🔥', new: true },
-    { id: 2, title: 'Lunaとのフレンドレベルアップ', icon: '⬆️', new: true },
-    { id: 3, title: 'チーム投稿が10いいね！', icon: '❤️', new: false },
+    { id: 1, title: '7日継続達成！', icon: FireIcon, new: true },
+    { id: 2, title: 'Lunaとのフレンドレベルアップ', icon: EnergyIcon, new: true },
+    { id: 3, title: 'チーム投稿が10いいね！', icon: HappyFaceIcon, new: false },
   ]
 
   return (
@@ -116,10 +117,9 @@ export default function Dashboard() {
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '24px'
+            justifyContent: 'center'
           }}>
-            {currentMood}
+            <HappyFaceIcon size={24} />
           </div>
         </div>
         
@@ -313,10 +313,12 @@ export default function Dashboard() {
           
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '8px' }}>
             <div style={{
-              fontSize: '48px',
-              animation: 'mysticalGlow 3s ease-in-out infinite'
+              animation: 'mysticalGlow 3s ease-in-out infinite',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}>
-              {todaysOracle.emoji}
+              <todaysOracle.icon size={48} />
             </div>
             
             <div style={{ flex: 1 }}>
@@ -637,7 +639,9 @@ export default function Dashboard() {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ fontSize: '20px' }}>{achievement.icon}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px' }}>
+                    <achievement.icon size={20} />
+                  </div>
                   <span style={{ fontSize: '14px', color: '#d1d5db', fontWeight: '500' }}>{achievement.title}</span>
                 </div>
                 {achievement.new && (
