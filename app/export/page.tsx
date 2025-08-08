@@ -1,373 +1,420 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import { 
-  ArrowLeft, 
-  Download, 
-  FileText, 
-  Calendar, 
-  BarChart3, 
-  Shield,
-  CheckCircle,
-  Clock,
-  FileSpreadsheet,
-  FileImage,
-  Archive
-} from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Mock export data
-const exportOptions = [
-  {
-    id: 'checkin_data',
-    name: 'チェックインデータ',
-    description: '気分・エネルギー・メモの記録',
-    format: ['CSV', 'JSON'],
-    size: '2.4 MB',
-    records: 156,
-    icon: <BarChart3 className="h-6 w-6 text-blue-500" />
-  },
-  {
-    id: 'chat_history',
-    name: 'AI対話履歴',
-    description: 'AIキャラクターとの会話記録',
-    format: ['TXT', 'JSON'],
-    size: '8.7 MB',
-    records: 89,
-    icon: <FileText className="h-6 w-6 text-purple-500" />
-  },
-  {
-    id: 'analytics_reports',
-    name: '分析レポート',
-    description: '週次・月次の詳細分析結果',
-    format: ['PDF', 'CSV'],
-    size: '5.1 MB',
-    records: 12,
-    icon: <FileImage className="h-6 w-6 text-green-500" />
-  },
-  {
-    id: 'expert_sessions',
-    name: '専門家面談記録',
-    description: '面談の概要と記録（匿名化済み）',
-    format: ['PDF'],
-    size: '1.8 MB',
-    records: 5,
-    icon: <Calendar className="h-6 w-6 text-orange-500" />
-  },
-  {
-    id: 'achievements',
-    name: '達成・バッジデータ',
-    description: '獲得したバッジと達成記録',
-    format: ['JSON', 'CSV'],
-    size: '0.3 MB',
-    records: 28,
-    icon: <CheckCircle className="h-6 w-6 text-yellow-500" />
-  }
-]
-
-export default function DataExport() {
+export default function ExportPage() {
   const router = useRouter()
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [selectedFormat, setSelectedFormat] = useState('JSON')
-  const [dateRange, setDateRange] = useState('all')
-  const [isExporting, setIsExporting] = useState(false)
-  const [exportProgress, setExportProgress] = useState(0)
+  const [selectedFormat, setSelectedFormat] = useState<'json' | 'csv' | 'pdf'>('json')
+  const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>(['mood', 'activities'])
+  const [dateRange, setDateRange] = useState({
+    from: '2025-07-01',
+    to: '2025-08-08'
+  })
 
-  const handleItemToggle = (itemId: string) => {
-    setSelectedItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
-        : [...prev, itemId]
-    )
-  }
+  const dataTypes = [
+    { id: 'mood', label: '気分データ', icon: '😊', size: '2.3 MB' },
+    { id: 'activities', label: 'アクティビティ', icon: '📊', size: '1.8 MB' },
+    { id: 'chats', label: 'チャット履歴', icon: '💬', size: '3.5 MB' },
+    { id: 'achievements', label: '実績・バッジ', icon: '🏆', size: '0.5 MB' },
+    { id: 'challenges', label: 'チャレンジ記録', icon: '🎯', size: '1.2 MB' },
+    { id: 'profile', label: 'プロフィール', icon: '👤', size: '0.1 MB' }
+  ]
 
-  const handleSelectAll = () => {
-    if (selectedItems.length === exportOptions.length) {
-      setSelectedItems([])
+  const formats = [
+    { id: 'json', label: 'JSON', description: '開発者向け', icon: '{ }' },
+    { id: 'csv', label: 'CSV', description: 'Excel対応', icon: '📊' },
+    { id: 'pdf', label: 'PDF', description: '印刷用', icon: '📄' }
+  ]
+
+  const toggleDataType = (typeId: string) => {
+    if (selectedDataTypes.includes(typeId)) {
+      setSelectedDataTypes(selectedDataTypes.filter(t => t !== typeId))
     } else {
-      setSelectedItems(exportOptions.map(item => item.id))
+      setSelectedDataTypes([...selectedDataTypes, typeId])
     }
   }
 
-  const handleExport = async () => {
-    if (selectedItems.length === 0) return
-
-    setIsExporting(true)
-    setExportProgress(0)
-
-    // Simulate export progress
-    const interval = setInterval(() => {
-      setExportProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsExporting(false)
-          // Simulate download
-          setTimeout(() => {
-            const blob = new Blob([JSON.stringify({
-              export_date: new Date().toISOString(),
-              data_types: selectedItems,
-              format: selectedFormat,
-              note: 'これはデモ用のエクスポートファイルです'
-            }, null, 2)], { type: 'application/json' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `mindcare-export-${new Date().toISOString().split('T')[0]}.${selectedFormat.toLowerCase()}`
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            URL.revokeObjectURL(url)
-          }, 500)
-          return 100
-        }
-        return prev + 2
-      })
-    }, 50)
+  const getTotalSize = () => {
+    const total = selectedDataTypes.reduce((sum, typeId) => {
+      const type = dataTypes.find(t => t.id === typeId)
+      const size = parseFloat(type?.size.replace(' MB', '') || '0')
+      return sum + size
+    }, 0)
+    return total.toFixed(1)
   }
 
-  const getTotalSize = () => {
-    return selectedItems.reduce((total, itemId) => {
-      const item = exportOptions.find(opt => opt.id === itemId)
-      if (item) {
-        const size = parseFloat(item.size.split(' ')[0])
-        return total + size
-      }
-      return total
-    }, 0).toFixed(1)
+  const handleExport = () => {
+    // Simulate export
+    alert(`エクスポート処理を開始しました。\nフォーマット: ${selectedFormat.toUpperCase()}\nサイズ: ${getTotalSize()} MB`)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-6">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
+      color: 'white',
+      paddingBottom: '140px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-md mx-auto px-4 py-4 flex items-center">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => router.back()}
-            className="mr-3"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="font-medium text-gray-900">データエクスポート</h1>
-            <p className="text-xs text-gray-500">あなたのデータをダウンロード</p>
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
+      }}>
+        <h1 style={{
+          fontSize: '24px',
+          fontWeight: '800',
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          margin: 0
+        }}>
+          データエクスポート
+        </h1>
+      </div>
+
+      <div style={{ padding: '20px' }}>
+        {/* Info Card */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '20px',
+          padding: '20px',
+          marginBottom: '24px',
+          border: '1px solid rgba(96, 165, 250, 0.2)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            marginBottom: '12px'
+          }}>
+            <span style={{ fontSize: '24px' }}>💾</span>
+            <h3 style={{
+              fontSize: '16px',
+              fontWeight: '600',
+              color: '#f3f4f6'
+            }}>
+              あなたのデータ
+            </h3>
+          </div>
+          <p style={{
+            fontSize: '13px',
+            color: '#9ca3af',
+            lineHeight: '1.6'
+          }}>
+            すべての個人データをダウンロードできます。データはあなたのプライバシーを保護するため暗号化されています。
+          </p>
+        </div>
+
+        {/* Date Range */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '12px'
+          }}>
+            期間を選択
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: '12px'
+          }}>
+            <div>
+              <label style={{
+                fontSize: '12px',
+                color: '#9ca3af',
+                display: 'block',
+                marginBottom: '6px'
+              }}>
+                開始日
+              </label>
+              <input
+                type="date"
+                value={dateRange.from}
+                onChange={(e) => setDateRange({ ...dateRange, from: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            <div>
+              <label style={{
+                fontSize: '12px',
+                color: '#9ca3af',
+                display: 'block',
+                marginBottom: '6px'
+              }}>
+                終了日
+              </label>
+              <input
+                type="date"
+                value={dateRange.to}
+                onChange={(e) => setDateRange({ ...dateRange, to: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  borderRadius: '8px',
+                  color: '#f3f4f6',
+                  fontSize: '14px',
+                  outline: 'none'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Data Types */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '12px'
+          }}>
+            エクスポートするデータ
+          </h3>
+          <div style={{
+            display: 'grid',
+            gap: '12px'
+          }}>
+            {dataTypes.map((type) => (
+              <button
+                key={type.id}
+                onClick={() => toggleDataType(type.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px',
+                  backgroundColor: selectedDataTypes.includes(type.id)
+                    ? 'rgba(163, 230, 53, 0.1)'
+                    : 'rgba(31, 41, 55, 0.6)',
+                  border: selectedDataTypes.includes(type.id)
+                    ? '2px solid rgba(163, 230, 53, 0.3)'
+                    : '1px solid rgba(55, 65, 81, 0.3)',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{ fontSize: '20px' }}>{type.icon}</span>
+                  <div style={{ textAlign: 'left' }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      color: selectedDataTypes.includes(type.id) ? '#f3f4f6' : '#d1d5db'
+                    }}>
+                      {type.label}
+                    </div>
+                    <div style={{
+                      fontSize: '12px',
+                      color: '#9ca3af'
+                    }}>
+                      {type.size}
+                    </div>
+                  </div>
+                </div>
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '6px',
+                  backgroundColor: selectedDataTypes.includes(type.id)
+                    ? '#a3e635'
+                    : 'rgba(55, 65, 81, 0.6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {selectedDataTypes.includes(type.id) && '✓'}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Format Selection */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '12px'
+          }}>
+            フォーマット
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px'
+          }}>
+            {formats.map((format) => (
+              <button
+                key={format.id}
+                onClick={() => setSelectedFormat(format.id as any)}
+                style={{
+                  padding: '16px',
+                  backgroundColor: selectedFormat === format.id
+                    ? 'rgba(163, 230, 53, 0.2)'
+                    : 'rgba(31, 41, 55, 0.6)',
+                  border: selectedFormat === format.id
+                    ? '2px solid rgba(163, 230, 53, 0.3)'
+                    : '1px solid rgba(55, 65, 81, 0.3)',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '20px', marginBottom: '4px' }}>{format.icon}</div>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  color: selectedFormat === format.id ? '#a3e635' : '#f3f4f6'
+                }}>
+                  {format.label}
+                </div>
+                <div style={{
+                  fontSize: '11px',
+                  color: '#9ca3af'
+                }}>
+                  {format.description}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div style={{
+          background: 'rgba(31, 41, 55, 0.6)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '16px',
+          padding: '16px',
+          marginBottom: '24px',
+          border: '1px solid rgba(55, 65, 81, 0.3)'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '12px'
+          }}>
+            <span style={{
+              fontSize: '14px',
+              color: '#9ca3af'
+            }}>
+              選択したデータ
+            </span>
+            <span style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#f3f4f6'
+            }}>
+              {selectedDataTypes.length}種類
+            </span>
+          </div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span style={{
+              fontSize: '14px',
+              color: '#9ca3af'
+            }}>
+              推定サイズ
+            </span>
+            <span style={{
+              fontSize: '18px',
+              fontWeight: '700',
+              color: '#a3e635'
+            }}>
+              {getTotalSize()} MB
+            </span>
+          </div>
+        </div>
+
+        {/* Export Button */}
+        <button
+          onClick={handleExport}
+          disabled={selectedDataTypes.length === 0}
+          style={{
+            width: '100%',
+            padding: '16px',
+            background: selectedDataTypes.length > 0
+              ? 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)'
+              : 'rgba(55, 65, 81, 0.6)',
+            color: selectedDataTypes.length > 0 ? '#111827' : '#6b7280',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: selectedDataTypes.length > 0 ? 'pointer' : 'not-allowed',
+            transition: 'all 0.3s ease'
+          }}
+        >
+          エクスポート開始
+        </button>
+
+        {/* Privacy Note */}
+        <div style={{
+          marginTop: '24px',
+          padding: '16px',
+          backgroundColor: 'rgba(55, 65, 81, 0.3)',
+          borderRadius: '12px',
+          borderLeft: '3px solid #60a5fa'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '16px' }}>🔒</span>
+            <div>
+              <h4 style={{
+                fontSize: '13px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '4px'
+              }}>
+                プライバシー保護
+              </h4>
+              <p style={{
+                fontSize: '12px',
+                color: '#9ca3af',
+                lineHeight: '1.5',
+                margin: 0
+              }}>
+                エクスポートされたデータは暗号化され、あなたのデバイスに直接ダウンロードされます。第三者と共有されることはありません。
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Privacy Notice */}
-        <Card className="bg-blue-50 border-blue-200">
-          <CardContent className="p-4">
-            <div className="flex items-start space-x-3">
-              <Shield className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium text-blue-900 mb-1">プライバシー保護</h3>
-                <p className="text-sm text-blue-800">
-                  エクスポートされるデータは完全に匿名化され、個人を特定できる情報は含まれません。
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Export Options */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>エクスポートするデータ</span>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={handleSelectAll}
-              >
-                {selectedItems.length === exportOptions.length ? '全て解除' : '全て選択'}
-              </Button>
-            </CardTitle>
-            <CardDescription>
-              ダウンロードしたいデータを選択してください
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {exportOptions.map((option) => (
-              <div 
-                key={option.id}
-                className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                  selectedItems.includes(option.id)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
-                onClick={() => handleItemToggle(option.id)}
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    {option.icon}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-medium text-gray-900">{option.name}</h3>
-                      <div className="flex items-center space-x-2">
-                        {selectedItems.includes(option.id) && (
-                          <CheckCircle className="h-4 w-4 text-blue-500" />
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{option.description}</p>
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>{option.records} 件の記録</span>
-                      <span>{option.size}</span>
-                    </div>
-                    <div className="flex space-x-1 mt-2">
-                      {option.format.map((format) => (
-                        <span 
-                          key={format}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-                        >
-                          {format}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Export Settings */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle>エクスポート設定</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Format Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ファイル形式
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {['JSON', 'CSV', 'PDF'].map((format) => (
-                  <button
-                    key={format}
-                    onClick={() => setSelectedFormat(format)}
-                    className={`p-3 text-sm font-medium rounded-lg border-2 transition-colors ${
-                      selectedFormat === format
-                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    {format === 'JSON' && <FileText className="h-4 w-4 mx-auto mb-1" />}
-                    {format === 'CSV' && <FileSpreadsheet className="h-4 w-4 mx-auto mb-1" />}
-                    {format === 'PDF' && <FileImage className="h-4 w-4 mx-auto mb-1" />}
-                    {format}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Date Range */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                期間
-              </label>
-              <select 
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="all">全期間</option>
-                <option value="last_month">過去1ヶ月</option>
-                <option value="last_3months">過去3ヶ月</option>
-                <option value="last_6months">過去6ヶ月</option>
-                <option value="custom">カスタム期間</option>
-              </select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Export Summary */}
-        {selectedItems.length > 0 && (
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>エクスポート概要</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">選択した項目</span>
-                  <span className="font-medium">{selectedItems.length} 種類</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">推定ファイルサイズ</span>
-                  <span className="font-medium">{getTotalSize()} MB</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">形式</span>
-                  <span className="font-medium">{selectedFormat}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">期間</span>
-                  <span className="font-medium">
-                    {dateRange === 'all' && '全期間'}
-                    {dateRange === 'last_month' && '過去1ヶ月'}
-                    {dateRange === 'last_3months' && '過去3ヶ月'}
-                    {dateRange === 'last_6months' && '過去6ヶ月'}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Export Progress */}
-        {isExporting && (
-          <Card>
-            <CardContent className="p-6 text-center">
-              <Archive className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="font-medium text-gray-900 mb-2">データを準備中...</h3>
-              <Progress value={exportProgress} className="h-3 mb-2" />
-              <p className="text-sm text-gray-600">{exportProgress}% 完了</p>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Export Button */}
-        <Button
-          onClick={handleExport}
-          disabled={selectedItems.length === 0 || isExporting}
-          className="w-full"
-          size="lg"
-        >
-          {isExporting ? (
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 animate-spin" />
-              <span>エクスポート中...</span>
-            </div>
-          ) : (
-            <div className="flex items-center space-x-2">
-              <Download className="h-4 w-4" />
-              <span>データをエクスポート</span>
-            </div>
-          )}
-        </Button>
-
-        {/* Terms */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-medium text-gray-900 mb-2">エクスポートに関する注意事項</h3>
-            <ul className="space-y-1 text-sm text-gray-600">
-              <li>• エクスポートされたデータは30日後に自動削除されます</li>
-              <li>• データは暗号化されて保存されます</li>
-              <li>• 大容量のエクスポートには時間がかかる場合があります</li>
-              <li>• エクスポート完了時にメール通知が送信されます</li>
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+      <MobileBottomNav />
     </div>
   )
 }

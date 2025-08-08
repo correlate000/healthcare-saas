@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
 export default function EmergencySupportPage() {
   const router = useRouter()
@@ -77,73 +78,71 @@ export default function EmergencySupportPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#111827',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      padding: '20px'
+      paddingBottom: '140px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        marginBottom: '24px'
+        padding: '20px',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
       }}>
-        <button
-          onClick={() => router.back()}
-          style={{
-            width: '40px',
-            height: '40px',
-            backgroundColor: '#374151',
-            border: 'none',
-            borderRadius: '50%',
-            color: '#d1d5db',
-            fontSize: '20px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          ←
-        </button>
         <h1 style={{
           fontSize: '24px',
-          fontWeight: '700',
-          color: '#f3f4f6',
+          fontWeight: '800',
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #ef4444 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
           margin: 0
         }}>
           緊急サポート
         </h1>
       </div>
 
-      {/* Alert message */}
-      <div style={{
-        backgroundColor: '#fef2f2',
-        border: '2px solid #ef4444',
-        borderRadius: '12px',
-        padding: '16px',
-        marginBottom: '24px'
-      }}>
-        <p style={{
-          fontSize: '14px',
-          color: '#991b1b',
-          margin: 0,
-          lineHeight: '1.5',
-          fontWeight: '500'
+      <div style={{ padding: '20px' }}>
+        {/* Alert message */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(31, 41, 55, 0.8) 100%)',
+          backdropFilter: 'blur(12px)',
+          border: '2px solid rgba(239, 68, 68, 0.4)',
+          borderRadius: '16px',
+          padding: '20px',
+          marginBottom: '24px'
         }}>
-          あなたは一人ではありません。私たちがサポートします。
-          緊急の場合は、すぐに下記の連絡先にお電話ください。
-        </p>
-      </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <span style={{ fontSize: '24px' }}>⚠️</span>
+            <div>
+              <p style={{
+                fontSize: '14px',
+                color: '#fca5a5',
+                margin: 0,
+                lineHeight: '1.6',
+                fontWeight: '500'
+              }}>
+                あなたは一人ではありません。私たちがサポートします。
+                緊急の場合は、すぐに下記の連絡先にお電話ください。
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* What's happening section */}
-      <div style={{
-        backgroundColor: '#1f2937',
-        borderRadius: '12px',
-        padding: '20px',
-        marginBottom: '24px'
-      }}>
+        {/* What's happening section */}
+        <div style={{
+          background: 'rgba(31, 41, 55, 0.6)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '16px',
+          padding: '20px',
+          marginBottom: '24px',
+          border: '1px solid rgba(55, 65, 81, 0.3)'
+        }}>
         <h2 style={{
           fontSize: '18px',
           fontWeight: '600',
@@ -163,11 +162,15 @@ export default function EmergencySupportPage() {
               onClick={() => setSelectedReason(reason)}
               style={{
                 padding: '12px',
-                backgroundColor: selectedReason === reason ? '#ef4444' : '#374151',
-                color: selectedReason === reason ? 'white' : '#d1d5db',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '14px',
+                backgroundColor: selectedReason === reason 
+                  ? 'rgba(239, 68, 68, 0.2)' 
+                  : 'rgba(55, 65, 81, 0.6)',
+                color: selectedReason === reason ? '#ef4444' : '#d1d5db',
+                border: selectedReason === reason 
+                  ? '2px solid rgba(239, 68, 68, 0.4)' 
+                  : '1px solid rgba(55, 65, 81, 0.3)',
+                borderRadius: '10px',
+                fontSize: '13px',
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -180,10 +183,10 @@ export default function EmergencySupportPage() {
         </div>
       </div>
 
-      {/* Emergency contacts */}
-      <div style={{
-        marginBottom: '24px'
-      }}>
+        {/* Emergency contacts */}
+        <div style={{
+          marginBottom: '24px'
+        }}>
         <h2 style={{
           fontSize: '18px',
           fontWeight: '600',
@@ -201,12 +204,17 @@ export default function EmergencySupportPage() {
             <div
               key={contact.name}
               style={{
-                backgroundColor: contact.type === 'emergency' ? '#7f1d1d' : '#1f2937',
-                borderRadius: '12px',
+                background: contact.type === 'emergency' 
+                  ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(31, 41, 55, 0.8) 100%)'
+                  : 'rgba(31, 41, 55, 0.6)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
                 padding: '16px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                border: contact.type === 'emergency' ? '2px solid #ef4444' : 'none'
+                border: contact.type === 'emergency' 
+                  ? '2px solid rgba(239, 68, 68, 0.4)' 
+                  : '1px solid rgba(55, 65, 81, 0.3)'
               }}
               onClick={() => {
                 if (contact.type === 'phone' || contact.type === 'emergency') {
@@ -239,10 +247,12 @@ export default function EmergencySupportPage() {
                 </div>
                 <span style={{
                   fontSize: '12px',
-                  backgroundColor: contact.type === 'emergency' ? '#ef4444' : '#374151',
-                  color: contact.type === 'emergency' ? 'white' : '#a3e635',
+                  backgroundColor: contact.type === 'emergency' 
+                    ? 'rgba(239, 68, 68, 0.3)' 
+                    : 'rgba(163, 230, 53, 0.2)',
+                  color: contact.type === 'emergency' ? '#ef4444' : '#a3e635',
                   padding: '4px 8px',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   fontWeight: '600'
                 }}>
                   {contact.hours}
@@ -273,10 +283,10 @@ export default function EmergencySupportPage() {
         </div>
       </div>
 
-      {/* Coping strategies */}
-      <div style={{
-        marginBottom: '24px'
-      }}>
+        {/* Coping strategies */}
+        <div style={{
+          marginBottom: '24px'
+        }}>
         <h2 style={{
           fontSize: '18px',
           fontWeight: '600',
@@ -299,21 +309,24 @@ export default function EmergencySupportPage() {
                 }
               }}
               style={{
-                backgroundColor: '#1f2937',
-                borderRadius: '12px',
+                background: 'rgba(31, 41, 55, 0.6)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
                 padding: '16px',
-                border: 'none',
+                border: '1px solid rgba(55, 65, 81, 0.3)',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.3s ease',
                 textAlign: 'center'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#374151'
                 e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(163, 230, 53, 0.2)'
+                e.currentTarget.style.borderColor = 'rgba(163, 230, 53, 0.3)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1f2937'
                 e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = 'none'
+                e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.3)'
               }}
             >
               <div style={{ fontSize: '32px', marginBottom: '8px' }}>
@@ -340,26 +353,74 @@ export default function EmergencySupportPage() {
         </div>
       </div>
 
-      {/* Safe place button */}
-      <button
-        onClick={() => router.push('/chat')}
-        style={{
-          width: '100%',
+        {/* Safe place button */}
+        <button
+          onClick={() => router.push('/chat')}
+          style={{
+            width: '100%',
+            padding: '16px',
+            background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+            color: '#111827',
+            border: 'none',
+            borderRadius: '12px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 12px rgba(163, 230, 53, 0.3)'
+          }}
+          onMouseEnter={(e) => { 
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
+          }}
+          onMouseLeave={(e) => { 
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>💬</span>
+            AIカウンセラーと話す
+          </div>
+        </button>
+
+        {/* Additional Resources */}
+        <div style={{
+          marginTop: '24px',
           padding: '16px',
-          backgroundColor: '#a3e635',
-          color: '#111827',
-          border: 'none',
+          backgroundColor: 'rgba(55, 65, 81, 0.3)',
           borderRadius: '12px',
-          fontSize: '16px',
-          fontWeight: '600',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease'
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#84cc16' }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#a3e635' }}
-      >
-        AIと話す
-      </button>
+          borderLeft: '3px solid #60a5fa'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '16px' }}>💙</span>
+            <div>
+              <h4 style={{
+                fontSize: '13px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '4px'
+              }}>
+                セルフケアのヒント
+              </h4>
+              <p style={{
+                fontSize: '12px',
+                color: '#9ca3af',
+                lineHeight: '1.5',
+                margin: 0
+              }}>
+                深呼吸をして、今この瞬間に集中しましょう。あなたの安全と健康が最優先です。必要なサポートを求めることは勇気ある行動です。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <MobileBottomNav />
     </div>
   )
 }
