@@ -15,7 +15,8 @@ export default function ProfilePage() {
     birthYear: '1990',
     gender: 'other',
     goals: ['ストレス管理', '睡眠改善', 'マインドフルネス'],
-    interests: ['瞑想', '運動', '読書', '音楽']
+    interests: ['瞑想', '運動', '読書', '音楽'],
+    joinDate: '2025年6月'
   })
 
   const [editForm, setEditForm] = useState({ ...profile })
@@ -248,7 +249,7 @@ export default function ProfilePage() {
                     color: '#6b7280',
                     marginTop: '4px'
                   }}>
-                    {profile.joinDate || stats.joinDate}から利用開始
+                    {profile.joinDate}から利用開始
                   </p>
                 </div>
               )}

@@ -1,328 +1,601 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { VoiceInput } from '@/components/ui/voice-input'
-import { 
-  ArrowLeft, 
-  Volume2, 
-  VolumeX, 
-  Mic, 
-  MessageCircle,
-  Sparkles
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 
-// Mock AI responses for voice chat
-const aiVoiceResponses = {
-  greeting: [
-    "こんにちは！音声でお話しできて嬉しいです。今日はどんな気分ですか？",
-    "お疲れ様です。ゆっくりとお話を聞かせてください。",
-    "いらっしゃいませ。今日はどんなことを話しましょうか？"
-  ],
-  encouragement: [
-    "そうですね。あなたの気持ちがよく伝わってきます。",
-    "お話ししてくれてありがとうございます。一人じゃありませんよ。",
-    "大変な時期を過ごしているんですね。あなたの強さを信じています。"
-  ],
-  advice: [
-    "そんな時は、深呼吸をしてゆっくり休んでみてください。",
-    "無理をしないで、自分のペースで大丈夫ですよ。",
-    "今日は特別よく頑張っていると思います。自分を褒めてあげてください。"
-  ]
-}
+export default function VoiceChatPage() {
+  const [isRecording, setIsRecording] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  const [recordingTime, setRecordingTime] = useState(0)
+  const [selectedMood, setSelectedMood] = useState<string | null>(null)
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([])
+  const [showAnalysis, setShowAnalysis] = useState(false)
 
-export default function VoiceChat() {
-  const router = useRouter()
-  const [isAudioEnabled, setIsAudioEnabled] = useState(true)
-  const [conversation, setConversation] = useState<Array<{id: string, type: 'user' | 'ai', content: string, timestamp: Date}>>([])
-  const [isAISpeaking, setIsAISpeaking] = useState(false)
-
-  const character = {
-    name: 'Luna',
-    color: 'bg-purple-500'
-  }
-
-  const handleVoiceTranscript = (text: string) => {
-    if (text.trim()) {
-      // Add user message
-      const userMessage = {
-        id: Date.now().toString(),
-        type: 'user' as const,
-        content: text,
-        timestamp: new Date()
-      }
-      
-      setConversation(prev => [...prev, userMessage])
-      
-      // Generate AI response
-      setTimeout(() => {
-        generateAIResponse(text)
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+    if (isRecording && !isPaused) {
+      interval = setInterval(() => {
+        setRecordingTime(prev => prev + 1)
       }, 1000)
     }
+    return () => clearInterval(interval)
+  }, [isRecording, isPaused])
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  const generateAIResponse = (userInput: string) => {
-    const input = userInput.toLowerCase()
-    let responses = aiVoiceResponses.encouragement
-    
-    if (input.includes('こんにちは') || input.includes('はじめまして')) {
-      responses = aiVoiceResponses.greeting
-    } else if (input.includes('疲れ') || input.includes('辛い') || input.includes('ストレス')) {
-      responses = aiVoiceResponses.advice
-    }
-    
-    const response = responses[Math.floor(Math.random() * responses.length)]
-    
-    const aiMessage = {
-      id: (Date.now() + 1).toString(),
-      type: 'ai' as const,
-      content: response,
-      timestamp: new Date()
-    }
-    
-    setConversation(prev => [...prev, aiMessage])
-    
-    // Text-to-speech for AI response
-    if (isAudioEnabled) {
-      speakText(response)
-    }
+  const moods = [
+    { emoji: '😊', label: '良い', color: '#a3e635' },
+    { emoji: '😐', label: '普通', color: '#60a5fa' },
+    { emoji: '😔', label: '憂鬱', color: '#fbbf24' },
+    { emoji: '😰', label: '不安', color: '#fb923c' },
+    { emoji: '😤', label: 'イライラ', color: '#ef4444' }
+  ]
+
+  const topics = [
+    '仕事', '人間関係', '健康', '家族', 
+    '将来', '金銭', '恋愛', '自己成長'
+  ]
+
+  const quickPrompts = [
+    '今日の出来事を話してください',
+    '何か心配事はありますか？',
+    '最近嬉しかったことは？',
+    '今の気分を詳しく教えてください'
+  ]
+
+  const handleStartRecording = () => {
+    setIsRecording(true)
+    setRecordingTime(0)
+    setShowAnalysis(false)
   }
 
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window) {
-      setIsAISpeaking(true)
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'ja-JP'
-      utterance.rate = 0.9
-      utterance.pitch = 1.1
-      
-      utterance.onend = () => {
-        setIsAISpeaking(false)
-      }
-      
-      speechSynthesis.speak(utterance)
-    }
+  const handleStopRecording = () => {
+    setIsRecording(false)
+    setIsPaused(false)
+    setTimeout(() => setShowAnalysis(true), 1000)
   }
 
-  const toggleAudio = () => {
-    setIsAudioEnabled(!isAudioEnabled)
-    if (isAISpeaking) {
-      speechSynthesis.cancel()
-      setIsAISpeaking(false)
-    }
+  const handlePauseResume = () => {
+    setIsPaused(!isPaused)
   }
 
-  const handleVoiceError = (error: string) => {
-    console.error('Voice input error:', error)
+  const toggleTopic = (topic: string) => {
+    if (selectedTopics.includes(topic)) {
+      setSelectedTopics(selectedTopics.filter(t => t !== topic))
+    } else if (selectedTopics.length < 3) {
+      setSelectedTopics([...selectedTopics, topic])
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
+      color: 'white',
+      paddingBottom: '140px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => router.back()}
-              className="mr-3"
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        backdropFilter: 'blur(10px)',
+        background: 'rgba(31, 41, 55, 0.4)'
+      }}>
+        <h1 style={{
+          fontSize: '24px',
+          fontWeight: '800',
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #a3e635 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          margin: 0
+        }}>
+          ボイスチャット
+        </h1>
+        <p style={{ fontSize: '14px', color: '#9ca3af', marginTop: '8px', margin: '8px 0 0 0' }}>
+          音声で今の気持ちを記録しましょう
+        </p>
+      </div>
+
+      <div style={{ padding: '20px' }}>
+        {!isRecording && !showAnalysis && (
+          <>
+            {/* Mood Selection */}
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '16px',
+              padding: '20px',
+              marginBottom: '20px',
+              border: '1px solid rgba(55, 65, 81, 0.3)'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '16px'
+              }}>
+                今の気分は？
+              </h3>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '8px'
+              }}>
+                {moods.map((mood) => (
+                  <button
+                    key={mood.label}
+                    onClick={() => setSelectedMood(mood.label)}
+                    style={{
+                      flex: 1,
+                      padding: '12px 8px',
+                      background: selectedMood === mood.label
+                        ? `linear-gradient(135deg, ${mood.color}40 0%, rgba(31, 41, 55, 0.8) 100%)`
+                        : 'rgba(55, 65, 81, 0.4)',
+                      border: selectedMood === mood.label
+                        ? `2px solid ${mood.color}80`
+                        : '1px solid rgba(55, 65, 81, 0.3)',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <span style={{ fontSize: '24px' }}>{mood.emoji}</span>
+                    <span style={{
+                      fontSize: '11px',
+                      color: selectedMood === mood.label ? mood.color : '#9ca3af',
+                      fontWeight: '500'
+                    }}>
+                      {mood.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Topic Selection */}
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '16px',
+              padding: '20px',
+              marginBottom: '20px',
+              border: '1px solid rgba(55, 65, 81, 0.3)'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '12px'
+              }}>
+                話したいトピック（最大3つ）
+              </h3>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: '8px'
+              }}>
+                {topics.map((topic) => (
+                  <button
+                    key={topic}
+                    onClick={() => toggleTopic(topic)}
+                    style={{
+                      padding: '10px',
+                      backgroundColor: selectedTopics.includes(topic)
+                        ? 'rgba(163, 230, 53, 0.2)'
+                        : 'rgba(55, 65, 81, 0.4)',
+                      color: selectedTopics.includes(topic) ? '#a3e635' : '#9ca3af',
+                      border: selectedTopics.includes(topic)
+                        ? '1px solid rgba(163, 230, 53, 0.3)'
+                        : '1px solid transparent',
+                      borderRadius: '10px',
+                      fontSize: '13px',
+                      fontWeight: '500',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Prompts */}
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '16px',
+              padding: '20px',
+              marginBottom: '24px',
+              border: '1px solid rgba(55, 65, 81, 0.3)'
+            }}>
+              <h3 style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '12px'
+              }}>
+                話すきっかけ
+              </h3>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                {quickPrompts.map((prompt) => (
+                  <div
+                    key={prompt}
+                    style={{
+                      padding: '12px',
+                      backgroundColor: 'rgba(55, 65, 81, 0.3)',
+                      borderRadius: '10px',
+                      fontSize: '13px',
+                      color: '#d1d5db',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span style={{ color: '#60a5fa' }}>💭</span>
+                    {prompt}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Start Recording Button */}
+            <button
+              onClick={handleStartRecording}
+              style={{
+                width: '100%',
+                padding: '20px',
+                background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                color: '#111827',
+                border: 'none',
+                borderRadius: '16px',
+                fontSize: '18px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                boxShadow: '0 8px 24px rgba(163, 230, 53, 0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 12px 32px rgba(163, 230, 53, 0.4)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(163, 230, 53, 0.3)'
+              }}
             >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback className={`${character.color} text-white`}>
-                  {character.name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h1 className="font-medium text-gray-900">音声チャット</h1>
-                <p className="text-xs text-gray-500 flex items-center">
-                  <div className={`w-2 h-2 rounded-full mr-2 ${isAISpeaking ? 'bg-green-500 animate-pulse' : 'bg-green-500'}`}></div>
-                  {isAISpeaking ? '話しています...' : 'オンライン'}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="9" y="3" width="6" height="11" rx="3" stroke="#111827" strokeWidth="2"/>
+                <path d="M5 10V12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12V10" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M12 19V22" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M8 22H16" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+              録音を開始
+            </button>
+          </>
+        )}
+
+        {/* Recording Screen */}
+        {isRecording && (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '60vh'
+          }}>
+            {/* Recording Animation */}
+            <div style={{
+              width: '200px',
+              height: '200px',
+              background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '40px',
+              position: 'relative',
+              animation: isPaused ? 'none' : 'pulse 2s ease-in-out infinite'
+            }}>
+              <div style={{
+                position: 'absolute',
+                width: '240px',
+                height: '240px',
+                border: '2px solid rgba(163, 230, 53, 0.3)',
+                borderRadius: '50%',
+                animation: isPaused ? 'none' : 'ripple 2s ease-out infinite'
+              }}></div>
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="9" y="3" width="6" height="11" rx="3" fill="#111827"/>
+                <path d="M5 10V12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12V10" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+
+            {/* Timer */}
+            <div style={{
+              fontSize: '48px',
+              fontWeight: '700',
+              color: '#f3f4f6',
+              marginBottom: '16px',
+              fontVariantNumeric: 'tabular-nums'
+            }}>
+              {formatTime(recordingTime)}
+            </div>
+
+            <p style={{
+              fontSize: '16px',
+              color: '#9ca3af',
+              marginBottom: '40px'
+            }}>
+              {isPaused ? '一時停止中...' : '録音中...'}
+            </p>
+
+            {/* Control Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '16px'
+            }}>
+              <button
+                onClick={handlePauseResume}
+                style={{
+                  width: '60px',
+                  height: '60px',
+                  backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                  color: '#60a5fa',
+                  border: '2px solid rgba(96, 165, 250, 0.3)',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                {isPaused ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="5 3 19 12 5 21 5 3" fill="#60a5fa"/>
+                  </svg>
+                ) : (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="4" height="16" fill="#60a5fa"/>
+                    <rect x="14" y="4" width="4" height="16" fill="#60a5fa"/>
+                  </svg>
+                )}
+              </button>
+
+              <button
+                onClick={handleStopRecording}
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 24px rgba(239, 68, 68, 0.3)',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                }}
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="6" y="6" width="12" height="12" fill="white"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Analysis Results */}
+        {showAnalysis && (
+          <div>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(163, 230, 53, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '20px',
+              padding: '24px',
+              marginBottom: '24px',
+              border: '1px solid rgba(163, 230, 53, 0.2)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '20px'
+              }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11L12 14L22 4" stroke="#111827" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: '700',
+                    color: '#f3f4f6',
+                    marginBottom: '4px'
+                  }}>
+                    記録完了！
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#9ca3af'
+                  }}>
+                    録音時間: {formatTime(recordingTime)}
+                  </p>
+                </div>
+              </div>
+
+              {/* AI Analysis */}
+              <div style={{
+                padding: '16px',
+                backgroundColor: 'rgba(31, 41, 55, 0.4)',
+                borderRadius: '12px',
+                marginBottom: '16px'
+              }}>
+                <h4 style={{
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  color: '#60a5fa',
+                  marginBottom: '8px'
+                }}>
+                  AI分析結果
+                </h4>
+                <p style={{
+                  fontSize: '13px',
+                  color: '#d1d5db',
+                  lineHeight: '1.6'
+                }}>
+                  お話の内容から、仕事に関するストレスを感じていることが分かりました。
+                  深呼吸をして、今日は早めに休息を取ることをおすすめします。
                 </p>
               </div>
-            </div>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={toggleAudio}
-          >
-            {isAudioEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-          </Button>
-        </div>
-      </div>
 
-      <div className="max-w-md mx-auto px-4 py-6 space-y-6">
-        {/* Introduction */}
-        {conversation.length === 0 && (
-          <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-            <CardContent className="p-6 text-center">
-              <Avatar className="h-16 w-16 mx-auto mb-4">
-                <AvatarFallback className={`${character.color} text-white text-xl`}>
-                  {character.name[0]}
-                </AvatarFallback>
-              </Avatar>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                {character.name}との音声対話
-              </h2>
-              <p className="text-sm text-gray-700 mb-4">
-                マイクボタンをタップして、気軽にお話しください。Lunaがあなたの声に応答します。
-              </p>
-              <div className="flex items-center justify-center space-x-4 text-xs text-gray-600">
-                <div className="flex items-center space-x-1">
-                  <Mic className="h-3 w-3" />
-                  <span>音声入力</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Volume2 className="h-3 w-3" />
-                  <span>音声応答</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Conversation History */}
-        {conversation.length > 0 && (
-          <div className="space-y-4">
-            {conversation.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex items-start space-x-2 max-w-[80%] ${
-                  message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-                }`}>
-                  {message.type === 'ai' && (
-                    <Avatar className="h-8 w-8 flex-shrink-0">
-                      <AvatarFallback className={`${character.color} text-white text-sm`}>
-                        {character.name[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                  )}
+              {/* Detected Emotions */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '8px',
+                marginBottom: '16px'
+              }}>
+                {['ストレス: 65%', '疲労: 45%', '希望: 30%'].map((emotion) => (
                   <div
-                    className={`rounded-2xl px-4 py-3 ${
-                      message.type === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white border border-gray-200 text-gray-800'
-                    }`}
+                    key={emotion}
+                    style={{
+                      padding: '8px',
+                      backgroundColor: 'rgba(55, 65, 81, 0.4)',
+                      borderRadius: '8px',
+                      textAlign: 'center',
+                      fontSize: '12px',
+                      color: '#9ca3af'
+                    }}
                   >
-                    <p className="text-sm leading-relaxed">
-                      {message.content}
-                    </p>
-                    <p className={`text-xs mt-1 ${
-                      message.type === 'user' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
-                      {message.timestamp.toLocaleTimeString('ja-JP', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </p>
+                    {emotion}
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
+
+              {/* Recommendations */}
+              <div style={{
+                padding: '12px',
+                backgroundColor: 'rgba(96, 165, 250, 0.1)',
+                borderRadius: '10px',
+                borderLeft: '3px solid #60a5fa'
+              }}>
+                <h4 style={{
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  color: '#60a5fa',
+                  marginBottom: '6px'
+                }}>
+                  おすすめのアクション
+                </h4>
+                <ul style={{
+                  margin: 0,
+                  paddingLeft: '20px',
+                  fontSize: '12px',
+                  color: '#d1d5db',
+                  lineHeight: '1.8'
+                }}>
+                  <li>5分間の瞑想セッション</li>
+                  <li>軽い運動やストレッチ</li>
+                  <li>専門家との相談を検討</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '12px'
+            }}>
+              <button
+                onClick={() => {
+                  setShowAnalysis(false)
+                  setSelectedMood(null)
+                  setSelectedTopics([])
+                  setRecordingTime(0)
+                }}
+                style={{
+                  padding: '14px',
+                  backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                  color: '#a3e635',
+                  border: '1px solid rgba(163, 230, 53, 0.3)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                新しい録音
+              </button>
+              <button
+                style={{
+                  padding: '14px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  color: '#d1d5db',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                履歴を見る
+              </button>
+            </div>
           </div>
         )}
-
-        {/* Voice Input Component */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center space-x-2">
-              <Mic className="h-5 w-5 text-blue-500" />
-              <span>音声で話す</span>
-            </CardTitle>
-            <CardDescription>
-              マイクボタンを押して話しかけてください
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <VoiceInput
-              onTranscript={handleVoiceTranscript}
-              onError={handleVoiceError}
-              className="w-full"
-            />
-          </CardContent>
-        </Card>
-
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">クイックアクション</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 gap-3">
-              <Button 
-                variant="outline" 
-                className="justify-start h-auto p-4"
-                onClick={() => handleVoiceTranscript("今日はとても疲れています")}
-              >
-                <div className="text-left">
-                  <div className="font-medium">疲れを伝える</div>
-                  <div className="text-sm text-gray-500">「今日はとても疲れています」</div>
-                </div>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="justify-start h-auto p-4"
-                onClick={() => handleVoiceTranscript("ストレスが溜まっています")}
-              >
-                <div className="text-left">
-                  <div className="font-medium">ストレスを相談</div>
-                  <div className="text-sm text-gray-500">「ストレスが溜まっています」</div>
-                </div>
-              </Button>
-              
-              <Button 
-                variant="outline" 
-                className="justify-start h-auto p-4"
-                onClick={() => handleVoiceTranscript("今日はいい気分です")}
-              >
-                <div className="text-left">
-                  <div className="font-medium">良い気分を共有</div>
-                  <div className="text-sm text-gray-500">「今日はいい気分です」</div>
-                </div>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Features */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 flex items-center space-x-2">
-                <Sparkles className="h-4 w-4 text-purple-500" />
-                <span>音声チャットの特徴</span>
-              </h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>• 自然な日本語での音声認識</li>
-                <li>• AIによる音声応答（ON/OFF切替可能）</li>
-                <li>• 感情に寄り添った対話</li>
-                <li>• プライバシー保護された会話</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Text Chat Alternative */}
-        <div className="text-center">
-          <Button 
-            variant="outline"
-            onClick={() => router.push('/chat')}
-          >
-            <MessageCircle className="h-4 w-4 mr-2" />
-            テキストチャットに切り替え
-          </Button>
-        </div>
       </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        @keyframes ripple {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.2); opacity: 0; }
+        }
+      `}</style>
+
+      <MobileBottomNav />
     </div>
   )
 }
