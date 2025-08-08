@@ -159,37 +159,59 @@ export default function BookingPage() {
         </div>
 
         <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '8px',
           marginBottom: '24px'
         }}>
-          <span style={{
-            fontSize: isMobile ? '11px' : '12px',
-            color: currentStep === 1 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 1 ? '600' : '400',
-            textAlign: 'center',
-            flex: 1
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4px'
           }}>
-            専門家選択
-          </span>
-          <span style={{
-            fontSize: isMobile ? '11px' : '12px',
-            color: currentStep === 2 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 2 ? '600' : '400',
-            textAlign: 'center',
-            flex: 1
+            <span style={{
+              fontSize: isMobile ? '11px' : '12px',
+              color: currentStep === 1 ? '#a3e635' : '#9ca3af',
+              fontWeight: currentStep === 1 ? '600' : '400',
+              textAlign: 'center',
+              whiteSpace: 'nowrap'
+            }}>
+              専門家選択
+            </span>
+          </div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4px'
           }}>
-            日時選択
-          </span>
-          <span style={{
-            fontSize: isMobile ? '11px' : '12px',
-            color: currentStep === 3 ? '#a3e635' : '#9ca3af',
-            fontWeight: currentStep === 3 ? '600' : '400',
-            textAlign: 'center',
-            flex: 1
+            <span style={{
+              fontSize: isMobile ? '11px' : '12px',
+              color: currentStep === 2 ? '#a3e635' : '#9ca3af',
+              fontWeight: currentStep === 2 ? '600' : '400',
+              textAlign: 'center',
+              whiteSpace: 'nowrap'
+            }}>
+              日時選択
+            </span>
+          </div>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4px'
           }}>
-            確認・決済
-          </span>
+            <span style={{
+              fontSize: isMobile ? '11px' : '12px',
+              color: currentStep === 3 ? '#a3e635' : '#9ca3af',
+              fontWeight: currentStep === 3 ? '600' : '400',
+              textAlign: 'center',
+              whiteSpace: 'nowrap'
+            }}>
+              確認・決済
+            </span>
+          </div>
         </div>
       </div>
 
