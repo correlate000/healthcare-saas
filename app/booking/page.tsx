@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { DoctorFemaleIcon, DoctorMaleIcon, PsychiatristIcon, AlarmClockIcon, StarIcon } from '@/components/icons/illustrations'
+import { DoctorFemaleIcon, DoctorMaleIcon, PsychiatristIcon, ClockIcon, StarIcon } from '@/components/icons/illustrations'
 
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -308,7 +308,7 @@ export default function BookingPage() {
                       </p>
                       
                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <AlarmClockIcon size={12} color="#9ca3af" />
+                        <ClockIcon size={12} primaryColor="#9ca3af" />
                         <span style={{ fontSize: '12px', color: '#9ca3af' }}>{specialist.nextAvailable}</span>
                       </div>
                     </div>

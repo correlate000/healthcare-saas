@@ -222,7 +222,7 @@ export default function SettingsPage() {
               {[
                 { label: 'セッション', value: userStats.sessions, icon: <MobileIcon size={20} primaryColor="#60a5fa" /> },
                 { label: '連続記録', value: `${userStats.streak}日`, icon: <FireIcon size={20} primaryColor="#ef4444" /> },
-                { label: 'レベル', value: `Lv.${userStats.level}`, icon: <StarIcon size={20} primaryColor="#fbbf24" /> }
+                { label: 'レベル', value: `Lv.${userStats.level}`, icon: <StarIcon size={20} color="#fbbf24" /> }
               ].map((stat) => (
                 <div key={stat.label} style={{
                   backgroundColor: 'rgba(31, 41, 55, 0.6)',

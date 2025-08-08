@@ -9,7 +9,7 @@ import { ResponsiveCard } from '@/components/responsive/ResponsiveCard'
 import { ResponsiveGrid } from '@/components/responsive/ResponsiveGrid'
 import { HealthMetricsCard } from '@/components/dashboard/HealthMetricsCard'
 import { HealthTrendsChart } from '@/components/dashboard/HealthTrendsChart'
-import { AIInsightsCard } from '@/components/dashboard/AIInsightsCard'
+import { InsightsCard } from '@/components/dashboard/AIInsightsCard'
 import { QuickHealthSummary } from '@/components/dashboard/QuickHealthSummary'
 import { useAuth } from '@/contexts/AuthContext'
 import { useResponsive } from '@/hooks/useResponsive'
@@ -212,7 +212,7 @@ export default function ResponsiveDashboard() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <AIInsightsCard
+          <InsightsCard
             insights={aiInsights}
             predictions={aiPredictions}
             onInsightClick={(insight) => router.push(`/ai-insights/${insight.id}`)}

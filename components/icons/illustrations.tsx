@@ -318,30 +318,6 @@ export const FireIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor =
   </svg>
 )
 
-export const StarIcon = ({ size = 48, primaryColor = '#f59e0b', secondaryColor = '#fde047' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    {/* 星の光 */}
-    <path d="M 50 10 L 52 25 L 50 40 L 48 25 Z" fill={primaryColor} opacity="0.4"/>
-    <path d="M 10 50 L 25 48 L 40 50 L 25 52 Z" fill={primaryColor} opacity="0.4"/>
-    <path d="M 60 50 L 75 48 L 90 50 L 75 52 Z" fill={primaryColor} opacity="0.4"/>
-    <path d="M 50 60 L 52 75 L 50 90 L 48 75 Z" fill={primaryColor} opacity="0.4"/>
-    
-    {/* 星本体 */}
-    <path d="M 50 20 L 55 40 L 75 40 L 60 52 L 65 72 L 50 60 L 35 72 L 40 52 L 25 40 L 45 40 Z" fill={primaryColor}/>
-    <path d="M 50 25 L 54 42 L 70 42 L 58 52 L 62 69 L 50 59 L 38 69 L 42 52 L 30 42 L 46 42 Z" fill={secondaryColor}/>
-    
-    {/* ハイライト */}
-    <path d="M 50 30 L 52 40 L 58 40 L 53 45 L 55 55 L 50 50 L 45 55 L 47 45 L 42 40 L 48 40 Z" fill="white" opacity="0.6"/>
-    
-    {/* 中心の輝き */}
-    <circle cx="50" cy="50" r="3" fill="white" opacity="0.8"/>
-    <circle cx="50" cy="50" r="1.5" fill="#fff7ed"/>
-    
-    {/* 周囲のキラキラ */}
-    <path d="M 20 25 L 21 27 L 23 26 L 21 28 L 22 30 L 20 28 L 18 30 L 19 28 L 17 26 L 19 27 Z" fill={secondaryColor} opacity="0.7"/>
-    <path d="M 78 30 L 79 31 L 80 30 L 79 32 L 80 33 L 78 32 L 77 33 L 78 32 L 76 30 L 78 31 Z" fill={primaryColor} opacity="0.6"/>
-  </svg>
-)
 
 export const PenIcon = ({ size = 48, primaryColor = '#6366f1', secondaryColor = '#a5b4fc' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -399,34 +375,6 @@ export const BubbleIcon = ({ size = 48, primaryColor = '#06b6d4', secondaryColor
   </svg>
 )
 
-export const TargetIcon = ({ size = 48, primaryColor = '#ef4444', secondaryColor = '#fca5a5' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    {/* 外側の円 */}
-    <circle cx="50" cy="50" r="35" fill="none" stroke={primaryColor} strokeWidth="3"/>
-    <circle cx="50" cy="50" r="25" fill="none" stroke={primaryColor} strokeWidth="2.5"/>
-    <circle cx="50" cy="50" r="15" fill="none" stroke={primaryColor} strokeWidth="2"/>
-    
-    {/* 中心 */}
-    <circle cx="50" cy="50" r="8" fill={primaryColor}/>
-    <circle cx="50" cy="50" r="5" fill={secondaryColor}/>
-    <circle cx="50" cy="50" r="2" fill="white"/>
-    
-    {/* 矢印 */}
-    <path d="M 15 50 L 25 45 L 25 48 L 35 48 L 35 52 L 25 52 L 25 55 Z" fill="#fbbf24"/>
-    <path d="M 17 50 L 25 46 L 25 48 L 33 48 L 33 52 L 25 52 L 25 54 Z" fill="#f59e0b"/>
-    
-    {/* スコア表示 */}
-    <circle cx="75" cy="25" r="12" fill="#10b981" opacity="0.9"/>
-    <circle cx="75" cy="25" r="10" fill="#22c55e"/>
-    <text x="75" y="28" fontSize="10" fill="white" fontWeight="bold" textAnchor="middle">100</text>
-    
-    {/* 動的効果 */}
-    <circle cx="50" cy="50" r="40" fill="none" stroke={primaryColor} strokeWidth="1" opacity="0.3">
-      <animate attributeName="r" from="35" to="45" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite"/>
-    </circle>
-  </svg>
-)
 
 export const ChartIcon = ({ size = 48, primaryColor = '#10b981', secondaryColor = '#86efac' }: { size?: number, primaryColor?: string, secondaryColor?: string }) => (
   <svg width={size} height={size} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
