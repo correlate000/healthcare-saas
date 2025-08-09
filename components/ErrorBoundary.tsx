@@ -70,7 +70,7 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
             
             <h1 style={{
-              ...typographyPresets.h2(),
+              ...getTypographyStyles('h2'),
               color: '#f3f4f6',
               marginBottom: '16px'
             }}>

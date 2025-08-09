@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
-import { ChartIcon, ExportIcon, FilterIcon } from '@/components/icons/illustrations'
+import { ChartIcon, ExportIcon, DatabaseIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function ReportsPage() {
