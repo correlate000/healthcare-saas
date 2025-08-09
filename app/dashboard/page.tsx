@@ -105,7 +105,7 @@ export default function Dashboard() {
       minHeight: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '100px',
+      paddingBottom: '120px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* ヘッダー */}
@@ -137,11 +137,16 @@ export default function Dashboard() {
         </div>
         
         {/* クイックアクションボタン */}
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ 
+          display: 'flex', 
+          gap: '12px',
+          flexWrap: 'wrap'
+        }}>
           <button
             onClick={() => router.push('/checkin')}
             style={{
-              flex: 1,
+              flex: '1 1 calc(50% - 6px)',
+              minWidth: '140px',
               padding: '20px 16px',
               background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
               color: '#111827',
@@ -195,7 +200,8 @@ export default function Dashboard() {
           <button
             onClick={() => router.push('/chat')}
             style={{
-              flex: 1,
+              flex: '1 1 calc(50% - 6px)',
+              minWidth: '140px',
               padding: '20px 16px',
               background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)',
               color: 'white',

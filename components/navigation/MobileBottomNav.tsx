@@ -65,10 +65,12 @@ export function MobileBottomNav() {
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: '#111827',
-      borderTop: '1px solid #374151',
+      backgroundColor: 'rgba(17, 24, 39, 0.95)',
+      backdropFilter: 'blur(10px)',
+      borderTop: '1px solid rgba(55, 65, 81, 0.5)',
       zIndex: 50,
-      padding: '8px 0'
+      padding: '6px 0',
+      boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)'
     }}>
       <div style={{
         display: 'grid',
@@ -88,7 +90,7 @@ export function MobileBottomNav() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '12px 8px',
+                padding: '8px 4px',
                 backgroundColor: 'transparent',
                 border: 'none',
                 cursor: 'pointer',
@@ -98,29 +100,31 @@ export function MobileBottomNav() {
               onClick={() => handleNavigation(item.path)}
             >
               <div style={{
-                width: '32px',
-                height: '32px',
+                width: '28px',
+                height: '28px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginBottom: '4px',
-                borderRadius: '50%',
-                backgroundColor: isActive ? '#a3e635' : 'transparent',
-                transform: isActive ? 'scale(1.1)' : 'scale(1)',
-                transition: 'all 0.3s ease'
+                marginBottom: '2px',
+                borderRadius: isActive ? '12px' : '50%',
+                backgroundColor: isActive ? 'rgba(163, 230, 53, 0.15)' : 'transparent',
+                transform: isActive ? 'scale(1.05)' : 'scale(1)',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
               }}>
                 <IconComponent 
                   style={{
-                    width: '20px',
-                    height: '20px',
-                    color: isActive ? '#111827' : '#9ca3af'
+                    width: '18px',
+                    height: '18px',
+                    color: isActive ? '#a3e635' : '#9ca3af',
+                    strokeWidth: isActive ? 2.5 : 2
                   }}
                 />
               </div>
               <span style={{
-                fontSize: '12px',
-                fontWeight: '500',
-                color: isActive ? '#a3e635' : '#9ca3af'
+                fontSize: '10px',
+                fontWeight: isActive ? '600' : '500',
+                color: isActive ? '#a3e635' : '#9ca3af',
+                letterSpacing: '-0.01em'
               }}>
                 {item.label}
               </span>

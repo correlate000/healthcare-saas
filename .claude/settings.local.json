@@ -53,7 +53,8 @@
       "Bash(done)",
       "Bash(for:*)",
       "Bash(do sed -i '' \"s/paddingBottom: ''80px''/paddingBottom: ''140px''/g\" \"$file\")",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

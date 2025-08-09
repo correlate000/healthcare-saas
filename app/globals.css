@@ -79,6 +79,7 @@
     /* Mental Care Dark gradient background */
     background: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1f2937 70%, #111827 100%);
     min-height: 100vh;
+    scroll-behavior: smooth;
   }
   
   body {
@@ -190,24 +191,24 @@
   }
 }
 
-/* Calming animations for mental wellness */
+/* Calming animations for mental wellness - GPU accelerated */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px) rotate(0deg);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
   50% {
-    transform: translateY(-15px) rotate(2deg);
+    transform: translate3d(0, -15px, 0) rotate(2deg);
   }
 }
 
 @keyframes gentle-pulse {
   0%, 100% {
     opacity: 0.6;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.02);
+    transform: scale3d(1.02, 1.02, 1);
   }
 }
 
@@ -286,9 +287,11 @@
 @keyframes pulse {
   0%, 100% {
     opacity: 0.1;
+    transform: scale3d(1, 1, 1);
   }
   50% {
     opacity: 0.2;
+    transform: scale3d(1.05, 1.05, 1);
   }
 }
 
@@ -354,8 +357,8 @@
 
 /* Breathing animation for calm elements */
 @keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%, 100% { transform: scale3d(1, 1, 1); }
+  50% { transform: scale3d(1.05, 1.05, 1); }
 }
 
 .breathe {
@@ -378,4 +381,51 @@
   border-radius: 50%;
   padding: 2px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(163, 230, 53, 0.3);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 230, 53, 0.5);
+}
+
+/* Improve button interactions */
+button {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button:active {
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: scale3d(0.98, 0.98, 1);
+}
+
+/* Fix for fixed headers */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  background: rgba(17, 24, 39, 0.9);
 }

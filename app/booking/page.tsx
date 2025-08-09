@@ -87,7 +87,7 @@ export default function BookingPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: '120px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -113,74 +113,78 @@ export default function BookingPage() {
         </p>
       </div>
 
-      {/* Progress Bar with Labels */}
-      <div style={{ padding: '20px 20px 0' }}>
+      {/* Progress Steps - Simplified */}
+      <div style={{ padding: '20px' }}>
         <div style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          marginBottom: '32px',
-          position: 'relative'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '0',
+          position: 'relative',
+          marginBottom: '32px'
         }}>
+          {/* Progress line background */}
+          <div style={{
+            position: 'absolute',
+            top: '18px',
+            left: '10%',
+            right: '10%',
+            height: '2px',
+            backgroundColor: 'rgba(55, 65, 81, 0.6)'
+          }} />
+          
+          {/* Active progress line */}
+          <div style={{
+            position: 'absolute',
+            top: '18px',
+            left: '10%',
+            width: currentStep === 1 ? '0%' : currentStep === 2 ? '40%' : '80%',
+            height: '2px',
+            backgroundColor: '#a3e635',
+            transition: 'width 0.3s ease'
+          }} />
+          
+          {/* Steps */}
           {[
             { step: 1, label: '専門家選択' },
             { step: 2, label: '日時選択' },
             { step: 3, label: '確認・決済' }
-          ].map((item, index) => (
+          ].map((item) => (
             <div
               key={item.step}
               style={{
-                flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                gap: '8px',
                 position: 'relative'
               }}
             >
-              {/* Step circle and line */}
               <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '50%',
+                backgroundColor: currentStep >= item.step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
+                color: currentStep >= item.step ? '#111827' : '#9ca3af',
                 display: 'flex',
                 alignItems: 'center',
-                width: '100%'
+                justifyContent: 'center',
+                fontWeight: '700',
+                fontSize: '16px',
+                transition: 'all 0.3s ease',
+                border: currentStep === item.step ? '3px solid rgba(163, 230, 53, 0.5)' : 'none',
+                boxShadow: currentStep === item.step ? '0 0 12px rgba(163, 230, 53, 0.3)' : 'none',
+                position: 'relative',
+                zIndex: 2
               }}>
-                <div style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  backgroundColor: currentStep >= item.step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
-                  color: currentStep >= item.step ? '#111827' : '#9ca3af',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: '600',
-                  fontSize: '16px',
-                  transition: 'all 0.3s ease',
-                  zIndex: 2,
-                  border: currentStep === item.step ? '2px solid rgba(163, 230, 53, 0.3)' : 'none',
-                  flexShrink: 0
-                }}>
-                  {currentStep > item.step ? '✓' : item.step}
-                </div>
-                {index < 2 && (
-                  <div style={{
-                    flex: 1,
-                    height: '2px',
-                    backgroundColor: currentStep > item.step ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
-                    marginLeft: '4px',
-                    marginRight: '4px',
-                    transition: 'all 0.3s ease'
-                  }}></div>
-                )}
+                {currentStep > item.step ? '✓' : item.step}
               </div>
               
-              {/* Step label */}
               <span style={{
-                fontSize: isMobile ? '11px' : '12px',
+                fontSize: isMobile ? '12px' : '13px',
                 color: currentStep === item.step ? '#a3e635' : currentStep > item.step ? '#d1d5db' : '#9ca3af',
                 fontWeight: currentStep === item.step ? '600' : '400',
                 textAlign: 'center',
-                whiteSpace: 'nowrap',
-                marginTop: '8px'
+                whiteSpace: 'nowrap'
               }}>
                 {item.label}
               </span>

@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: '120px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -338,9 +338,10 @@ export default function AnalyticsPage() {
               alignItems: 'flex-end', 
               justifyContent: 'space-between',
               height: '200px',
-              gap: '8px',
+              gap: isMobile ? '4px' : '8px',
               marginBottom: '20px',
-              position: 'relative'
+              position: 'relative',
+              padding: '0 4px'
             }}>
               {currentData.data.map((day, index) => {
                 const value = day[selectedMetric as keyof typeof day] as number
@@ -375,13 +376,14 @@ export default function AnalyticsPage() {
                     <div 
                       data-bar
                       style={{
-                        width: '80%',
+                        width: isMobile ? '90%' : '80%',
                         height: `${height}%`,
                         minHeight: '4px',
                         background: `linear-gradient(180deg, ${selectedMetricInfo.color} 0%, ${selectedMetricInfo.color}88 100%)`,
                         borderRadius: '8px 8px 0 0',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                        transformOrigin: 'bottom'
+                        transformOrigin: 'bottom',
+                        animation: `growUp 0.6s ease-out ${index * 0.1}s both`
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'scaleY(1.05)'
@@ -744,6 +746,10 @@ export default function AnalyticsPage() {
           0% {
             transform: scaleY(0);
             opacity: 0;
+          }
+          50% {
+            transform: scaleY(1.05);
+            opacity: 1;
           }
           100% {
             transform: scaleY(1);

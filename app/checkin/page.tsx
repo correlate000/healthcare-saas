@@ -12,6 +12,17 @@ export default function CheckIn() {
   const [responses, setResponses] = useState<Record<string, any>>({})
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false)
   const [streakDays] = useState(15) // TODO: Get from user data
+  const [isMobile, setIsMobile] = useState(false)
+  
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Bird character SVG component
   const BirdCharacter = ({ bodyColor, bellyColor, size = 100 }: { bodyColor: string, bellyColor: string, size?: number }) => (
@@ -572,8 +583,8 @@ export default function CheckIn() {
           ) : (
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: currentStepData.multiple ? 'repeat(2, 1fr)' : '1fr',
-              gap: '12px'
+              gridTemplateColumns: currentStepData.multiple ? (isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') : '1fr',
+              gap: isMobile ? '8px' : '12px'
             }}>
               {currentStepData.options?.map((option, index) => {
                 const isSelected = currentStepData.multiple 

@@ -437,7 +437,7 @@ export default function ChatPage() {
           onClick={scrollToBottom}
           style={{
             position: 'absolute',
-            bottom: '160px',
+            bottom: '180px',
             right: '20px',
             width: '44px',
             height: '44px',
@@ -508,8 +508,10 @@ export default function ChatPage() {
         padding: '16px', 
         paddingBottom: '90px',
         flexShrink: 0,
-        backgroundColor: '#111827',
-        borderTop: '1px solid rgba(55, 65, 81, 0.3)'
+        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+        backdropFilter: 'blur(10px)',
+        borderTop: '1px solid rgba(55, 65, 81, 0.3)',
+        marginBottom: '0'
       }}>
         <form id="chat-form" onSubmit={handleSendMessage} style={{ 
           display: 'flex', 
