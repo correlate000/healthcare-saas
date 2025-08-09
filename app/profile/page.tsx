@@ -12,11 +12,8 @@ export default function ProfilePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [profile, setProfile] = useState({
     name: 'ユーザー名',
-    email: 'user@example.com',
     bio: 'メンタルヘルスの改善を目指して毎日頑張っています',
     avatar: '👤',
-    birthYear: '1990',
-    gender: 'other',
     goals: ['ストレス管理', '睡眠改善', 'マインドフルネス'],
     interests: ['瞑想', '運動', '読書', '音楽'],
     joinDate: '2025年6月'
@@ -136,21 +133,50 @@ export default function ProfilePage() {
           }}>
             プロフィール
           </h1>
-          <button
-            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: isEditing ? '#a3e635' : 'rgba(163, 230, 53, 0.2)',
-              color: isEditing ? '#111827' : '#a3e635',
-              border: isEditing ? 'none' : '1px solid rgba(163, 230, 53, 0.3)',
-              borderRadius: '10px',
-              ...getTypographyStyles('button'),
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            {isEditing ? '保存' : '編集'}
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {isEditing && (
+              <button
+                onClick={handleCancel}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  color: '#9ca3af',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  borderRadius: '10px',
+                  ...getTypographyStyles('button'),
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.8)'
+                  e.currentTarget.style.color = '#f3f4f6'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+                  e.currentTarget.style.color = '#9ca3af'
+                }}
+              >
+                キャンセル
+              </button>
+            )}
+            <button
+              onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: isEditing ? '#a3e635' : 'rgba(163, 230, 53, 0.2)',
+                color: isEditing ? '#0f172a' : '#a3e635',
+                border: isEditing ? 'none' : '1px solid rgba(163, 230, 53, 0.3)',
+                borderRadius: '10px',
+                ...getTypographyStyles('button'),
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {isEditing ? '保存する' : 'プロフィールを編集'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -252,14 +278,8 @@ export default function ProfilePage() {
                     {profile.name}
                   </h2>
                   <p style={{
-                    ...getTypographyStyles('base'),
-                    color: '#9ca3af'
-                  }}>
-                    {profile.email}
-                  </p>
-                  <p style={{
                     ...getTypographyStyles('small'),
-                    color: '#6b7280',
+                    color: '#9ca3af',
                     marginTop: '4px'
                   }}>
                     {profile.joinDate}から利用開始
@@ -329,70 +349,6 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-                  gap: '16px'
-                }}>
-                  <div>
-                    <label style={{
-                      ...getTypographyStyles('label'),
-                      color: '#9ca3af',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      生年
-                    </label>
-                    <select
-                      value={editForm.birthYear}
-                      onChange={(e) => setEditForm({ ...editForm, birthYear: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                        border: '1px solid rgba(55, 65, 81, 0.5)',
-                        borderRadius: '8px',
-                        color: '#f3f4f6',
-                        ...getTypographyStyles('base'),
-                        outline: 'none'
-                      }}
-                    >
-                      <option value="">選択</option>
-                      {Array.from({ length: 80 }, (_, i) => 2010 - i).map(year => (
-                        <option key={year} value={year}>{year}年</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label style={{
-                      ...getTypographyStyles('label'),
-                      color: '#9ca3af',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      性別
-                    </label>
-                    <select
-                      value={editForm.gender}
-                      onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '10px',
-                        backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                        border: '1px solid rgba(55, 65, 81, 0.5)',
-                        borderRadius: '8px',
-                        color: '#f3f4f6',
-                        ...getTypographyStyles('base'),
-                        outline: 'none'
-                      }}
-                    >
-                      <option value="other">選択しない</option>
-                      <option value="male">男性</option>
-                      <option value="female">女性</option>
-                    </select>
-                  </div>
-                </div>
               </div>
             )}
 
