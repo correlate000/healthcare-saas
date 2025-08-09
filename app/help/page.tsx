@@ -205,8 +205,7 @@ export default function HelpPage() {
           display: 'flex',
           gap: '8px',
           marginBottom: '24px',
-          overflowX: 'auto',
-          paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`
+          overflowX: 'auto'
         }}>
           <button
             onClick={() => setSelectedCategory(null)}

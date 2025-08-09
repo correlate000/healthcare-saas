@@ -97,10 +97,10 @@ export function QuickNav() {
   const router = useRouter()
   
   const navItems = [
-    { label: '瞑想', path: '/meditation', icon: '🧘‍♀️' },
-    { label: '日記', path: '/diary', icon: '📝' },
+    { label: 'コンテンツ', path: '/content-library', icon: '🧘‍♀️' },
+    { label: 'チャット', path: '/chat', icon: '📝' },
     { label: '実績', path: '/achievements', icon: '🏆' },
-    { label: 'コミュニティ', path: '/community', icon: '👥' },
+    { label: 'チーム', path: '/team-connect', icon: '👥' },
   ]
 
   return (

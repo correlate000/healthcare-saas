@@ -33,22 +33,22 @@ const navigationGroups = [
       { name: 'ダッシュボード', href: '/dashboard', icon: Home },
       { name: 'ヘルスチェックイン', href: '/checkin', icon: Heart },
       { name: 'レポート', href: '/reports', icon: BarChart3 },
-      { name: 'カレンダー', href: '/calendar', icon: Calendar },
+      { name: '予約管理', href: '/booking', icon: Calendar },
     ]
   },
   {
     title: 'データ管理',
     items: [
-      { name: '健康記録', href: '/records', icon: ClipboardList },
-      { name: 'アクティビティ', href: '/activity', icon: Activity },
-      { name: 'ドキュメント', href: '/documents', icon: FileText },
+      { name: 'データエクスポート', href: '/export', icon: ClipboardList },
+      { name: 'アナリティクス', href: '/analytics', icon: Activity },
+      { name: 'ヘルプ', href: '/help', icon: FileText },
     ]
   },
   {
     title: 'アカウント',
     items: [
       { name: 'プロフィール', href: '/profile', icon: User },
-      { name: 'セキュリティ', href: '/security', icon: Shield },
+      { name: 'プライバシー', href: '/privacy-settings', icon: Shield },
       { name: '設定', href: '/settings', icon: Settings },
       { name: 'ヘルプ', href: '/help', icon: HelpCircle },
     ]

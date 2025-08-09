@@ -115,7 +115,7 @@ export default function ResponsiveDashboard() {
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-indigo-600" />
-            <p className="text-gray-600">健康データを読み込み中...</p>
+            <p className="text-gray-600">読み込み中...</p>
           </div>
         </div>
       </ResponsiveLayout>

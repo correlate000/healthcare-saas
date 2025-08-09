@@ -141,12 +141,13 @@ export const EnhancedButton = React.forwardRef<HTMLButtonElement, EnhancedButton
           className={cn(enhancedButtonVariants({ variant, size }), className, {
             'animate-bounce': effect === 'bounce' && !disabled,
             'animate-pulse': loading,
-            'cursor-not-allowed': disabled,
+            'cursor-not-allowed': disabled || loading,
             'transform rotate-1': effect === 'shake' && isClicked,
             'shadow-2xl shadow-purple-500/50': effect === 'glow',
           })}
           ref={ref}
           onClick={handleClick}
+          disabled={disabled || loading}
           {...props}
         >
           {/* ローディングスピナー */}

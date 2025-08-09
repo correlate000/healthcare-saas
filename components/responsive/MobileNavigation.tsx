@@ -32,8 +32,8 @@ const navigationItems = [
   { name: 'ホーム', href: '/dashboard', icon: Home },
   { name: 'チェックイン', href: '/checkin', icon: Heart },
   { name: 'レポート', href: '/reports', icon: BarChart3 },
-  { name: 'カレンダー', href: '/calendar', icon: Calendar },
-  { name: '記録', href: '/records', icon: ClipboardList },
+  { name: '予約管理', href: '/booking', icon: Calendar },
+  { name: 'エクスポート', href: '/export', icon: ClipboardList },
 ]
 
 const bottomNavigationItems = [

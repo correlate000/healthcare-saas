@@ -326,7 +326,7 @@ export default function Dashboard() {
             }}>
               💬
             </div>
-            <span style={{ letterSpacing: '0.5px' }}>AIキャラと話す</span>
+            <span style={{ letterSpacing: '0.5px' }}>AIキャラクターと話す</span>
             <span style={{ 
               ...getTypographyStyles('caption'), 
               opacity: 0.9,

@@ -10,7 +10,7 @@ export default function Loading() {
   const [messageIndex, setMessageIndex] = useState(0)
 
   const loadingMessages = [
-    { text: "データを読み込み中...", icon: "📊" },
+    { text: "読み込み中...", icon: "📊" },
     { text: "AIを準備中...", icon: "🤖" },
     { text: "安全な接続を確立中...", icon: "🔒" },
     { text: "パーソナライズ中...", icon: "✨" },
