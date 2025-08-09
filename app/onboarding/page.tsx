@@ -24,9 +24,10 @@ export default function OnboardingPage() {
     {
       id: 'name',
       type: 'input',
-      title: 'はじめまして！お名前を教えてください',
+      title: 'はじめまして！\nお名前を教えてください',
+      subtitle: 'ニックネームでもOKです',
       field: 'name',
-      placeholder: 'ニックネームでもOKです'
+      placeholder: '例: ゆうた'
     },
     {
       id: 'age',
@@ -426,7 +427,8 @@ export default function OnboardingPage() {
         justifyContent: 'center',
         maxWidth: '500px',
         margin: '0 auto',
-        width: '100%'
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         {/* Question */}
         <h2 style={{
@@ -435,8 +437,8 @@ export default function OnboardingPage() {
           color: '#f3f4f6',
           marginBottom: '8px',
           textAlign: 'center',
-          wordBreak: 'keep-all',
-          lineHeight: '1.4'
+          lineHeight: '1.4',
+          whiteSpace: 'pre-wrap'
         }}>
           {currentStepData.title}
         </h2>
@@ -469,7 +471,8 @@ export default function OnboardingPage() {
               ...getTypographyStyles('large'),
               outline: 'none',
               marginBottom: '32px',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              boxSizing: 'border-box'
             }}
             onFocus={(e) => {
               e.currentTarget.style.borderColor = 'rgba(163, 230, 53, 0.4)'
