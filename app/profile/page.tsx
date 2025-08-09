@@ -348,40 +348,6 @@ export default function ProfilePage() {
               </p>
             )}
 
-            {/* Level Progress */}
-            <div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '8px'
-              }}>
-                <span style={{ ...getTypographyStyles('label'), color: '#9ca3af' }}>レベル {stats.level}</span>
-                <span style={{
-                  ...getTypographyStyles('label'),
-                  color: '#a3e635',
-                  fontWeight: '600'
-                }}>
-                  {stats.currentXP} / {stats.maxXP} XP
-                </span>
-              </div>
-              <div style={{
-                width: '100%',
-                height: '10px',
-                backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                borderRadius: '5px',
-                overflow: 'hidden'
-              }}>
-                <div style={{
-                  height: '100%',
-                  width: `${(stats.currentXP / stats.maxXP) * 100}%`,
-                  background: 'linear-gradient(90deg, #a3e635 0%, #84cc16 100%)',
-                  borderRadius: '5px',
-                  transition: 'width 0.5s ease',
-                  boxShadow: '0 0 10px rgba(163, 230, 53, 0.4)'
-                }}></div>
-              </div>
-            </div>
           </div>
         </div>
 
