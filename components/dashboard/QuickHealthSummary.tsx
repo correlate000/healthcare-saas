@@ -223,7 +223,7 @@ export function generateSampleQuickActions(router: any): QuickAction[] {
       title: 'バイタル記録',
       icon: <Heart className="h-4 w-4" />,
       color: 'bg-red-600/20 hover:bg-red-600/30',
-      action: () => router.push('/checkin/vitals')
+      action: () => router.push('/checkin')
     },
     {
       id: 'view_analytics',
@@ -237,7 +237,10 @@ export function generateSampleQuickActions(router: any): QuickAction[] {
       title: '目標設定',
       icon: <Target className="h-4 w-4" />,
       color: 'bg-purple-600/20 hover:bg-purple-600/30',
-      action: () => router.push('/goals')
+      action: () => {
+        // TODO: goals page needs to be implemented
+        alert('目標設定機能は準備中です')
+      }
     }
   ]
 }

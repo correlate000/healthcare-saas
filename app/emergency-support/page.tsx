@@ -303,7 +303,8 @@ export default function EmergencySupportPage() {
               key={strategy.title}
               onClick={() => {
                 if (strategy.action === 'breathing') {
-                  router.push('/breathing-exercise')
+                  // TODO: breathing-exercise page needs to be implemented
+                  alert('呼吸エクササイズ機能は準備中です')
                 }
               }}
               style={{

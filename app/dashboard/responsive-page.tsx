@@ -297,7 +297,7 @@ export default function ResponsiveDashboard() {
             </div>
           </ResponsiveCard>
 
-          <ResponsiveCard padding="sm" interactive onClick={() => router.push('/vitals')}>
+          <ResponsiveCard padding="sm" interactive onClick={() => router.push('/checkin')}>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-2 bg-red-100 rounded-lg">

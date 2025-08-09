@@ -695,7 +695,7 @@ export default function AnalyticsPage() {
                     詳しく相談する
                   </button>
                   <button
-                    onClick={() => router.push('/insights')}
+                    onClick={() => router.push('/analytics/insights')}
                     style={{
                       padding: isMobile ? '12px 16px' : '8px 16px',
                       backgroundColor: 'rgba(55, 65, 81, 0.6)',
