@@ -157,11 +157,11 @@ export default function CheckIn() {
     const physical = responses.physical
     
     // Select character based on mood
-    let character = { name: 'Luna', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
+    let character = { name: 'るな', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
     let message = ''
     
     if (mood === '素晴らしい' || mood === 'いい感じ') {
-      character = { name: 'Aria', bodyColor: '#60a5fa', bellyColor: '#dbeafe' }
+      character = { name: 'あーりあ', bodyColor: '#60a5fa', bellyColor: '#dbeafe' }
       const messages = [
         'すごい！今日も絶好調ですね！この調子を維持していきましょう！',
         'キラキラ輝いていますね！あなたのポジティブなエネルギーが周りも明るくします！',
@@ -170,7 +170,7 @@ export default function CheckIn() {
       ]
       message = messages[Math.floor(Math.random() * messages.length)]
     } else if (mood === '普通') {
-      character = { name: 'Luna', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
+      character = { name: 'るな', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
       const messages = [
         'お疲れ様です。普通の日こそ、実は大切な一日なんですよ。',
         '今日も一歩ずつ前進していますね。それで十分素晴らしいです。',
@@ -179,7 +179,7 @@ export default function CheckIn() {
       ]
       message = messages[Math.floor(Math.random() * messages.length)]
     } else {
-      character = { name: 'Zen', bodyColor: '#f59e0b', bellyColor: '#fed7aa' }
+      character = { name: 'ぜん', bodyColor: '#f59e0b', bellyColor: '#fed7aa' }
       const messages = [
         '今日は休息が必要かもしれません。自分を大切にする時間を作りましょう。',
         'お疲れ様です。しっかり記録することが、明日への第一歩です。',
@@ -545,7 +545,7 @@ export default function CheckIn() {
           margin: '0 auto 16px',
           flexShrink: 0
         }}>
-          <span style={{ color: '#111827', ...getTypographyStyles('small'), fontWeight: '600' }}>Luna</span>
+          <span style={{ color: '#111827', ...getTypographyStyles('small'), fontWeight: '600' }}>るな</span>
         </div>
 
         {/* Progress bar */}
@@ -596,7 +596,7 @@ export default function CheckIn() {
               onChange={(e) => handleResponse(e.target.value)}
               style={{
                 width: '100%',
-                minHeight: '120px',
+                minHeight: '150px',
                 backgroundColor: '#1f2937',
                 border: '1px solid #374151',
                 borderRadius: '12px',
@@ -604,8 +604,9 @@ export default function CheckIn() {
                 color: '#d1d5db',
                 ...getTypographyStyles('base'),
                 fontFamily: 'inherit',
-                resize: 'none',
-                outline: 'none'
+                resize: 'vertical',
+                outline: 'none',
+                boxSizing: 'border-box'
               }}
               onFocus={(e) => { e.currentTarget.style.borderColor = '#a3e635' }}
               onBlur={(e) => { e.currentTarget.style.borderColor = '#374151' }}

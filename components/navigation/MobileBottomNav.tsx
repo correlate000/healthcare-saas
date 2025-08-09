@@ -103,8 +103,8 @@ export function MobileBottomNav() {
               aria-label={item.label}
             >
               <div style={{
-                width: '28px',
-                height: '28px',
+                width: '44px',
+                height: '44px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -116,8 +116,8 @@ export function MobileBottomNav() {
               }}>
                 <IconComponent 
                   style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '20px',
+                    height: '20px',
                     color: isActive ? '#a3e635' : '#9ca3af',
                     strokeWidth: isActive ? 2.5 : 2
                   }}

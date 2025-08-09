@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
@@ -234,6 +234,11 @@ export default function OnboardingPage() {
 
   // Completion screen
   if (currentStepData.type === 'complete') {
+    // Scroll to top when showing completion screen
+    React.useEffect(() => {
+      window.scrollTo(0, 0)
+    }, [])
+    
     return (
       <div style={{
         minHeight: '100vh',
@@ -245,7 +250,13 @@ export default function OnboardingPage() {
         justifyContent: 'center',
         alignItems: 'center',
         padding: '20px',
-        textAlign: 'center'
+        textAlign: 'center',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: 'auto'
       }}>
         {/* Celebration animation */}
         <div style={{

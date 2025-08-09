@@ -39,7 +39,18 @@ export class StorageManager {
           }
           localStorage.setItem(prefixedKey, JSON.stringify(cacheItem))
           return true
-        } catch {
+        } catch (retryError) {
+          // Show user feedback for storage failure
+          if (typeof window !== 'undefined') {
+            const message = 'データの保存に失敗しました。ストレージの容量を確認してください。'
+            console.error(message, retryError)
+            // Create a toast notification instead of alert
+            const toast = document.createElement('div')
+            toast.textContent = message
+            toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 20px;border-radius:8px;z-index:9999;'
+            document.body.appendChild(toast)
+            setTimeout(() => toast.remove(), 5000)
+          }
           return false
         }
       }

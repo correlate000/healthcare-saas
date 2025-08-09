@@ -509,7 +509,7 @@ export default function AuthPage() {
                 <RippleButton
                   type="submit"
                   disabled={isLoading}
-                  className="w-full mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-3 rounded-lg font-medium flex items-center justify-center space-x-2 min-h-[48px] touch-manipulation"
+                  className="w-full mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-4 rounded-lg font-medium flex items-center justify-center space-x-2 min-h-[56px] touch-manipulation"
                 >
                   {isLoading ? (
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
@@ -538,7 +538,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => handleSocialLogin('google')}
                 disabled={isLoading}
-                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[48px] touch-manipulation"
+                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[56px] touch-manipulation"
               >
                 <Chrome className="h-4 w-4" />
                 <span className="text-sm">Google</span>
@@ -547,7 +547,7 @@ export default function AuthPage() {
                 type="button"
                 onClick={() => handleSocialLogin('apple')}
                 disabled={isLoading}
-                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[48px] touch-manipulation"
+                className="flex items-center justify-center space-x-2 border border-gray-500/50 bg-gray-600/50 hover:bg-gray-600/70 text-white py-3 rounded-lg min-h-[56px] touch-manipulation"
               >
                 <Apple className="h-4 w-4" />
                 <span className="text-sm">Apple</span>

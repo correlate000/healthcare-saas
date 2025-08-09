@@ -91,18 +91,17 @@ export default function ChatPage() {
     }
   }
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom only when user sends a message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isTyping])
+    // Only scroll if the last message is from the user or if typing
+    if (messages.length > 0 && messages[messages.length - 1].sender === 'user') {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
 
-  // Initial scroll to bottom when component mounts
+  // Do not auto-scroll on initial mount - let user see the character and messages naturally
   useEffect(() => {
-    // Wait for DOM to render then scroll to bottom
-    const timer = setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
-    }, 100)
-    return () => clearTimeout(timer)
+    // Remove initial auto-scroll
   }, [])
 
   // Check scroll position to show/hide scroll button
