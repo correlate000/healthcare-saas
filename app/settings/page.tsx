@@ -11,6 +11,7 @@ import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 export default function SettingsPage() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [isEditingProfile, setIsEditingProfile] = useState(false)
   const [notifications, setNotifications] = useState({
     checkinReminder: true,
     weeklyReport: true,
@@ -113,7 +114,12 @@ export default function SettingsPage() {
   
   const handleSaveProfile = () => {
     setProfile(editForm)
-    setActiveSection(null)
+    setIsEditingProfile(false)
+  }
+  
+  const handleCancelEdit = () => {
+    setEditForm({ ...profile })
+    setIsEditingProfile(false)
   }
   
   const toggleGoal = (goal: string) => {
@@ -241,10 +247,8 @@ export default function SettingsPage() {
               </div>
               <button
                 onClick={() => {
-                  setActiveSection(activeSection === 'profile' ? null : 'profile')
-                  if (activeSection !== 'profile') {
-                    setEditForm({ ...profile })
-                  }
+                  setEditForm({ ...profile })
+                  setIsEditingProfile(true)
                 }}
                 style={{
                   width: '40px',
@@ -350,204 +354,6 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {/* Profile Edit Form */}
-        {activeSection === 'profile' && (
-          <div style={{
-            background: 'rgba(31, 41, 55, 0.6)',
-            backdropFilter: 'blur(12px)',
-            border: '1px solid rgba(55, 65, 81, 0.3)',
-            borderRadius: '16px',
-            padding: '20px',
-            marginBottom: '20px',
-            animation: 'slideDown 0.3s ease'
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {/* Avatar Selection */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
-                  アバター
-                </label>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {avatarOptions.map((avatar) => (
-                    <button
-                      key={avatar}
-                      onClick={() => setEditForm({ ...editForm, avatar })}
-                      style={{
-                        width: '48px',
-                        height: '48px',
-                        backgroundColor: editForm.avatar === avatar
-                          ? 'rgba(163, 230, 53, 0.3)'
-                          : 'rgba(55, 65, 81, 0.6)',
-                        border: editForm.avatar === avatar
-                          ? '2px solid #a3e635'
-                          : '1px solid transparent',
-                        borderRadius: '12px',
-                        fontSize: '24px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {avatar}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Name */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
-                  名前
-                </label>
-                <input
-                  type="text"
-                  value={editForm.name}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                    border: '1px solid rgba(55, 65, 81, 0.5)',
-                    borderRadius: '8px',
-                    color: '#f3f4f6',
-                    fontSize: '16px',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
-                />
-              </div>
-
-              {/* Bio */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
-                  自己紹介
-                </label>
-                <textarea
-                  value={editForm.bio}
-                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                  rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                    border: '1px solid rgba(55, 65, 81, 0.5)',
-                    borderRadius: '8px',
-                    color: '#f3f4f6',
-                    fontSize: '16px',
-                    outline: 'none',
-                    resize: 'none',
-                    boxSizing: 'border-box'
-                  }}
-                />
-              </div>
-
-              {/* Goals */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
-                  目標（最大3つ）
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {goalOptions.map((goal) => (
-                    <button
-                      key={goal}
-                      onClick={() => toggleGoal(goal)}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: editForm.goals.includes(goal)
-                          ? 'rgba(163, 230, 53, 0.2)'
-                          : 'rgba(55, 65, 81, 0.6)',
-                        color: editForm.goals.includes(goal) ? '#a3e635' : '#9ca3af',
-                        border: editForm.goals.includes(goal)
-                          ? '1px solid rgba(163, 230, 53, 0.3)'
-                          : '1px solid transparent',
-                        borderRadius: '20px',
-                        fontSize: '14px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {goal}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Interests */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
-                  興味（最大5つ）
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {interestOptions.map((interest) => (
-                    <button
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
-                      style={{
-                        padding: '8px 16px',
-                        backgroundColor: editForm.interests.includes(interest)
-                          ? 'rgba(163, 230, 53, 0.2)'
-                          : 'rgba(55, 65, 81, 0.6)',
-                        color: editForm.interests.includes(interest) ? '#a3e635' : '#9ca3af',
-                        border: editForm.interests.includes(interest)
-                          ? '1px solid rgba(163, 230, 53, 0.3)'
-                          : '1px solid transparent',
-                        borderRadius: '20px',
-                        fontSize: '14px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {interest}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Save Button */}
-              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-                <button
-                  onClick={handleSaveProfile}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    backgroundColor: '#a3e635',
-                    color: '#0f172a',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  保存
-                </button>
-                <button
-                  onClick={() => {
-                    setEditForm({ ...profile })
-                    setActiveSection(null)
-                  }}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
-                    color: '#9ca3af',
-                    border: '1px solid rgba(55, 65, 81, 0.5)',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  キャンセル
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Quick Actions */}
         <div style={{ 
@@ -1065,6 +871,412 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Profile Edit Modal */}
+      {isEditingProfile && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          animation: 'modalFadeIn 0.3s ease'
+        }}>
+          <div style={{
+            backgroundColor: '#111827',
+            borderRadius: '24px',
+            padding: '32px',
+            maxWidth: '600px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            border: '1px solid rgba(163, 230, 53, 0.3)',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(163, 230, 53, 0.1)',
+            animation: 'modalSlideUp 0.3s ease'
+          }}>
+            {/* Modal Header */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '32px',
+              paddingBottom: '16px',
+              borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
+            }}>
+              <h2 style={{
+                margin: 0,
+                fontSize: '24px',
+                fontWeight: '700',
+                background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
+                プロフィール編集
+              </h2>
+              <button
+                onClick={handleCancelEdit}
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  color: '#9ca3af',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.8)'
+                  e.currentTarget.style.color = '#f3f4f6'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+                  e.currentTarget.style.color = '#9ca3af'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {/* Avatar Selection */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '12px',
+                  fontWeight: '600',
+                  color: '#f3f4f6',
+                  fontSize: '16px'
+                }}>
+                  アバターを選択
+                </label>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(5, 1fr)',
+                  gap: '12px'
+                }}>
+                  {avatarOptions.map((avatar) => (
+                    <button
+                      key={avatar}
+                      onClick={() => setEditForm({ ...editForm, avatar })}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        backgroundColor: editForm.avatar === avatar
+                          ? 'rgba(163, 230, 53, 0.3)'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        border: editForm.avatar === avatar
+                          ? '3px solid #a3e635'
+                          : '2px solid transparent',
+                        borderRadius: '16px',
+                        fontSize: '28px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                        transform: editForm.avatar === avatar ? 'scale(1.05)' : 'scale(1)',
+                        boxShadow: editForm.avatar === avatar ? '0 4px 20px rgba(163, 230, 53, 0.4)' : 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (editForm.avatar !== avatar) {
+                          e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.6)'
+                          e.currentTarget.style.transform = 'scale(1.02)'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (editForm.avatar !== avatar) {
+                          e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+                          e.currentTarget.style.transform = 'scale(1)'
+                        }
+                      }}
+                    >
+                      {avatar}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name and Bio in two columns */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr',
+                gap: '24px'
+              }}>
+                {/* Name */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '600',
+                    color: '#f3f4f6',
+                    fontSize: '16px'
+                  }}>
+                    名前
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                      border: '2px solid rgba(55, 65, 81, 0.5)',
+                      borderRadius: '12px',
+                      color: '#f3f4f6',
+                      fontSize: '16px',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = '#a3e635'
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(163, 230, 53, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }}
+                  />
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '600',
+                    color: '#f3f4f6',
+                    fontSize: '16px'
+                  }}>
+                    自己紹介
+                  </label>
+                  <textarea
+                    value={editForm.bio}
+                    onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                    rows={3}
+                    style={{
+                      width: '100%',
+                      padding: '14px',
+                      backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                      border: '2px solid rgba(55, 65, 81, 0.5)',
+                      borderRadius: '12px',
+                      color: '#f3f4f6',
+                      fontSize: '16px',
+                      outline: 'none',
+                      resize: 'vertical',
+                      boxSizing: 'border-box',
+                      minHeight: '80px',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = '#a3e635'
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(163, 230, 53, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Goals */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '12px',
+                  fontWeight: '600',
+                  color: '#f3f4f6',
+                  fontSize: '16px'
+                }}>
+                  目標 <span style={{ fontSize: '14px', color: '#9ca3af' }}>（最大3つまで選択）</span>
+                </label>
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  {goalOptions.map((goal) => (
+                    <button
+                      key={goal}
+                      onClick={() => toggleGoal(goal)}
+                      disabled={!editForm.goals.includes(goal) && editForm.goals.length >= 3}
+                      style={{
+                        padding: '10px 18px',
+                        backgroundColor: editForm.goals.includes(goal)
+                          ? '#a3e635'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        color: editForm.goals.includes(goal) ? '#0f172a' : '#d1d5db',
+                        border: 'none',
+                        borderRadius: '25px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: (!editForm.goals.includes(goal) && editForm.goals.length >= 3) ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s ease',
+                        opacity: (!editForm.goals.includes(goal) && editForm.goals.length >= 3) ? 0.5 : 1,
+                        transform: editForm.goals.includes(goal) ? 'scale(1.02)' : 'scale(1)',
+                        boxShadow: editForm.goals.includes(goal) ? '0 2px 8px rgba(163, 230, 53, 0.3)' : 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (editForm.goals.includes(goal) || editForm.goals.length < 3) {
+                          e.currentTarget.style.transform = 'scale(1.05)'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = editForm.goals.includes(goal) ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                    >
+                      {editForm.goals.includes(goal) && '✓ '}{goal}
+                    </button>
+                  ))}
+                </div>
+                <div style={{
+                  marginTop: '8px',
+                  fontSize: '12px',
+                  color: '#9ca3af'
+                }}>
+                  選択済み: {editForm.goals.length} / 3
+                </div>
+              </div>
+
+              {/* Interests */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '12px',
+                  fontWeight: '600',
+                  color: '#f3f4f6',
+                  fontSize: '16px'
+                }}>
+                  興味・関心 <span style={{ fontSize: '14px', color: '#9ca3af' }}>（最大5つまで選択）</span>
+                </label>
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '10px'
+                }}>
+                  {interestOptions.map((interest) => (
+                    <button
+                      key={interest}
+                      onClick={() => toggleInterest(interest)}
+                      disabled={!editForm.interests.includes(interest) && editForm.interests.length >= 5}
+                      style={{
+                        padding: '10px 18px',
+                        backgroundColor: editForm.interests.includes(interest)
+                          ? '#60a5fa'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        color: editForm.interests.includes(interest) ? '#0f172a' : '#d1d5db',
+                        border: 'none',
+                        borderRadius: '25px',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        cursor: (!editForm.interests.includes(interest) && editForm.interests.length >= 5) ? 'not-allowed' : 'pointer',
+                        transition: 'all 0.2s ease',
+                        opacity: (!editForm.interests.includes(interest) && editForm.interests.length >= 5) ? 0.5 : 1,
+                        transform: editForm.interests.includes(interest) ? 'scale(1.02)' : 'scale(1)',
+                        boxShadow: editForm.interests.includes(interest) ? '0 2px 8px rgba(96, 165, 250, 0.3)' : 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (editForm.interests.includes(interest) || editForm.interests.length < 5) {
+                          e.currentTarget.style.transform = 'scale(1.05)'
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = editForm.interests.includes(interest) ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                    >
+                      {editForm.interests.includes(interest) && '✓ '}{interest}
+                    </button>
+                  ))}
+                </div>
+                <div style={{
+                  marginTop: '8px',
+                  fontSize: '12px',
+                  color: '#9ca3af'
+                }}>
+                  選択済み: {editForm.interests.length} / 5
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '16px',
+                marginTop: '16px',
+                paddingTop: '24px',
+                borderTop: '1px solid rgba(55, 65, 81, 0.3)'
+              }}>
+                <button
+                  onClick={handleCancelEdit}
+                  style={{
+                    flex: 1,
+                    padding: '16px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    color: '#d1d5db',
+                    border: '2px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(75, 85, 99, 0.8)'
+                    e.currentTarget.style.borderColor = 'rgba(75, 85, 99, 0.7)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                  }}
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleSaveProfile}
+                  style={{
+                    flex: 1,
+                    padding: '16px',
+                    background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                    color: '#0f172a',
+                    border: 'none',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 16px rgba(163, 230, 53, 0.3)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(163, 230, 53, 0.3)'
+                  }}
+                >
+                  変更を保存
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style jsx>{`
         @keyframes slideDown {
           from {
@@ -1074,6 +1286,26 @@ export default function SettingsPage() {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+        
+        @keyframes modalFadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        
+        @keyframes modalSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
           }
         }
       `}</style>
