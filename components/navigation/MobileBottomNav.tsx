@@ -90,7 +90,7 @@ export function MobileBottomNav() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '8px 4px',
+                padding: '10px 8px',
                 backgroundColor: 'transparent',
                 border: 'none',
                 cursor: 'pointer',

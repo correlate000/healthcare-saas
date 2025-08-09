@@ -293,7 +293,7 @@ export default function CheckIn() {
               gap: '12px',
               boxShadow: '0 4px 12px rgba(251, 191, 36, 0.2)',
               border: '1px solid rgba(251, 191, 36, 0.2)',
-              animation: 'pulse 2s infinite',
+              animation: 'pulse 2s ease-in-out 3',
               position: 'relative',
               overflow: 'hidden'
             }}>
@@ -304,9 +304,9 @@ export default function CheckIn() {
                 width: '200%',
                 height: '200%',
                 background: 'radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%)',
-                animation: 'ripple 3s ease-out infinite'
+                animation: 'ripple 3s ease-out 2'
               }}></div>
-              <span style={{ fontSize: '24px', animation: 'bounce 1.5s ease-in-out infinite', position: 'relative' }}>⭐</span>
+              <span style={{ fontSize: '24px', animation: 'bounce 1.5s ease-in-out 3', position: 'relative' }}>⭐</span>
               <div style={{ position: 'relative' }}>
                 <div style={{ ...getTypographyStyles('h4'), fontWeight: '700', color: '#fbbf24', animation: 'countUp 1s ease-out 0.5s both' }}>+50 XP</div>
                 <div style={{ ...getTypographyStyles('small'), color: '#9ca3af', marginTop: '2px' }}>獲得しました</div>
@@ -333,7 +333,7 @@ export default function CheckIn() {
                 backgroundColor: '#a3e635',
                 animation: 'progressBar 1.5s ease-out 0.6s both'
               }}></div>
-              <span style={{ fontSize: '24px', animation: 'rotate 2s ease-in-out infinite' }}>🏆</span>
+              <span style={{ fontSize: '24px', animation: 'rotate 2s ease-in-out 2' }}>🏆</span>
               <div>
                 <div style={{ ...getTypographyStyles('h4'), fontWeight: '700', color: '#a3e635' }}>Lv.8</div>
                 <div style={{ ...getTypographyStyles('small'), color: '#9ca3af', marginTop: '2px' }}>あと150XP</div>
