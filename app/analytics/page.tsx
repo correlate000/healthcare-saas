@@ -682,7 +682,7 @@ export default function AnalyticsPage() {
                     style={{
                       padding: isMobile ? '12px 16px' : '8px 16px',
                       backgroundColor: '#a3e635',
-                      color: '#111827',
+                      color: '#0f172a',
                       border: 'none',
                       borderRadius: '8px',
                       ...getTypographyStyles('button', isMobile),

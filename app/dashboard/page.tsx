@@ -589,7 +589,7 @@ export default function Dashboard() {
                     }}
                   >
                     {index < weeklyContinuation && (
-                      <Check style={{ width: '14px', height: '14px', color: '#111827' }} />
+                      <Check style={{ width: '14px', height: '14px', color: '#0f172a' }} />
                     )}
                   </div>
                 </div>
@@ -705,7 +705,7 @@ export default function Dashboard() {
                         <Check style={{ 
                           width: '14px', 
                           height: '14px', 
-                          color: '#111827',
+                          color: '#0f172a',
                           animation: 'checkMark 0.4s ease-out'
                         }} />
                       )}
@@ -746,7 +746,7 @@ export default function Dashboard() {
                     <span style={{
                       ...getTypographyStyles('small'),
                       backgroundColor: '#a3e635',
-                      color: '#111827',
+                      color: '#0f172a',
                       padding: '4px 8px',
                       borderRadius: '4px',
                       fontWeight: '500'
@@ -797,7 +797,7 @@ export default function Dashboard() {
                   <span style={{
                     ...getTypographyStyles('small'),
                     backgroundColor: '#a3e635',
-                    color: '#111827',
+                    color: '#0f172a',
                     padding: '4px 8px',
                     borderRadius: '4px',
                     fontWeight: '600'
@@ -878,7 +878,7 @@ export default function Dashboard() {
             }}
             style={{
               backgroundColor: '#a3e635',
-              color: '#111827',
+              color: '#0f172a',
               padding: '12px 24px',
               borderRadius: '8px',
               border: 'none',

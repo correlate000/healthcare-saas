@@ -869,7 +869,7 @@ export default function CharactersPage() {
                           flex: 1,
                           padding: '8px',
                           backgroundColor: activeTab === tab ? char.bodyColor : 'transparent',
-                          color: activeTab === tab ? '#111827' : '#9ca3af',
+                          color: activeTab === tab ? '#0f172a' : '#9ca3af',
                           border: 'none',
                           borderRadius: '8px',
                           ...getTypographyStyles('label'),
@@ -1043,7 +1043,7 @@ export default function CharactersPage() {
                                 background: skill.level === 'MAX' 
                                   ? `linear-gradient(135deg, ${char.bodyColor} 0%, ${char.bodyColor}80 100%)`
                                   : 'rgba(55, 65, 81, 0.8)',
-                                color: skill.level === 'MAX' ? '#111827' : '#9ca3af',
+                                color: skill.level === 'MAX' ? '#0f172a' : '#9ca3af',
                                 padding: '4px 10px',
                                 borderRadius: '14px',
                                 fontWeight: '700'
@@ -1232,7 +1232,7 @@ export default function CharactersPage() {
                         flex: 1,
                         padding: '16px',
                         background: `linear-gradient(135deg, ${char.bodyColor} 0%, ${char.bodyColor}80 100%)`,
-                        color: '#111827',
+                        color: '#0f172a',
                         border: 'none',
                         borderRadius: '14px',
                         ...getTypographyStyles('large'),

@@ -598,7 +598,7 @@ export default function BookingPage() {
                 flex: 2,
                 padding: '16px',
                 background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-                color: '#111827',
+                color: '#0f172a',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '16px',

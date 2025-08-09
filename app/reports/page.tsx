@@ -107,7 +107,7 @@ export default function ReportsPage() {
               flex: 1,
               padding: '12px',
               background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-              color: '#111827',
+              color: '#0f172a',
               border: 'none',
               borderRadius: '12px',
               ...getTypographyStyles('button'),
@@ -120,7 +120,7 @@ export default function ReportsPage() {
               gap: '8px'
             }}
           >
-            <ChartIcon size={18} primaryColor="#111827" />
+            <ChartIcon size={18} primaryColor="#0f172a" />
             分析を見る
           </button>
           <button

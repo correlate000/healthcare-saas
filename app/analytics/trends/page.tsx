@@ -173,7 +173,7 @@ export default function TrendsPage() {
               flex: 1,
               padding: '10px',
               backgroundColor: selectedPeriod === period ? '#a3e635' : '#374151',
-              color: selectedPeriod === period ? '#111827' : '#d1d5db',
+              color: selectedPeriod === period ? '#0f172a' : '#d1d5db',
               border: 'none',
               borderRadius: '8px',
               fontSize: '13px',
@@ -370,7 +370,7 @@ export default function TrendsPage() {
                   justifyContent: 'center',
                   fontSize: '14px',
                   fontWeight: '600',
-                  color: '#111827'
+                  color: '#0f172a'
                 }}>
                   {index + 1}
                 </div>
@@ -460,7 +460,7 @@ export default function TrendsPage() {
             width: '100%',
             padding: '16px',
             backgroundColor: '#a3e635',
-            color: '#111827',
+            color: '#0f172a',
             border: 'none',
             borderRadius: '12px',
             fontSize: '16px',

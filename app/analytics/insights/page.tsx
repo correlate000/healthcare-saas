@@ -989,7 +989,7 @@ export default function InsightsPage() {
                   ...getTypographyStyles('caption'),
                   backgroundColor: item.priority === 'high' ? '#ef4444' :
                                  item.priority === 'medium' ? '#fbbf24' : '#60a5fa',
-                  color: item.priority === 'high' ? 'white' : '#111827',
+                  color: item.priority === 'high' ? 'white' : '#0f172a',
                   padding: '2px 8px',
                   borderRadius: '4px',
                   fontWeight: '600'
@@ -1046,7 +1046,7 @@ export default function InsightsPage() {
               flex: 1,
               padding: '16px',
               background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-              color: '#111827',
+              color: '#0f172a',
               border: 'none',
               borderRadius: '12px',
               ...getTypographyStyles('button'),

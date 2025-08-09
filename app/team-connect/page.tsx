@@ -750,7 +750,7 @@ export default function TeamConnectPage() {
                           width: '100%',
                           padding: '12px',
                           backgroundColor: '#a3e635',
-                          color: '#111827',
+                          color: '#0f172a',
                           border: 'none',
                           borderRadius: '10px',
                           ...getTypographyStyles('button'),
@@ -901,7 +901,7 @@ export default function TeamConnectPage() {
                 style={{
                   padding: '14px 32px',
                   background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-                  color: '#111827',
+                  color: '#0f172a',
                   border: 'none',
                   borderRadius: '12px',
                   ...getTypographyStyles('large'),

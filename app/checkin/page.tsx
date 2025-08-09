@@ -238,7 +238,7 @@ export default function CheckIn() {
           {/* Character name */}
           <div style={{
             backgroundColor: character.bodyColor,
-            color: '#111827',
+            color: '#0f172a',
             padding: '4px 12px',
             borderRadius: '12px',
             ...getTypographyStyles('small'),
@@ -545,7 +545,7 @@ export default function CheckIn() {
           margin: '0 auto 16px',
           flexShrink: 0
         }}>
-          <span style={{ color: '#111827', ...getTypographyStyles('small'), fontWeight: '600' }}>るな</span>
+          <span style={{ color: '#0f172a', ...getTypographyStyles('small'), fontWeight: '600' }}>るな</span>
         </div>
 
         {/* Progress bar */}

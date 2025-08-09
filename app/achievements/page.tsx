@@ -308,7 +308,7 @@ export default function AchievementsPage() {
                   <div style={{ 
                     ...getTypographyStyles('h1'),
                     fontWeight: '800',
-                    color: '#111827',
+                    color: '#0f172a',
                     letterSpacing: '-1px'
                   }}>
                     レベル {userStats.level}
@@ -348,7 +348,7 @@ export default function AchievementsPage() {
                   <div style={{
                     height: '100%',
                     width: `${(userStats.currentXP / userStats.maxXP) * 100}%`,
-                    backgroundColor: '#111827',
+                    backgroundColor: '#0f172a',
                     borderRadius: '5px',
                     transition: 'width 0.5s ease'
                   }}></div>
@@ -365,7 +365,7 @@ export default function AchievementsPage() {
               <div style={{ 
                 ...getTypographyStyles('h1'),
                 fontWeight: '800',
-                color: '#111827',
+                color: '#0f172a',
                 marginBottom: '4px'
               }}>
                 {userStats.totalBadges}
@@ -400,7 +400,7 @@ export default function AchievementsPage() {
                   ? 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)' 
                   : 'rgba(55, 65, 81, 0.6)',
                 backdropFilter: 'blur(10px)',
-                color: selectedCategory === category.id ? '#111827' : '#d1d5db',
+                color: selectedCategory === category.id ? '#0f172a' : '#d1d5db',
                 border: selectedCategory === category.id 
                   ? '1px solid rgba(163, 230, 53, 0.3)' 
                   : '1px solid rgba(55, 65, 81, 0.3)',
