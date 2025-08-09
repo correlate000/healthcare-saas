@@ -193,7 +193,7 @@ export default function OnboardingPage() {
           style={{
             padding: '16px 48px',
             background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-            color: '#111827',
+            color: '#0f172a',
             border: 'none',
             borderRadius: '12px',
             ...getTypographyStyles('h4'),
@@ -340,7 +340,7 @@ export default function OnboardingPage() {
           style={{
             padding: '16px 48px',
             background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-            color: '#111827',
+            color: '#0f172a',
             border: 'none',
             borderRadius: '12px',
             ...getTypographyStyles('h4'),
@@ -631,7 +631,7 @@ export default function OnboardingPage() {
               flex: 2,
               padding: '14px',
               background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-              color: '#111827',
+              color: '#0f172a',
               border: 'none',
               borderRadius: '12px',
               ...getTypographyStyles('large'),

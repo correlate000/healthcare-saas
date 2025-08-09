@@ -354,7 +354,7 @@ export default function ChatPage() {
               padding: '14px 18px',
               borderRadius: message.type === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
               backgroundColor: message.type === 'user' ? '#a3e635' : '#1f2937',
-              color: message.type === 'user' ? '#111827' : '#f3f4f6',
+              color: message.type === 'user' ? '#0f172a' : '#f3f4f6',
               boxShadow: message.type === 'user' 
                 ? '0 2px 8px rgba(163, 230, 53, 0.2)'
                 : '0 2px 8px rgba(0, 0, 0, 0.1)',
@@ -573,7 +573,7 @@ export default function ChatPage() {
               }
             }}
           >
-            <span style={{ color: newMessage.trim() ? '#111827' : '#6b7280', ...getTypographyStyles('h4'), fontWeight: '600' }}>➤</span>
+            <span style={{ color: newMessage.trim() ? '#0f172a' : '#6b7280', ...getTypographyStyles('h4'), fontWeight: '600' }}>➤</span>
           </button>
         </form>
       </div>

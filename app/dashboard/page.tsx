@@ -237,7 +237,7 @@ export default function Dashboard() {
               minWidth: '140px',
               padding: '20px 16px',
               background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-              color: '#111827',
+              color: '#0f172a',
               border: 'none',
               borderRadius: '16px',
               ...getTypographyStyles('base'),
@@ -266,20 +266,21 @@ export default function Dashboard() {
             <div style={{
               width: '32px',
               height: '32px',
-              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              backgroundColor: 'rgba(15, 23, 42, 0.2)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '18px',
-              backdropFilter: 'blur(10px)'
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(15, 23, 42, 0.15)'
             }}>
               ✓
             </div>
             <span style={{ letterSpacing: '0.5px' }}>チェックイン</span>
             <span style={{ 
               ...getTypographyStyles('caption'), 
-              opacity: 0.8,
+              color: 'rgba(15, 23, 42, 0.8)',
               fontWeight: '500'
             }}>
               今日の気分を記録

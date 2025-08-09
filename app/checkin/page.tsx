@@ -384,7 +384,7 @@ export default function CheckIn() {
               style={{
                 padding: '14px',
                 backgroundColor: '#a3e635',
-                color: '#111827',
+                color: '#0f172a',
                 border: 'none',
                 borderRadius: '12px',
                 ...getTypographyStyles('button'),
@@ -639,7 +639,7 @@ export default function CheckIn() {
                     style={{
                       padding: currentStepData.multiple ? '14px' : '16px',
                       backgroundColor: isSelected ? '#a3e635' : '#1f2937',
-                      color: isSelected ? '#111827' : '#d1d5db',
+                      color: isSelected ? '#0f172a' : '#d1d5db',
                       border: isSelected ? '2px solid #a3e635' : '1px solid #374151',
                       borderRadius: '12px',
                       ...(currentStepData.multiple ? getTypographyStyles('base') : getTypographyStyles('large')),
@@ -726,8 +726,8 @@ export default function CheckIn() {
                   ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? '#a3e635' : '#374151') :
                   '#a3e635', // Always enabled for textarea
                 color: currentStepData.multiple ? 
-                  ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? '#111827' : '#9ca3af') :
-                  '#111827', // Always enabled for textarea
+                  ((responses[currentStepData.id] && responses[currentStepData.id].length > 0) ? '#0f172a' : '#9ca3af') :
+                  '#0f172a', // Always enabled for textarea
                 border: 'none',
                 borderRadius: '12px',
                 ...getTypographyStyles('button'),

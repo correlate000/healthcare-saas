@@ -110,7 +110,7 @@ export function MobileBottomNav() {
                 justifyContent: 'center',
                 marginBottom: '2px',
                 borderRadius: isActive ? '12px' : '50%',
-                backgroundColor: isActive ? 'rgba(163, 230, 53, 0.15)' : 'transparent',
+                backgroundColor: isActive ? 'rgba(163, 230, 53, 0.2)' : 'transparent',
                 transform: isActive ? 'scale(1.05)' : 'scale(1)',
                 transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
               }}>
