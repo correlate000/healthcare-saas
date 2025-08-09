@@ -95,9 +95,12 @@ export function MobileBottomNav() {
                 border: 'none',
                 cursor: 'pointer',
                 color: isActive ? '#a3e635' : '#9ca3af',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.2s ease',
+                minHeight: '56px', // Ensure minimum tap target size
+                WebkitTapHighlightColor: 'transparent'
               }}
               onClick={() => handleNavigation(item.path)}
+              aria-label={item.label}
             >
               <div style={{
                 width: '28px',

@@ -1,7 +1,7 @@
 'use client'
 import '../globals.css'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Check } from 'lucide-react'
@@ -10,14 +10,79 @@ import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 
 export default function Dashboard() {
   const router = useRouter()
-  const [friendLevel] = useState(85)
-  const [todayProgress] = useState(75)
-  const [weeklyContinuation] = useState(5)
-  const [totalXP] = useState(850)
+  const [isLoading, setIsLoading] = useState(true)
+  const [friendLevel, setFriendLevel] = useState(85)
+  const [todayProgress, setTodayProgress] = useState(75)
+  const [weeklyContinuation, setWeeklyContinuation] = useState(5)
+  const [totalXP, setTotalXP] = useState(850)
   const [maxXP] = useState(1000)
-  const [currentMood] = useState('happy')
+  const [currentMood, setCurrentMood] = useState('happy')
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
+  
+  // Load data from localStorage
+  useEffect(() => {
+    const loadUserData = () => {
+      try {
+        // Load streak data
+        const streak = localStorage.getItem('mindcare-streak')
+        if (streak) {
+          setWeeklyContinuation(parseInt(streak))
+        }
+        
+        // Load XP data
+        const xp = localStorage.getItem('mindcare-xp')
+        if (xp) {
+          setTotalXP(parseInt(xp))
+        }
+        
+        // Load last checkin data for mood
+        const checkins = localStorage.getItem('mindcare-checkins')
+        if (checkins) {
+          const checkinData = JSON.parse(checkins)
+          if (checkinData.length > 0) {
+            const lastCheckin = checkinData[checkinData.length - 1]
+            if (lastCheckin.mood) {
+              const moodMap: { [key: string]: string } = {
+                '素晴らしい': 'happy',
+                'いい感じ': 'happy',
+                '普通': 'neutral',
+                '疲れた': 'tired',
+                'つらい': 'sad'
+              }
+              setCurrentMood(moodMap[lastCheckin.mood] || 'neutral')
+            }
+          }
+        }
+        
+        // Load friend level
+        const level = localStorage.getItem('mindcare-friend-level')
+        if (level) {
+          setFriendLevel(parseInt(level))
+        }
+        
+        // Load today's progress
+        const progress = localStorage.getItem('mindcare-today-progress')
+        if (progress) {
+          const progressData = JSON.parse(progress)
+          const today = new Date().toDateString()
+          if (progressData.date === today) {
+            setTodayProgress(progressData.value)
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    const timer = setTimeout(() => {
+      loadUserData()
+    }, 300)
+    
+    return () => clearTimeout(timer)
+  }, [])
   
   // 今日の優しいメッセージをランダム取得
   const getTodaysMessage = () => {
@@ -100,6 +165,51 @@ export default function Dashboard() {
     { id: 3, title: 'チーム投稿が10いいね！', icon: HappyFaceIcon, new: false },
   ]
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div style={{ 
+        minHeight: '100vh', 
+        backgroundColor: '#111827', 
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }}>
+        <div style={{
+          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            backgroundColor: '#a3e635',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              backgroundColor: '#111827',
+              borderRadius: '50%'
+            }}></div>
+          </div>
+        </div>
+        <p style={{ ...getTypographyStyles('base'), color: '#9ca3af' }}>読み込み中...</p>
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
+      </div>
+    )
+  }
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -144,6 +254,7 @@ export default function Dashboard() {
         }}>
           <button
             onClick={() => router.push('/checkin')}
+            aria-label="今日の気分をチェックイン"
             style={{
               flex: '1 1 calc(50% - 6px)',
               minWidth: '140px',
@@ -199,6 +310,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => router.push('/chat')}
+            aria-label="AIキャラクターとチャット"
             style={{
               flex: '1 1 calc(50% - 6px)',
               minWidth: '140px',

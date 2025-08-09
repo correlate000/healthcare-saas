@@ -111,6 +111,33 @@ export default function CheckIn() {
   }
 
   const handleComplete = () => {
+    // Validate required fields
+    if (steps[currentStep].type !== 'textarea' && !responses[steps[currentStep].id]) {
+      return // Don't complete if current step has no response
+    }
+    
+    // Save checkin data
+    const checkinData = {
+      ...responses,
+      date: new Date().toISOString(),
+      timestamp: Date.now()
+    }
+    
+    // Save to localStorage
+    try {
+      const existingData = localStorage.getItem('mindcare-checkins')
+      const checkins = existingData ? JSON.parse(existingData) : []
+      checkins.push(checkinData)
+      localStorage.setItem('mindcare-checkins', JSON.stringify(checkins))
+      localStorage.setItem('mindcare-last-checkin', new Date().toDateString())
+      
+      // Update streak
+      const currentStreak = parseInt(localStorage.getItem('mindcare-streak') || '0')
+      localStorage.setItem('mindcare-streak', (currentStreak + 1).toString())
+    } catch (error) {
+      console.error('Failed to save checkin data:', error)
+    }
+    
     setCurrentStep(-1) // Show completion screen
     // Redirect to analytics after showing completion screen
     setTimeout(() => {

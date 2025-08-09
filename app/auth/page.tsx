@@ -125,6 +125,9 @@ export default function AuthPage() {
     e.preventDefault()
     
     if (!validateForm()) {
+      // Show validation error notification
+      setNotificationMessage('入力内容を確認してください')
+      setShowNotification(true)
       return
     }
 
@@ -150,6 +153,11 @@ export default function AuthPage() {
               router.push('/checkin')
             }
           }, 1500)
+        } else {
+          // Login failed
+          setErrors({ general: 'メールアドレスまたはパスワードが正しくありません' })
+          setNotificationMessage('ログインに失敗しました')
+          setShowNotification(true)
         }
       } else {
         // Registration
@@ -170,11 +178,18 @@ export default function AuthPage() {
           setTimeout(() => {
             router.push('/onboarding')
           }, 2000)
+        } else {
+          // Registration failed
+          setErrors({ general: 'アカウントの作成に失敗しました。別のメールアドレスをお試しください。' })
+          setNotificationMessage('登録に失敗しました')
+          setShowNotification(true)
         }
       }
     } catch (error) {
       console.error('Authentication error:', error)
-      setErrors({ general: '認証中にエラーが発生しました。' })
+      setErrors({ general: '認証中にエラーが発生しました。しばらくしてからお試しください。' })
+      setNotificationMessage('エラーが発生しました')
+      setShowNotification(true)
     } finally {
       setIsLoading(false)
     }
