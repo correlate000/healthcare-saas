@@ -360,20 +360,19 @@ export default function AnalyticsPage() {
                     cursor: 'pointer'
                   }}>
                     {/* Value label */}
-                    {!isMobile && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: `${height + 5}%`,
-                        width: '100%',
-                        textAlign: 'center',
-                        ...getTypographyStyles('small', isMobile),
-                        fontWeight: '600',
-                        color: selectedMetricInfo.color,
-                        zIndex: 2
-                      }}>
-                        {value}%
-                      </div>
-                    )}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: `${height + 5}%`,
+                      width: '100%',
+                      textAlign: 'center',
+                      ...getTypographyStyles('small', isMobile),
+                      fontWeight: '600',
+                      color: selectedMetricInfo.color,
+                      zIndex: 2,
+                      fontSize: isMobile ? '10px' : '12px'
+                    }}>
+                      {value}%
+                    </div>
                     
                     {/* Bar */}
                     <div 
