@@ -26,6 +26,18 @@ export default function SettingsPage() {
   const [language, setLanguage] = useState('ja')
   const [dataSharing, setDataSharing] = useState(false)
   const [autoBackup, setAutoBackup] = useState(true)
+  
+  // プロフィール情報
+  const [profile, setProfile] = useState({
+    name: 'ユーザー名',
+    bio: 'メンタルヘルスの改善を目指して毎日頑張っています',
+    avatar: '👤',
+    goals: ['ストレス管理', '睡眠改善', 'マインドフルネス'],
+    interests: ['瞑想', '運動', '読書', '音楽'],
+    joinDate: '2025年6月'
+  })
+  
+  const [editForm, setEditForm] = useState({ ...profile })
 
   const toggleNotification = (key: keyof typeof notifications) => {
     setNotifications(prev => ({
@@ -74,18 +86,50 @@ export default function SettingsPage() {
     )
   }
 
-  const userStats = {
-    name: 'ユーザー名',
-    email: 'user@example.com',
-    joinDate: '2025年6月',
-    sessions: 45,
-    streak: 15,
-    level: 8,
-    currentXP: 850,
-    maxXP: 1000,
-    badges: 12,
-    friendsCount: 23,
-    totalTime: '21時間'
+  const avatarOptions = ['👤', '🦝', '🦊', '🐰', '🐸', '🦉', '🐻', '🐼', '🦁', '🐨']
+  
+  const goalOptions = [
+    'ストレス管理', '睡眠改善', 'マインドフルネス', 
+    '不安の軽減', '気分の改善', '集中力向上',
+    '人間関係', '自己肤定感', 'ワークライフバランス'
+  ]
+
+  const interestOptions = [
+    '瞑想', '運動', '読書', '音楽', 'ヨガ',
+    '自然', 'アート', '料理', 'ゲーム', '映画'
+  ]
+  
+  const handleSaveProfile = () => {
+    setProfile(editForm)
+    setActiveSection(null)
+  }
+  
+  const toggleGoal = (goal: string) => {
+    if (editForm.goals.includes(goal)) {
+      setEditForm({
+        ...editForm,
+        goals: editForm.goals.filter(g => g !== goal)
+      })
+    } else if (editForm.goals.length < 3) {
+      setEditForm({
+        ...editForm,
+        goals: [...editForm.goals, goal]
+      })
+    }
+  }
+
+  const toggleInterest = (interest: string) => {
+    if (editForm.interests.includes(interest)) {
+      setEditForm({
+        ...editForm,
+        interests: editForm.interests.filter(i => i !== interest)
+      })
+    } else if (editForm.interests.length < 5) {
+      setEditForm({
+        ...editForm,
+        interests: [...editForm.interests, interest]
+      })
+    }
   }
 
   return (
@@ -112,7 +156,7 @@ export default function SettingsPage() {
           backgroundClip: 'text',
           margin: 0 
         }}>
-          設定
+          プロフィールと設定
         </h1>
       </div>
 
@@ -153,7 +197,7 @@ export default function SettingsPage() {
                 boxShadow: '0 8px 24px rgba(163, 230, 53, 0.3)',
                 border: '3px solid rgba(255, 255, 255, 0.1)'
               }}>
-                👤
+                {profile.avatar}
               </div>
               <div style={{ flex: 1 }}>
                 <h3 style={{ 
@@ -162,14 +206,14 @@ export default function SettingsPage() {
                   color: '#f3f4f6', 
                   margin: '0 0 6px 0' 
                 }}>
-                  {userStats.name}
+                  {profile.name}
                 </h3>
                 <p style={{ 
                   ...getTypographyStyles('base'), 
                   color: '#9ca3af', 
                   margin: '0 0 4px 0' 
                 }}>
-                  {userStats.email}
+                  {profile.bio}
                 </p>
                 <p style={{ 
                   ...getTypographyStyles('small'), 
@@ -180,11 +224,16 @@ export default function SettingsPage() {
                   gap: '4px',
                   whiteSpace: 'nowrap'
                 }}>
-                  📅 {userStats.joinDate}から利用開始
+                  📅 {profile.joinDate}から利用開始
                 </p>
               </div>
               <button
-                onClick={() => router.push('/profile')}
+                onClick={() => {
+                  setActiveSection(activeSection === 'profile' ? null : 'profile')
+                  if (activeSection !== 'profile') {
+                    setEditForm({ ...profile })
+                  }
+                }}
                 style={{
                   width: '40px',
                   height: '40px',
