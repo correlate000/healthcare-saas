@@ -94,7 +94,7 @@ export default function ChatPage() {
   // Auto-scroll to bottom only when user sends a message
   useEffect(() => {
     // Only scroll if the last message is from the user or if typing
-    if (messages.length > 0 && messages[messages.length - 1].sender === 'user') {
+    if (messages.length > 0 && messages[messages.length - 1].type === 'user') {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [messages])
