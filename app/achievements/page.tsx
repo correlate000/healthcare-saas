@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
@@ -44,6 +44,17 @@ const getRarityStyle = (rarity: string) => {
 export default function AchievementsPage() {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState('all')
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const userStats = {
     level: 8,
@@ -425,8 +436,8 @@ export default function AchievementsPage() {
         {/* Achievements Grid */}
         <div style={{ 
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: '16px'
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(auto-fill, minmax(180px, 1fr))',
+          gap: isMobile ? '12px' : '16px'
         }}>
           {filteredAchievements.map((achievement) => {
             const rarityStyle = getRarityStyle(achievement.rarity)
@@ -482,8 +493,8 @@ export default function AchievementsPage() {
 
               {/* Icon with enhanced styling */}
               <div style={{
-                fontSize: '40px', // Keep this as it's for emoji icons - not text
-                marginBottom: '16px',
+                fontSize: isMobile ? '32px' : '40px',
+                marginBottom: isMobile ? '12px' : '16px',
                 filter: achievement.unlocked 
                   ? `drop-shadow(0 4px 8px ${getRarityColor(achievement.rarity)}40)` 
                   : 'grayscale(100%)',

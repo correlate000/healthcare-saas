@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
@@ -9,6 +9,7 @@ import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 export default function ProfilePage() {
   const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [profile, setProfile] = useState({
     name: 'ユーザー名',
     email: 'user@example.com',
@@ -22,6 +23,16 @@ export default function ProfilePage() {
   })
 
   const [editForm, setEditForm] = useState({ ...profile })
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const avatarOptions = ['👤', '🦝', '🦊', '🐰', '🐸', '🦉', '🐻', '🐼', '🦁', '🐨']
   
@@ -320,7 +331,7 @@ export default function ProfilePage() {
 
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
                   gap: '16px'
                 }}>
                   <div>
@@ -440,7 +451,7 @@ export default function ProfilePage() {
         {/* Stats Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
           gap: '12px',
           marginBottom: '24px'
         }}>

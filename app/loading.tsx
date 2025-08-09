@@ -11,7 +11,7 @@ export default function Loading() {
 
   const loadingMessages = [
     { text: "読み込み中...", icon: "📊" },
-    { text: "AIを準備中...", icon: "🤖" },
+    { text: "キャラクターを準備中...", icon: "🤖" },
     { text: "安全な接続を確立中...", icon: "🔒" },
     { text: "パーソナライズ中...", icon: "✨" },
     { text: "もうすぐ完了...", icon: "🎉" }

@@ -105,6 +105,10 @@ export default function OnboardingPage() {
 
   const handleInputChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value })
+    // Save user name to localStorage immediately when entered
+    if (field === 'name' && value) {
+      localStorage.setItem('userName', value)
+    }
   }
 
   const handleMultiSelect = (field: string, value: string) => {
@@ -430,7 +434,9 @@ export default function OnboardingPage() {
           fontWeight: '700',
           color: '#f3f4f6',
           marginBottom: '8px',
-          textAlign: 'center'
+          textAlign: 'center',
+          wordBreak: 'keep-all',
+          lineHeight: '1.4'
         }}>
           {currentStepData.title}
         </h2>

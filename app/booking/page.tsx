@@ -389,7 +389,7 @@ export default function BookingPage() {
               <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#d1d5db', marginBottom: '12px' }}>
                 日付選択
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(5, 1fr)', gap: '8px' }}>
                 {dates.map((date) => (
                   <button
                     key={date}
@@ -407,7 +407,8 @@ export default function BookingPage() {
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      minHeight: '44px'
                     }}
                   >
                     {date}
@@ -421,7 +422,7 @@ export default function BookingPage() {
               <h3 style={{ fontSize: '14px', fontWeight: '500', color: '#d1d5db', marginBottom: '12px' }}>
                 時間選択
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '8px' }}>
                 {times.map((time) => (
                   <button
                     key={time}
@@ -439,7 +440,8 @@ export default function BookingPage() {
                       cursor: 'pointer',
                       fontSize: '14px',
                       fontWeight: '500',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      minHeight: '44px'
                     }}
                   >
                     {time}
@@ -497,7 +499,7 @@ export default function BookingPage() {
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
+                  paddingBottom: '12px',
                   borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
                   <span style={{ color: '#9ca3af', fontSize: '14px' }}>日時</span>
@@ -508,7 +510,7 @@ export default function BookingPage() {
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
+                  paddingBottom: '12px',
                   borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
                   <span style={{ color: '#9ca3af', fontSize: '14px' }}>方法</span>

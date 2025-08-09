@@ -613,7 +613,7 @@ export default function CheckIn() {
           ) : (
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: currentStepData.multiple ? (isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)') : '1fr',
+              gridTemplateColumns: currentStepData.multiple ? (isMobile ? '1fr' : 'repeat(2, 1fr)') : '1fr',
               gap: isMobile ? '8px' : '12px'
             }}>
               {currentStepData.options?.map((option, index) => {

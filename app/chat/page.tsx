@@ -31,9 +31,9 @@ export default function ChatPage() {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
 
   const characters = [
-    { id: 'luna', name: 'Luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb' },
-    { id: 'aria', name: 'Aria', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe' },
-    { id: 'zen', name: 'Zen', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa' },
+    { id: 'luna', name: 'るな', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb' },
+    { id: 'aria', name: 'あーりあ', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe' },
+    { id: 'zen', name: 'ぜん', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa' },
   ]
   
   // Bird character SVG component
@@ -180,10 +180,10 @@ export default function ChatPage() {
       id: 1,
       type: 'character',
       content: characterId === 'luna' 
-        ? 'こんにちは！Lunaです。今日の調子はいかがですか？何でもお話しくださいね。'
+        ? 'こんにちは！るなです。今日の調子はいかがですか？何でもお話しくださいね。'
         : characterId === 'aria'
-        ? 'やっほー！Ariaだよ！今日も元気いっぱいにいこう！何か楽しいことあった？'
-        : '静寂の中へようこそ。Zenです。心を落ち着けて、ゆっくりと話していきましょう。',
+        ? 'やっほー！あーりあだよ！今日も元気いっぱいにいこう！何か楽しいことあった？'
+        : '静寂の中へようこそ。ぜんです。心を落ち着けて、ゆっくりと話していきましょう。',
       time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
     }])
     

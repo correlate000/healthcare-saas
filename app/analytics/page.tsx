@@ -338,11 +338,11 @@ export default function AnalyticsPage() {
               display: 'flex', 
               alignItems: 'flex-end', 
               justifyContent: 'space-between',
-              height: '200px',
-              gap: isMobile ? '4px' : '8px',
+              height: isMobile ? '180px' : '200px',
+              gap: isMobile ? '2px' : '8px',
               marginBottom: '20px',
               position: 'relative',
-              padding: '0 4px'
+              padding: '0'
             }}>
               {currentData.data.map((day, index) => {
                 const value = day[selectedMetric as keyof typeof day] as number
@@ -360,28 +360,30 @@ export default function AnalyticsPage() {
                     cursor: 'pointer'
                   }}>
                     {/* Value label */}
-                    <div style={{
-                      position: 'absolute',
-                      bottom: `${height + 5}%`,
-                      width: '100%',
-                      textAlign: 'center',
-                      ...getTypographyStyles('small', isMobile),
-                      fontWeight: '600',
-                      color: selectedMetricInfo.color,
-                      zIndex: 2
-                    }}>
-                      {value}%
-                    </div>
+                    {!isMobile && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: `${height + 5}%`,
+                        width: '100%',
+                        textAlign: 'center',
+                        ...getTypographyStyles('small', isMobile),
+                        fontWeight: '600',
+                        color: selectedMetricInfo.color,
+                        zIndex: 2
+                      }}>
+                        {value}%
+                      </div>
+                    )}
                     
                     {/* Bar */}
                     <div 
                       data-bar
                       style={{
-                        width: isMobile ? '90%' : '80%',
+                        width: isMobile ? '100%' : '80%',
                         height: `${height}%`,
                         minHeight: '4px',
                         background: `linear-gradient(180deg, ${selectedMetricInfo.color} 0%, ${selectedMetricInfo.color}88 100%)`,
-                        borderRadius: '8px 8px 0 0',
+                        borderRadius: isMobile ? '4px 4px 0 0' : '8px 8px 0 0',
                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                         transformOrigin: 'bottom',
                         animation: `growUp 0.6s ease-out ${index * 0.1}s both`

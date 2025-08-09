@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
@@ -11,6 +11,17 @@ export default function TeamConnectPage() {
   const [activeTab, setActiveTab] = useState<'friends' | 'groups' | 'discover'>('friends')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const friends = [
     {
@@ -438,20 +449,20 @@ export default function TeamConnectPage() {
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '12px'
+                    gap: isMobile ? '8px' : '12px'
                   }}>
                     <div style={{
                       position: 'relative'
                     }}>
                       <div style={{
-                        width: '56px',
-                        height: '56px',
+                        width: isMobile ? '48px' : '56px',
+                        height: isMobile ? '48px' : '56px',
                         backgroundColor: 'rgba(55, 65, 81, 0.6)',
                         borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        ...getTypographyStyles('h1'),
+                        fontSize: isMobile ? '20px' : '24px',
                         border: `2px solid ${getMoodColor(friend.mood)}`
                       }}>
                         {friend.avatar}
@@ -502,7 +513,8 @@ export default function TeamConnectPage() {
                       <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px'
+                        gap: isMobile ? '8px' : '12px',
+                        flexWrap: isMobile ? 'wrap' : 'nowrap'
                       }}>
                         <span style={{
                           ...getTypographyStyles('small'),
@@ -513,25 +525,27 @@ export default function TeamConnectPage() {
                         }}>
                           🔥 {friend.streak}日
                         </span>
-                        <div style={{
-                          display: 'flex',
-                          gap: '4px'
-                        }}>
-                          {friend.mutualGoals.map((goal, index) => (
-                            <span
-                              key={index}
-                              style={{
-                                ...getTypographyStyles('caption'),
-                                backgroundColor: 'rgba(96, 165, 250, 0.2)',
-                                color: '#60a5fa',
-                                padding: '2px 6px',
-                                borderRadius: '4px'
-                              }}
-                            >
-                              {goal}
-                            </span>
-                          ))}
-                        </div>
+                        {!isMobile && (
+                          <div style={{
+                            display: 'flex',
+                            gap: '4px'
+                          }}>
+                            {friend.mutualGoals.map((goal, index) => (
+                              <span
+                                key={index}
+                                style={{
+                                  ...getTypographyStyles('caption'),
+                                  backgroundColor: 'rgba(96, 165, 250, 0.2)',
+                                  color: '#60a5fa',
+                                  padding: '2px 6px',
+                                  borderRadius: '4px'
+                                }}
+                              >
+                                {goal}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <button

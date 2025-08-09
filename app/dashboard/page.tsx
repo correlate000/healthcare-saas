@@ -14,6 +14,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 export default function Dashboard() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
+  const [userName, setUserName] = useState('')
   const [friendLevel, setFriendLevel] = useState(85)
   const [todayProgress, setTodayProgress] = useState(75)
   const [weeklyContinuation, setWeeklyContinuation] = useState(5)
@@ -27,6 +28,10 @@ export default function Dashboard() {
   useEffect(() => {
     const loadUserData = () => {
       try {
+        // Load user name
+        const savedName = localStorage.getItem('userName') || ''
+        setUserName(savedName)
+        
         // Load streak data
         const streak = UserDataStorage.getStreak()
         if (streak > 0) {
@@ -142,11 +147,12 @@ export default function Dashboard() {
   ]
   
   const getGreeting = () => {
-    if (currentTime < 5) return '深夜ですね。良い休息を'
-    if (currentTime < 11) return 'おはようございます'
-    if (currentTime < 17) return 'こんにちは'
-    if (currentTime < 21) return 'こんばんは'
-    return 'お疲れ様でした'
+    const namePrefix = userName ? `${userName}さん、` : ''
+    if (currentTime < 5) return `${namePrefix}深夜ですね。良い休息を`
+    if (currentTime < 11) return `${namePrefix}おはようございます`
+    if (currentTime < 17) return `${namePrefix}こんにちは`
+    if (currentTime < 21) return `${namePrefix}こんばんは`
+    return `${namePrefix}お疲れ様でした`
   }
   
   const getDifficultyColor = (difficulty: string) => {
@@ -281,7 +287,7 @@ export default function Dashboard() {
           </button>
           <button
             onClick={() => router.push('/chat')}
-            aria-label="AIキャラクターとチャット"
+            aria-label="キャラクターとチャット"
             style={{
               flex: '1 1 calc(50% - 6px)',
               minWidth: '140px',
@@ -326,7 +332,7 @@ export default function Dashboard() {
             }}>
               💬
             </div>
-            <span style={{ letterSpacing: '0.5px' }}>AIキャラクターと話す</span>
+            <span style={{ letterSpacing: '0.5px' }}>キャラクターと話す</span>
             <span style={{ 
               ...getTypographyStyles('caption'), 
               opacity: 0.9,

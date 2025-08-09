@@ -162,7 +162,7 @@ export default function EmergencySupportPage() {
         </h2>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
           gap: '8px'
         }}>
           {reasons.map(reason => (
@@ -296,7 +296,7 @@ export default function EmergencySupportPage() {
         </h2>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
           gap: '12px'
         }}>
           {copingStrategies.map(strategy => (

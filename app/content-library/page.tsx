@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
@@ -11,6 +11,17 @@ export default function ContentLibraryPage() {
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'meditation' | 'sleep' | 'stress' | 'exercise'>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [savedContent, setSavedContent] = useState<number[]>([1, 3, 5])
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const categories = [
     { key: 'all', label: 'すべて', icon: '📚' },
@@ -249,10 +260,10 @@ export default function ContentLibraryPage() {
               <div
                 key={item.id}
                 style={{
-                  minWidth: '200px',
+                  minWidth: isMobile ? '160px' : '200px',
                   backgroundColor: '#1f2937',
                   borderRadius: '12px',
-                  padding: '12px',
+                  padding: isMobile ? '10px' : '12px',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
@@ -353,14 +364,14 @@ export default function ContentLibraryPage() {
                   alignItems: 'flex-start'
                 }}>
                   <div style={{
-                    width: '60px',
-                    height: '60px',
+                    width: isMobile ? '50px' : '60px',
+                    height: isMobile ? '50px' : '60px',
                     backgroundColor: '#374151',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '24px',
+                    fontSize: isMobile ? '20px' : '24px',
                     flexShrink: 0
                   }}>
                     {item.thumbnail}
