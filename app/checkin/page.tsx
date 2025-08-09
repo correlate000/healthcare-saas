@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { HappyFaceIcon, SadFaceIcon, CalmIcon, StressedIcon, EnergeticIcon, ThinkingIcon, MeditationIcon, SleepingIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { UserDataStorage } from '@/utils/storage'
 
 export default function CheckIn() {
   const router = useRouter()
@@ -123,17 +124,18 @@ export default function CheckIn() {
       timestamp: Date.now()
     }
     
-    // Save to localStorage
+    // Save to localStorage using storage utility
     try {
-      const existingData = localStorage.getItem('mindcare-checkins')
-      const checkins = existingData ? JSON.parse(existingData) : []
-      checkins.push(checkinData)
-      localStorage.setItem('mindcare-checkins', JSON.stringify(checkins))
-      localStorage.setItem('mindcare-last-checkin', new Date().toDateString())
+      UserDataStorage.setCheckinData(checkinData)
+      UserDataStorage.setLastCheckin(new Date().toDateString())
       
       // Update streak
-      const currentStreak = parseInt(localStorage.getItem('mindcare-streak') || '0')
-      localStorage.setItem('mindcare-streak', (currentStreak + 1).toString())
+      const currentStreak = UserDataStorage.getStreak()
+      UserDataStorage.setStreak(currentStreak + 1)
+      
+      // Add XP for checkin
+      const currentXP = UserDataStorage.getXP()
+      UserDataStorage.setXP(currentXP + 50)
     } catch (error) {
       console.error('Failed to save checkin data:', error)
     }

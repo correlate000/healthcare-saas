@@ -7,6 +7,7 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { Check } from 'lucide-react'
 import { HappyFaceIcon, FireIcon, StarIcon, EnergyIcon, MoonIcon, BubbleIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { UserDataStorage } from '@/utils/storage'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -20,51 +21,47 @@ export default function Dashboard() {
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
   
-  // Load data from localStorage
+  // Load data from localStorage using storage utility
   useEffect(() => {
     const loadUserData = () => {
       try {
         // Load streak data
-        const streak = localStorage.getItem('mindcare-streak')
-        if (streak) {
-          setWeeklyContinuation(parseInt(streak))
+        const streak = UserDataStorage.getStreak()
+        if (streak > 0) {
+          setWeeklyContinuation(streak)
         }
         
         // Load XP data
-        const xp = localStorage.getItem('mindcare-xp')
-        if (xp) {
-          setTotalXP(parseInt(xp))
+        const xp = UserDataStorage.getXP()
+        if (xp > 0) {
+          setTotalXP(xp)
         }
         
         // Load last checkin data for mood
-        const checkins = localStorage.getItem('mindcare-checkins')
-        if (checkins) {
-          const checkinData = JSON.parse(checkins)
-          if (checkinData.length > 0) {
-            const lastCheckin = checkinData[checkinData.length - 1]
-            if (lastCheckin.mood) {
-              const moodMap: { [key: string]: string } = {
-                '素晴らしい': 'happy',
-                'いい感じ': 'happy',
-                '普通': 'neutral',
-                '疲れた': 'tired',
-                'つらい': 'sad'
-              }
-              setCurrentMood(moodMap[lastCheckin.mood] || 'neutral')
+        const checkins = UserDataStorage.getCheckinData()
+        if (checkins.length > 0) {
+          const lastCheckin = checkins[checkins.length - 1]
+          if (lastCheckin.mood) {
+            const moodMap: { [key: string]: string } = {
+              '素晴らしい': 'happy',
+              'いい感じ': 'happy',
+              '普通': 'neutral',
+              '疲れた': 'tired',
+              'つらい': 'sad'
             }
+            setCurrentMood(moodMap[lastCheckin.mood] || 'neutral')
           }
         }
         
         // Load friend level
-        const level = localStorage.getItem('mindcare-friend-level')
-        if (level) {
-          setFriendLevel(parseInt(level))
+        const level = UserDataStorage.getFriendLevel()
+        if (level > 0) {
+          setFriendLevel(level)
         }
         
         // Load today's progress
-        const progress = localStorage.getItem('mindcare-today-progress')
-        if (progress) {
-          const progressData = JSON.parse(progress)
+        const progressData = UserDataStorage.getTodayProgress()
+        if (progressData) {
           const today = new Date().toDateString()
           if (progressData.date === today) {
             setTodayProgress(progressData.value)
