@@ -38,6 +38,18 @@ export default function SettingsPage() {
   })
   
   const [editForm, setEditForm] = useState({ ...profile })
+  
+  // User stats
+  const userStats = {
+    sessions: 42,
+    streak: 15,
+    level: 8,
+    currentXP: 750,
+    maxXP: 900,
+    badges: 12,
+    friendsCount: 23,
+    totalTime: '84h'
+  }
 
   const toggleNotification = (key: keyof typeof notifications) => {
     setNotifications(prev => ({
@@ -91,7 +103,7 @@ export default function SettingsPage() {
   const goalOptions = [
     'ストレス管理', '睡眠改善', 'マインドフルネス', 
     '不安の軽減', '気分の改善', '集中力向上',
-    '人間関係', '自己肤定感', 'ワークライフバランス'
+    '人間関係', '自己肯定感', 'ワークライフバランス'
   ]
 
   const interestOptions = [
@@ -299,9 +311,9 @@ export default function SettingsPage() {
                 </div>
               ))}
             </div>
-            
+
             {/* Level Progress */}
-            <div>
+            <div style={{ marginTop: '16px' }}>
               <div style={{ 
                 display: 'flex', 
                 justifyContent: 'space-between', 
@@ -337,6 +349,205 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* Profile Edit Form */}
+        {activeSection === 'profile' && (
+          <div style={{
+            background: 'rgba(31, 41, 55, 0.6)',
+            backdropFilter: 'blur(12px)',
+            border: '1px solid rgba(55, 65, 81, 0.3)',
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '20px',
+            animation: 'slideDown 0.3s ease'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {/* Avatar Selection */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
+                  アバター
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {avatarOptions.map((avatar) => (
+                    <button
+                      key={avatar}
+                      onClick={() => setEditForm({ ...editForm, avatar })}
+                      style={{
+                        width: '48px',
+                        height: '48px',
+                        backgroundColor: editForm.avatar === avatar
+                          ? 'rgba(163, 230, 53, 0.3)'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        border: editForm.avatar === avatar
+                          ? '2px solid #a3e635'
+                          : '1px solid transparent',
+                        borderRadius: '12px',
+                        fontSize: '24px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {avatar}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Name */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
+                  名前
+                </label>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '8px',
+                    color: '#f3f4f6',
+                    fontSize: '16px',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              {/* Bio */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
+                  自己紹介
+                </label>
+                <textarea
+                  value={editForm.bio}
+                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '8px',
+                    color: '#f3f4f6',
+                    fontSize: '16px',
+                    outline: 'none',
+                    resize: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                />
+              </div>
+
+              {/* Goals */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
+                  目標（最大3つ）
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {goalOptions.map((goal) => (
+                    <button
+                      key={goal}
+                      onClick={() => toggleGoal(goal)}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: editForm.goals.includes(goal)
+                          ? 'rgba(163, 230, 53, 0.2)'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        color: editForm.goals.includes(goal) ? '#a3e635' : '#9ca3af',
+                        border: editForm.goals.includes(goal)
+                          ? '1px solid rgba(163, 230, 53, 0.3)'
+                          : '1px solid transparent',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {goal}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Interests */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500', color: '#f3f4f6' }}>
+                  興味（最大5つ）
+                </label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {interestOptions.map((interest) => (
+                    <button
+                      key={interest}
+                      onClick={() => toggleInterest(interest)}
+                      style={{
+                        padding: '8px 16px',
+                        backgroundColor: editForm.interests.includes(interest)
+                          ? 'rgba(163, 230, 53, 0.2)'
+                          : 'rgba(55, 65, 81, 0.6)',
+                        color: editForm.interests.includes(interest) ? '#a3e635' : '#9ca3af',
+                        border: editForm.interests.includes(interest)
+                          ? '1px solid rgba(163, 230, 53, 0.3)'
+                          : '1px solid transparent',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {interest}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                <button
+                  onClick={handleSaveProfile}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    backgroundColor: '#a3e635',
+                    color: '#0f172a',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  保存
+                </button>
+                <button
+                  onClick={() => {
+                    setEditForm({ ...profile })
+                    setActiveSection(null)
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    color: '#9ca3af',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Quick Actions */}
         <div style={{ 
