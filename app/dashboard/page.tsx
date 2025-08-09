@@ -9,6 +9,7 @@ import { HappyFaceIcon, FireIcon, StarIcon, EnergyIcon, MoonIcon, BubbleIcon } f
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 import { UserDataStorage } from '@/utils/storage'
 import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -171,39 +172,11 @@ export default function Dashboard() {
         backgroundColor: '#111827', 
         color: 'white',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
-        <div style={{
-          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            backgroundColor: '#a3e635',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              backgroundColor: '#111827',
-              borderRadius: '50%'
-            }}></div>
-          </div>
-        </div>
-        <p style={{ ...getTypographyStyles('base'), color: '#9ca3af' }}>読み込み中...</p>
-        <style jsx>{`
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-          }
-        `}</style>
+        <LoadingSpinner size="large" message="ダッシュボードを読み込んでいます..." />
       </div>
     )
   }
