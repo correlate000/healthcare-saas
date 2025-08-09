@@ -24,7 +24,6 @@ export default function SettingsPage() {
     evening: '21:00'
   })
   const [language, setLanguage] = useState('ja')
-  const [theme, setTheme] = useState<'dark'>('dark')
   const [dataSharing, setDataSharing] = useState(false)
   const [autoBackup, setAutoBackup] = useState(true)
 
@@ -486,10 +485,10 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* Appearance */}
+        {/* Language */}
         <div style={{ marginBottom: '24px' }}>
           <button
-            onClick={() => setActiveSection(activeSection === 'appearance' ? null : 'appearance')}
+            onClick={() => setActiveSection(activeSection === 'language' ? null : 'language')}
             style={{
               width: '100%',
               display: 'flex',
@@ -499,7 +498,7 @@ export default function SettingsPage() {
               background: 'rgba(31, 41, 55, 0.6)',
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(55, 65, 81, 0.3)',
-              borderRadius: activeSection === 'appearance' ? '16px 16px 0 0' : '16px',
+              borderRadius: activeSection === 'language' ? '16px 16px 0 0' : '16px',
               color: '#f3f4f6',
               fontSize: '16px',
               fontWeight: '600',
@@ -509,16 +508,16 @@ export default function SettingsPage() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <ChartIcon size={20} color="#a3e635" />
-              外観とテーマ
+              言語設定
             </div>
             <span style={{
               color: '#9ca3af',
-              transform: activeSection === 'appearance' ? 'rotate(90deg)' : 'rotate(0)',
+              transform: activeSection === 'language' ? 'rotate(90deg)' : 'rotate(0)',
               transition: 'transform 0.3s ease'
             }}>›</span>
           </button>
           
-          {activeSection === 'appearance' && (
+          {activeSection === 'language' && (
             <div style={{
               background: 'rgba(31, 41, 55, 0.6)',
               backdropFilter: 'blur(12px)',
@@ -528,49 +527,6 @@ export default function SettingsPage() {
               padding: '20px',
               animation: 'slideDown 0.3s ease'
             }}>
-              {/* Theme Selection */}
-              <div style={{ marginBottom: '20px' }}>
-                <h4 style={{
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#f3f4f6',
-                  marginBottom: '12px'
-                }}>
-                  テーマ選択
-                </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-                  {[
-                    { value: 'dark', label: 'ダーク', icon: <MoonIcon size={24} />, color: '#111827' },
-                    { value: 'light', label: 'ライト', icon: <EnergyIcon size={24} primaryColor="#fbbf24" />, color: '#f3f4f6' },
-                    { value: 'auto', label: '自動', icon: <ClockIcon size={24} />, gradient: 'linear-gradient(135deg, #111827 0%, #f3f4f6 100%)' }
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setTheme(option.value as any)}
-                      style={{
-                        padding: '16px',
-                        background: option.gradient || option.color,
-                        border: theme === option.value 
-                          ? '2px solid #a3e635' 
-                          : '2px solid transparent',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '8px',
-                        color: option.value === 'light' ? '#111827' : '#f3f4f6'
-                      }}
-                    >
-                      {option.icon}
-                      <span style={{ fontSize: '12px', fontWeight: '600' }}>{option.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Language */}
               <div>
                 <h4 style={{
                   fontSize: '14px',
@@ -578,7 +534,7 @@ export default function SettingsPage() {
                   color: '#f3f4f6',
                   marginBottom: '12px'
                 }}>
-                  言語設定
+                  表示言語
                 </h4>
                 <select
                   value={language}
@@ -770,7 +726,7 @@ export default function SettingsPage() {
         }}>
           {[
             { icon: <MessageIcon size={18} color="#60a5fa" />, label: 'ヘルプ・FAQ', path: '/help' },
-            { icon: <FileIcon size={18} color="#8b5cf6" />, label: 'お問い合わせ', path: '/contact' },
+            { icon: <FileIcon size={18} color="#8b5cf6" />, label: 'お問い合わせ', path: '/help#contact' },
             { icon: <TrophyIcon size={18} color="#fbbf24" />, label: 'アプリを評価', action: 'rate' },
             { icon: <WarningIcon size={18} color="#ef4444" />, label: 'ログアウト', action: 'logout', danger: true }
           ].map((item, index) => (

@@ -96,6 +96,15 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
 
+  // Initial scroll to bottom when component mounts
+  useEffect(() => {
+    // Wait for DOM to render then scroll to bottom
+    const timer = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' })
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [])
+
   // Check scroll position to show/hide scroll button
   useEffect(() => {
     const checkScroll = () => {
@@ -241,56 +250,57 @@ export default function ChatPage() {
           ))}
         </div>
         
-        {/* Large character display */}
+        {/* Compact character display */}
         <div style={{ 
-          padding: '20px',
+          padding: '12px 20px',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
+          gap: '12px'
         }}>
           <div style={{
-            width: '100px',
-            height: '100px',
+            width: '50px',
+            height: '50px',
             background: `radial-gradient(circle, ${currentCharacter.color}20 0%, transparent 70%)`,
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '12px',
             animation: 'float 3s ease-in-out infinite'
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={80}
+              size={40}
             />
           </div>
-          <h2 style={{ 
-            ...getTypographyStyles('h3'), 
-            fontWeight: '700', 
-            color: currentCharacter.color,
-            marginBottom: '4px'
-          }}>
-            {currentCharacter.name}
-          </h2>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
-            <div style={{
-              width: '8px',
-              height: '8px',
-              backgroundColor: '#a3e635',
-              borderRadius: '50%',
-              animation: 'pulse 2s ease-in-out infinite'
-            }}></div>
-            <span style={{ 
-              ...getTypographyStyles('small'), 
-              color: '#9ca3af' 
+          <div>
+            <h2 style={{ 
+              ...getTypographyStyles('h4'), 
+              fontWeight: '700', 
+              color: currentCharacter.color,
+              marginBottom: '2px'
             }}>
-              話し相手になります
-            </span>
+              {currentCharacter.name}
+            </h2>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <div style={{
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#a3e635',
+                borderRadius: '50%',
+                animation: 'pulse 2s ease-in-out infinite'
+              }}></div>
+              <span style={{ 
+                ...getTypographyStyles('small'), 
+                color: '#9ca3af' 
+              }}>
+                話し相手になります
+              </span>
+            </div>
           </div>
         </div>
       </div>
