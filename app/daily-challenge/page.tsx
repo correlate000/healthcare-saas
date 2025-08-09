@@ -9,6 +9,7 @@ import {
   LeafIcon, FireIcon, CheckIcon, StarIcon, ClockIcon, ChartIcon, ProgressIcon
 } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function DailyChallengePage() {
   const router = useRouter()
@@ -281,7 +282,7 @@ export default function DailyChallengePage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -553,7 +554,7 @@ export default function DailyChallengePage() {
           gap: '8px',
           marginBottom: '24px',
           overflowX: 'auto',
-          paddingBottom: '4px'
+          paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`
         }}>
           {categories.map(category => (
             <button

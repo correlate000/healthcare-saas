@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function CounselorPage() {
   const router = useRouter()
@@ -251,7 +252,7 @@ export default function CounselorPage() {
       minHeight: '100vh',
       backgroundColor: '#111827',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}

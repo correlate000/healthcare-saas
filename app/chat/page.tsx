@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
@@ -300,7 +301,7 @@ export default function ChatPage() {
         style={{ 
           flex: 1, 
           padding: '20px', 
-          paddingBottom: '20px',
+          paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
@@ -506,7 +507,7 @@ export default function ChatPage() {
       {/* Message input */}
       <div style={{ 
         padding: '16px', 
-        paddingBottom: '90px',
+        paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
         flexShrink: 0,
         backgroundColor: 'rgba(17, 24, 39, 0.95)',
         backdropFilter: 'blur(10px)',

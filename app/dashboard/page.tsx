@@ -8,6 +8,7 @@ import { Check } from 'lucide-react'
 import { HappyFaceIcon, FireIcon, StarIcon, EnergyIcon, MoonIcon, BubbleIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 import { UserDataStorage } from '@/utils/storage'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -212,7 +213,7 @@ export default function Dashboard() {
       minHeight: '100vh', 
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '120px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* ヘッダー */}

@@ -457,7 +457,7 @@ function EnterpriseAnalyticsContent() {
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-4">
           <Button
-            onClick={() => router.push('/enterprise-admin/reports')}
+            onClick={() => alert('レポート機能は準備中です')}
             className="h-16 flex flex-col items-center justify-center space-y-1"
           >
             <BarChart3 className="h-5 w-5" />
@@ -465,7 +465,7 @@ function EnterpriseAnalyticsContent() {
           </Button>
           <Button
             variant="outline"
-            onClick={() => router.push('/enterprise-admin/compliance')}
+            onClick={() => alert('コンプライアンス機能は準備中です')}
             className="h-16 flex flex-col items-center justify-center space-y-1"
           >
             <Shield className="h-5 w-5" />

@@ -189,7 +189,7 @@ export default function ResponsiveReports() {
           value="85/100"
           change="+5 前週比"
           trend="up"
-          onClick={() => router.push('/reports/health-score')}
+          onClick={() => alert('健康スコア詳細は準備中です')}
         />
         <ReportCard
           title="平均活動量"
@@ -197,7 +197,7 @@ export default function ResponsiveReports() {
           value="7,532歩"
           change="-8% 前週比"
           trend="down"
-          onClick={() => router.push('/reports/activity')}
+          onClick={() => alert('活動量詳細は準備中です')}
         />
         <ReportCard
           title="症状記録"
@@ -205,7 +205,7 @@ export default function ResponsiveReports() {
           value="23件"
           change="今週"
           trend="neutral"
-          onClick={() => router.push('/reports/symptoms')}
+          onClick={() => alert('症状記録詳細は準備中です')}
         />
         <ReportCard
           title="服薬遵守率"
@@ -213,7 +213,7 @@ export default function ResponsiveReports() {
           value="92%"
           change="+2% 前週比"
           trend="up"
-          onClick={() => router.push('/reports/medications')}
+          onClick={() => alert('服薬詳細は準備中です')}
         />
       </ResponsiveGrid>
 
@@ -334,7 +334,7 @@ export default function ResponsiveReports() {
           <h3 className="text-lg font-semibold text-gray-900">
             最近のレポート
           </h3>
-          <Button variant="ghost" size="sm" onClick={() => router.push('/reports/all')}>
+          <Button variant="ghost" size="sm" onClick={() => alert('すべてのレポート表示は準備中です')}>
             すべて見る
           </Button>
         </div>
@@ -374,7 +374,7 @@ export default function ResponsiveReports() {
           <Button
             size="lg"
             className="rounded-full shadow-lg"
-            onClick={() => router.push('/reports/generate')}
+            onClick={() => alert('レポート生成機能は準備中です')}
           >
             <FileText className="h-5 w-5 mr-2" />
             レポート作成

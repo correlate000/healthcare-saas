@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { DoctorFemaleIcon, DoctorMaleIcon, PsychiatristIcon, ClockIcon, StarIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(1)
@@ -87,7 +88,7 @@ export default function BookingPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '120px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -496,7 +497,7 @@ export default function BookingPage() {
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  paddingBottom: '12px',
+                  paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
                   borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
                   <span style={{ color: '#9ca3af', fontSize: '14px' }}>日時</span>
@@ -507,7 +508,7 @@ export default function BookingPage() {
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  paddingBottom: '12px',
+                  paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
                   borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
                   <span style={{ color: '#9ca3af', fontSize: '14px' }}>方法</span>

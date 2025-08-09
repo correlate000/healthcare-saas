@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { ChartIcon, UsersIcon, MailIcon, LockIcon, SaveIcon, TrashIcon, FileIcon } from '@/components/icons'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function PrivacySettingsPage() {
   const router = useRouter()
@@ -206,7 +207,7 @@ export default function PrivacySettingsPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}

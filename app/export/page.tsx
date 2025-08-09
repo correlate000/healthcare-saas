@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { DatabaseIcon, MoodHappyIcon, ChartIcon, ChatIcon, TrophySimpleIcon, UserIcon, LockIcon, CodeIcon, DocumentIcon, TargetIcon } from '@/components/icons/illustrations'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function ExportPage() {
   const router = useRouter()
@@ -57,7 +58,7 @@ export default function ExportPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}

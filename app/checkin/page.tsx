@@ -6,6 +6,7 @@ import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { HappyFaceIcon, SadFaceIcon, CalmIcon, StressedIcon, EnergeticIcon, ThinkingIcon, MeditationIcon, SleepingIcon } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 import { UserDataStorage } from '@/utils/storage'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function CheckIn() {
   const router = useRouter()
@@ -200,7 +201,7 @@ export default function CheckIn() {
         minHeight: '100vh',
         backgroundColor: '#111827', 
         color: 'white',
-        paddingBottom: '140px',
+        paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
         <div style={{ 
@@ -524,7 +525,7 @@ export default function CheckIn() {
       minHeight: '100vh',
       backgroundColor: '#111827', 
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       <div style={{ 

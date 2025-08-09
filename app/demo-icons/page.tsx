@@ -83,7 +83,7 @@ export default function DemoIconsPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -318,6 +318,7 @@ export default function DemoIconsPage() {
           }}>
 {`import { HappyFaceIcon } from '@/components/icons/illustrations'
 import { ChartIcon } from '@/components/icons'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 // イラストアイコン
 <HappyFaceIcon size={64} primaryColor="#a3e635" />

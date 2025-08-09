@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function HelpPage() {
   const router = useRouter()
@@ -86,7 +87,7 @@ export default function HelpPage() {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '140px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
@@ -205,7 +206,7 @@ export default function HelpPage() {
           gap: '8px',
           marginBottom: '24px',
           overflowX: 'auto',
-          paddingBottom: '4px'
+          paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`
         }}>
           <button
             onClick={() => setSelectedCategory(null)}

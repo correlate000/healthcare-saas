@@ -10,6 +10,7 @@ import {
   MoodHappyIcon, LightningIcon, StressIcon, SleepIcon, MobileIcon, ClockIcon
 } from '@/components/icons/illustrations'
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -143,7 +144,7 @@ export default function AnalyticsPage() {
       minHeight: '100vh', 
       background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
       color: 'white',
-      paddingBottom: '120px',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Header */}
