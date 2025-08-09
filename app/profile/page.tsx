@@ -44,25 +44,6 @@ export default function ProfilePage() {
     '自然', 'アート', '料理', 'ゲーム', '映画'
   ]
 
-  const stats = {
-    level: 8,
-    currentXP: 850,
-    maxXP: 1000,
-    totalSessions: 45,
-    currentStreak: 15,
-    longestStreak: 23,
-    totalTime: '21時間',
-    badges: 12,
-    friends: 23,
-    joinDate: '2025年6月'
-  }
-
-  const achievements = [
-    { icon: '🔥', label: '連続記録', value: '15日' },
-    { icon: '⭐', label: 'レベル', value: '8' },
-    { icon: '🏆', label: 'バッジ', value: '12個' },
-    { icon: '👥', label: '友達', value: '23人' }
-  ]
 
   const handleSave = () => {
     setProfile(editForm)
@@ -404,43 +385,6 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
-          gap: '12px',
-          marginBottom: '24px'
-        }}>
-          {achievements.map((stat) => (
-            <div
-              key={stat.label}
-              style={{
-                background: 'rgba(31, 41, 55, 0.6)',
-                backdropFilter: 'blur(12px)',
-                borderRadius: '16px',
-                padding: '16px',
-                textAlign: 'center',
-                border: '1px solid rgba(55, 65, 81, 0.3)'
-              }}
-            >
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>{stat.icon}</div>
-              <div style={{
-                ...getTypographyStyles('h2'),
-                fontWeight: '700',
-                color: '#a3e635',
-                marginBottom: '4px'
-              }}>
-                {stat.value}
-              </div>
-              <div style={{
-                ...getTypographyStyles('small'),
-                color: '#9ca3af'
-              }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Goals & Interests */}
         {isEditing ? (

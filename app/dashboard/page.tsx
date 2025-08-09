@@ -88,56 +88,7 @@ export default function Dashboard() {
     return () => clearTimeout(timer)
   }, [])
   
-  // 今日の優しいメッセージをランダム取得
-  const getTodaysMessage = () => {
-    const messages = [
-      {
-        message: '今日も一歩ずつで大丈夫。小さな進歩も立派な成長です。',
-        subMessage: 'あなたのペースが、一番いいペースです。',
-        color: '#60a5fa',
-        icon: FireIcon
-      },
-      {
-        message: 'うまくいかない日もありますね。でも、それも大切な経験の一つ。',
-        subMessage: '休むことも、前に進むための大切な準備です。',
-        color: '#a3e635',
-        icon: StarIcon
-      },
-      {
-        message: '昨日より今日、少しでも笑顔になれたらそれで十分です。',
-        subMessage: '小さな幸せを見つける力が、あなたにはあります。',
-        color: '#fbbf24',
-        icon: EnergyIcon
-      },
-      {
-        message: '深呼吸してみましょう。今この瞬間を大切に過ごせばいいんです。',
-        subMessage: '焦らなくて大丈夫。あなたのタイミングがきっと来ます。',
-        color: '#8b5cf6',
-        icon: MoonIcon
-      },
-      {
-        message: '今日の自分を褒めてあげてください。頑張っているあなたは素敵です。',
-        subMessage: '完璧じゃなくていい。今のあなたで十分素晴らしいです。',
-        color: '#10b981',
-        icon: BubbleIcon
-      },
-      {
-        message: '疲れたら休んでいいんです。自分に優しくすることも勇気です。',
-        subMessage: '無理をしない選択も、賢い選択です。',
-        color: '#ec4899',
-        icon: FireIcon
-      },
-      {
-        message: '今日という日は二度と来ません。だから、今を楽しんでくださいね。',
-        subMessage: '小さな喜びを積み重ねて、素敵な一日にしましょう。',
-        color: '#f97316',
-        icon: StarIcon
-      }
-    ]
-    return messages[Math.floor(Math.random() * messages.length)]
-  }
   
-  const todaysOracle = getTodaysMessage()
 
   const todaysChallenges = [
     { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', difficulty: '簡単' },
@@ -333,13 +284,14 @@ export default function Dashboard() {
             }}>
               💬
             </div>
-            <span style={{ letterSpacing: '0.5px' }}>キャラクターと話す</span>
+            <span style={{ letterSpacing: '0.3px', fontSize: '14px', fontWeight: '600' }}>キャラクターと話す</span>
             <span style={{ 
               ...getTypographyStyles('caption'), 
               opacity: 0.9,
-              fontWeight: '500'
+              fontWeight: '500',
+              fontSize: '11px'
             }}>
-              悩みを相談しよう
+              悩みを相談
             </span>
           </button>
         </div>
@@ -407,10 +359,16 @@ export default function Dashboard() {
               borderBottom: '8px solid transparent',
               borderRight: '8px solid #374151'
             }}></div>
-            <p style={{ ...typographyPresets.bodyText(), color: '#e5e7eb', margin: 0 }}>
-              今日もよく頑張っていますね！{todayProgress}%の達成率、素晴らしいです。
-              {todayProgress < 100 ? 'もう少しで今日の目標達成です。' : '今日の目標を達成しました！'}
-              無理せず、自分のペースで進みましょう。
+            <p style={{ 
+              fontSize: '14px', 
+              lineHeight: '1.5', 
+              color: '#e5e7eb', 
+              margin: 0,
+              fontWeight: '500'
+            }}>
+              今日もよく頑張っていますね！{todayProgress}%達成、素晴らしいです。
+              {todayProgress < 100 ? 'もう少しで目標達成です。' : '今日の目標達成しました！'}
+              無理せず自分のペースで進みましょう。
             </p>
           </div>
         </div>
@@ -438,85 +396,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 今日の運勢・オラクル */}
-      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-        <div style={{ 
-          background: `linear-gradient(135deg, #1f2937 0%, rgba(${todaysOracle.color === '#ef4444' ? '239, 68, 68' : todaysOracle.color === '#a855f7' ? '168, 85, 247' : todaysOracle.color === '#dc2626' ? '220, 38, 38' : todaysOracle.color === '#0ea5e9' ? '14, 165, 233' : '5, 150, 105'}, 0.1) 100%)`,
-          borderRadius: '16px',
-          padding: '24px',
-          position: 'relative',
-          border: `1px solid ${todaysOracle.color}30`,
-          boxShadow: `0 8px 32px ${todaysOracle.color}20`
-        }}>
-          <div style={{
-            position: 'absolute',
-            top: '-8px',
-            left: '24px',
-            backgroundColor: todaysOracle.color,
-            color: 'white',
-            padding: '4px 12px',
-            borderRadius: '12px',
-            fontSize: '12px',
-            fontWeight: '700',
-            letterSpacing: '0.5px'
-          }}>
-            TODAY'S MESSAGE
-          </div>
-          
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginTop: '8px' }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <todaysOracle.icon size={48} />
-            </div>
-            
-            <div style={{ flex: 1 }}>
-              <p style={{ 
-                ...getTypographyStyles('large'), 
-                color: '#f3f4f6', 
-                marginBottom: '12px', 
-                margin: '0 0 12px 0', 
-                lineHeight: '1.6',
-                fontWeight: '500'
-              }}>
-                {todaysOracle.message}
-              </p>
-              
-              <p style={{ 
-                ...getTypographyStyles('base'), 
-                color: todaysOracle.color, 
-                margin: '0 0 16px 0',
-                fontStyle: 'italic',
-                fontWeight: '600'
-              }}>
-                {todaysOracle.subMessage}
-              </p>
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '12px',
-                padding: '8px 0'
-              }}>
-                <div style={{
-                  width: '4px',
-                  height: '20px',
-                  backgroundColor: todaysOracle.color,
-                  borderRadius: '2px'
-                }}></div>
-                <span style={{ 
-                  ...getTypographyStyles('small'), 
-                  color: '#9ca3af',
-                  letterSpacing: '0.5px'
-                }}>
-                  今日のあなたへ
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* 今週の記録 */}
