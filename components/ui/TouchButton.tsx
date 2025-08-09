@@ -79,7 +79,6 @@ export function TouchButton({
     justifyContent: 'center',
     gap: '8px',
     borderRadius: '12px',
-    fontWeight: '600',
     cursor: disabled ? 'not-allowed' : 'pointer',
     transition: 'all 0.2s ease',
     WebkitTapHighlightColor: 'transparent',
@@ -88,6 +87,7 @@ export function TouchButton({
     opacity: disabled ? 0.5 : 1,
     ...getSizeStyles(),
     ...getVariantStyles(),
+    fontWeight: '600', // Override any fontWeight from getSizeStyles
     ...style
   }
 

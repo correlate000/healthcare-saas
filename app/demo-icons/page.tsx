@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 import { 
   HappyFaceIcon, 
   SadFaceIcon, 
