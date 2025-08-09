@@ -396,8 +396,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      </div>
-
       {/* 今週の記録 */}
       <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
