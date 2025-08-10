@@ -147,10 +147,17 @@ export default function VoiceChatPage() {
 
   // ユーザーメッセージの処理
   const handleUserMessage = (text: string) => {
+    console.log('=== handleUserMessage called with:', text)
+    
     // セッションタイムアウトをリセット
     if (sessionTimeoutRef.current) {
       clearTimeout(sessionTimeoutRef.current)
     }
+    
+    // AI応答を生成（即座に）
+    setTimeout(() => {
+      generateAIResponse(text)
+    }, 300)
     
     // 10秒間無音だったら相槌を打つ
     sessionTimeoutRef.current = setTimeout(() => {
@@ -159,13 +166,11 @@ export default function VoiceChatPage() {
         playListeningResponse()
       }
     }, 10000)
-    
-    // AI応答を生成
-    generateAIResponse(text)
   }
 
   // AI応答の生成
   const generateAIResponse = (userInput: string) => {
+    console.log('=== generateAIResponse called with:', userInput)
     const input = userInput.toLowerCase()
     let responseType: keyof typeof currentCharacter.responses = 'listening'
     
@@ -177,8 +182,10 @@ export default function VoiceChatPage() {
       responseType = 'encouragement'
     }
     
+    console.log('Response type:', responseType)
     const responses = currentCharacter.responses[responseType]
     const response = responses[Math.floor(Math.random() * responses.length)]
+    console.log('Selected response:', response)
     
     speakText(response, true)
   }
@@ -619,6 +626,50 @@ export default function VoiceChatPage() {
             マイクボタンをタップして対話を開始
           </p>
         )}
+
+        {/* Debug Test Button */}
+        <button
+          onClick={() => {
+            console.log('Test button clicked')
+            const testText = 'テスト音声です。聞こえていますか？'
+            console.log('Testing speech synthesis with:', testText)
+            
+            // 直接音声合成をテスト
+            if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel()
+              const utterance = new SpeechSynthesisUtterance(testText)
+              utterance.lang = 'ja-JP'
+              utterance.pitch = 1.2
+              utterance.rate = 1.0
+              utterance.volume = 1.0
+              
+              utterance.onstart = () => {
+                console.log('Test speech started')
+              }
+              utterance.onend = () => {
+                console.log('Test speech ended')
+              }
+              utterance.onerror = (e) => {
+                console.error('Test speech error:', e)
+              }
+              
+              window.speechSynthesis.speak(utterance)
+            } else {
+              console.error('Speech synthesis not available')
+            }
+          }}
+          style={{
+            marginTop: '20px',
+            padding: '10px 20px',
+            background: 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '8px',
+            color: 'white',
+            cursor: 'pointer'
+          }}
+        >
+          音声テスト
+        </button>
       </div>
 
       <MobileBottomNav />
