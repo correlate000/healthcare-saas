@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { BellIcon, WarningIcon, LockIcon, FileIcon, CalendarIcon, TrophyIcon, MessageIcon, ChartIcon } from '@/components/icons'
@@ -12,6 +12,7 @@ export default function SettingsPage() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [notifications, setNotifications] = useState({
     checkinReminder: true,
     weeklyReport: true,
@@ -121,6 +122,16 @@ export default function SettingsPage() {
     setEditForm({ ...profile })
     setIsEditingProfile(false)
   }
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 480)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   const toggleGoal = (goal: string) => {
     if (editForm.goals.includes(goal)) {
@@ -877,28 +888,32 @@ export default function SettingsPage() {
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100%',
+          right: 0,
+          bottom: 0,
           backgroundColor: 'rgba(0, 0, 0, 0.8)',
           backdropFilter: 'blur(8px)',
           zIndex: 9999,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
-          padding: '20px',
+          padding: '0',
+          overflowY: 'auto',
+          overflowX: 'hidden',
           animation: 'modalFadeIn 0.3s ease'
         }}>
           <div style={{
             backgroundColor: '#111827',
-            borderRadius: '24px',
-            padding: '32px',
-            maxWidth: '600px',
-            width: '100%',
-            maxHeight: '90vh',
+            borderRadius: '16px',
+            padding: isMobile ? '20px' : '32px',
+            maxWidth: isMobile ? '100%' : '600px',
+            width: isMobile ? 'calc(100% - 20px)' : '100%',
+            maxHeight: isMobile ? 'calc(100vh - 40px)' : 'calc(90vh - 40px)',
             overflowY: 'auto',
             border: '1px solid rgba(163, 230, 53, 0.3)',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(163, 230, 53, 0.1)',
-            animation: 'modalSlideUp 0.3s ease'
+            animation: 'modalSlideUp 0.3s ease',
+            margin: isMobile ? '20px 10px' : '20px auto',
+            boxSizing: 'border-box'
           }}>
             {/* Modal Header */}
             <div style={{
@@ -964,16 +979,16 @@ export default function SettingsPage() {
                 </label>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(5, 1fr)',
-                  gap: '12px'
+                  gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)',
+                  gap: isMobile ? '8px' : '12px'
                 }}>
                   {avatarOptions.map((avatar) => (
                     <button
                       key={avatar}
                       onClick={() => setEditForm({ ...editForm, avatar })}
                       style={{
-                        width: '60px',
-                        height: '60px',
+                        width: isMobile ? '50px' : '60px',
+                        height: isMobile ? '50px' : '60px',
                         backgroundColor: editForm.avatar === avatar
                           ? 'rgba(163, 230, 53, 0.3)'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -981,7 +996,7 @@ export default function SettingsPage() {
                           ? '3px solid #a3e635'
                           : '2px solid transparent',
                         borderRadius: '16px',
-                        fontSize: '28px',
+                        fontSize: isMobile ? '24px' : '28px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -1009,11 +1024,11 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* Name and Bio in two columns */}
+              {/* Name and Bio - responsive layout */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 2fr',
-                gap: '24px'
+                gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr',
+                gap: isMobile ? '16px' : '24px'
               }}>
                 {/* Name */}
                 <div>
@@ -1116,7 +1131,7 @@ export default function SettingsPage() {
                       onClick={() => toggleGoal(goal)}
                       disabled={!editForm.goals.includes(goal) && editForm.goals.length >= 3}
                       style={{
-                        padding: '10px 18px',
+                        padding: isMobile ? '8px 12px' : '10px 18px',
                         backgroundColor: editForm.goals.includes(goal)
                           ? '#a3e635'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -1175,7 +1190,7 @@ export default function SettingsPage() {
                       onClick={() => toggleInterest(interest)}
                       disabled={!editForm.interests.includes(interest) && editForm.interests.length >= 5}
                       style={{
-                        padding: '10px 18px',
+                        padding: isMobile ? '8px 12px' : '10px 18px',
                         backgroundColor: editForm.interests.includes(interest)
                           ? '#60a5fa'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -1215,9 +1230,10 @@ export default function SettingsPage() {
               {/* Action Buttons */}
               <div style={{
                 display: 'flex',
-                gap: '16px',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '12px' : '16px',
                 marginTop: '16px',
-                paddingTop: '24px',
+                paddingTop: isMobile ? '20px' : '24px',
                 borderTop: '1px solid rgba(55, 65, 81, 0.3)'
               }}>
                 <button
