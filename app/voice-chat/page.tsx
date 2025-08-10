@@ -215,32 +215,58 @@ export default function VoiceChatPage() {
   // テキストを音声で読み上げ
   const speakText = (text: string) => {
     if ('speechSynthesis' in window) {
+      // 既存の音声をキャンセル
       window.speechSynthesis.cancel()
       
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'ja-JP'
-      utterance.pitch = currentCharacter.pitch
-      utterance.rate = currentCharacter.rate
-      
-      utterance.onstart = () => {
-        setIsSpeaking(true)
-        console.log('Speaking:', text)
-      }
-      
-      utterance.onend = () => {
-        setIsSpeaking(false)
-        setCurrentResponse('')
-        console.log('Finished speaking')
-      }
-      
-      utterance.onerror = (event) => {
-        console.error('Speech synthesis error:', event)
-        setIsSpeaking(false)
-        setCurrentResponse('')
-      }
-      
-      synthRef.current = utterance
-      window.speechSynthesis.speak(utterance)
+      // 少し待ってから音声を開始（キャンセル処理を確実に）
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text)
+        utterance.lang = 'ja-JP'
+        utterance.pitch = currentCharacter.pitch
+        utterance.rate = currentCharacter.rate
+        utterance.volume = 1.0
+        
+        utterance.onstart = () => {
+          setIsSpeaking(true)
+          console.log('Speaking started:', text)
+        }
+        
+        utterance.onend = () => {
+          setIsSpeaking(false)
+          setCurrentResponse('')
+          console.log('Speaking finished')
+          
+          // 自動的に次のリスニングを開始（連続対話モード）
+          setTimeout(() => {
+            if (!isListening && recognitionRef.current) {
+              console.log('Auto-starting next listening session')
+              startListening()
+            }
+          }, 500)
+        }
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event)
+          setIsSpeaking(false)
+          setCurrentResponse('')
+          alert('音声合成エラー: ' + event.error)
+        }
+        
+        synthRef.current = utterance
+        
+        // 音声を再生
+        try {
+          window.speechSynthesis.speak(utterance)
+          console.log('Speech synthesis started successfully')
+        } catch (error) {
+          console.error('Failed to start speech synthesis:', error)
+          setIsSpeaking(false)
+          setCurrentResponse('')
+        }
+      }, 100)
+    } else {
+      console.error('Speech synthesis not supported')
+      alert('お使いのブラウザは音声合成に対応していません')
     }
   }
 
@@ -694,6 +720,48 @@ export default function VoiceChatPage() {
             「こんにちは」「疲れた」などと話しかけてみましょう！
           </p>
         )}
+
+        {/* Debug Test Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          marginTop: '20px'
+        }}>
+          <button
+            onClick={() => {
+              console.log('Test: Triggering greeting response')
+              generateAIResponse('こんにちは')
+            }}
+            style={{
+              padding: '8px 16px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '8px',
+              color: '#94a3b8',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            テスト: 挨拶
+          </button>
+          <button
+            onClick={() => {
+              console.log('Test: Direct speech synthesis')
+              speakText('テスト音声です。聞こえていますか？')
+            }}
+            style={{
+              padding: '8px 16px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '8px',
+              color: '#94a3b8',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }}
+          >
+            テスト: 音声
+          </button>
+        </div>
       </div>
 
       <style jsx>{`
