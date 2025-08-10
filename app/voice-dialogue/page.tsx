@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { VoiceCharacter } from '@/components/VoiceCharacter'
 
 // Speech Recognition の型定義
 interface SpeechRecognitionEvent extends Event {
@@ -370,31 +371,17 @@ export default function VoiceDialoguePage() {
         justifyContent: 'center',
         padding: screenSize === 'xs' ? '20px' : screenSize === 'sm' ? '24px' : '32px',
       }}>
-        {/* AI Avatar */}
+        {/* AI Character */}
         <div style={{
           position: 'relative',
           marginBottom: '32px'
         }}>
-          <div style={{
-            width: screenSize === 'xs' ? '160px' : screenSize === 'sm' ? '180px' : '200px',
-            height: screenSize === 'xs' ? '160px' : screenSize === 'sm' ? '180px' : '200px',
-            borderRadius: '50%',
-            background: isActive 
-              ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-              : 'linear-gradient(135deg, #374151 0%, #4b5563 100%)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: screenSize === 'xs' ? '64px' : screenSize === 'sm' ? '72px' : '80px',
-            boxShadow: isActive 
-              ? '0 0 60px rgba(240, 147, 251, 0.5)'
-              : '0 10px 40px rgba(0, 0, 0, 0.3)',
-            transition: 'all 0.5s ease',
-            animation: isSpeaking || isListening ? 'glow 1.5s infinite' : 'none',
-            border: '4px solid rgba(255, 255, 255, 0.2)'
-          }}>
-            {isActive ? (isSpeaking ? '🗣️' : isListening ? '👂' : '🤖') : '😴'}
-          </div>
+          <VoiceCharacter
+            isActive={isActive}
+            isSpeaking={isSpeaking}
+            isListening={isListening}
+            size={screenSize === 'xs' ? 160 : screenSize === 'sm' ? 180 : 200}
+          />
           
           {/* Sound Wave Visualizer */}
           {(isListening || isSpeaking) && (
@@ -546,14 +533,46 @@ export default function VoiceDialoguePage() {
           padding: screenSize === 'xs' ? '16px' : '20px',
           animation: 'slideUp 0.3s ease'
         }}>
-          <h3 style={{
-            fontSize: screenSize === 'xs' ? '16px' : '18px',
-            color: 'white',
-            marginBottom: '16px',
-            fontWeight: '600'
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px'
           }}>
-            会話記録
-          </h3>
+            <h3 style={{
+              fontSize: screenSize === 'xs' ? '16px' : '18px',
+              color: 'white',
+              fontWeight: '600',
+              margin: 0
+            }}>
+              会話記録
+            </h3>
+            <button
+              onClick={() => setShowTranscript(false)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                background: 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                fontSize: '18px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'
+              }}
+            >
+              ×
+            </button>
+          </div>
           <div style={{
             display: 'flex',
             flexDirection: 'column',
