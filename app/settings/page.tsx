@@ -193,14 +193,14 @@ export default function SettingsPage() {
         </h1>
       </div>
 
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '16px' : '20px' }}>
         {/* Profile Card */}
         <div style={{ 
           background: 'linear-gradient(135deg, rgba(163, 230, 53, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
           backdropFilter: 'blur(12px)',
           borderRadius: '20px', 
-          padding: '24px',
-          marginBottom: '28px',
+          padding: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : '24px',
+          marginBottom: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : '28px',
           border: '1px solid rgba(163, 230, 53, 0.2)',
           position: 'relative',
           overflow: 'hidden'
@@ -217,10 +217,10 @@ export default function SettingsPage() {
           }}></div>
           
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '16px' : '20px', marginBottom: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : '24px' }}>
               <div style={{
-                width: '80px',
-                height: '80px',
+                width: screenSize === 'xs' ? '60px' : screenSize === 'sm' ? '70px' : '80px',
+                height: screenSize === 'xs' ? '60px' : screenSize === 'sm' ? '70px' : '80px',
                 background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
                 borderRadius: '50%',
                 display: 'flex',
@@ -266,13 +266,13 @@ export default function SettingsPage() {
                   setIsEditingProfile(true)
                 }}
                 style={{
-                  width: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
-                  height: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
+                  width: screenSize === 'xs' ? '32px' : screenSize === 'sm' ? '36px' : '40px',
+                  height: screenSize === 'xs' ? '32px' : screenSize === 'sm' ? '36px' : '40px',
                   backgroundColor: 'rgba(163, 230, 53, 0.2)',
                   border: '1px solid rgba(163, 230, 53, 0.3)',
                   borderRadius: '12px',
                   color: '#a3e635',
-                  fontSize: '18px',
+                  fontSize: screenSize === 'xs' ? '14px' : screenSize === 'sm' ? '16px' : '18px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -297,8 +297,8 @@ export default function SettingsPage() {
             <div style={{ 
               display: 'grid', 
               gridTemplateColumns: 'repeat(3, 1fr)', 
-              gap: '16px', 
-              marginBottom: '20px' 
+              gap: screenSize === 'xs' ? '8px' : screenSize === 'sm' ? '12px' : '16px', 
+              marginBottom: screenSize === 'xs' ? '16px' : '20px' 
             }}>
               {[
                 { label: 'セッション', value: userStats.sessions, icon: <MobileIcon size={20} primaryColor="#60a5fa" /> },
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                   backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
-                  <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
+                  <div style={{ marginBottom: screenSize === 'xs' ? '4px' : '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
                   <div style={{ 
                     fontSize: screenSize === 'xs' ? '18px' : screenSize === 'sm' ? '20px' : '24px', 
                     fontWeight: '700', 
@@ -326,7 +326,7 @@ export default function SettingsPage() {
                   }}>
                     {stat.value}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#9ca3af' }}>{stat.label}</div>
+                  <div style={{ fontSize: screenSize === 'xs' ? '10px' : screenSize === 'sm' ? '11px' : '12px', color: '#9ca3af' }}>{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -944,8 +944,8 @@ export default function SettingsPage() {
               <button
                 onClick={handleCancelEdit}
                 style={{
-                  width: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
-                  height: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
+                  width: screenSize === 'xs' ? '32px' : screenSize === 'sm' ? '36px' : '40px',
+                  height: screenSize === 'xs' ? '32px' : screenSize === 'sm' ? '36px' : '40px',
                   borderRadius: '50%',
                   border: 'none',
                   backgroundColor: 'rgba(55, 65, 81, 0.6)',
