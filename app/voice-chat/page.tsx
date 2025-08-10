@@ -501,10 +501,7 @@ export default function VoiceChatPage() {
             ...getTypographyStyles('h3'),
             margin: 0,
             fontWeight: '700',
-            background: `linear-gradient(135deg, ${currentCharacter.color}, ${currentCharacter.color}dd)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text'
+            color: currentCharacter.color
           }}>
             {currentCharacter.name}と対話
           </h1>
@@ -567,47 +564,15 @@ export default function VoiceChatPage() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '20px',
-        gap: '30px'
+        padding: '20px 20px 100px 20px',
+        gap: '20px'
       }}>
         {/* Character Avatar */}
         <div style={{
-          position: 'relative',
-          padding: '20px'
+          position: 'relative'
         }}>
           <CharacterAvatar />
           
-          {/* Speech Bubble for AI Response */}
-          {currentResponse && (
-            <div style={{
-              position: 'absolute',
-              bottom: '-50px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              background: 'rgba(255, 255, 255, 0.95)',
-              color: '#1e293b',
-              padding: '12px 20px',
-              borderRadius: '20px',
-              maxWidth: '250px',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
-              ...getTypographyStyles('base'),
-              fontWeight: '500',
-              animation: 'fadeIn 0.3s ease'
-            }}>
-              {currentResponse}
-              <div style={{
-                position: 'absolute',
-                top: '-8px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                width: '0',
-                height: '0',
-                borderLeft: '10px solid transparent',
-                borderRight: '10px solid transparent',
-                borderBottom: '10px solid rgba(255, 255, 255, 0.95)'
-              }} />
-            </div>
-          )}
         </div>
 
         {/* Audio Waveform */}
@@ -641,21 +606,6 @@ export default function VoiceChatPage() {
           })}
         </div>
 
-        {/* Transcript */}
-        {transcript && (
-          <div style={{
-            maxWidth: '90%',
-            padding: '12px 20px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '20px',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            ...getTypographyStyles('base'),
-            textAlign: 'center'
-          }}>
-            {transcript}
-          </div>
-        )}
 
         {/* Microphone Button */}
         <button
@@ -708,60 +658,6 @@ export default function VoiceChatPage() {
           )}
         </button>
 
-        {/* Instructions */}
-        {!isListening && !isSpeaking && !transcript && (
-          <p style={{
-            ...getTypographyStyles('small'),
-            color: '#64748b',
-            textAlign: 'center',
-            maxWidth: '300px'
-          }}>
-            マイクボタンをタップして話しかけてください。
-            「こんにちは」「疲れた」などと話しかけてみましょう！
-          </p>
-        )}
-
-        {/* Debug Test Buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '10px',
-          marginTop: '20px'
-        }}>
-          <button
-            onClick={() => {
-              console.log('Test: Triggering greeting response')
-              generateAIResponse('こんにちは')
-            }}
-            style={{
-              padding: '8px 16px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: '#94a3b8',
-              fontSize: '12px',
-              cursor: 'pointer'
-            }}
-          >
-            テスト: 挨拶
-          </button>
-          <button
-            onClick={() => {
-              console.log('Test: Direct speech synthesis')
-              speakText('テスト音声です。聞こえていますか？')
-            }}
-            style={{
-              padding: '8px 16px',
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              borderRadius: '8px',
-              color: '#94a3b8',
-              fontSize: '12px',
-              cursor: 'pointer'
-            }}
-          >
-            テスト: 音声
-          </button>
-        </div>
       </div>
 
       <style jsx>{`
