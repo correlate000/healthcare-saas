@@ -626,50 +626,6 @@ export default function VoiceChatPage() {
             マイクボタンをタップして対話を開始
           </p>
         )}
-
-        {/* Debug Test Button */}
-        <button
-          onClick={() => {
-            console.log('Test button clicked')
-            const testText = 'テスト音声です。聞こえていますか？'
-            console.log('Testing speech synthesis with:', testText)
-            
-            // 直接音声合成をテスト
-            if ('speechSynthesis' in window) {
-              window.speechSynthesis.cancel()
-              const utterance = new SpeechSynthesisUtterance(testText)
-              utterance.lang = 'ja-JP'
-              utterance.pitch = 1.2
-              utterance.rate = 1.0
-              utterance.volume = 1.0
-              
-              utterance.onstart = () => {
-                console.log('Test speech started')
-              }
-              utterance.onend = () => {
-                console.log('Test speech ended')
-              }
-              utterance.onerror = (e) => {
-                console.error('Test speech error:', e)
-              }
-              
-              window.speechSynthesis.speak(utterance)
-            } else {
-              console.error('Speech synthesis not available')
-            }
-          }}
-          style={{
-            marginTop: '20px',
-            padding: '10px 20px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '8px',
-            color: 'white',
-            cursor: 'pointer'
-          }}
-        >
-          音声テスト
-        </button>
       </div>
 
       <MobileBottomNav />
