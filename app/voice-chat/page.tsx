@@ -18,6 +18,7 @@ export default function VoiceChatPage() {
   const micStreamRef = useRef<MediaStream | null>(null)
   const animationFrameRef = useRef<number | null>(null)
   const sessionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isSessionActiveRef = useRef(false)
 
   // キャラクター設定（チャットページと統一）
   const characters = {
@@ -89,9 +90,11 @@ export default function VoiceChatPage() {
           }
         }
         
-        if (finalTranscript && isSessionActive) {
-          console.log('User said:', finalTranscript)
-          handleUserMessage(finalTranscript)
+        if (finalTranscript) {
+          console.log('User said:', finalTranscript, 'Session active:', isSessionActiveRef.current)
+          if (isSessionActiveRef.current) {
+            handleUserMessage(finalTranscript)
+          }
         }
       }
       
@@ -99,17 +102,20 @@ export default function VoiceChatPage() {
         console.error('Speech recognition error:', event.error)
         if (event.error === 'no-speech') {
           // 無音の場合は継続
-          if (isSessionActive) {
+          if (isSessionActiveRef.current) {
+            console.log('No speech detected, playing listening response')
             playListeningResponse()
           }
         }
       }
       
       recognition.onend = () => {
+        console.log('Recognition ended, session active:', isSessionActiveRef.current)
         // セッション中は自動的に再開
-        if (isSessionActive) {
+        if (isSessionActiveRef.current) {
           try {
             recognition.start()
+            console.log('Recognition restarted')
           } catch (e) {
             console.log('Recognition restart failed:', e)
           }
@@ -127,11 +133,12 @@ export default function VoiceChatPage() {
         clearTimeout(sessionTimeoutRef.current)
       }
     }
-  }, [isSessionActive])
+  }, [])
 
   // 相槌を打つ
   const playListeningResponse = () => {
-    if (!isSpeaking && isSessionActive) {
+    console.log('playListeningResponse called, isSpeaking:', isSpeaking, 'isSessionActive:', isSessionActiveRef.current)
+    if (!isSpeaking && isSessionActiveRef.current) {
       const responses = currentCharacter.responses.listening
       const response = responses[Math.floor(Math.random() * responses.length)]
       speakText(response, false)
@@ -147,7 +154,8 @@ export default function VoiceChatPage() {
     
     // 10秒間無音だったら相槌を打つ
     sessionTimeoutRef.current = setTimeout(() => {
-      if (isSessionActive && !isSpeaking) {
+      if (isSessionActiveRef.current && !isSpeaking) {
+        console.log('10 seconds of silence, playing listening response')
         playListeningResponse()
       }
     }, 10000)
@@ -177,7 +185,8 @@ export default function VoiceChatPage() {
 
   // テキストを音声で読み上げ
   const speakText = (text: string, isMainResponse: boolean = true) => {
-    if ('speechSynthesis' in window && isSessionActive) {
+    console.log('speakText called:', text, 'isMainResponse:', isMainResponse, 'isSessionActive:', isSessionActiveRef.current)
+    if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       
       setTimeout(() => {
@@ -197,11 +206,12 @@ export default function VoiceChatPage() {
           console.log('Finished speaking')
           
           // メイン応答後は少し待ってから次の相槌の準備
-          if (isMainResponse && isSessionActive) {
+          if (isMainResponse && isSessionActiveRef.current) {
             setTimeout(() => {
-              if (isSessionActive && !isSpeaking) {
+              if (isSessionActiveRef.current && !isSpeaking) {
                 // 5秒後に相槌を打つ
                 sessionTimeoutRef.current = setTimeout(() => {
+                  console.log('5 seconds after main response, playing listening response')
                   playListeningResponse()
                 }, 5000)
               }
@@ -234,7 +244,7 @@ export default function VoiceChatPage() {
       source.connect(analyserRef.current)
       
       const updateAudioLevel = () => {
-        if (analyserRef.current && isSessionActive) {
+        if (analyserRef.current && isSessionActiveRef.current) {
           const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
           analyserRef.current.getByteFrequencyData(dataArray)
           
@@ -276,6 +286,7 @@ export default function VoiceChatPage() {
     if (isSessionActive) {
       // セッション終了
       setIsSessionActive(false)
+      isSessionActiveRef.current = false
       setIsListening(false)
       if (recognitionRef.current) {
         recognitionRef.current.stop()
@@ -291,6 +302,7 @@ export default function VoiceChatPage() {
     } else {
       // セッション開始
       setIsSessionActive(true)
+      isSessionActiveRef.current = true
       setIsListening(true)
       if (recognitionRef.current) {
         try {
@@ -298,12 +310,14 @@ export default function VoiceChatPage() {
           startAudioAnalyser()
           // 初回の挨拶
           setTimeout(() => {
+            console.log('Playing initial greeting')
             generateAIResponse('こんにちは')
           }, 500)
           console.log('Session started')
         } catch (error) {
           console.error('Failed to start recognition:', error)
           setIsSessionActive(false)
+          isSessionActiveRef.current = false
           setIsListening(false)
         }
       }
