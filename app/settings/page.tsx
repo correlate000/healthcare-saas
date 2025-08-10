@@ -908,25 +908,27 @@ export default function SettingsPage() {
           <div style={{
             backgroundColor: '#111827',
             borderRadius: '16px',
-            padding: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : screenSize === 'md' ? '24px' : '32px',
             maxWidth: screenSize !== 'lg' ? '100%' : '600px',
             width: screenSize === 'xs' ? 'calc(100% - 16px)' : screenSize === 'sm' ? 'calc(100% - 20px)' : screenSize === 'md' ? 'calc(100% - 20px)' : '100%',
             maxHeight: screenSize === 'xs' ? 'calc(100vh - 32px)' : screenSize === 'sm' ? 'calc(100vh - 36px)' : screenSize === 'md' ? 'calc(100vh - 40px)' : 'calc(90vh - 40px)',
-            overflowY: 'auto',
             border: '1px solid rgba(163, 230, 53, 0.3)',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(163, 230, 53, 0.1)',
             animation: 'modalSlideUp 0.3s ease',
             margin: screenSize === 'xs' ? '16px 8px' : screenSize === 'sm' ? '18px 10px' : screenSize === 'md' ? '20px 10px' : '20px auto',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            position: 'relative'
           }}>
             {/* Modal Header */}
             <div style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginBottom: '32px',
-              paddingBottom: '16px',
-              borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
+              padding: screenSize === 'xs' ? '16px 16px 12px' : screenSize === 'sm' ? '20px 20px 16px' : screenSize === 'md' ? '24px 24px 16px' : '32px 32px 16px',
+              borderBottom: '1px solid rgba(55, 65, 81, 0.3)',
+              flexShrink: 0
             }}>
               <h2 style={{
                 margin: 0,
@@ -968,8 +970,15 @@ export default function SettingsPage() {
               </button>
             </div>
 
-            {/* Modal Content */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {/* Scrollable Content Area */}
+            <div style={{
+              flex: 1,
+              overflowY: 'auto',
+              padding: screenSize === 'xs' ? '16px 16px 80px' : screenSize === 'sm' ? '20px 20px 90px' : screenSize === 'md' ? '24px 24px 100px' : '32px 32px 110px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '24px'
+            }}>
               {/* Avatar Selection */}
               <div>
                 <label style={{
@@ -1230,16 +1239,24 @@ export default function SettingsPage() {
                   選択済み: {editForm.interests.length} / 5
                 </div>
               </div>
+            </div>
 
-              {/* Action Buttons */}
-              <div style={{
-                display: 'flex',
-                flexDirection: screenSize !== 'lg' ? 'column' : 'row',
-                gap: screenSize === 'xs' ? '10px' : screenSize === 'sm' ? '12px' : '16px',
-                marginTop: '16px',
-                paddingTop: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : '24px',
-                borderTop: '1px solid rgba(55, 65, 81, 0.3)'
-              }}>
+            {/* Fixed Action Buttons */}
+            <div style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: screenSize === 'xs' ? '12px 16px' : screenSize === 'sm' ? '14px 20px' : screenSize === 'md' ? '16px 24px' : '20px 32px',
+              backgroundColor: '#111827',
+              borderTop: '1px solid rgba(55, 65, 81, 0.3)',
+              borderRadius: '0 0 16px 16px',
+              backdropFilter: 'blur(12px)',
+              background: 'linear-gradient(to top, #111827 80%, rgba(17, 24, 39, 0.95))',
+              display: 'flex',
+              flexDirection: 'row',
+              gap: screenSize === 'xs' ? '8px' : screenSize === 'sm' ? '10px' : '12px'
+            }}>
                 <button
                   onClick={handleCancelEdit}
                   style={{
@@ -1291,7 +1308,6 @@ export default function SettingsPage() {
                 >
                   変更を保存
                 </button>
-              </div>
             </div>
           </div>
         </div>
