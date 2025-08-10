@@ -7,61 +7,63 @@ import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function VoiceChatPage() {
   const [isListening, setIsListening] = useState(false)
-  const [transcript, setTranscript] = useState('')
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState('luna')
   const [audioLevel, setAudioLevel] = useState(0)
-  const [currentResponse, setCurrentResponse] = useState('')
+  const [isSessionActive, setIsSessionActive] = useState(false)
   const recognitionRef = useRef<any>(null)
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const micStreamRef = useRef<MediaStream | null>(null)
   const animationFrameRef = useRef<number | null>(null)
-  const isListeningRef = useRef(false)
+  const sessionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // キャラクター設定
+  // キャラクター設定（チャットページと統一）
   const characters = {
     luna: {
-      name: 'ルナ',
-      color: '#10b981',
-      personality: 'gentle',
+      id: 'luna',
+      name: 'るな',
+      color: '#a3e635',
+      bodyColor: '#a3e635',
+      bellyColor: '#ecfccb',
       pitch: 1.2,
-      rate: 0.9,
-      emoji: '🌙',
-      eyeColor: '#064e3b',
+      rate: 0.95,
       responses: {
-        greeting: ['こんにちは！今日はどんな気分ですか？', 'お会いできて嬉しいです！何かお話ししましょう'],
-        encouragement: ['大丈夫ですよ、一緒に頑張りましょう', 'あなたの気持ち、よく分かります'],
-        advice: ['深呼吸してみましょう', 'ゆっくり休むことも大切ですよ']
+        greeting: ['こんにちは！今日の調子はいかがですか？', '元気でしたか？お話を聞かせてください'],
+        encouragement: ['それは素晴らしいですね！', 'いいですね、その調子です'],
+        advice: ['ゆっくり休息を取ることも大切ですよ', '深呼吸をして、リラックスしてみましょう'],
+        listening: ['なるほど', 'そうなんですね', 'うんうん', 'へぇ〜']
       }
     },
     aria: {
-      name: 'アリア',
-      color: '#3b82f6',
-      personality: 'energetic',
+      id: 'aria',
+      name: 'あーりあ',
+      color: '#60a5fa',
+      bodyColor: '#60a5fa',
+      bellyColor: '#dbeafe',
       pitch: 1.3,
-      rate: 1.0,
-      emoji: '⭐',
-      eyeColor: '#1e3a8a',
+      rate: 1.05,
       responses: {
-        greeting: ['やっほー！元気してた？', 'わーい！話そう話そう！'],
-        encouragement: ['頑張ってるね！すごいよ！', '一緒なら何でもできるよ！'],
-        advice: ['楽しいこと考えよう！', '笑顔が一番の薬だよ！']
+        greeting: ['やっほー！元気してた？', 'わーい！今日も楽しく話そう！'],
+        encouragement: ['やったー！その調子！', 'すごいすごい！'],
+        advice: ['大丈夫！きっと明日はもっと良い日になるよ！', '一緒に頑張ろう！'],
+        listening: ['うんうん！', 'へぇ〜すごい！', 'それで？それで？', 'わくわく！']
       }
     },
-    kai: {
-      name: 'カイ',
-      color: '#8b5cf6',
-      personality: 'calm',
-      pitch: 1.0,
+    zen: {
+      id: 'zen',
+      name: 'ぜん',
+      color: '#f59e0b',
+      bodyColor: '#f59e0b',
+      bellyColor: '#fed7aa',
+      pitch: 0.95,
       rate: 0.85,
-      emoji: '🌊',
-      eyeColor: '#4c1d95',
       responses: {
-        greeting: ['こんにちは。今日はゆっくり話しましょう', 'お疲れ様です。何かお悩みはありますか？'],
-        encouragement: ['焦らず、自分のペースで大丈夫ですよ', '今日も一歩前進ですね'],
-        advice: ['心を落ち着けて、今この瞬間を感じてみましょう', '時には立ち止まることも大切です']
+        greeting: ['こんにちは。今日はゆっくり話しましょう', '心を落ち着けて、お話ししませんか'],
+        encouragement: ['素晴らしい気づきですね', '良い流れを感じます'],
+        advice: ['今この瞬間に意識を向けてみましょう', '呼吸に集中してみてください'],
+        listening: ['ふむふむ', 'なるほど...', 'そうですか', '興味深いですね']
       }
     }
   }
@@ -74,59 +76,149 @@ export default function VoiceChatPage() {
       const SpeechRecognition = (window as any).webkitSpeechRecognition
       const recognition = new SpeechRecognition()
       
-      recognition.continuous = false
+      recognition.continuous = true
       recognition.interimResults = true
       recognition.lang = 'ja-JP'
       
       recognition.onresult = (event: any) => {
-        let interimTranscript = ''
         let finalTranscript = ''
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript
           if (event.results[i].isFinal) {
-            finalTranscript += transcript
-          } else {
-            interimTranscript += transcript
+            finalTranscript += event.results[i][0].transcript
           }
         }
         
-        setTranscript(interimTranscript || finalTranscript)
-        
-        if (finalTranscript) {
+        if (finalTranscript && isSessionActive) {
+          console.log('User said:', finalTranscript)
           handleUserMessage(finalTranscript)
-          setTranscript('')
         }
       }
       
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error)
         if (event.error === 'no-speech') {
-          console.log('No speech detected')
+          // 無音の場合は継続
+          if (isSessionActive) {
+            playListeningResponse()
+          }
         }
-        setIsListening(false)
-        isListeningRef.current = false
-        stopAudioAnalyser()
       }
       
       recognition.onend = () => {
-        setIsListening(false)
-        isListeningRef.current = false
-        stopAudioAnalyser()
+        // セッション中は自動的に再開
+        if (isSessionActive) {
+          try {
+            recognition.start()
+          } catch (e) {
+            console.log('Recognition restart failed:', e)
+          }
+        }
       }
       
       recognitionRef.current = recognition
     }
 
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
-      }
       if (recognitionRef.current) {
         recognitionRef.current.abort()
       }
+      if (sessionTimeoutRef.current) {
+        clearTimeout(sessionTimeoutRef.current)
+      }
     }
-  }, [])
+  }, [isSessionActive])
+
+  // 相槌を打つ
+  const playListeningResponse = () => {
+    if (!isSpeaking && isSessionActive) {
+      const responses = currentCharacter.responses.listening
+      const response = responses[Math.floor(Math.random() * responses.length)]
+      speakText(response, false)
+    }
+  }
+
+  // ユーザーメッセージの処理
+  const handleUserMessage = (text: string) => {
+    // セッションタイムアウトをリセット
+    if (sessionTimeoutRef.current) {
+      clearTimeout(sessionTimeoutRef.current)
+    }
+    
+    // 10秒間無音だったら相槌を打つ
+    sessionTimeoutRef.current = setTimeout(() => {
+      if (isSessionActive && !isSpeaking) {
+        playListeningResponse()
+      }
+    }, 10000)
+    
+    // AI応答を生成
+    generateAIResponse(text)
+  }
+
+  // AI応答の生成
+  const generateAIResponse = (userInput: string) => {
+    const input = userInput.toLowerCase()
+    let responseType: keyof typeof currentCharacter.responses = 'listening'
+    
+    if (input.includes('こんにちは') || input.includes('はじめ') || input.includes('ハロー')) {
+      responseType = 'greeting'
+    } else if (input.includes('疲れ') || input.includes('つらい') || input.includes('しんどい')) {
+      responseType = 'advice'
+    } else if (input.includes('頑張') || input.includes('元気') || input.includes('楽しい')) {
+      responseType = 'encouragement'
+    }
+    
+    const responses = currentCharacter.responses[responseType]
+    const response = responses[Math.floor(Math.random() * responses.length)]
+    
+    speakText(response, true)
+  }
+
+  // テキストを音声で読み上げ
+  const speakText = (text: string, isMainResponse: boolean = true) => {
+    if ('speechSynthesis' in window && isSessionActive) {
+      window.speechSynthesis.cancel()
+      
+      setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text)
+        utterance.lang = 'ja-JP'
+        utterance.pitch = currentCharacter.pitch
+        utterance.rate = isMainResponse ? currentCharacter.rate : currentCharacter.rate * 1.2
+        utterance.volume = isMainResponse ? 1.0 : 0.7
+        
+        utterance.onstart = () => {
+          setIsSpeaking(true)
+          console.log('Speaking:', text)
+        }
+        
+        utterance.onend = () => {
+          setIsSpeaking(false)
+          console.log('Finished speaking')
+          
+          // メイン応答後は少し待ってから次の相槌の準備
+          if (isMainResponse && isSessionActive) {
+            setTimeout(() => {
+              if (isSessionActive && !isSpeaking) {
+                // 5秒後に相槌を打つ
+                sessionTimeoutRef.current = setTimeout(() => {
+                  playListeningResponse()
+                }, 5000)
+              }
+            }, 1000)
+          }
+        }
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event)
+          setIsSpeaking(false)
+        }
+        
+        synthRef.current = utterance
+        window.speechSynthesis.speak(utterance)
+      }, 100)
+    }
+  }
 
   // オーディオアナライザーの初期化
   const startAudioAnalyser = async () => {
@@ -142,7 +234,7 @@ export default function VoiceChatPage() {
       source.connect(analyserRef.current)
       
       const updateAudioLevel = () => {
-        if (analyserRef.current && isListeningRef.current) {
+        if (analyserRef.current && isSessionActive) {
           const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
           analyserRef.current.getByteFrequencyData(dataArray)
           
@@ -179,299 +271,149 @@ export default function VoiceChatPage() {
     setAudioLevel(0)
   }
 
-  // ユーザーメッセージの処理
-  const handleUserMessage = (text: string) => {
-    console.log('User said:', text)
-    
-    // 音声認識を停止
-    if (recognitionRef.current) {
-      recognitionRef.current.stop()
-    }
-    
-    // AI応答を生成
-    setTimeout(() => {
-      generateAIResponse(text)
-    }, 500)
-  }
-
-  // AI応答の生成
-  const generateAIResponse = (userInput: string) => {
-    const input = userInput.toLowerCase()
-    let responseType: keyof typeof currentCharacter.responses = 'encouragement'
-    
-    if (input.includes('こんにちは') || input.includes('はじめ') || input.includes('ハロー')) {
-      responseType = 'greeting'
-    } else if (input.includes('疲れ') || input.includes('つらい') || input.includes('しんどい')) {
-      responseType = 'advice'
-    }
-    
-    const responses = currentCharacter.responses[responseType]
-    const response = responses[Math.floor(Math.random() * responses.length)]
-    
-    setCurrentResponse(response)
-    speakText(response)
-  }
-
-  // テキストを音声で読み上げ
-  const speakText = (text: string) => {
-    if ('speechSynthesis' in window) {
-      // 既存の音声をキャンセル
-      window.speechSynthesis.cancel()
-      
-      // 少し待ってから音声を開始（キャンセル処理を確実に）
-      setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(text)
-        utterance.lang = 'ja-JP'
-        utterance.pitch = currentCharacter.pitch
-        utterance.rate = currentCharacter.rate
-        utterance.volume = 1.0
-        
-        utterance.onstart = () => {
-          setIsSpeaking(true)
-          console.log('Speaking started:', text)
-        }
-        
-        utterance.onend = () => {
-          setIsSpeaking(false)
-          setCurrentResponse('')
-          console.log('Speaking finished')
-          
-          // 自動的に次のリスニングを開始（連続対話モード）
-          setTimeout(() => {
-            if (!isListening && recognitionRef.current) {
-              console.log('Auto-starting next listening session')
-              startListening()
-            }
-          }, 500)
-        }
-        
-        utterance.onerror = (event) => {
-          console.error('Speech synthesis error:', event)
-          setIsSpeaking(false)
-          setCurrentResponse('')
-          alert('音声合成エラー: ' + event.error)
-        }
-        
-        synthRef.current = utterance
-        
-        // 音声を再生
+  // セッションの開始/停止
+  const toggleSession = () => {
+    if (isSessionActive) {
+      // セッション終了
+      setIsSessionActive(false)
+      setIsListening(false)
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel()
+      }
+      stopAudioAnalyser()
+      if (sessionTimeoutRef.current) {
+        clearTimeout(sessionTimeoutRef.current)
+      }
+      console.log('Session ended')
+    } else {
+      // セッション開始
+      setIsSessionActive(true)
+      setIsListening(true)
+      if (recognitionRef.current) {
         try {
-          window.speechSynthesis.speak(utterance)
-          console.log('Speech synthesis started successfully')
+          recognitionRef.current.start()
+          startAudioAnalyser()
+          // 初回の挨拶
+          setTimeout(() => {
+            generateAIResponse('こんにちは')
+          }, 500)
+          console.log('Session started')
         } catch (error) {
-          console.error('Failed to start speech synthesis:', error)
-          setIsSpeaking(false)
-          setCurrentResponse('')
+          console.error('Failed to start recognition:', error)
+          setIsSessionActive(false)
+          setIsListening(false)
         }
-      }, 100)
-    } else {
-      console.error('Speech synthesis not supported')
-      alert('お使いのブラウザは音声合成に対応していません')
-    }
-  }
-
-  // 音声認識の開始/停止
-  const toggleListening = () => {
-    if (isListening) {
-      stopListening()
-    } else {
-      startListening()
-    }
-  }
-
-  const startListening = () => {
-    if (recognitionRef.current && !isSpeaking) {
-      try {
-        setTranscript('')
-        setIsListening(true)
-        isListeningRef.current = true
-        recognitionRef.current.start()
-        startAudioAnalyser()
-        console.log('Started listening')
-      } catch (error) {
-        console.error('Error starting recognition:', error)
-        setIsListening(false)
-        isListeningRef.current = false
       }
     }
   }
 
-  const stopListening = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop()
-      setIsListening(false)
-      isListeningRef.current = false
-      stopAudioAnalyser()
-      console.log('Stopped listening')
-    }
-  }
-
-  // キャラクターアバターコンポーネント
-  const CharacterAvatar = () => {
+  // 鳥キャラクターコンポーネント（チャットページと同じデザイン）
+  const BirdCharacter = ({ size = 180 }: { size?: number }) => {
+    const scale = size / 100
     const time = Date.now() / 1000
-    const bounceHeight = isSpeaking ? Math.sin(time * 3) * 5 : 0
-    const scaleEffect = isSpeaking ? 1 + Math.sin(time * 6) * 0.05 : 1
+    const bounceHeight = isSpeaking ? Math.sin(time * 4) * 5 : 0
+    const wingFlap = isListening ? Math.sin(time * 8) * 10 : 0
     
     return (
       <svg 
-        width="180" 
-        height="180" 
+        width={size} 
+        height={size} 
         viewBox="0 0 100 100"
         style={{
-          transform: `translateY(${bounceHeight}px) scale(${scaleEffect})`,
+          transform: `translateY(${bounceHeight}px)`,
           transition: 'transform 0.1s ease'
         }}
       >
-        {/* 背景の光 */}
-        <circle 
-          cx="50" 
-          cy="50" 
-          r="45" 
-          fill={currentCharacter.color} 
-          opacity="0.2"
-        >
-          {(isListening || isSpeaking) && (
-            <animate 
-              attributeName="r" 
-              from="45" 
-              to="48" 
-              dur="1s" 
-              repeatCount="indefinite"
-            />
-          )}
-        </circle>
+        {/* 体 */}
+        <ellipse cx="50" cy="55" rx="35" ry="38" fill={currentCharacter.bodyColor} />
         
-        {/* メインボディ */}
-        <circle 
-          cx="50" 
-          cy="50" 
-          r="35" 
-          fill={currentCharacter.color}
-        />
+        {/* お腹 */}
+        <ellipse cx="50" cy="60" rx="25" ry="28" fill={currentCharacter.bellyColor} />
         
-        {/* 顔 */}
-        <ellipse 
-          cx="50" 
-          cy="48" 
-          rx="28" 
-          ry="26" 
-          fill="white"
-        />
-        
-        {/* 目 */}
-        {isListening ? (
-          // 聞いている時の目（大きく開いた目）
-          <>
-            <circle cx="40" cy="45" r="8" fill={currentCharacter.eyeColor}/>
-            <circle cx="60" cy="45" r="8" fill={currentCharacter.eyeColor}/>
-            <circle cx="40" cy="45" r="4" fill="white" opacity="0.8"/>
-            <circle cx="60" cy="45" r="4" fill="white" opacity="0.8"/>
-            <circle cx="41" cy="44" r="2" fill="white"/>
-            <circle cx="61" cy="44" r="2" fill="white"/>
-          </>
-        ) : isSpeaking ? (
-          // 話している時の目（ウインク風）
-          <>
-            <path 
-              d="M 35 45 Q 40 42 45 45" 
-              stroke={currentCharacter.eyeColor} 
-              strokeWidth="2.5" 
-              fill="none" 
-              strokeLinecap="round"
-            />
-            <circle cx="60" cy="45" r="7" fill={currentCharacter.eyeColor}/>
-            <circle cx="60" cy="45" r="3" fill="white" opacity="0.8"/>
-            <circle cx="61" cy="44" r="1.5" fill="white"/>
-          </>
-        ) : (
-          // 通常の目
-          <>
-            <circle cx="40" cy="45" r="6" fill={currentCharacter.eyeColor}/>
-            <circle cx="60" cy="45" r="6" fill={currentCharacter.eyeColor}/>
-            <circle cx="40" cy="45" r="3" fill="black"/>
-            <circle cx="60" cy="45" r="3" fill="black"/>
-            <circle cx="41" cy="44" r="1.5" fill="white"/>
-            <circle cx="61" cy="44" r="1.5" fill="white"/>
-          </>
-        )}
-        
-        {/* ほっぺ */}
+        {/* 左羽 */}
         <ellipse 
           cx="25" 
-          cy="52" 
-          rx="8" 
-          ry="5" 
-          fill={currentCharacter.color} 
-          opacity="0.3"
+          cy="50" 
+          rx="15" 
+          ry="25" 
+          fill={currentCharacter.bodyColor} 
+          transform={`rotate(${-20 + wingFlap} 25 50)`}
         />
+        
+        {/* 右羽 */}
         <ellipse 
           cx="75" 
-          cy="52" 
-          rx="8" 
-          ry="5" 
-          fill={currentCharacter.color} 
-          opacity="0.3"
+          cy="50" 
+          rx="15" 
+          ry="25" 
+          fill={currentCharacter.bodyColor} 
+          transform={`rotate(${20 - wingFlap} 75 50)`}
         />
         
-        {/* 口 */}
+        {/* 左目 */}
+        <circle cx="40" cy="45" r="6" fill="white" />
+        <circle 
+          cx={isListening ? "40" : "42"} 
+          cy="45" 
+          r={isSpeaking ? "3" : "4"} 
+          fill="#111827" 
+        />
+        <circle cx="43" cy="44" r="2" fill="white" />
+        
+        {/* 右目 */}
+        <circle cx="60" cy="45" r="6" fill="white" />
+        <circle 
+          cx={isListening ? "60" : "58"} 
+          cy="45" 
+          r={isSpeaking ? "3" : "4"} 
+          fill="#111827" 
+        />
+        <circle cx="59" cy="44" r="2" fill="white" />
+        
+        {/* くちばし */}
         {isSpeaking ? (
-          // 話している時の口（開いた口）
           <ellipse 
             cx="50" 
-            cy="58" 
-            rx={8 + Math.sin(time * 10) * 3} 
-            ry={6 + Math.sin(time * 10) * 4} 
-            fill={currentCharacter.eyeColor} 
-            opacity="0.8"
-          />
-        ) : isListening ? (
-          // 聞いている時の口（驚いた口）
-          <ellipse 
-            cx="50" 
-            cy="58" 
-            rx="6" 
-            ry="8" 
-            fill={currentCharacter.eyeColor} 
-            opacity="0.6"
+            cy="55" 
+            rx={4 + Math.sin(time * 10) * 2} 
+            ry={3 + Math.sin(time * 10) * 2} 
+            fill="#fbbf24" 
           />
         ) : (
-          // 通常の口（笑顔）
-          <path 
-            d="M 40 56 Q 50 62 60 56" 
-            stroke={currentCharacter.eyeColor} 
-            strokeWidth="2.5" 
-            fill="none" 
-            strokeLinecap="round"
-          />
+          <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
         )}
         
-        {/* アクセサリー（キャラクターごとの特徴） */}
-        {selectedCharacter === 'luna' && (
-          // 月の飾り
-          <path 
-            d="M 70 25 Q 65 20 65 25 Q 65 30 70 25" 
-            fill="#fbbf24" 
-            opacity="0.8"
-          />
-        )}
-        {selectedCharacter === 'aria' && (
-          // 星の飾り
+        {/* 音波エフェクト */}
+        {(isListening || isSpeaking) && (
           <>
-            <path 
-              d="M 30 20 L 32 24 L 36 24 L 33 27 L 34 31 L 30 28 L 26 31 L 27 27 L 24 24 L 28 24 Z" 
-              fill="#fbbf24"
-            />
+            <circle 
+              cx="50" 
+              cy="55" 
+              r="45" 
+              fill="none" 
+              stroke={currentCharacter.color} 
+              strokeWidth="1" 
+              opacity="0.3"
+            >
+              <animate 
+                attributeName="r" 
+                from="45" 
+                to="60" 
+                dur="2s" 
+                repeatCount="indefinite"
+              />
+              <animate 
+                attributeName="opacity" 
+                from="0.3" 
+                to="0" 
+                dur="2s" 
+                repeatCount="indefinite"
+              />
+            </circle>
           </>
-        )}
-        {selectedCharacter === 'kai' && (
-          // 波の模様
-          <path 
-            d="M 20 70 Q 25 68 30 70 T 40 70" 
-            stroke="#60a5fa" 
-            strokeWidth="2" 
-            fill="none" 
-            opacity="0.6"
-          />
         )}
       </svg>
     )
@@ -510,7 +452,7 @@ export default function VoiceChatPage() {
             color: '#94a3b8',
             margin: '4px 0 0 0'
           }}>
-            {isListening ? '聞いています...' : isSpeaking ? '話しています...' : 'マイクボタンをタップ'}
+            {isSessionActive ? (isListening ? '聞いています...' : isSpeaking ? '話しています...' : '対話中...') : 'マイクボタンをタップ'}
           </p>
         </div>
         
@@ -526,12 +468,11 @@ export default function VoiceChatPage() {
             <button
               key={key}
               onClick={() => {
-                setSelectedCharacter(key)
-                if (isSpeaking) {
-                  window.speechSynthesis.cancel()
-                  setIsSpeaking(false)
+                if (!isSessionActive) {
+                  setSelectedCharacter(key)
                 }
               }}
+              disabled={isSessionActive}
               style={{
                 width: '40px',
                 height: '40px',
@@ -540,18 +481,20 @@ export default function VoiceChatPage() {
                   ? `linear-gradient(135deg, ${char.color}, ${char.color}dd)` 
                   : 'rgba(255, 255, 255, 0.1)',
                 border: 'none',
-                color: 'white',
-                fontSize: '20px',
-                cursor: 'pointer',
+                color: '#1e293b',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: isSessionActive ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transform: selectedCharacter === key ? 'scale(1.1)' : 'scale(1)'
+                transform: selectedCharacter === key ? 'scale(1.1)' : 'scale(1)',
+                opacity: isSessionActive ? 0.5 : 1
               }}
               title={char.name}
             >
-              {char.emoji}
+              {char.name.slice(0, 2)}
             </button>
           ))}
         </div>
@@ -571,8 +514,7 @@ export default function VoiceChatPage() {
         <div style={{
           position: 'relative'
         }}>
-          <CharacterAvatar />
-          
+          <BirdCharacter size={180} />
         </div>
 
         {/* Audio Waveform */}
@@ -597,7 +539,7 @@ export default function VoiceChatPage() {
                 style={{
                   width: '3px',
                   height: `${height}px`,
-                  background: isListening || isSpeaking ? currentCharacter.color : 'rgba(255, 255, 255, 0.2)',
+                  background: (isListening || isSpeaking) ? currentCharacter.color : 'rgba(255, 255, 255, 0.2)',
                   borderRadius: '2px',
                   transition: 'all 0.1s ease'
                 }}
@@ -606,33 +548,29 @@ export default function VoiceChatPage() {
           })}
         </div>
 
-
-        {/* Microphone Button */}
+        {/* Session Control Button */}
         <button
-          onClick={toggleListening}
-          disabled={isSpeaking}
+          onClick={toggleSession}
           style={{
             width: '80px',
             height: '80px',
             borderRadius: '50%',
-            background: isListening 
+            background: isSessionActive 
               ? `linear-gradient(135deg, #ef4444, #dc2626)`
-              : isSpeaking
-              ? 'rgba(100, 116, 139, 0.5)'
               : `linear-gradient(135deg, ${currentCharacter.color}, ${currentCharacter.color}dd)`,
             border: 'none',
-            cursor: isSpeaking ? 'not-allowed' : 'pointer',
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: isListening 
+            boxShadow: isSessionActive 
               ? '0 0 0 0 rgba(239, 68, 68, 0.4), 0 0 0 15px rgba(239, 68, 68, 0.2), 0 0 0 30px rgba(239, 68, 68, 0.1)'
               : `0 4px 20px ${currentCharacter.color}40`,
             transition: 'all 0.3s ease',
-            transform: isListening ? 'scale(1.1)' : 'scale(1)'
+            transform: isSessionActive ? 'scale(1.1)' : 'scale(1)'
           }}
         >
-          {isListening ? (
+          {isSessionActive ? (
             <div style={{
               width: '30px',
               height: '30px',
@@ -658,20 +596,16 @@ export default function VoiceChatPage() {
           )}
         </button>
 
+        {!isSessionActive && (
+          <p style={{
+            ...getTypographyStyles('small'),
+            color: '#64748b',
+            textAlign: 'center'
+          }}>
+            マイクボタンをタップして対話を開始
+          </p>
+        )}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateX(-50%) translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        }
-      `}</style>
 
       <MobileBottomNav />
     </div>
