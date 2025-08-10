@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const router = useRouter()
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const [isEditingProfile, setIsEditingProfile] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [screenSize, setScreenSize] = useState<'xs' | 'sm' | 'md' | 'lg'>('lg')
   const [notifications, setNotifications] = useState({
     checkinReminder: true,
     weeklyReport: true,
@@ -123,14 +123,18 @@ export default function SettingsPage() {
     setIsEditingProfile(false)
   }
 
-  // Check for mobile view
+  // Check screen size for responsive design
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 480)
+    const checkScreenSize = () => {
+      const width = window.innerWidth
+      if (width <= 320) setScreenSize('xs')
+      else if (width <= 375) setScreenSize('sm')
+      else if (width <= 480) setScreenSize('md')
+      else setScreenSize('lg')
     }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
   
   const toggleGoal = (goal: string) => {
@@ -262,8 +266,8 @@ export default function SettingsPage() {
                   setIsEditingProfile(true)
                 }}
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
+                  height: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
                   backgroundColor: 'rgba(163, 230, 53, 0.2)',
                   border: '1px solid rgba(163, 230, 53, 0.3)',
                   borderRadius: '12px',
@@ -304,14 +308,14 @@ export default function SettingsPage() {
                 <div key={stat.label} style={{
                   backgroundColor: 'rgba(31, 41, 55, 0.6)',
                   borderRadius: '12px',
-                  padding: '16px',
+                  padding: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '14px' : '16px',
                   textAlign: 'center',
                   backdropFilter: 'blur(8px)',
                   border: '1px solid rgba(55, 65, 81, 0.3)'
                 }}>
                   <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'center' }}>{stat.icon}</div>
                   <div style={{ 
-                    fontSize: '24px', 
+                    fontSize: screenSize === 'xs' ? '18px' : screenSize === 'sm' ? '20px' : '24px', 
                     fontWeight: '700', 
                     background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
                     WebkitBackgroundClip: 'text',
@@ -503,7 +507,7 @@ export default function SettingsPage() {
               {notifications.checkinReminder && (
                 <div style={{
                   marginTop: '20px',
-                  padding: '16px',
+                  padding: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '14px' : '16px',
                   backgroundColor: 'rgba(163, 230, 53, 0.1)',
                   borderRadius: '12px',
                   border: '1px solid rgba(163, 230, 53, 0.2)'
@@ -734,7 +738,7 @@ export default function SettingsPage() {
                     border: '1px solid rgba(55, 65, 81, 0.5)',
                     borderRadius: '12px',
                     color: '#d1d5db',
-                    fontSize: '14px',
+                    fontSize: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '13px' : '14px',
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
@@ -765,7 +769,7 @@ export default function SettingsPage() {
                     border: '1px solid rgba(239, 68, 68, 0.2)',
                     borderRadius: '12px',
                     color: '#ef4444',
-                    fontSize: '14px',
+                    fontSize: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '13px' : '14px',
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
@@ -904,15 +908,15 @@ export default function SettingsPage() {
           <div style={{
             backgroundColor: '#111827',
             borderRadius: '16px',
-            padding: isMobile ? '20px' : '32px',
-            maxWidth: isMobile ? '100%' : '600px',
-            width: isMobile ? 'calc(100% - 20px)' : '100%',
-            maxHeight: isMobile ? 'calc(100vh - 40px)' : 'calc(90vh - 40px)',
+            padding: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : screenSize === 'md' ? '24px' : '32px',
+            maxWidth: screenSize !== 'lg' ? '100%' : '600px',
+            width: screenSize === 'xs' ? 'calc(100% - 16px)' : screenSize === 'sm' ? 'calc(100% - 20px)' : screenSize === 'md' ? 'calc(100% - 20px)' : '100%',
+            maxHeight: screenSize === 'xs' ? 'calc(100vh - 32px)' : screenSize === 'sm' ? 'calc(100vh - 36px)' : screenSize === 'md' ? 'calc(100vh - 40px)' : 'calc(90vh - 40px)',
             overflowY: 'auto',
             border: '1px solid rgba(163, 230, 53, 0.3)',
             boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(163, 230, 53, 0.1)',
             animation: 'modalSlideUp 0.3s ease',
-            margin: isMobile ? '20px 10px' : '20px auto',
+            margin: screenSize === 'xs' ? '16px 8px' : screenSize === 'sm' ? '18px 10px' : screenSize === 'md' ? '20px 10px' : '20px auto',
             boxSizing: 'border-box'
           }}>
             {/* Modal Header */}
@@ -938,8 +942,8 @@ export default function SettingsPage() {
               <button
                 onClick={handleCancelEdit}
                 style={{
-                  width: '40px',
-                  height: '40px',
+                  width: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
+                  height: screenSize === 'xs' || screenSize === 'sm' ? '44px' : '40px',
                   borderRadius: '50%',
                   border: 'none',
                   backgroundColor: 'rgba(55, 65, 81, 0.6)',
@@ -979,16 +983,16 @@ export default function SettingsPage() {
                 </label>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)',
-                  gap: isMobile ? '8px' : '12px'
+                  gridTemplateColumns: screenSize === 'xs' ? 'repeat(3, 1fr)' : screenSize === 'sm' ? 'repeat(4, 1fr)' : screenSize === 'md' ? 'repeat(4, 1fr)' : 'repeat(5, 1fr)',
+                  gap: screenSize === 'xs' ? '6px' : screenSize === 'sm' ? '8px' : '12px'
                 }}>
                   {avatarOptions.map((avatar) => (
                     <button
                       key={avatar}
                       onClick={() => setEditForm({ ...editForm, avatar })}
                       style={{
-                        width: isMobile ? '50px' : '60px',
-                        height: isMobile ? '50px' : '60px',
+                        width: screenSize === 'xs' ? '44px' : screenSize === 'sm' ? '50px' : screenSize === 'md' ? '55px' : '60px',
+                        height: screenSize === 'xs' ? '44px' : screenSize === 'sm' ? '50px' : screenSize === 'md' ? '55px' : '60px',
                         backgroundColor: editForm.avatar === avatar
                           ? 'rgba(163, 230, 53, 0.3)'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -996,7 +1000,7 @@ export default function SettingsPage() {
                           ? '3px solid #a3e635'
                           : '2px solid transparent',
                         borderRadius: '16px',
-                        fontSize: isMobile ? '24px' : '28px',
+                        fontSize: screenSize === 'xs' ? '20px' : screenSize === 'sm' ? '22px' : screenSize === 'md' ? '24px' : '28px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
@@ -1027,8 +1031,8 @@ export default function SettingsPage() {
               {/* Name and Bio - responsive layout */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr',
-                gap: isMobile ? '16px' : '24px'
+                gridTemplateColumns: screenSize !== 'lg' ? '1fr' : '1fr 2fr',
+                gap: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '16px' : '24px'
               }}>
                 {/* Name */}
                 <div>
@@ -1037,7 +1041,7 @@ export default function SettingsPage() {
                     marginBottom: '8px',
                     fontWeight: '600',
                     color: '#f3f4f6',
-                    fontSize: '16px'
+                    fontSize: screenSize === 'xs' ? '14px' : '16px'
                   }}>
                     名前
                   </label>
@@ -1047,12 +1051,12 @@ export default function SettingsPage() {
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                     style={{
                       width: '100%',
-                      padding: '14px',
+                      padding: screenSize === 'xs' ? '10px' : screenSize === 'sm' ? '12px' : '14px',
                       backgroundColor: 'rgba(55, 65, 81, 0.6)',
                       border: '2px solid rgba(55, 65, 81, 0.5)',
                       borderRadius: '12px',
                       color: '#f3f4f6',
-                      fontSize: '16px',
+                      fontSize: screenSize === 'xs' ? '14px' : '16px',
                       outline: 'none',
                       boxSizing: 'border-box',
                       transition: 'all 0.2s ease'
@@ -1075,7 +1079,7 @@ export default function SettingsPage() {
                     marginBottom: '8px',
                     fontWeight: '600',
                     color: '#f3f4f6',
-                    fontSize: '16px'
+                    fontSize: screenSize === 'xs' ? '14px' : '16px'
                   }}>
                     自己紹介
                   </label>
@@ -1085,12 +1089,12 @@ export default function SettingsPage() {
                     rows={3}
                     style={{
                       width: '100%',
-                      padding: '14px',
+                      padding: screenSize === 'xs' ? '10px' : screenSize === 'sm' ? '12px' : '14px',
                       backgroundColor: 'rgba(55, 65, 81, 0.6)',
                       border: '2px solid rgba(55, 65, 81, 0.5)',
                       borderRadius: '12px',
                       color: '#f3f4f6',
-                      fontSize: '16px',
+                      fontSize: screenSize === 'xs' ? '14px' : '16px',
                       outline: 'none',
                       resize: 'vertical',
                       boxSizing: 'border-box',
@@ -1131,7 +1135,7 @@ export default function SettingsPage() {
                       onClick={() => toggleGoal(goal)}
                       disabled={!editForm.goals.includes(goal) && editForm.goals.length >= 3}
                       style={{
-                        padding: isMobile ? '8px 12px' : '10px 18px',
+                        padding: screenSize === 'xs' ? '6px 10px' : screenSize === 'sm' ? '8px 12px' : screenSize === 'md' ? '8px 14px' : '10px 18px',
                         backgroundColor: editForm.goals.includes(goal)
                           ? '#a3e635'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -1190,7 +1194,7 @@ export default function SettingsPage() {
                       onClick={() => toggleInterest(interest)}
                       disabled={!editForm.interests.includes(interest) && editForm.interests.length >= 5}
                       style={{
-                        padding: isMobile ? '8px 12px' : '10px 18px',
+                        padding: screenSize === 'xs' ? '6px 10px' : screenSize === 'sm' ? '8px 12px' : screenSize === 'md' ? '8px 14px' : '10px 18px',
                         backgroundColor: editForm.interests.includes(interest)
                           ? '#60a5fa'
                           : 'rgba(55, 65, 81, 0.6)',
@@ -1230,22 +1234,22 @@ export default function SettingsPage() {
               {/* Action Buttons */}
               <div style={{
                 display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? '12px' : '16px',
+                flexDirection: screenSize !== 'lg' ? 'column' : 'row',
+                gap: screenSize === 'xs' ? '10px' : screenSize === 'sm' ? '12px' : '16px',
                 marginTop: '16px',
-                paddingTop: isMobile ? '20px' : '24px',
+                paddingTop: screenSize === 'xs' ? '16px' : screenSize === 'sm' ? '20px' : '24px',
                 borderTop: '1px solid rgba(55, 65, 81, 0.3)'
               }}>
                 <button
                   onClick={handleCancelEdit}
                   style={{
                     flex: 1,
-                    padding: '16px',
+                    padding: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '14px' : '16px',
                     backgroundColor: 'rgba(55, 65, 81, 0.6)',
                     color: '#d1d5db',
                     border: '2px solid rgba(55, 65, 81, 0.5)',
                     borderRadius: '12px',
-                    fontSize: '16px',
+                    fontSize: screenSize === 'xs' ? '14px' : '16px',
                     fontWeight: '600',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
@@ -1265,12 +1269,12 @@ export default function SettingsPage() {
                   onClick={handleSaveProfile}
                   style={{
                     flex: 1,
-                    padding: '16px',
+                    padding: screenSize === 'xs' ? '12px' : screenSize === 'sm' ? '14px' : '16px',
                     background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
                     color: '#0f172a',
                     border: 'none',
                     borderRadius: '12px',
-                    fontSize: '16px',
+                    fontSize: screenSize === 'xs' ? '14px' : '16px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
