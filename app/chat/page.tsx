@@ -211,17 +211,12 @@ export default function ChatPage() {
         borderBottom: '1px solid #374151', 
         flexShrink: 0 
       }}>
-        {/* Character selection tabs with voice chat link */}
+        {/* Character selection tabs */}
         <div style={{ 
           padding: '12px 16px 0',
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+          gap: '4px'
         }}>
-          <div style={{
-            display: 'flex',
-            gap: '4px'
-          }}>
           {characters.map((character) => (
             <button
               key={character.id}
@@ -253,36 +248,6 @@ export default function ChatPage() {
               {character.name}
             </button>
           ))}
-          </div>
-          
-          {/* Voice Chat Link Button */}
-          <button
-            onClick={() => router.push('/voice-chat')}
-            style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '20px',
-              padding: '8px 16px',
-              fontSize: '13px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)',
-              transition: 'all 0.2s'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)'
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'scale(1)'
-            }}
-          >
-            <Mic size={16} />
-            音声対話
-          </button>
         </div>
         
         {/* Compact character display */}
@@ -308,7 +273,7 @@ export default function ChatPage() {
               size={40}
             />
           </div>
-          <div>
+          <div style={{ flex: 1 }}>
             <h2 style={{ 
               ...getTypographyStyles('h4'), 
               fontWeight: '700', 
@@ -337,6 +302,35 @@ export default function ChatPage() {
               </span>
             </div>
           </div>
+          
+          {/* Voice Chat Link Button */}
+          <button
+            onClick={() => router.push('/voice-chat')}
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(139, 92, 246, 0.3)',
+              transition: 'all 0.2s',
+              flexShrink: 0
+            }}
+            title="音声対話"
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)'
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+          >
+            <Mic size={18} />
+          </button>
         </div>
       </div>
 
