@@ -87,10 +87,23 @@ export default function VoiceChatPage() {
   useEffect(() => {
     const checkRealtimeAvailability = async () => {
       try {
-        const response = await fetch('/api/realtime', { method: 'POST' })
+        // まずテストエンドポイントで確認
+        const testResponse = await fetch('/api/realtime-test')
+        const testData = await testResponse.json()
+        console.log('API Test:', testData)
+        
+        if (!testData.hasKey) {
+          console.log('API key not configured, using fallback')
+          setIsRealtimeAvailable(false)
+          setUseFallback(true)
+          return
+        }
+        
+        // メインのエンドポイントを試す
+        const response = await fetch('/api/realtime', { method: 'GET' })
         const data = await response.json()
         
-        if (response.ok && data.url) {
+        if (response.ok && (data.url || data.client_secret)) {
           setIsRealtimeAvailable(true)
           console.log('Realtime API is available')
         } else {
