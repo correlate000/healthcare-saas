@@ -1,15 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // POSTとGETの両方に対応
-export async function POST(req: NextRequest) {
-  return handleRealtimeRequest()
+export async function POST(request: NextRequest) {
+  return handleRealtimeRequest(request)
 }
 
-export async function GET(req: NextRequest) {
-  return handleRealtimeRequest()
+export async function GET(request: NextRequest) {
+  return handleRealtimeRequest(request)
 }
 
-async function handleRealtimeRequest() {
+// OPTIONSを追加（CORS対応）
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, { 
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
+async function handleRealtimeRequest(request?: NextRequest) {
   try {
     // デバッグ情報を追加
     console.log('Realtime API called')
