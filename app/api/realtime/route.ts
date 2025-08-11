@@ -11,12 +11,21 @@ export async function GET(req: NextRequest) {
 
 async function handleRealtimeRequest() {
   try {
+    // デバッグ情報を追加
+    console.log('Realtime API called')
+    console.log('Environment:', process.env.NODE_ENV)
+    console.log('Has API Key:', !!process.env.OPENAI_API_KEY)
+    
     // OpenAI APIキーの確認
     const apiKey = process.env.OPENAI_API_KEY
     if (!apiKey) {
       console.error('OpenAI API key not configured')
       return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
+        { 
+          error: 'OpenAI API key not configured',
+          env: process.env.NODE_ENV,
+          timestamp: new Date().toISOString()
+        },
         { status: 500 }
       )
     }
@@ -31,7 +40,11 @@ async function handleRealtimeRequest() {
   } catch (error) {
     console.error('Realtime API error:', error)
     return NextResponse.json(
-      { error: 'Failed to initialize realtime session' },
+      { 
+        error: 'Failed to initialize realtime session',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     )
   }
