@@ -18,14 +18,19 @@ export default function ChatPage() {
   const router = useRouter()
   const [newMessage, setNewMessage] = useState('')
   const [selectedCharacter, setSelectedCharacter] = useState('luna')
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      type: 'character',
-      content: 'こんにちは！今日の調子はいかがですか？何かお話ししたいことがあれば、遠慮なく聞かせてくださいね。',
-      time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
-    }
-  ])
+  const [messages, setMessages] = useState<Message[]>([])
+  
+  // クライアントサイドでのみ初期メッセージを設定
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        type: 'character',
+        content: 'こんにちは！今日の調子はいかがですか？何かお話ししたいことがあれば、遠慮なく聞かせてくださいね。',
+        time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
+      }
+    ])
+  }, [])
   const [isTyping, setIsTyping] = useState(false)
   const [showScrollButton, setShowScrollButton] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
