@@ -4,13 +4,20 @@ import { useState, useEffect, useRef } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { getTypographyStyles } from '@/styles/typography'
 import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
+import { RealtimeService, ConnectionState } from '@/lib/realtime-service'
 
 export default function VoiceChatPage() {
-  const [isListening, setIsListening] = useState(false)
-  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected')
   const [selectedCharacter, setSelectedCharacter] = useState('luna')
   const [audioLevel, setAudioLevel] = useState(0)
-  const [isSessionActive, setIsSessionActive] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [isRealtimeAvailable, setIsRealtimeAvailable] = useState(false)
+  const [useFallback, setUseFallback] = useState(false)
+  
+  // Realtime API Service
+  const realtimeService = useRef<RealtimeService | null>(null)
+  
+  // Fallback用の既存の参照
   const recognitionRef = useRef<any>(null)
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -19,6 +26,11 @@ export default function VoiceChatPage() {
   const animationFrameRef = useRef<number | null>(null)
   const sessionTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const isSessionActiveRef = useRef(false)
+  
+  // 状態から表示用フラグを導出
+  const isListening = connectionState === 'listening'
+  const isSpeaking = connectionState === 'speaking'
+  const isSessionActive = ['connected', 'authenticated', 'listening', 'speaking'].includes(connectionState)
 
   // キャラクター設定（チャットページと統一）
   const characters = {
@@ -71,8 +83,34 @@ export default function VoiceChatPage() {
 
   const currentCharacter = characters[selectedCharacter as keyof typeof characters]
 
-  // 音声認識の初期化
+  // Realtime API利用可能チェック
   useEffect(() => {
+    const checkRealtimeAvailability = async () => {
+      try {
+        const response = await fetch('/api/realtime', { method: 'POST' })
+        const data = await response.json()
+        
+        if (response.ok && data.url) {
+          setIsRealtimeAvailable(true)
+          console.log('Realtime API is available')
+        } else {
+          setIsRealtimeAvailable(false)
+          setUseFallback(true)
+          console.log('Realtime API not available, using fallback')
+        }
+      } catch (error) {
+        console.error('Failed to check Realtime API:', error)
+        setIsRealtimeAvailable(false)
+        setUseFallback(true)
+      }
+    }
+    
+    checkRealtimeAvailability()
+  }, [])
+
+  // 音声認識の初期化（フォールバック用）
+  useEffect(() => {
+    if (!useFallback) return
     if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
       const SpeechRecognition = (window as any).webkitSpeechRecognition
       const recognition = new SpeechRecognition()
@@ -289,43 +327,83 @@ export default function VoiceChatPage() {
   }
 
   // セッションの開始/停止
-  const toggleSession = () => {
+  const toggleSession = async () => {
     if (isSessionActive) {
       // セッション終了
-      setIsSessionActive(false)
-      isSessionActiveRef.current = false
-      setIsListening(false)
-      if (recognitionRef.current) {
-        recognitionRef.current.stop()
+      if (realtimeService.current) {
+        await realtimeService.current.disconnect()
+        realtimeService.current = null
+      } else if (useFallback) {
+        // フォールバック時の終了処理
+        isSessionActiveRef.current = false
+        if (recognitionRef.current) {
+          recognitionRef.current.stop()
+        }
+        if (window.speechSynthesis) {
+          window.speechSynthesis.cancel()
+        }
+        stopAudioAnalyser()
+        if (sessionTimeoutRef.current) {
+          clearTimeout(sessionTimeoutRef.current)
+        }
       }
-      if (window.speechSynthesis) {
-        window.speechSynthesis.cancel()
-      }
-      stopAudioAnalyser()
-      if (sessionTimeoutRef.current) {
-        clearTimeout(sessionTimeoutRef.current)
-      }
+      setConnectionState('disconnected')
+      setErrorMessage(null)
       console.log('Session ended')
     } else {
       // セッション開始
-      setIsSessionActive(true)
-      isSessionActiveRef.current = true
-      setIsListening(true)
-      if (recognitionRef.current) {
+      setErrorMessage(null)
+      
+      if (isRealtimeAvailable && !useFallback) {
+        // Realtime API使用
         try {
-          recognitionRef.current.start()
-          startAudioAnalyser()
-          // 初回の挨拶
-          setTimeout(() => {
-            console.log('Playing initial greeting')
-            generateAIResponse('こんにちは')
-          }, 500)
-          console.log('Session started')
+          setConnectionState('connecting')
+          
+          if (!realtimeService.current) {
+            realtimeService.current = new RealtimeService()
+          }
+          
+          await realtimeService.current.connect(
+            (state) => {
+              setConnectionState(state)
+              console.log('Connection state:', state)
+            },
+            (error) => {
+              console.error('Realtime error:', error)
+              setErrorMessage(error.message)
+              setConnectionState('error')
+              
+              // エラー時はフォールバックに切り替え
+              setTimeout(() => {
+                setUseFallback(true)
+                setConnectionState('disconnected')
+              }, 3000)
+            }
+          )
         } catch (error) {
-          console.error('Failed to start recognition:', error)
-          setIsSessionActive(false)
-          isSessionActiveRef.current = false
-          setIsListening(false)
+          console.error('Failed to start Realtime session:', error)
+          setErrorMessage('接続に失敗しました。再度お試しください。')
+          setConnectionState('error')
+        }
+      } else {
+        // フォールバック使用
+        isSessionActiveRef.current = true
+        setConnectionState('listening')
+        if (recognitionRef.current) {
+          try {
+            recognitionRef.current.start()
+            startAudioAnalyser()
+            // 初回の挨拶
+            setTimeout(() => {
+              console.log('Playing initial greeting')
+              generateAIResponse('こんにちは')
+            }, 500)
+            console.log('Fallback session started')
+          } catch (error) {
+            console.error('Failed to start recognition:', error)
+            isSessionActiveRef.current = false
+            setConnectionState('disconnected')
+          }
         }
       }
     }
@@ -473,7 +551,13 @@ export default function VoiceChatPage() {
             color: '#94a3b8',
             margin: '4px 0 0 0'
           }}>
-            {isSessionActive ? (isListening ? '聞いています...' : isSpeaking ? '話しています...' : '対話中...') : 'マイクボタンをタップ'}
+            {connectionState === 'disconnected' && 'マイクボタンをタップ'}
+            {connectionState === 'connecting' && '接続中...'}
+            {connectionState === 'connected' && '認証中...'}
+            {connectionState === 'authenticated' && '準備完了'}
+            {connectionState === 'listening' && '聞いています...'}
+            {connectionState === 'speaking' && '話しています...'}
+            {connectionState === 'error' && 'エラーが発生しました'}
           </p>
         </div>
         
@@ -625,6 +709,45 @@ export default function VoiceChatPage() {
           }}>
             マイクボタンをタップして対話を開始
           </p>
+        )}
+        
+        {/* エラーメッセージ */}
+        {errorMessage && (
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            marginTop: '16px'
+          }}>
+            <p style={{
+              ...getTypographyStyles('small'),
+              color: '#ef4444',
+              margin: 0
+            }}>
+              {errorMessage}
+            </p>
+          </div>
+        )}
+        
+        {/* フォールバックモード通知 */}
+        {useFallback && isSessionActive && (
+          <div style={{
+            background: 'rgba(251, 191, 36, 0.1)',
+            border: '1px solid rgba(251, 191, 36, 0.3)',
+            borderRadius: '12px',
+            padding: '8px 12px',
+            marginTop: '16px'
+          }}>
+            <p style={{
+              ...getTypographyStyles('caption'),
+              color: '#fbbf24',
+              margin: 0,
+              textAlign: 'center'
+            }}>
+              シンプルモードで動作中（OpenAI APIキーが未設定）
+            </p>
+          </div>
         )}
       </div>
 
