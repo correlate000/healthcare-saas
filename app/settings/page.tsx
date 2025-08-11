@@ -974,7 +974,7 @@ export default function SettingsPage() {
             <div style={{
               flex: 1,
               overflowY: 'auto',
-              padding: screenSize === 'xs' ? '16px 16px 80px' : screenSize === 'sm' ? '20px 20px 90px' : screenSize === 'md' ? '24px 24px 100px' : '32px 32px 110px',
+              padding: screenSize === 'xs' ? `16px 16px ${80 + MOBILE_PAGE_PADDING_BOTTOM}px` : screenSize === 'sm' ? `20px 20px ${90 + MOBILE_PAGE_PADDING_BOTTOM}px` : screenSize === 'md' ? `24px 24px ${100 + MOBILE_PAGE_PADDING_BOTTOM}px` : `32px 32px ${110 + MOBILE_PAGE_PADDING_BOTTOM}px`,
               display: 'flex',
               flexDirection: 'column',
               gap: '24px'
@@ -1244,7 +1244,7 @@ export default function SettingsPage() {
             {/* Fixed Action Buttons */}
             <div style={{
               position: 'absolute',
-              bottom: 0,
+              bottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
               left: 0,
               right: 0,
               padding: screenSize === 'xs' ? '12px 16px' : screenSize === 'sm' ? '14px 20px' : screenSize === 'md' ? '16px 24px' : '20px 32px',
