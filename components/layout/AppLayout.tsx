@@ -42,7 +42,7 @@ export function AppLayout({ children, title, showBackButton }: AppLayoutProps) {
             
             {/* Admin Access - Enhanced with multiple admin levels */}
             <div className="flex items-center space-x-2">
-              {pathname.includes('/enterprise-admin') && (
+              {pathname?.includes('/enterprise-admin') && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -54,7 +54,7 @@ export function AppLayout({ children, title, showBackButton }: AppLayoutProps) {
                 </Button>
               )}
               
-              {pathname.includes('/admin') && (
+              {pathname?.includes('/admin') && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -66,7 +66,7 @@ export function AppLayout({ children, title, showBackButton }: AppLayoutProps) {
                 </Button>
               )}
               
-              {pathname.includes('/super-admin') && (
+              {pathname?.includes('/super-admin') && (
                 <Button
                   variant="ghost"
                   size="sm"
