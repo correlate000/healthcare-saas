@@ -39,7 +39,8 @@ export class RealtimeService {
       }
       
       const data = await response.json()
-      return data.client_secret
+      // 開発用：直接APIキーを使用
+      return data.client_secret || data.api_key
     } catch (error) {
       console.error('Failed to get ephemeral key:', error)
       throw error

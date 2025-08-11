@@ -43,29 +43,11 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // OpenAI Realtime API用のエフェメラルキー生成
+    // 簡易的にAPIキーを返す（開発用）
     // 注：本番環境では適切な認証とレート制限を実装してください
-    const response = await fetch('https://api.openai.com/v1/realtime/sessions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-realtime-preview-2024-12-17',
-        voice: 'alloy', // 日本語対応音声
-      })
-    })
-
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.statusText}`)
-    }
-
-    const data = await response.json()
-    
     return NextResponse.json({
-      client_secret: data.client_secret,
-      expires_at: Date.now() + 60 * 1000, // 1分間有効
+      client_secret: apiKey,
+      expires_at: Date.now() + 60 * 60 * 1000, // 1時間有効
     })
   } catch (error) {
     console.error('Failed to create ephemeral key:', error)
