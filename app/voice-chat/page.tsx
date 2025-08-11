@@ -242,12 +242,12 @@ export default function VoiceChatPage() {
         utterance.volume = isMainResponse ? 1.0 : 0.7
         
         utterance.onstart = () => {
-          setIsSpeaking(true)
+          setConnectionState('speaking')
           console.log('Speaking:', text)
         }
         
         utterance.onend = () => {
-          setIsSpeaking(false)
+          setConnectionState('listening')
           console.log('Finished speaking')
           
           // メイン応答後は少し待ってから次の相槌の準備
@@ -266,7 +266,7 @@ export default function VoiceChatPage() {
         
         utterance.onerror = (event) => {
           console.error('Speech synthesis error:', event)
-          setIsSpeaking(false)
+          setConnectionState('listening')
         }
         
         synthRef.current = utterance
