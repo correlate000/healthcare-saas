@@ -13,6 +13,8 @@ export default function BookingPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [consultationType, setConsultationType] = useState<'video' | 'phone'>('video')
   const [isMobile, setIsMobile] = useState(false)
+  const [isBookingComplete, setIsBookingComplete] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -83,6 +85,25 @@ export default function BookingPage() {
     return true
   }
 
+  const handleBookingConfirm = async () => {
+    setIsProcessing(true)
+    
+    // 予約処理のシミュレーション
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    setIsProcessing(false)
+    setIsBookingComplete(true)
+  }
+
+  const handleNewBooking = () => {
+    setCurrentStep(1)
+    setSelectedSpecialist(null)
+    setSelectedDate(null)
+    setSelectedTime(null)
+    setConsultationType('video')
+    setIsBookingComplete(false)
+  }
+
   return (
     <div style={{ 
       minHeight: '100vh',
@@ -115,6 +136,7 @@ export default function BookingPage() {
       </div>
 
       {/* Progress Steps - Simplified */}
+      {!isBookingComplete && (
       <div style={{ padding: '20px' }}>
         <div style={{
           display: 'grid',
@@ -193,8 +215,201 @@ export default function BookingPage() {
           ))}
         </div>
       </div>
+      )}
 
       <div style={{ padding: '0 20px 20px' }}>
+        {/* Booking Complete Screen */}
+        {isBookingComplete ? (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '400px',
+            textAlign: 'center',
+            animation: 'fadeIn 0.5s ease'
+          }}>
+            {/* Success Icon */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '24px',
+              boxShadow: '0 8px 32px rgba(163, 230, 53, 0.3)',
+              animation: 'scaleIn 0.5s ease'
+            }}>
+              <span style={{ fontSize: '40px', color: '#0f172a' }}>✓</span>
+            </div>
+
+            <h2 style={{
+              fontSize: '24px',
+              fontWeight: '700',
+              color: '#f3f4f6',
+              marginBottom: '12px'
+            }}>
+              予約が確定しました！
+            </h2>
+
+            <p style={{
+              fontSize: '16px',
+              color: '#9ca3af',
+              marginBottom: '32px',
+              lineHeight: '1.6'
+            }}>
+              確認メールを送信しました<br/>
+              面談の詳細をご確認ください
+            </p>
+
+            {/* Booking Details Card */}
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(163, 230, 53, 0.2)',
+              width: '100%',
+              maxWidth: '400px',
+              marginBottom: '32px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '24px'
+                }}>
+                  {specialists.find(s => s.id === selectedSpecialist)?.image}
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6' }}>
+                    {specialists.find(s => s.id === selectedSpecialist)?.name}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#9ca3af' }}>
+                    {specialists.find(s => s.id === selectedSpecialist)?.title}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  paddingBottom: '12px',
+                  borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
+                }}>
+                  <span style={{ color: '#9ca3af', fontSize: '14px' }}>予約番号</span>
+                  <span style={{ color: '#a3e635', fontWeight: '600', fontSize: '14px' }}>
+                    #BK{Math.random().toString(36).substr(2, 9).toUpperCase()}
+                  </span>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  paddingBottom: '12px',
+                  borderBottom: '1px solid rgba(55, 65, 81, 0.3)'
+                }}>
+                  <span style={{ color: '#9ca3af', fontSize: '14px' }}>日時</span>
+                  <span style={{ color: '#f3f4f6', fontWeight: '500', fontSize: '14px' }}>
+                    {selectedDate} {selectedTime}
+                  </span>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between'
+                }}>
+                  <span style={{ color: '#9ca3af', fontSize: '14px' }}>方法</span>
+                  <span style={{ color: '#f3f4f6', fontWeight: '500', fontSize: '14px' }}>
+                    {consultationType === 'video' ? 'ビデオ通話' : '電話'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Next Steps */}
+            <div style={{
+              background: 'rgba(96, 165, 250, 0.1)',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '32px',
+              border: '1px solid rgba(96, 165, 250, 0.2)',
+              width: '100%',
+              maxWidth: '400px'
+            }}>
+              <h3 style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                color: '#60a5fa',
+                marginBottom: '12px'
+              }}>
+                次のステップ
+              </h3>
+              <ul style={{
+                margin: 0,
+                paddingLeft: '20px',
+                fontSize: '13px',
+                color: '#d1d5db',
+                lineHeight: '1.8'
+              }}>
+                <li>確認メールをご確認ください</li>
+                <li>面談の5分前にリンクにアクセス</li>
+                <li>静かな環境をご準備ください</li>
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '12px',
+              width: '100%',
+              maxWidth: '400px'
+            }}>
+              <button
+                onClick={() => window.location.href = '/dashboard'}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  color: '#d1d5db',
+                  border: '1px solid rgba(55, 65, 81, 0.3)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                ダッシュボードへ
+              </button>
+              <button
+                onClick={handleNewBooking}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  color: '#0f172a',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 2px 8px rgba(163, 230, 53, 0.3)'
+                }}
+              >
+                新規予約を作成
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Step 1: Specialist Selection */}
         {currentStep === 1 && (
           <div>
@@ -594,35 +809,68 @@ export default function BookingPage() {
             </button>
           ) : (
             <button
+              onClick={handleBookingConfirm}
+              disabled={isProcessing}
               style={{
                 flex: 2,
                 padding: '16px',
-                background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
-                color: '#0f172a',
+                background: isProcessing 
+                  ? 'rgba(55, 65, 81, 0.6)'
+                  : 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                color: isProcessing ? '#6b7280' : '#0f172a',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '16px',
                 fontWeight: '600',
-                cursor: 'pointer',
+                cursor: isProcessing ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 4px 12px rgba(163, 230, 53, 0.3)'
+                boxShadow: isProcessing ? 'none' : '0 4px 12px rgba(163, 230, 53, 0.3)',
+                opacity: isProcessing ? 0.7 : 1
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
+                if (!isProcessing) {
+                  e.currentTarget.style.transform = 'translateY(-2px)'
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
+                if (!isProcessing) {
+                  e.currentTarget.style.transform = 'translateY(0)'
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(163, 230, 53, 0.3)'
+                }
               }}
             >
-              予約を確定する
+              {isProcessing ? '処理中...' : '予約を確定する'}
             </button>
           )}
         </div>
+        </>
+        )}
       </div>
 
       <MobileBottomNav />
+      
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        
+        @keyframes scaleIn {
+          from {
+            transform: scale(0);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   )
 }
