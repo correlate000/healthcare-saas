@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getTypographyStyles, typographyPresets } from '@/styles/typography'
 
@@ -25,7 +25,7 @@ export default function OnboardingPage() {
       id: 'name',
       type: 'input',
       title: 'はじめまして！\nお名前を教えてください',
-      subtitle: 'ニックネームでもOKです',
+      subtitle: 'ニックネームでもOKです（スキップ可）',
       field: 'name',
       placeholder: '例: ゆうた'
     },
@@ -235,7 +235,7 @@ export default function OnboardingPage() {
   // Completion screen
   if (currentStepData.type === 'complete') {
     // Scroll to top when showing completion screen
-    React.useEffect(() => {
+    useEffect(() => {
       window.scrollTo(0, 0)
     }, [])
     
@@ -297,7 +297,7 @@ export default function OnboardingPage() {
           maxWidth: '360px',
           lineHeight: '1.7'
         }}>
-          {formData.name}さん、設定が完了しました。
+          {formData.name ? `${formData.name}さん、` : ''}設定が完了しました。
         </p>
         
         <p style={{
@@ -624,7 +624,6 @@ export default function OnboardingPage() {
           <button
             onClick={handleNext}
             disabled={
-              currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData] ||
               currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData]
             }
             style={{
@@ -639,14 +638,12 @@ export default function OnboardingPage() {
               cursor: 'pointer',
               transition: 'all 0.3s ease',
               opacity: (
-                currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData] ||
                 currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData]
               ) ? 0.5 : 1,
               boxShadow: '0 4px 12px rgba(163, 230, 53, 0.3)'
             }}
             onMouseEnter={(e) => { 
-              if (!(currentStepData.type === 'input' && !formData[currentStepData.field as keyof typeof formData]) &&
-                  !(currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData])) {
+              if (!(currentStepData.type === 'select' && !formData[currentStepData.field as keyof typeof formData])) {
                 e.currentTarget.style.transform = 'translateY(-2px)'
                 e.currentTarget.style.boxShadow = '0 6px 20px rgba(163, 230, 53, 0.4)'
               }
