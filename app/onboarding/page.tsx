@@ -86,6 +86,13 @@ export default function OnboardingPage() {
   const currentStepData = steps[currentStep]
   const progress = ((currentStep + 1) / steps.length) * 100
 
+  // Scroll to top when showing completion screen  
+  useEffect(() => {
+    if (currentStepData && currentStepData.type === 'complete') {
+      window.scrollTo(0, 0)
+    }
+  }, [currentStepData])
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -231,13 +238,6 @@ export default function OnboardingPage() {
       </div>
     )
   }
-
-  // Scroll to top when showing completion screen
-  useEffect(() => {
-    if (currentStepData.type === 'complete') {
-      window.scrollTo(0, 0)
-    }
-  }, [currentStepData.type])
 
   // Completion screen
   if (currentStepData.type === 'complete') {
