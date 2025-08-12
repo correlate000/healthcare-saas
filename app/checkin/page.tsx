@@ -206,10 +206,11 @@ export default function CheckIn() {
       }}>
         <div style={{ 
           padding: '20px',
+          paddingTop: '40px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          minHeight: 'calc(100vh - 140px)'
+          minHeight: `calc(100vh - ${MOBILE_PAGE_PADDING_BOTTOM}px)`
         }}>
           {/* Character with animation */}
           <div style={{
@@ -530,8 +531,11 @@ export default function CheckIn() {
     }}>
       <div style={{ 
         padding: '16px',
+        paddingBottom: '24px',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        height: `calc(100vh - ${MOBILE_PAGE_PADDING_BOTTOM}px)`,
+        maxHeight: `calc(100vh - ${MOBILE_PAGE_PADDING_BOTTOM}px)`
       }}>
         {/* Character */}
         <div style={{ 
@@ -582,12 +586,15 @@ export default function CheckIn() {
           )}
         </div>
 
-        {/* Answer options - scrollable area */}
+        {/* Answer options - optimized for mobile */}
         <div style={{ 
           flex: 1,
-          overflowY: 'auto',
+          overflowY: currentStepData.multiple ? 'hidden' : 'auto',
           marginBottom: '16px',
-          WebkitOverflowScrolling: 'touch'
+          WebkitOverflowScrolling: 'touch',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: currentStepData.multiple ? 'center' : 'flex-start'
         }}>
           {currentStepData.type === 'textarea' ? (
             <textarea
@@ -614,8 +621,9 @@ export default function CheckIn() {
           ) : (
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: currentStepData.multiple ? (isMobile ? '1fr' : 'repeat(2, 1fr)') : '1fr',
-              gap: isMobile ? '8px' : '12px'
+              gridTemplateColumns: currentStepData.multiple ? 'repeat(2, 1fr)' : '1fr',
+              gap: '8px',
+              maxHeight: currentStepData.multiple ? '280px' : 'auto'
             }}>
               {currentStepData.options?.map((option, index) => {
                 const isSelected = currentStepData.multiple 
@@ -637,7 +645,7 @@ export default function CheckIn() {
                       }
                     }}
                     style={{
-                      padding: currentStepData.multiple ? '14px' : '16px',
+                      padding: currentStepData.multiple ? '12px 8px' : '16px',
                       backgroundColor: isSelected ? '#a3e635' : '#1f2937',
                       color: isSelected ? '#0f172a' : '#d1d5db',
                       border: isSelected ? '2px solid #a3e635' : '1px solid #374151',
