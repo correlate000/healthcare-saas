@@ -232,13 +232,15 @@ export default function OnboardingPage() {
     )
   }
 
+  // Scroll to top when showing completion screen
+  useEffect(() => {
+    if (currentStepData.type === 'complete') {
+      window.scrollTo(0, 0)
+    }
+  }, [currentStepData.type])
+
   // Completion screen
   if (currentStepData.type === 'complete') {
-    // Scroll to top when showing completion screen
-    useEffect(() => {
-      window.scrollTo(0, 0)
-    }, [])
-    
     return (
       <div style={{
         minHeight: '100vh',
