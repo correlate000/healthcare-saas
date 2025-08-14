@@ -296,7 +296,7 @@ export function calculateAchievementProgress(
     case 'streak':
       return Math.min((userData.streakDays || 0) / achievement.maxProgress * 100, 100)
     case 'level':
-      return userData.level >= parseInt(achievement.requirement?.replace('レベル', '') || '0') ? 100 : 0
+      return (userData.level || 0) >= parseInt(achievement.requirement?.replace('レベル', '') || '0') ? 100 : 0
     case 'challenge':
       return Math.min((userData.completedChallenges || 0) / achievement.maxProgress * 100, 100)
     case 'milestone':

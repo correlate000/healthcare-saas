@@ -37,12 +37,19 @@ export class NotificationManager {
     }
     
     try {
-      const notification = new Notification(title, {
+      const notificationOptions: NotificationOptions = {
         icon: '/icon-192x192.png',
         badge: '/icon-72x72.png',
-        vibrate: [200, 100, 200],
         ...options
-      })
+      }
+      
+      // vibrate は NotificationOptions には含まれないが、
+      // 一部のブラウザでは利用可能なので別途処理
+      if ('vibrate' in navigator && Array.isArray((options as any)?.vibrate)) {
+        navigator.vibrate((options as any).vibrate)
+      }
+      
+      const notification = new Notification(title, notificationOptions)
       
       return notification
     } catch (error) {
@@ -71,16 +78,18 @@ export class NotificationManager {
       critical: [300, 100, 200, 100, 300]
     }
     
+    // バイブレーションを先に実行
+    if ('vibrate' in navigator) {
+      navigator.vibrate(vibrationPatterns[urgency])
+    }
+    
     const notification = await this.sendNotification(
       `${icons[characterName as keyof typeof icons]} ${characterName}からのメッセージ`,
       {
         body: message,
         tag: `character-${characterName}`,
-        renotify: urgency === 'high' || urgency === 'critical',
-        requireInteraction: urgency === 'critical',
-        vibrate: vibrationPatterns[urgency],
         data: { characterName, mood, urgency }
-      }
+      } as NotificationOptions
     )
     
     if (notification) {
@@ -115,14 +124,16 @@ export class NotificationManager {
       urgency = 'medium'
     }
     
+    // バイブレーションを先に実行
+    if ('vibrate' in navigator) {
+      navigator.vibrate(urgency === 'critical' ? [500, 200, 500] : [200, 100, 200])
+    }
+    
     const notification = await this.sendNotification(title, {
       body,
       tag: 'streak-warning',
-      renotify: true,
-      requireInteraction: urgency === 'critical',
-      vibrate: urgency === 'critical' ? [500, 200, 500] : [200, 100, 200],
       data: { hoursRemaining, streakDays }
-    })
+    } as NotificationOptions)
     
     if (notification) {
       notification.onclick = () => {
@@ -142,12 +153,16 @@ export class NotificationManager {
     
     if (remaining === 0) return
     
+    // バイブレーションを先に実行
+    if ('vibrate' in navigator) {
+      navigator.vibrate([100, 50, 100])
+    }
+    
     const notification = await this.sendNotification(
       '📋 今日のチャレンジ',
       {
         body: `まだ${remaining}個のチャレンジが残っています。XPを獲得しましょう！`,
         tag: 'daily-challenge',
-        vibrate: [100, 50, 100],
         data: { completedCount, totalCount }
       }
     )
@@ -172,15 +187,18 @@ export class NotificationManager {
       body += ` 新機能がアンロック: ${unlockedFeatures.join(', ')}`
     }
     
+    // バイブレーションを先に実行
+    if ('vibrate' in navigator) {
+      navigator.vibrate([100, 100, 100, 100, 200])
+    }
+    
     const notification = await this.sendNotification(
       '🎉 レベルアップ！',
       {
         body,
         tag: 'level-up',
-        vibrate: [100, 100, 100, 100, 200],
-        requireInteraction: true,
         data: { newLevel, unlockedFeatures }
-      }
+      } as NotificationOptions
     )
     
     if (notification) {
