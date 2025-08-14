@@ -10,6 +10,8 @@ import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 import { UserDataStorage } from '@/utils/storage'
 import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { CharacterMood } from '@/components/CharacterMood'
+import { StreakWarningBanner } from '@/components/StreakWarningBanner'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -23,6 +25,8 @@ export default function Dashboard() {
   const [currentMood, setCurrentMood] = useState('happy')
   const [currentTime] = useState(new Date().getHours())
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
+  const [lastCheckinDate, setLastCheckinDate] = useState<Date | null>(null)
+  const [streakDays, setStreakDays] = useState(0)
   
   // Load data from localStorage using storage utility
   useEffect(() => {
@@ -36,6 +40,7 @@ export default function Dashboard() {
         const streak = UserDataStorage.getStreak()
         if (streak > 0) {
           setWeeklyContinuation(streak)
+          setStreakDays(streak)
         }
         
         // Load XP data
@@ -44,7 +49,7 @@ export default function Dashboard() {
           setTotalXP(xp)
         }
         
-        // Load last checkin data for mood
+        // Load last checkin data for mood and date
         const checkins = UserDataStorage.getCheckinData()
         if (checkins.length > 0) {
           const lastCheckin = checkins[checkins.length - 1]
@@ -57,6 +62,18 @@ export default function Dashboard() {
               'つらい': 'sad'
             }
             setCurrentMood(moodMap[lastCheckin.mood] || 'neutral')
+          }
+          if (lastCheckin.date) {
+            setLastCheckinDate(new Date(lastCheckin.date))
+          }
+        }
+        
+        // Check last checkin from storage as well
+        const lastCheckinStr = UserDataStorage.getLastCheckin()
+        if (lastCheckinStr) {
+          const lastDate = new Date(lastCheckinStr)
+          if (!isNaN(lastDate.getTime())) {
+            setLastCheckinDate(lastDate)
           }
         }
         
@@ -297,84 +314,25 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* ヘッダー部分 - キャラクターとメッセージ */}
+      {/* ストリーク警告バナー */}
+      <div style={{ padding: '24px 24px 0' }}>
+        <StreakWarningBanner 
+          lastCheckin={lastCheckinDate}
+          onCheckinClick={() => router.push('/checkin')}
+        />
+      </div>
+
+      {/* キャラクター感情表示 */}
       <div style={{ padding: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
-          {/* キャラクターアイコン - 鳥のSVG */}
-          <div style={{ 
-            width: '80px', 
-            height: '80px', 
-            backgroundColor: '#374151', 
-            borderRadius: '20px', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            flexShrink: 0,
-            position: 'relative'
-          }}>
-            <svg width="60" height="60" viewBox="0 0 100 100" style={{ display: 'block' }}>
-              <ellipse cx="50" cy="55" rx="30" ry="33" fill="#a3e635" />
-              <ellipse cx="50" cy="60" rx="22" ry="25" fill="#ecfccb" />
-              <ellipse cx="28" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(-20 28 50)" />
-              <ellipse cx="72" cy="50" rx="12" ry="20" fill="#a3e635" transform="rotate(20 72 50)" />
-              <circle cx="40" cy="45" r="6" fill="white" />
-              <circle cx="42" cy="45" r="4" fill="#111827" />
-              <circle cx="60" cy="45" r="6" fill="white" />
-              <circle cx="58" cy="45" r="4" fill="#111827" />
-              <path d="M50 50 L45 55 L55 55 Z" fill="#fbbf24" />
-            </svg>
-            <div style={{
-              position: 'absolute',
-              bottom: '-4px',
-              right: '-4px',
-              width: '24px',
-              height: '24px',
-              backgroundColor: '#a3e635',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              ...getTypographyStyles('small'),
-              border: '2px solid #111827'
-            }}>
-              💚
-            </div>
-          </div>
-          
-          {/* メッセージ吹き出し */}
-          <div style={{ 
-            flex: 1, 
-            backgroundColor: '#374151', 
-            borderRadius: '12px', 
-            padding: '16px',
-            position: 'relative'
-          }}>
-            <div style={{
-              position: 'absolute',
-              left: '-8px',
-              top: '20px',
-              width: 0,
-              height: 0,
-              borderTop: '8px solid transparent',
-              borderBottom: '8px solid transparent',
-              borderRight: '8px solid #374151'
-            }}></div>
-            <p style={{ 
-              fontSize: '14px', 
-              lineHeight: '1.5', 
-              color: '#e5e7eb', 
-              margin: 0,
-              fontWeight: '500'
-            }}>
-              今日もよく頑張っていますね！{todayProgress}%達成、素晴らしいです。
-              {todayProgress < 100 ? 'もう少しで目標達成です。' : '今日の目標達成しました！'}
-              無理せず自分のペースで進みましょう。
-            </p>
-          </div>
-        </div>
+        <CharacterMood 
+          characterId="luna"
+          lastCheckin={lastCheckinDate}
+          streakDays={streakDays}
+          compact={true}
+        />
 
         {/* フレンドレベル */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', marginBottom: '20px' }}>
           <span style={{ ...typographyPresets.subText() }}>フレンドレベル {friendLevel}</span>
           <div style={{ 
             flex: 1, 
