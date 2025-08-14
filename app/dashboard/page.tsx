@@ -12,6 +12,10 @@ import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { CharacterMood } from '@/components/CharacterMood'
 import { StreakWarningBanner } from '@/components/StreakWarningBanner'
+import { DailyChallenges } from '@/components/DailyChallenges'
+import { CharacterSelector, type CharacterId } from '@/components/CharacterSelector'
+import { NotificationManager, NotificationScheduler } from '@/utils/notifications'
+import { calculateLevel } from '@/types/daily-challenge'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -27,6 +31,8 @@ export default function Dashboard() {
   const [completedChallenges, setCompletedChallenges] = useState<number[]>([1, 2])
   const [lastCheckinDate, setLastCheckinDate] = useState<Date | null>(null)
   const [streakDays, setStreakDays] = useState(0)
+  const [selectedCharacter, setSelectedCharacter] = useState<CharacterId>('luna')
+  const [calculatedLevel, setCalculatedLevel] = useState(1)
   
   // Load data from localStorage using storage utility
   useEffect(() => {
@@ -43,10 +49,18 @@ export default function Dashboard() {
           setStreakDays(streak)
         }
         
-        // Load XP data
+        // Load XP data and calculate level
         const xp = UserDataStorage.getXP()
         if (xp > 0) {
           setTotalXP(xp)
+          const levelData = calculateLevel(xp)
+          setCalculatedLevel(levelData.level)
+        }
+        
+        // Load selected character
+        const savedCharacter = localStorage.getItem('selectedCharacter') as CharacterId
+        if (savedCharacter) {
+          setSelectedCharacter(savedCharacter)
         }
         
         // Load last checkin data for mood and date
@@ -104,6 +118,23 @@ export default function Dashboard() {
     
     return () => clearTimeout(timer)
   }, [])
+  
+  // 通知の初期化
+  useEffect(() => {
+    if (!isLoading) {
+      // 通知許可をリクエスト
+      NotificationManager.requestPermission().then(granted => {
+        if (granted) {
+          // 通知スケジューラーを開始
+          NotificationScheduler.start(lastCheckinDate, streakDays)
+        }
+      })
+    }
+    
+    return () => {
+      NotificationScheduler.stop()
+    }
+  }, [isLoading, lastCheckinDate, streakDays])
   
   
 
@@ -325,11 +356,21 @@ export default function Dashboard() {
       {/* キャラクター感情表示 */}
       <div style={{ padding: '24px' }}>
         <CharacterMood 
-          characterId="luna"
+          characterId={selectedCharacter}
           lastCheckin={lastCheckinDate}
           streakDays={streakDays}
           compact={true}
         />
+        
+        {/* キャラクター切り替え */}
+        <div style={{ marginTop: '12px' }}>
+          <CharacterSelector
+            currentCharacterId={selectedCharacter}
+            userLevel={calculatedLevel}
+            onCharacterChange={setSelectedCharacter}
+            compact={true}
+          />
+        </div>
 
         {/* フレンドレベル */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', marginBottom: '20px' }}>
@@ -350,7 +391,7 @@ export default function Dashboard() {
               borderRadius: '3px' 
             }}></div>
           </div>
-          <span style={{ ...typographyPresets.activeText() }}>Lv.8 {totalXP}/{maxXP} XP</span>
+          <span style={{ ...typographyPresets.activeText() }}>Lv.{calculatedLevel} {totalXP} XP</span>
         </div>
       </div>
 
@@ -440,160 +481,18 @@ export default function Dashboard() {
 
       {/* 今日のチャレンジ */}
       <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-        <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '20px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', margin: 0 }}>今日のチャレンジ</h3>
-            <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>
-              {completedChallenges.length}/{todaysChallenges.length}
-            </span>
-          </div>
-          
-          <div style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '12px'
-          }}>
-            {todaysChallenges.map((challenge, index) => {
-              const isCompleted = completedChallenges.includes(challenge.id)
-              
-              return (
-                <div
-                  key={challenge.id}
-                  id={`challenge-${challenge.id}`}
-                  onClick={(e) => {
-                    if (!isCompleted) {
-                      // Complete challenge with animation
-                      setCompletedChallenges([...completedChallenges, challenge.id])
-                      
-                      // Smooth scroll to next incomplete challenge
-                      setTimeout(() => {
-                        const nextChallenge = todaysChallenges.find(
-                          c => !completedChallenges.includes(c.id) && c.id !== challenge.id && c.id > challenge.id
-                        )
-                        if (nextChallenge) {
-                          const element = document.getElementById(`challenge-${nextChallenge.id}`)
-                          element?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-                        }
-                      }, 500)
-                      
-                      // Show XP animation
-                      const xpElement = document.createElement('div')
-                      xpElement.style.cssText = `
-                        position: fixed;
-                        top: ${e.clientY}px;
-                        left: ${e.clientX}px;
-                        color: #a3e635;
-                        font-size: 20px;
-                        font-weight: 700;
-                        pointer-events: none;
-                        z-index: 9999;
-                        animation: floatUp 1.5s ease-out forwards;
-                      `
-                      xpElement.textContent = `+${challenge.xp} XP`
-                      document.body.appendChild(xpElement)
-                      setTimeout(() => xpElement.remove(), 1500)
-                    }
-                  }}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '16px',
-                    borderRadius: '8px',
-                    backgroundColor: isCompleted ? '#374151' : '#4b5563',
-                    cursor: !isCompleted ? 'pointer' : 'default',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isCompleted) {
-                      e.currentTarget.style.backgroundColor = '#60a5fa20'
-                      e.currentTarget.style.transform = 'translateX(4px)'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isCompleted) {
-                      e.currentTarget.style.backgroundColor = '#4b5563'
-                      e.currentTarget.style.transform = 'translateX(0)'
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        border: `2px solid ${isCompleted ? '#a3e635' : '#6b7280'}`,
-                        backgroundColor: isCompleted ? '#a3e635' : 'transparent',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        transform: isCompleted ? 'scale(1)' : 'scale(0.9)'
-                      }}
-                    >
-                      {isCompleted && (
-                        <Check style={{ 
-                          width: '14px', 
-                          height: '14px', 
-                          color: '#0f172a',
-                          animation: 'checkMark 0.4s ease-out'
-                        }} />
-                      )}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{
-                          fontSize: '15px',
-                          color: isCompleted ? '#9ca3af' : '#e5e7eb',
-                          textDecoration: isCompleted ? 'line-through' : 'none',
-                          fontWeight: '500',
-                          transition: 'all 0.3s ease'
-                        }}>
-                          {challenge.title}
-                        </span>
-                        <span style={{
-                          fontSize: '11px',
-                          backgroundColor: getDifficultyColor(challenge.difficulty),
-                          color: 'white',
-                          padding: '3px 8px',
-                          borderRadius: '12px',
-                          fontWeight: '500'
-                        }}>
-                          {challenge.difficulty}
-                        </span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px' }}>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                          +{challenge.xp} XP
-                        </span>
-                        <span style={{ fontSize: '12px', color: '#9ca3af' }}>
-                          ⏱ {challenge.time}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {isCompleted && (
-                    <span style={{
-                      ...getTypographyStyles('small'),
-                      backgroundColor: '#a3e635',
-                      color: '#0f172a',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontWeight: '500'
-                    }}>
-                      完了
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        <DailyChallenges 
+          onChallengeComplete={(challenge, xpEarned) => {
+            // XPを更新
+            const newXp = totalXP + xpEarned
+            setTotalXP(newXp)
+            UserDataStorage.setXP(newXp)
+            
+            // レベルを再計算
+            const levelData = calculateLevel(newXp)
+            setCalculatedLevel(levelData.level)
+          }}
+        />
       </div>
 
       {/* 最近の実績 */}
