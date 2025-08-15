@@ -567,13 +567,12 @@ export default function VoiceChatPage() {
 
       {/* Main Content - スクロール不要に最適化 */}
       <div style={{
-        flex: 1,
+        height: 'calc(85vh - 88px)', // 85vh minus header height
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '40px 20px 20px 20px',
-        minHeight: 0,
+        padding: '24px 20px',
         position: 'relative',
         background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
@@ -582,7 +581,7 @@ export default function VoiceChatPage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '24px'
+          gap: '20px'
         }}>
           {/* Character Avatar with speech bubble style */}
           <div style={{
@@ -592,48 +591,49 @@ export default function VoiceChatPage() {
             {isSpeaking && (
               <div style={{
                 position: 'absolute',
-                top: '-40px',
+                top: '-45px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 background: currentCharacter.color,
                 color: '#0f172a',
-                padding: '8px 16px',
-                borderRadius: '20px',
-                fontSize: '14px',
+                padding: '10px 20px',
+                borderRadius: '24px',
+                fontSize: '15px',
                 fontWeight: '600',
                 whiteSpace: 'nowrap',
-                animation: 'bounce 1s ease-in-out infinite'
+                animation: 'bounce 1s ease-in-out infinite',
+                boxShadow: `0 4px 12px ${currentCharacter.color}40`
               }}>
                 {['なるほど！', 'そうなんですね', 'いいですね！'][Math.floor(Date.now() / 2000) % 3]}
               </div>
             )}
             
             <div style={{
-              width: '100px',
-              height: '100px',
+              width: '140px',
+              height: '140px',
               backgroundColor: currentCharacter.color + '20',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: `2px solid ${currentCharacter.color}`,
-              boxShadow: `0 6px 20px ${currentCharacter.color}30`,
+              border: `3px solid ${currentCharacter.color}`,
+              boxShadow: `0 8px 24px ${currentCharacter.color}30`,
               position: 'relative',
               animation: isSessionActive ? 'float 3s ease-in-out infinite' : 'none'
             }}>
               <BirdCharacter 
                 bodyColor={currentCharacter.bodyColor} 
                 bellyColor={currentCharacter.bellyColor}
-                size={70}
+                size={100}
               />
               {/* Active indicator */}
               {isSessionActive && (
                 <div style={{
                   position: 'absolute',
-                  bottom: '-4px',
-                  right: '-4px',
-                  width: '24px',
-                  height: '24px',
+                  bottom: '0px',
+                  right: '0px',
+                  width: '32px',
+                  height: '32px',
                   backgroundColor: isListening ? '#a3e635' : '#ef4444',
                   borderRadius: '50%',
                   border: '3px solid #111827',
@@ -673,29 +673,29 @@ export default function VoiceChatPage() {
         {/* Center Section - Waveform */}
         <div style={{
           width: '100%',
-          maxWidth: '300px',
-          height: '60px',
+          maxWidth: '280px',
+          height: '50px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           gap: '3px',
-          padding: '10px',
+          padding: '8px',
           background: 'rgba(31, 41, 55, 0.3)',
-          borderRadius: '30px',
+          borderRadius: '25px',
           border: '1px solid rgba(55, 65, 81, 0.2)'
         }}>
           {Array.from({ length: 20 }).map((_, i) => {
             const height = isListening 
-              ? Math.max(8, audioLevel * 40 + Math.random() * 20)
+              ? Math.max(6, audioLevel * 35 + Math.random() * 15)
               : isSpeaking
-              ? Math.max(10, Math.sin(Date.now() / 100 + i) * 20 + 20)
-              : 8
+              ? Math.max(8, Math.sin(Date.now() / 100 + i) * 15 + 15)
+              : 6
             
             return (
               <div
                 key={i}
                 style={{
-                  width: '4px',
+                  width: '3px',
                   height: `${height}px`,
                   background: (isListening || isSpeaking) 
                     ? `linear-gradient(180deg, ${currentCharacter.color}, ${currentCharacter.color}60)`
