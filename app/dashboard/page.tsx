@@ -408,124 +408,44 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* キャラクターメッセージ */}
-      <div style={{ padding: '24px 24px 0' }}>
+
+      {/* 簡潔なキャラクター案内 */}
+      <div style={{ padding: '0 24px', marginBottom: '12px' }}>
         <div style={{
           backgroundColor: '#1f2937',
-          borderRadius: '16px',
-          padding: '16px',
-          border: '1px solid #374151'
+          borderRadius: '8px',
+          padding: '8px 12px',
+          border: '1px solid #374151',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '12px'
         }}>
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '12px',
-            marginBottom: '12px'
-          }}>
-            {/* キャラクター選択ボタン */}
-            <button
-              onClick={() => {
-                if ('vibrate' in navigator) {
-                  navigator.vibrate(50)
-                }
-                const characters: CharacterId[] = ['luna', 'aria', 'zen']
-                const currentIndex = characters.indexOf(selectedCharacter)
-                const nextIndex = (currentIndex + 1) % characters.length
-                setSelectedCharacter(characters[nextIndex])
-                localStorage.setItem('selectedCharacter', characters[nextIndex])
-              }}
-              style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                backgroundColor: '#a3e635',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                transition: 'transform 0.2s ease',
-                flexShrink: 0
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
-            </button>
-
-            {/* キャラクター名と状態 */}
-            <div style={{ flex: 1 }}>
-              <div style={{
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#a3e635',
-                marginBottom: '2px'
-              }}>
-                {selectedCharacter === 'luna' ? 'Luna' : selectedCharacter === 'aria' ? 'Aria' : 'Zen'}
-              </div>
-              <div style={{
-                fontSize: '12px',
-                color: '#9ca3af'
-              }}>
-                タップで切り替え
-              </div>
-            </div>
-          </div>
-
-          {/* メッセージ */}
-          <div style={{
-            backgroundColor: '#374151',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            fontSize: '14px',
-            color: '#f3f4f6',
-            lineHeight: '1.4'
-          }}>
+          <span style={{ fontSize: '14px' }}>
+            {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
+          </span>
+          <span style={{ color: '#9ca3af', flex: 1 }}>
             {getCharacterMessage()}
-          </div>
-        </div>
-      </div>
-
-      {/* キャラクター感情表示 */}
-      <div style={{ padding: '24px' }}>
-        <CharacterMood 
-          characterId={selectedCharacter}
-          lastCheckin={lastCheckinDate}
-          streakDays={streakDays}
-          compact={true}
-        />
-        
-        {/* キャラクター切り替え */}
-        <div style={{ marginTop: '12px' }}>
-          <CharacterSelector
-            currentCharacterId={selectedCharacter}
-            userLevel={calculatedLevel}
-            onCharacterChange={setSelectedCharacter}
-            compact={true}
-          />
-        </div>
-
-        {/* フレンドレベル */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', marginBottom: '20px' }}>
-          <span style={{ ...typographyPresets.subText() }}>フレンドレベル {friendLevel}</span>
-          <div style={{ 
-            flex: 1, 
-            margin: '0 12px', 
-            height: '6px', 
-            backgroundColor: '#374151', 
-            borderRadius: '3px', 
-            position: 'relative' 
-          }}>
-            <div style={{ 
-              position: 'absolute', 
-              height: '100%', 
-              width: `${(totalXP / maxXP) * 100}%`, 
-              backgroundColor: '#a3e635', 
-              borderRadius: '3px' 
-            }}></div>
-          </div>
-          <span style={{ ...typographyPresets.activeText() }}>Lv.{calculatedLevel} {totalXP} XP</span>
+          </span>
+          <button
+            onClick={() => {
+              const characters: CharacterId[] = ['luna', 'aria', 'zen']
+              const currentIndex = characters.indexOf(selectedCharacter)
+              const nextIndex = (currentIndex + 1) % characters.length
+              setSelectedCharacter(characters[nextIndex])
+              localStorage.setItem('selectedCharacter', characters[nextIndex])
+            }}
+            style={{
+              fontSize: '10px',
+              color: '#6b7280',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '2px 4px'
+            }}
+          >
+            切替
+          </button>
         </div>
       </div>
 
