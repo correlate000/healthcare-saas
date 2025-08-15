@@ -606,19 +606,11 @@ export default function Dashboard() {
             <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 16px 0', position: 'relative' }}>新しいバッジと限定スタンプをゲット！</p>
             <button 
               onClick={(e) => {
-                console.log('報酬ボタンがクリックされました！', { rewardClaimed })
-                
-                if (rewardClaimed) {
-                  console.log('既に報酬を受け取り済みです')
-                  return
-                }
-                
-                console.log('報酬処理を開始します...')
+                if (rewardClaimed) return
                 
                 // バイブレーション（可能であれば）
                 if ('vibrate' in navigator) {
                   navigator.vibrate([50, 30, 100])
-                  console.log('バイブレーション実行')
                 }
                 
                 // 報酬アニメーション
@@ -627,18 +619,15 @@ export default function Dashboard() {
                 // XPアニメーションを表示
                 setXpAnimationAmount(200) // 7日継続報酬のXP
                 setShowXPAnimation(true)
-                console.log('XPアニメーション開始:', { xpAnimationAmount: 200 })
                 
                 // XPを実際に追加
                 const newXp = totalXP + 200
                 setTotalXP(newXp)
                 UserDataStorage.setXP(newXp)
-                console.log('XP更新:', { oldXP: totalXP, newXP: newXp })
                 
                 // レベルを再計算
                 const levelData = calculateLevel(newXp)
                 setCalculatedLevel(levelData.level)
-                console.log('レベル更新:', levelData)
                 
                 // ボタンアニメーション
                 button.style.animation = 'celebrate 0.5s ease-out'
@@ -648,14 +637,12 @@ export default function Dashboard() {
                   // テスト用にコメントアウト - 何度でもテストできるように
                   // setRewardClaimed(true)
                   // localStorage.setItem('7dayRewardClaimed', 'true')
-                  console.log('ボタンアニメーション完了')
                 }, 500)
                 
                 // XPアニメーションを隠す
                 setTimeout(() => {
                   setShowXPAnimation(false)
-                  console.log('XPアニメーション終了')
-                }, 3000) // 少し長めに設定
+                }, 2000)
               }}
               style={{
                 backgroundColor: rewardClaimed ? '#4b5563' : '#a3e635',
@@ -685,7 +672,7 @@ export default function Dashboard() {
               {rewardClaimed ? '受け取り済み ✓' : '報酬を受け取る'}
             </button>
             
-            {/* XP獲得アニメーション */}
+            {/* XP獲得アニメーション - シンプル美しいバージョン */}
             {showXPAnimation && (
               <div style={{
                 position: 'absolute',
@@ -693,55 +680,42 @@ export default function Dashboard() {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 pointerEvents: 'none',
-                animation: 'xpFloat 2.5s ease-out forwards',
+                animation: 'simpleXpFloat 2s ease-out forwards',
                 zIndex: 100
               }}>
                 <div style={{
-                  background: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)',
-                  color: 'white',
-                  padding: '16px 32px',
-                  borderRadius: '50px',
-                  fontSize: '28px',
-                  fontWeight: '900',
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  letterSpacing: '1px',
-                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-                  boxShadow: '0 20px 40px rgba(255, 107, 107, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.1)',
-                  animation: 'xpPulse 0.6s ease-out, rainbowGlow 2s ease-in-out infinite',
+                  background: 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)',
+                  color: '#0f172a',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  boxShadow: '0 8px 32px rgba(163, 230, 53, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)',
+                  animation: 'gentlePulse 0.4s ease-out',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  border: '3px solid rgba(255, 255, 255, 0.2)',
-                  backdropFilter: 'blur(10px)'
+                  gap: '8px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
                 }}>
-                  <span style={{ 
-                    fontSize: '36px',
-                    animation: 'starSpin 1s ease-in-out infinite',
-                    filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))'
-                  }}>✨</span>
-                  <span style={{
-                    background: 'linear-gradient(45deg, #fff, #f1c40f, #fff)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    animation: 'textShine 1.5s ease-in-out infinite'
-                  }}>+{xpAnimationAmount} XP</span>
+                  <span style={{ fontSize: '22px' }}>⭐</span>
+                  <span>+{xpAnimationAmount} XP</span>
                 </div>
                 
-                {/* 改善されたパーティクルエフェクト */}
+                {/* シンプルなパーティクル */}
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                  {[...Array(12)].map((_, i) => (
+                  {[...Array(6)].map((_, i) => (
                     <div
                       key={i}
                       style={{
                         position: 'absolute',
-                        width: `${Math.random() * 8 + 4}px`,
-                        height: `${Math.random() * 8 + 4}px`,
-                        background: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd'][i % 6],
+                        width: '6px',
+                        height: '6px',
+                        backgroundColor: '#a3e635',
                         borderRadius: '50%',
-                        animation: `enhancedParticle${i % 8} 2s ease-out forwards`,
-                        animationDelay: `${i * 0.08}s`,
-                        boxShadow: '0 0 10px currentColor'
+                        animation: `simpleParticle${i % 3} 1.5s ease-out forwards`,
+                        animationDelay: `${i * 0.1}s`,
+                        opacity: 0.7
                       }}
                     />
                   ))}
@@ -767,73 +741,34 @@ export default function Dashboard() {
           100% { transform: scale(1) rotate(0deg); }
         }
         
-        @keyframes xpFloat {
+        @keyframes simpleXpFloat {
           0% {
             opacity: 0;
-            transform: translate(-50%, -50%) translateY(20px) scale(0.3);
+            transform: translate(-50%, -50%) translateY(10px) scale(0.8);
           }
-          20% {
+          15% {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(0) scale(1.1);
+            transform: translate(-50%, -50%) translateY(0) scale(1.05);
           }
-          80% {
+          85% {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(-40px) scale(1);
+            transform: translate(-50%, -50%) translateY(-30px) scale(1);
           }
           100% {
             opacity: 0;
-            transform: translate(-50%, -50%) translateY(-80px) scale(0.8);
+            transform: translate(-50%, -50%) translateY(-50px) scale(0.9);
           }
         }
         
-        @keyframes xpPulse {
+        @keyframes gentlePulse {
           0% {
-            transform: scale(0.6);
+            transform: scale(0.9);
           }
-          30% {
-            transform: scale(1.15);
-          }
-          60% {
-            transform: scale(0.95);
+          50% {
+            transform: scale(1.05);
           }
           100% {
             transform: scale(1);
-          }
-        }
-        
-        @keyframes rainbowGlow {
-          0%, 100% {
-            filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.8));
-          }
-          25% {
-            filter: drop-shadow(0 0 20px rgba(254, 202, 87, 0.8));
-          }
-          50% {
-            filter: drop-shadow(0 0 20px rgba(72, 219, 251, 0.8));
-          }
-          75% {
-            filter: drop-shadow(0 0 20px rgba(255, 159, 243, 0.8));
-          }
-        }
-        
-        @keyframes starSpin {
-          0% {
-            transform: rotate(0deg) scale(1);
-          }
-          50% {
-            transform: rotate(180deg) scale(1.2);
-          }
-          100% {
-            transform: rotate(360deg) scale(1);
-          }
-        }
-        
-        @keyframes textShine {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
           }
         }
         
@@ -909,6 +844,19 @@ export default function Dashboard() {
           0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
           50% { transform: translate(70px, -50px) scale(1.3) rotate(180deg); opacity: 0.8; }
           100% { transform: translate(110px, -100px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes simpleParticle0 {
+          0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          100% { transform: translate(40px, -20px) scale(0); opacity: 0; }
+        }
+        @keyframes simpleParticle1 {
+          0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          100% { transform: translate(-30px, -30px) scale(0); opacity: 0; }
+        }
+        @keyframes simpleParticle2 {
+          0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+          100% { transform: translate(20px, -40px) scale(0); opacity: 0; }
         }
       `}</style>
 
