@@ -230,79 +230,86 @@ export default function ChatPage() {
         flexShrink: 0 
       }}>
         <div style={{ 
-          padding: '16px 20px',
+          padding: '12px 16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '16px'
+          gap: '12px'
         }}>
-          {/* 大きなメインキャラクターアバター */}
+          {/* メインキャラクターアバター（SPサイズ調整） */}
           <div style={{
-            width: '70px',
-            height: '70px',
+            width: '56px',
+            height: '56px',
             backgroundColor: currentCharacter.color + '20',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: `3px solid ${currentCharacter.color}`,
-            boxShadow: `0 4px 16px ${currentCharacter.color}40`,
+            border: `2px solid ${currentCharacter.color}`,
+            boxShadow: `0 4px 12px ${currentCharacter.color}30`,
             animation: 'float 3s ease-in-out infinite',
             flexShrink: 0
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={50}
+              size={40}
             />
           </div>
           
           {/* キャラクター情報と切り替え */}
-          <div style={{ flex: 1 }}>
+          <div style={{ 
+            flex: 1,
+            minWidth: 0  // テキストオーバーフロー対策
+          }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              marginBottom: '8px'
+              gap: '6px',
+              marginBottom: '6px'
             }}>
               <h2 style={{
-                ...getTypographyStyles('h4'),
+                ...getTypographyStyles('base'),
                 fontWeight: '700',
                 color: currentCharacter.color,
-                margin: 0
+                margin: 0,
+                fontSize: '16px'
               }}>
                 {currentCharacter.name}
               </h2>
               <div style={{
-                width: '6px',
-                height: '6px',
+                width: '5px',
+                height: '5px',
                 backgroundColor: '#a3e635',
                 borderRadius: '50%',
-                animation: 'pulse 2s ease-in-out infinite'
+                animation: 'pulse 2s ease-in-out infinite',
+                flexShrink: 0
               }}></div>
             </div>
             
-            {/* キャラクター切り替えボタン（他のキャラクターのみ表示） */}
+            {/* キャラクター切り替えボタン（SP最適化） */}
             <div style={{
               display: 'flex',
-              gap: '6px'
+              gap: '4px',
+              flexWrap: 'wrap'
             }}>
               {characters.filter(c => c.id !== selectedCharacter).map((character) => (
                 <button
                   key={character.id}
                   onClick={() => handleCharacterChange(character.id)}
                   style={{
-                    padding: '4px 8px',
+                    padding: '3px 6px',
                     backgroundColor: 'rgba(31, 41, 55, 0.6)',
                     color: '#9ca3af',
-                    borderRadius: '8px',
+                    borderRadius: '6px',
                     border: '1px solid rgba(55, 65, 81, 0.5)',
-                    fontSize: '11px',
+                    fontSize: '10px',
                     fontWeight: '500',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '4px'
+                    gap: '3px',
+                    whiteSpace: 'nowrap'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = character.color + '30'
@@ -318,15 +325,15 @@ export default function ChatPage() {
                   <BirdCharacter 
                     bodyColor={character.bodyColor} 
                     bellyColor={character.bellyColor}
-                    size={16}
+                    size={14}
                   />
-                  {character.name}に切替
+                  <span>{character.name}</span>
                 </button>
               ))}
             </div>
           </div>
           
-          {/* Voice Chat Link Button */}
+          {/* Voice Chat Link Button（SPサイズ調整） */}
           <button
             onClick={() => router.push('/voice-chat')}
             style={{
@@ -334,8 +341,8 @@ export default function ChatPage() {
               color: 'white',
               border: 'none',
               borderRadius: '50%',
-              width: '40px',
-              height: '40px',
+              width: '36px',
+              height: '36px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -352,7 +359,7 @@ export default function ChatPage() {
               e.currentTarget.style.transform = 'scale(1)'
             }}
           >
-            <Mic size={18} />
+            <Mic size={16} />
           </button>
         </div>
       </div>
