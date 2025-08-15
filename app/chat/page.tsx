@@ -223,110 +223,55 @@ export default function ChatPage() {
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {/* Header with large character display */}
+      {/* ヘッダー - 統合されたキャラクター表示 */}
       <div style={{ 
-        background: `linear-gradient(180deg, ${currentCharacter.color}15 0%, #111827 100%)`,
+        background: `linear-gradient(180deg, ${currentCharacter.color}10 0%, #111827 100%)`,
         borderBottom: '1px solid #374151', 
         flexShrink: 0 
       }}>
-        {/* キャラクター選択カード - より目立つ形式 */}
         <div style={{ 
-          padding: '16px',
-          display: 'flex',
-          gap: '8px',
-          justifyContent: 'center'
-        }}>
-          {characters.map((character) => (
-            <button
-              key={character.id}
-              onClick={() => handleCharacterChange(character.id)}
-              style={{
-                padding: '12px',
-                backgroundColor: selectedCharacter === character.id 
-                  ? character.color + '20' 
-                  : 'rgba(31, 41, 55, 0.6)',
-                color: selectedCharacter === character.id ? '#f3f4f6' : '#9ca3af',
-                borderRadius: '16px',
-                border: selectedCharacter === character.id 
-                  ? `2px solid ${character.color}` 
-                  : '2px solid transparent',
-                ...getTypographyStyles('small'),
-                fontWeight: selectedCharacter === character.id ? '700' : '500',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '6px',
-                minWidth: '80px',
-                boxShadow: selectedCharacter === character.id 
-                  ? `0 4px 16px ${character.color}40` 
-                  : 'none',
-                transform: selectedCharacter === character.id ? 'translateY(-2px)' : 'translateY(0)'
-              }}
-              onMouseEnter={(e) => {
-                if (selectedCharacter !== character.id) {
-                  e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.8)'
-                  e.currentTarget.style.transform = 'translateY(-1px)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (selectedCharacter !== character.id) {
-                  e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.6)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }
-              }}
-            >
-              <BirdCharacter 
-                bodyColor={character.bodyColor} 
-                bellyColor={character.bellyColor}
-                size={32}
-              />
-              <span style={{ fontSize: '12px' }}>{character.name}</span>
-              {selectedCharacter === character.id && (
-                <div style={{
-                  width: '6px',
-                  height: '6px',
-                  backgroundColor: character.color,
-                  borderRadius: '50%',
-                  animation: 'pulse 2s ease-in-out infinite'
-                }}></div>
-              )}
-            </button>
-          ))}
-        </div>
-        
-        {/* シンプルな現在のキャラクター表示 */}
-        <div style={{ 
-          padding: '12px 20px',
+          padding: '16px 20px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px'
+          gap: '16px'
         }}>
+          {/* 大きなメインキャラクターアバター */}
           <div style={{
-            width: '40px',
-            height: '40px',
+            width: '70px',
+            height: '70px',
             backgroundColor: currentCharacter.color + '20',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: `2px solid ${currentCharacter.color}`,
+            border: `3px solid ${currentCharacter.color}`,
+            boxShadow: `0 4px 16px ${currentCharacter.color}40`,
+            animation: 'float 3s ease-in-out infinite',
             flexShrink: 0
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={30}
+              size={50}
             />
           </div>
           
+          {/* キャラクター情報と切り替え */}
           <div style={{ flex: 1 }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px'
+              gap: '8px',
+              marginBottom: '8px'
             }}>
+              <h2 style={{
+                ...getTypographyStyles('h4'),
+                fontWeight: '700',
+                color: currentCharacter.color,
+                margin: 0
+              }}>
+                {currentCharacter.name}
+              </h2>
               <div style={{
                 width: '6px',
                 height: '6px',
@@ -334,12 +279,50 @@ export default function ChatPage() {
                 borderRadius: '50%',
                 animation: 'pulse 2s ease-in-out infinite'
               }}></div>
-              <span style={{ 
-                ...getTypographyStyles('small'), 
-                color: '#9ca3af'
-              }}>
-                {currentCharacter.name}と会話中
-              </span>
+            </div>
+            
+            {/* キャラクター切り替えボタン（他のキャラクターのみ表示） */}
+            <div style={{
+              display: 'flex',
+              gap: '6px'
+            }}>
+              {characters.filter(c => c.id !== selectedCharacter).map((character) => (
+                <button
+                  key={character.id}
+                  onClick={() => handleCharacterChange(character.id)}
+                  style={{
+                    padding: '4px 8px',
+                    backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                    color: '#9ca3af',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    fontSize: '11px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = character.color + '30'
+                    e.currentTarget.style.borderColor = character.color
+                    e.currentTarget.style.color = '#f3f4f6'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                    e.currentTarget.style.color = '#9ca3af'
+                  }}
+                >
+                  <BirdCharacter 
+                    bodyColor={character.bodyColor} 
+                    bellyColor={character.bellyColor}
+                    size={16}
+                  />
+                  {character.name}に切替
+                </button>
+              ))}
             </div>
           </div>
           
@@ -351,8 +334,8 @@ export default function ChatPage() {
               color: 'white',
               border: 'none',
               borderRadius: '50%',
-              width: '36px',
-              height: '36px',
+              width: '40px',
+              height: '40px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -369,7 +352,7 @@ export default function ChatPage() {
               e.currentTarget.style.transform = 'scale(1)'
             }}
           >
-            <Mic size={16} />
+            <Mic size={18} />
           </button>
         </div>
       </div>
