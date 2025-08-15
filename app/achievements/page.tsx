@@ -327,37 +327,7 @@ export default function AchievementsPage() {
                 gap: '12px',
                 marginBottom: '8px'
               }}>
-                <div style={{ position: 'relative' }}>
-                  <BirdCharacter emotion="happy" />
-                  {/* Motivational speech bubble */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '-45px',
-                    left: '70px',
-                    backgroundColor: '#1f2937',
-                    color: '#f3f4f6',
-                    padding: '8px 12px',
-                    borderRadius: '12px',
-                    ...getTypographyStyles('small'),
-                    fontWeight: '500',
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                    animation: 'float 3s ease-in-out infinite'
-                  }}>
-                    {getMotivationalMessage()}
-                    {/* Speech bubble arrow */}
-                    <div style={{
-                      position: 'absolute',
-                      bottom: '-6px',
-                      left: '20px',
-                      width: 0,
-                      height: 0,
-                      borderLeft: '6px solid transparent',
-                      borderRight: '6px solid transparent',
-                      borderTop: '6px solid #1f2937'
-                    }}></div>
-                  </div>
-                </div>
+                <BirdCharacter emotion="happy" />
                 <div>
                   <div style={{ 
                     ...getTypographyStyles('base'),
@@ -440,6 +410,24 @@ export default function AchievementsPage() {
                 獲得バッジ
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Motivational message */}
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '12px',
+          padding: '12px 16px',
+          marginBottom: '20px',
+          textAlign: 'center',
+          border: '1px solid #374151'
+        }}>
+          <div style={{
+            ...getTypographyStyles('small'),
+            color: '#a3e635',
+            fontWeight: '600'
+          }}>
+            {getMotivationalMessage()}
           </div>
         </div>
 

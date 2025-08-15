@@ -408,123 +408,81 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* キャラクターメッセージ - Duolingo風の可愛い案内 */}
+      {/* キャラクターメッセージ */}
       <div style={{ padding: '24px 24px 0' }}>
-        <div 
-          onClick={() => {
-            // バイブレーション
-            if ('vibrate' in navigator) {
-              navigator.vibrate(50)
-            }
-            // キャラクター切り替え
-            const characters: CharacterId[] = ['luna', 'aria', 'zen']
-            const currentIndex = characters.indexOf(selectedCharacter)
-            const nextIndex = (currentIndex + 1) % characters.length
-            setSelectedCharacter(characters[nextIndex])
-            localStorage.setItem('selectedCharacter', characters[nextIndex])
-          }}
-          style={{
-            backgroundColor: '#1f2937',
-            borderRadius: '20px',
-            padding: '24px',
-            position: 'relative',
-            overflow: 'hidden',
-            border: '2px solid #a3e635',
-            boxShadow: '0 8px 32px rgba(163, 230, 53, 0.15)',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.02)'
-            e.currentTarget.style.boxShadow = '0 12px 40px rgba(163, 230, 53, 0.25)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)'
-            e.currentTarget.style.boxShadow = '0 8px 32px rgba(163, 230, 53, 0.15)'
+        <div style={{
+          backgroundColor: '#1f2937',
+          borderRadius: '16px',
+          padding: '16px',
+          border: '1px solid #374151'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px',
+            marginBottom: '12px'
           }}>
-          {/* 背景アニメーション */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'linear-gradient(45deg, rgba(163, 230, 53, 0.05) 0%, transparent 50%, rgba(163, 230, 53, 0.05) 100%)',
-            animation: 'gentleGlow 3s ease-in-out infinite',
-            pointerEvents: 'none'
-          }}></div>
-
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', position: 'relative' }}>
-            {/* 大きなキャラクターアバター */}
-            <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: '#a3e635',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '40px',
-              animation: 'characterBounce 2s ease-in-out infinite',
-              boxShadow: '0 8px 24px rgba(163, 230, 53, 0.4)',
-              border: '3px solid #84cc16',
-              flexShrink: 0
-            }}>
+            {/* キャラクター選択ボタン */}
+            <button
+              onClick={() => {
+                if ('vibrate' in navigator) {
+                  navigator.vibrate(50)
+                }
+                const characters: CharacterId[] = ['luna', 'aria', 'zen']
+                const currentIndex = characters.indexOf(selectedCharacter)
+                const nextIndex = (currentIndex + 1) % characters.length
+                setSelectedCharacter(characters[nextIndex])
+                localStorage.setItem('selectedCharacter', characters[nextIndex])
+              }}
+              style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                backgroundColor: '#a3e635',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+                transition: 'transform 0.2s ease',
+                flexShrink: 0
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
               {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
-            </div>
+            </button>
 
-            {/* セリフバルーン */}
-            <div style={{
-              backgroundColor: '#374151',
-              borderRadius: '16px',
-              padding: '16px 20px',
-              position: 'relative',
-              flex: 1,
-              border: '1px solid #4b5563'
-            }}>
-              {/* セリフの三角 */}
+            {/* キャラクター名と状態 */}
+            <div style={{ flex: 1 }}>
               <div style={{
-                position: 'absolute',
-                left: '-8px',
-                top: '20px',
-                width: 0,
-                height: 0,
-                borderTop: '8px solid transparent',
-                borderBottom: '8px solid transparent',
-                borderRight: '8px solid #374151'
-              }}></div>
-
-              <div style={{
-                fontSize: '18px',
+                fontSize: '16px',
                 fontWeight: '600',
                 color: '#a3e635',
-                marginBottom: '4px',
-                textTransform: 'capitalize'
+                marginBottom: '2px'
               }}>
                 {selectedCharacter === 'luna' ? 'Luna' : selectedCharacter === 'aria' ? 'Aria' : 'Zen'}
               </div>
-              
               <div style={{
-                fontSize: '16px',
-                color: '#f3f4f6',
-                lineHeight: '1.5',
-                fontWeight: '500'
+                fontSize: '12px',
+                color: '#9ca3af'
               }}>
-                {getCharacterMessage()}
+                タップで切り替え
               </div>
             </div>
           </div>
 
-          {/* タップでキャラクター切り替え */}
+          {/* メッセージ */}
           <div style={{
-            position: 'absolute',
-            bottom: '12px',
-            right: '16px',
-            fontSize: '12px',
-            color: '#9ca3af',
-            opacity: 0.7
+            backgroundColor: '#374151',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            fontSize: '14px',
+            color: '#f3f4f6',
+            lineHeight: '1.4'
           }}>
-            タップでキャラクター変更
+            {getCharacterMessage()}
           </div>
         </div>
       </div>
