@@ -80,12 +80,12 @@ export function StreakWarningBanner({ lastCheckin, onCheckinClick }: StreakWarni
       style={{
         background: getBackgroundColor(),
         border: `2px solid ${getBorderColor()}`,
-        borderRadius: '12px',
-        padding: '12px 16px',
-        marginBottom: '20px',
+        borderRadius: '10px',
+        padding: '10px 12px',
+        marginBottom: '16px',
         cursor: 'pointer',
         transition: 'all 0.3s ease',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
         animation: warning.level === 'critical' ? 'pulse 1s ease-in-out infinite' : 
                    warning.level === 'danger' ? 'pulse 2s ease-in-out infinite' : 'none',
         position: 'relative',
@@ -116,45 +116,55 @@ export function StreakWarningBanner({ lastCheckin, onCheckinClick }: StreakWarni
         alignItems: 'center',
         justifyContent: 'space-between',
         position: 'relative',
-        zIndex: 1
+        zIndex: 1,
+        gap: '8px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
           <span style={{ 
-            fontSize: '24px',
-            animation: warning.level === 'critical' ? 'shake 0.5s ease-in-out infinite' : 'none'
+            fontSize: '20px',
+            animation: warning.level === 'critical' ? 'shake 0.5s ease-in-out infinite' : 'none',
+            flexShrink: 0
           }}>
             {warning.icon}
           </span>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              ...getTypographyStyles('base'),
+              ...getTypographyStyles('small'),
               color: 'white',
               fontWeight: '600',
-              marginBottom: '2px'
+              marginBottom: '1px',
+              fontSize: '13px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
             }}>
               {warning.message}
             </div>
             <div style={{
-              ...getTypographyStyles('small'),
-              color: 'rgba(255, 255, 255, 0.9)'
+              ...getTypographyStyles('caption'),
+              color: 'rgba(255, 255, 255, 0.9)',
+              fontSize: '11px'
             }}>
-              残り時間: {timeRemaining}
+              残り: {timeRemaining}
             </div>
           </div>
         </div>
         
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
-          borderRadius: '8px',
-          padding: '6px 12px',
-          border: '1px solid rgba(255, 255, 255, 0.3)'
+          borderRadius: '6px',
+          padding: '4px 8px',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          flexShrink: 0
         }}>
           <span style={{
-            ...getTypographyStyles('small'),
+            ...getTypographyStyles('caption'),
             color: 'white',
-            fontWeight: '600'
+            fontWeight: '600',
+            fontSize: '11px',
+            whiteSpace: 'nowrap'
           }}>
-            今すぐチェックイン
+            CHECK IN
           </span>
         </div>
       </div>

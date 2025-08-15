@@ -119,39 +119,43 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
     <div style={{
       backgroundColor: '#1f2937',
       borderRadius: '16px',
-      padding: '20px'
+      padding: '16px'
     }}>
       {/* ヘッダー */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '20px'
+        marginBottom: '16px',
+        flexWrap: 'wrap',
+        gap: '8px'
       }}>
         <h3 style={{
-          ...getTypographyStyles('h4'),
+          ...getTypographyStyles('base'),
           color: '#f3f4f6',
           margin: 0,
-          fontWeight: '700'
+          fontWeight: '700',
+          fontSize: '16px'
         }}>
           今日のチャレンジ
         </h3>
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '12px'
+          gap: '8px'
         }}>
           <span style={{
-            ...getTypographyStyles('small'),
-            color: '#9ca3af'
+            ...getTypographyStyles('caption'),
+            color: '#9ca3af',
+            fontSize: '12px'
           }}>
-            {completedToday.length}/{challenges.length} 完了
+            {completedToday.length}/{challenges.length}
           </span>
           <div style={{
-            width: '60px',
-            height: '6px',
+            width: '50px',
+            height: '4px',
             backgroundColor: '#374151',
-            borderRadius: '3px',
+            borderRadius: '2px',
             overflow: 'hidden'
           }}>
             <div style={{
@@ -168,7 +172,7 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px'
+        gap: '10px'
       }}>
         {challenges.map((challenge) => {
           const isCompleted = completedToday.includes(challenge.id)
@@ -183,14 +187,14 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
               style={{
                 position: 'relative',
                 display: 'flex',
-                alignItems: 'center',
-                padding: '16px',
+                alignItems: 'flex-start',
+                padding: '12px',
                 backgroundColor: isCompleted ? '#374151' : '#4b5563',
                 borderRadius: '12px',
                 cursor: isLocked ? 'not-allowed' : isCompleted ? 'default' : 'pointer',
                 opacity: isLocked ? 0.5 : 1,
                 transition: 'all 0.3s ease',
-                transform: isAnimatingNow ? 'scale(1.05)' : 'scale(1)',
+                transform: isAnimatingNow ? 'scale(1.02)' : 'scale(1)',
                 border: isAnimatingNow ? `2px solid ${config.color}` : '2px solid transparent',
                 overflow: 'hidden'
               }}
@@ -223,15 +227,16 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
 
               {/* チェックボックス */}
               <div style={{
-                width: '28px',
-                height: '28px',
+                width: '24px',
+                height: '24px',
                 borderRadius: '50%',
                 border: `2px solid ${isCompleted ? config.color : '#6b7280'}`,
                 backgroundColor: isCompleted ? config.color : 'transparent',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                marginRight: '16px',
+                marginRight: '12px',
+                marginTop: '2px',
                 flexShrink: 0,
                 transition: 'all 0.3s ease',
                 transform: isAnimatingNow ? 'rotate(360deg) scale(1.2)' : 'rotate(0) scale(1)'
@@ -248,15 +253,17 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  marginBottom: '4px'
+                  gap: '6px',
+                  marginBottom: '4px',
+                  flexWrap: 'wrap'
                 }}>
-                  <span style={{ fontSize: '20px' }}>{challenge.icon}</span>
+                  <span style={{ fontSize: '18px' }}>{challenge.icon}</span>
                   <span style={{
-                    ...getTypographyStyles('base'),
+                    ...getTypographyStyles('small'),
                     color: isCompleted ? '#9ca3af' : '#f3f4f6',
                     fontWeight: '600',
-                    textDecoration: isCompleted ? 'line-through' : 'none'
+                    textDecoration: isCompleted ? 'line-through' : 'none',
+                    fontSize: '14px'
                   }}>
                     {challenge.title}
                   </span>
@@ -273,40 +280,45 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
                   )}
                 </div>
                 <div style={{
-                  ...getTypographyStyles('small'),
+                  ...getTypographyStyles('caption'),
                   color: '#9ca3af',
-                  marginBottom: '8px'
+                  marginBottom: '6px',
+                  fontSize: '11px',
+                  lineHeight: '1.4'
                 }}>
                   {challenge.description}
                 </div>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
+                  gap: '8px',
+                  flexWrap: 'wrap'
                 }}>
                   <span style={{
                     ...getTypographyStyles('caption'),
                     backgroundColor: config.color,
                     color: challenge.difficulty === 'easy' ? '#111827' : 'white',
-                    padding: '3px 8px',
-                    borderRadius: '12px',
-                    fontWeight: '600'
+                    padding: '2px 6px',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    fontSize: '10px'
                   }}>
                     {getDifficultyLabel(challenge.difficulty)}
                   </span>
                   <span style={{
                     ...getTypographyStyles('caption'),
                     color: '#fbbf24',
-                    fontWeight: '600'
+                    fontWeight: '600',
+                    fontSize: '11px'
                   }}>
                     +{challenge.xpReward} XP
-                    {challenge.bonusXp && ` (+${challenge.bonusXp} ボーナス)`}
                   </span>
                   <span style={{
                     ...getTypographyStyles('caption'),
-                    color: '#9ca3af'
+                    color: '#9ca3af',
+                    fontSize: '10px'
                   }}>
-                    ⏱ {challenge.timeEstimate}
+                    {challenge.timeEstimate}
                   </span>
                 </div>
               </div>

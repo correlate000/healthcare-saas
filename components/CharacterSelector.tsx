@@ -115,25 +115,26 @@ export function CharacterSelector({
               onClick={() => handleCharacterSelect(character)}
               style={{
                 flexShrink: 0,
-                width: '80px',
-                padding: '12px 8px',
+                width: '70px',
+                padding: '10px 6px',
                 backgroundColor: isSelected ? character.primaryColor : '#374151',
-                borderRadius: '12px',
+                borderRadius: '10px',
                 border: isSelected ? `2px solid ${character.primaryColor}` : '2px solid transparent',
                 cursor: isLocked ? 'not-allowed' : 'pointer',
                 opacity: isLocked ? 0.5 : 1,
                 textAlign: 'center',
                 transition: 'all 0.3s ease',
-                transform: isSelected ? 'scale(1.05)' : 'scale(1)'
+                transform: isSelected ? 'scale(1.02)' : 'scale(1)'
               }}
             >
-              <div style={{ fontSize: '24px', marginBottom: '4px' }}>
+              <div style={{ fontSize: '20px', marginBottom: '2px' }}>
                 {character.emoji}
               </div>
               <div style={{
                 ...getTypographyStyles('caption'),
                 color: isSelected ? '#111827' : '#d1d5db',
-                fontWeight: '600'
+                fontWeight: '600',
+                fontSize: '11px'
               }}>
                 {character.nameJa}
               </div>

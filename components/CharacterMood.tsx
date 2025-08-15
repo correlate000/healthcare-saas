@@ -161,57 +161,66 @@ export function CharacterMood({ characterId, lastCheckin, streakDays, compact = 
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '12px',
-        padding: '12px 16px',
+        gap: '10px',
+        padding: '10px 12px',
         backgroundColor: 'rgba(31, 41, 55, 0.6)',
-        borderRadius: '12px',
+        borderRadius: '10px',
         border: currentMood === 'angry' || currentMood === 'sad' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)'
       }}>
         <div style={{
-          width: '48px',
-          height: '48px',
+          width: '42px',
+          height: '42px',
           backgroundColor: config.primaryColor,
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '24px',
+          fontSize: '20px',
           animation: `${getAnimation()} 2s ease-in-out infinite`,
-          position: 'relative'
+          position: 'relative',
+          flexShrink: 0
         }}>
           {getExpression()}
           {missedDays > 0 && (
             <div style={{
               position: 'absolute',
-              top: '-4px',
-              right: '-4px',
+              top: '-2px',
+              right: '-2px',
               backgroundColor: '#ef4444',
               color: 'white',
               borderRadius: '50%',
-              width: '20px',
-              height: '20px',
+              width: '18px',
+              height: '18px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '12px',
+              fontSize: '10px',
               fontWeight: 'bold'
             }}>
               {missedDays}
             </div>
           )}
         </div>
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{
-            ...getTypographyStyles('small'),
+            ...getTypographyStyles('caption'),
             color: config.primaryColor,
-            marginBottom: '2px',
-            fontWeight: '600'
+            marginBottom: '1px',
+            fontWeight: '600',
+            fontSize: '12px'
           }}>
             {config.name}
           </div>
           <div style={{
-            ...getTypographyStyles('small'),
-            color: '#d1d5db'
+            ...getTypographyStyles('caption'),
+            color: '#d1d5db',
+            fontSize: '11px',
+            lineHeight: '1.3',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical'
           }}>
             {message}
           </div>
