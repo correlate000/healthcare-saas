@@ -296,66 +296,49 @@ export default function ChatPage() {
           ))}
         </div>
         
-        {/* メインキャラクター表示 - 世界観を強化 */}
+        {/* シンプルな現在のキャラクター表示 */}
         <div style={{ 
-          padding: '16px 20px 20px',
+          padding: '12px 20px',
           display: 'flex',
           alignItems: 'center',
-          gap: '16px'
+          gap: '12px'
         }}>
           <div style={{
-            width: '80px',
-            height: '80px',
-            background: `radial-gradient(circle, ${currentCharacter.color}30 0%, ${currentCharacter.color}10 50%, transparent 100%)`,
+            width: '40px',
+            height: '40px',
+            backgroundColor: currentCharacter.color + '20',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            animation: 'float 3s ease-in-out infinite',
-            border: `3px solid ${currentCharacter.color}`,
-            boxShadow: `0 8px 24px ${currentCharacter.color}40`
+            border: `2px solid ${currentCharacter.color}`,
+            flexShrink: 0
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={60}
+              size={30}
             />
           </div>
+          
           <div style={{ flex: 1 }}>
-            <h2 style={{ 
-              ...getTypographyStyles('h3'), 
-              fontWeight: '700', 
-              color: currentCharacter.color,
-              marginBottom: '4px'
-            }}>
-              {currentCharacter.name}
-            </h2>
-            <div style={{
-              ...getTypographyStyles('base'),
-              color: '#d1d5db',
-              marginBottom: '6px',
-              lineHeight: '1.4'
-            }}>
-              {getCharacterPersonality(selectedCharacter)}
-            </div>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}>
               <div style={{
-                width: '8px',
-                height: '8px',
+                width: '6px',
+                height: '6px',
                 backgroundColor: '#a3e635',
                 borderRadius: '50%',
                 animation: 'pulse 2s ease-in-out infinite'
               }}></div>
               <span style={{ 
                 ...getTypographyStyles('small'), 
-                color: '#9ca3af',
-                fontWeight: '500'
+                color: '#9ca3af'
               }}>
-                話し相手として待機中
+                {currentCharacter.name}と会話中
               </span>
             </div>
           </div>
@@ -368,8 +351,8 @@ export default function ChatPage() {
               color: 'white',
               border: 'none',
               borderRadius: '50%',
-              width: '40px',
-              height: '40px',
+              width: '36px',
+              height: '36px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -386,7 +369,7 @@ export default function ChatPage() {
               e.currentTarget.style.transform = 'scale(1)'
             }}
           >
-            <Mic size={18} />
+            <Mic size={16} />
           </button>
         </div>
       </div>

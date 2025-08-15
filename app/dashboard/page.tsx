@@ -14,6 +14,7 @@ import { CharacterMood } from '@/components/CharacterMood'
 import { StreakWarningBanner } from '@/components/StreakWarningBanner'
 import { DailyChallenges } from '@/components/DailyChallenges'
 import { CharacterSelector, type CharacterId } from '@/components/CharacterSelector'
+import { CharacterAvatar } from '@/components/CharacterAvatar'
 import { NotificationManager, NotificationScheduler } from '@/utils/notifications'
 import { calculateLevel } from '@/types/daily-challenge'
 
@@ -411,15 +412,28 @@ export default function Dashboard() {
 
       {/* キャラクター案内 - 世界観を作る重要な要素 */}
       <div style={{ padding: '24px 24px 0' }}>
-        <div style={{
-          backgroundColor: '#1f2937',
-          borderRadius: '20px',
-          padding: '20px',
-          border: '2px solid #a3e635',
-          boxShadow: '0 8px 32px rgba(163, 230, 53, 0.15)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
+        <div 
+          onClick={() => router.push('/chat')}
+          style={{
+            backgroundColor: '#1f2937',
+            borderRadius: '20px',
+            padding: '20px',
+            border: '2px solid #a3e635',
+            boxShadow: '0 8px 32px rgba(163, 230, 53, 0.15)',
+            position: 'relative',
+            overflow: 'hidden',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(163, 230, 53, 0.25)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(163, 230, 53, 0.15)'
+          }}
+        >
           {/* 背景グロー効果 */}
           <div style={{
             position: 'absolute',
@@ -432,46 +446,32 @@ export default function Dashboard() {
             pointerEvents: 'none'
           }}></div>
 
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', position: 'relative' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative' }}>
             {/* 大きなキャラクターアバター */}
             <div style={{
               width: '80px',
               height: '80px',
               borderRadius: '50%',
-              backgroundColor: '#a3e635',
+              backgroundColor: selectedCharacter === 'luna' ? '#a3e635' : selectedCharacter === 'aria' ? '#60a5fa' : '#f59e0b',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '40px',
               animation: 'characterBounce 2s ease-in-out infinite',
               boxShadow: '0 8px 24px rgba(163, 230, 53, 0.4)',
-              border: '3px solid #84cc16',
-              flexShrink: 0
+              border: '3px solid rgba(255, 255, 255, 0.2)',
+              flexShrink: 0,
+              position: 'relative'
             }}>
-              {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
+              {/* キャラクターコンポーネント */}
+              <CharacterAvatar 
+                characterId={selectedCharacter}
+                size={60}
+                mood="happy"
+              />
             </div>
 
             {/* メッセージ部分 */}
-            <div style={{
-              backgroundColor: '#374151',
-              borderRadius: '16px',
-              padding: '16px 20px',
-              position: 'relative',
-              flex: 1,
-              border: '1px solid #4b5563'
-            }}>
-              {/* セリフの三角 */}
-              <div style={{
-                position: 'absolute',
-                left: '-8px',
-                top: '20px',
-                width: 0,
-                height: 0,
-                borderTop: '8px solid transparent',
-                borderBottom: '8px solid transparent',
-                borderRight: '8px solid #374151'
-              }}></div>
-
+            <div style={{ flex: 1 }}>
               <div style={{
                 fontSize: '18px',
                 fontWeight: '600',
@@ -486,14 +486,25 @@ export default function Dashboard() {
                 fontSize: '16px',
                 color: '#f3f4f6',
                 lineHeight: '1.5',
-                fontWeight: '500'
+                fontWeight: '500',
+                marginBottom: '8px'
               }}>
                 {getCharacterMessage()}
               </div>
+              
+              {/* 対話への誘導 */}
+              <div style={{
+                fontSize: '13px',
+                color: '#a3e635',
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                タップして話す →
+              </div>
             </div>
           </div>
-
-          {/* キャラクター切り替えは削除 - チャット画面で行う */}
         </div>
       </div>
 
