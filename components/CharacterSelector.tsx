@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { getTypographyStyles } from '@/styles/typography'
 import { HapticsManager } from '@/utils/haptics'
+import { CharacterAvatar } from './CharacterAvatar'
 
 export type CharacterId = 'luna' | 'aria' | 'zen'
 
@@ -115,26 +116,45 @@ export function CharacterSelector({
               onClick={() => handleCharacterSelect(character)}
               style={{
                 flexShrink: 0,
-                width: '70px',
-                padding: '10px 6px',
-                backgroundColor: isSelected ? character.primaryColor : '#374151',
-                borderRadius: '10px',
-                border: isSelected ? `2px solid ${character.primaryColor}` : '2px solid transparent',
+                width: '90px',
+                padding: '12px 8px',
+                backgroundColor: isSelected ? `${character.primaryColor}15` : '#374151',
+                borderRadius: '12px',
+                border: isSelected ? `2px solid ${character.primaryColor}` : '1px solid #4b5563',
                 cursor: isLocked ? 'not-allowed' : 'pointer',
                 opacity: isLocked ? 0.5 : 1,
                 textAlign: 'center',
                 transition: 'all 0.3s ease',
-                transform: isSelected ? 'scale(1.02)' : 'scale(1)'
+                transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: isSelected ? `0 4px 12px ${character.primaryColor}40` : '0 2px 6px rgba(0, 0, 0, 0.2)',
+                position: 'relative'
               }}
             >
-              <div style={{ fontSize: '20px', marginBottom: '2px' }}>
-                {character.emoji}
+              {isSelected && (
+                <div style={{
+                  position: 'absolute',
+                  top: '4px',
+                  right: '4px',
+                  width: '8px',
+                  height: '8px',
+                  backgroundColor: character.primaryColor,
+                  borderRadius: '50%',
+                  boxShadow: `0 0 8px ${character.primaryColor}`
+                }}></div>
+              )}
+              <div style={{ marginBottom: '4px', display: 'flex', justifyContent: 'center' }}>
+                <CharacterAvatar
+                  characterId={character.id}
+                  mood="normal"
+                  size={36}
+                  animate={false}
+                />
               </div>
               <div style={{
                 ...getTypographyStyles('caption'),
-                color: isSelected ? '#111827' : '#d1d5db',
-                fontWeight: '600',
-                fontSize: '11px'
+                color: isSelected ? character.primaryColor : '#d1d5db',
+                fontWeight: '700',
+                fontSize: '12px'
               }}>
                 {character.nameJa}
               </div>
@@ -262,19 +282,12 @@ export function CharacterSelector({
                 gap: '16px',
                 marginBottom: '16px'
               }}>
-                <div style={{
-                  width: '60px',
-                  height: '60px',
-                  backgroundColor: character.primaryColor,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '32px',
-                  boxShadow: `0 4px 12px ${character.primaryColor}40`
-                }}>
-                  {character.emoji}
-                </div>
+                <CharacterAvatar
+                  characterId={character.id}
+                  mood="normal"
+                  size={60}
+                  animate={isSelected}
+                />
                 <div>
                   <div style={{
                     ...getTypographyStyles('h4'),

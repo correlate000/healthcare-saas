@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { CharacterMood as MoodType, emotionRules, streakWarnings } from '@/types/character-emotion'
 import { getTypographyStyles } from '@/styles/typography'
+import { CharacterAvatar } from './CharacterAvatar'
 
 interface CharacterMoodProps {
   characterId: 'luna' | 'aria' | 'zen'
@@ -129,31 +130,6 @@ export function CharacterMood({ characterId, lastCheckin, streakDays, compact = 
     }
   }, [lastCheckin, streakDays, characterId, currentTime])
 
-  // 感情に応じた表情を取得
-  const getExpression = () => {
-    switch (currentMood) {
-      case 'happy': return '😊'
-      case 'worried': return '😟'
-      case 'sad': return '😢'
-      case 'angry': return '😠'
-      case 'disappointed': return '😔'
-      case 'sleeping': return '😴'
-      default: return '😐'
-    }
-  }
-
-  // アニメーションクラスを取得
-  const getAnimation = () => {
-    switch (currentMood) {
-      case 'happy': return 'bounce'
-      case 'worried': return 'shake'
-      case 'sad': return 'droop'
-      case 'angry': return 'tremble'
-      case 'disappointed': return 'sway'
-      case 'sleeping': return 'breathe'
-      default: return 'idle'
-    }
-  }
 
   if (compact) {
     // コンパクト表示（ダッシュボード用）
@@ -161,41 +137,39 @@ export function CharacterMood({ characterId, lastCheckin, streakDays, compact = 
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
-        padding: '10px 12px',
-        backgroundColor: 'rgba(31, 41, 55, 0.6)',
-        borderRadius: '10px',
-        border: currentMood === 'angry' || currentMood === 'sad' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)'
+        gap: '12px',
+        padding: '12px 14px',
+        backgroundColor: 'rgba(31, 41, 55, 0.8)',
+        borderRadius: '12px',
+        border: currentMood === 'angry' || currentMood === 'sad' ? '2px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)'
       }}>
         <div style={{
-          width: '42px',
-          height: '42px',
-          backgroundColor: config.primaryColor,
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '20px',
-          animation: `${getAnimation()} 2s ease-in-out infinite`,
           position: 'relative',
           flexShrink: 0
         }}>
-          {getExpression()}
+          <CharacterAvatar
+            characterId={characterId}
+            mood={currentMood}
+            size={48}
+            animate={true}
+          />
           {missedDays > 0 && (
             <div style={{
               position: 'absolute',
-              top: '-2px',
-              right: '-2px',
+              top: '-4px',
+              right: '-4px',
               backgroundColor: '#ef4444',
               color: 'white',
               borderRadius: '50%',
-              width: '18px',
-              height: '18px',
+              width: '20px',
+              height: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '10px',
-              fontWeight: 'bold'
+              fontSize: '11px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
             }}>
               {missedDays}
             </div>
