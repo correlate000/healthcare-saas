@@ -109,11 +109,12 @@ export default function Dashboard() {
           }
         }
         
-        // Load reward claimed status
-        const claimed = localStorage.getItem('7dayRewardClaimed')
-        if (claimed === 'true') {
-          setRewardClaimed(true)
-        }
+        // Load reward claimed status - テスト用に常にfalseに設定
+        // const claimed = localStorage.getItem('7dayRewardClaimed')
+        // if (claimed === 'true') {
+        //   setRewardClaimed(true)
+        // }
+        setRewardClaimed(false) // テスト用に常にリセット
       } catch (error) {
         console.error('Error loading user data:', error)
       } finally {
@@ -605,11 +606,19 @@ export default function Dashboard() {
             <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 16px 0', position: 'relative' }}>新しいバッジと限定スタンプをゲット！</p>
             <button 
               onClick={(e) => {
-                if (rewardClaimed) return
+                console.log('報酬ボタンがクリックされました！', { rewardClaimed })
+                
+                if (rewardClaimed) {
+                  console.log('既に報酬を受け取り済みです')
+                  return
+                }
+                
+                console.log('報酬処理を開始します...')
                 
                 // バイブレーション（可能であれば）
                 if ('vibrate' in navigator) {
                   navigator.vibrate([50, 30, 100])
+                  console.log('バイブレーション実行')
                 }
                 
                 // 報酬アニメーション
@@ -618,30 +627,35 @@ export default function Dashboard() {
                 // XPアニメーションを表示
                 setXpAnimationAmount(200) // 7日継続報酬のXP
                 setShowXPAnimation(true)
+                console.log('XPアニメーション開始:', { xpAnimationAmount: 200 })
                 
                 // XPを実際に追加
                 const newXp = totalXP + 200
                 setTotalXP(newXp)
                 UserDataStorage.setXP(newXp)
+                console.log('XP更新:', { oldXP: totalXP, newXP: newXp })
                 
                 // レベルを再計算
                 const levelData = calculateLevel(newXp)
                 setCalculatedLevel(levelData.level)
+                console.log('レベル更新:', levelData)
                 
                 // ボタンアニメーション
                 button.style.animation = 'celebrate 0.5s ease-out'
                 
                 setTimeout(() => {
                   button.style.animation = ''
-                  setRewardClaimed(true)
-                  // 状態を保存
-                  localStorage.setItem('7dayRewardClaimed', 'true')
+                  // テスト用にコメントアウト - 何度でもテストできるように
+                  // setRewardClaimed(true)
+                  // localStorage.setItem('7dayRewardClaimed', 'true')
+                  console.log('ボタンアニメーション完了')
                 }, 500)
                 
                 // XPアニメーションを隠す
                 setTimeout(() => {
                   setShowXPAnimation(false)
-                }, 2000)
+                  console.log('XPアニメーション終了')
+                }, 3000) // 少し長めに設定
               }}
               style={{
                 backgroundColor: rewardClaimed ? '#4b5563' : '#a3e635',

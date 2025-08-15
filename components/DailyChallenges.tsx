@@ -39,18 +39,38 @@ export function DailyChallenges({ onChallengeComplete }: DailyChallengesProps) {
     
     // 今日完了したチャレンジを読み込み
     const today = new Date().toDateString()
-    const savedCompleted = localStorage.getItem(`completed-challenges-${today}`)
-    if (savedCompleted) {
-      setCompletedToday(JSON.parse(savedCompleted))
+    
+    // テスト用: URLに?reset=trueがある場合は完了状態をリセット
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('reset') === 'true') {
+      console.log('テスト用: チャレンジ完了状態をリセットしました')
+      localStorage.removeItem(`completed-challenges-${today}`)
+      setCompletedToday([])
+    } else {
+      const savedCompleted = localStorage.getItem(`completed-challenges-${today}`)
+      if (savedCompleted) {
+        const completed = JSON.parse(savedCompleted)
+        console.log('今日完了済みのチャレンジ:', completed)
+        setCompletedToday(completed)
+      }
     }
   }, [])
 
   const handleChallengeClick = async (challenge: DailyChallenge, event: React.MouseEvent) => {
-    if (completedToday.includes(challenge.id)) return
+    console.log('チャレンジがクリックされました:', challenge.title, challenge.id)
+    
+    if (completedToday.includes(challenge.id)) {
+      console.log('このチャレンジは既に完了済みです:', challenge.id)
+      return
+    }
+    
     if (challenge.unlockLevel && userLevel < challenge.unlockLevel) {
+      console.log('レベルが足りません。必要レベル:', challenge.unlockLevel, '現在レベル:', userLevel)
       HapticsManager.error()
       return
     }
+    
+    console.log('チャレンジ処理を開始します...')
 
     // アニメーション開始
     setIsAnimating(challenge.id)
