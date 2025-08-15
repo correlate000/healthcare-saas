@@ -419,320 +419,406 @@ export default function VoiceChatPage() {
   }
 
   // 鳥キャラクターコンポーネント（チャットページと同じデザイン）
-  const BirdCharacter = ({ size = 180 }: { size?: number }) => {
-    const scale = size / 100
-    const time = Date.now() / 1000
-    const bounceHeight = isSpeaking ? Math.sin(time * 4) * 5 : 0
-    const wingFlap = isListening ? Math.sin(time * 8) * 10 : 0
-    
-    return (
-      <svg 
-        width={size} 
-        height={size} 
-        viewBox="0 0 100 100"
-        style={{
-          transform: `translateY(${bounceHeight}px)`,
-          transition: 'transform 0.1s ease'
-        }}
-      >
-        {/* 体 */}
-        <ellipse cx="50" cy="55" rx="35" ry="38" fill={currentCharacter.bodyColor} />
-        
-        {/* お腹 */}
-        <ellipse cx="50" cy="60" rx="25" ry="28" fill={currentCharacter.bellyColor} />
-        
-        {/* 左羽 */}
-        <ellipse 
-          cx="25" 
-          cy="50" 
-          rx="15" 
-          ry="25" 
-          fill={currentCharacter.bodyColor} 
-          transform={`rotate(${-20 + wingFlap} 25 50)`}
-        />
-        
-        {/* 右羽 */}
-        <ellipse 
-          cx="75" 
-          cy="50" 
-          rx="15" 
-          ry="25" 
-          fill={currentCharacter.bodyColor} 
-          transform={`rotate(${20 - wingFlap} 75 50)`}
-        />
-        
-        {/* 左目 */}
-        <circle cx="40" cy="45" r="6" fill="white" />
-        <circle 
-          cx={isListening ? "40" : "42"} 
-          cy="45" 
-          r={isSpeaking ? "3" : "4"} 
-          fill="#111827" 
-        />
-        <circle cx="43" cy="44" r="2" fill="white" />
-        
-        {/* 右目 */}
-        <circle cx="60" cy="45" r="6" fill="white" />
-        <circle 
-          cx={isListening ? "60" : "58"} 
-          cy="45" 
-          r={isSpeaking ? "3" : "4"} 
-          fill="#111827" 
-        />
-        <circle cx="59" cy="44" r="2" fill="white" />
-        
-        {/* くちばし */}
-        {isSpeaking ? (
-          <ellipse 
-            cx="50" 
-            cy="55" 
-            rx={4 + Math.sin(time * 10) * 2} 
-            ry={3 + Math.sin(time * 10) * 2} 
-            fill="#fbbf24" 
-          />
-        ) : (
-          <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
-        )}
-        
-        {/* 音波エフェクト */}
-        {(isListening || isSpeaking) && (
-          <>
-            <circle 
-              cx="50" 
-              cy="55" 
-              r="45" 
-              fill="none" 
-              stroke={currentCharacter.color} 
-              strokeWidth="1" 
-              opacity="0.3"
-            >
-              <animate 
-                attributeName="r" 
-                from="45" 
-                to="60" 
-                dur="2s" 
-                repeatCount="indefinite"
-              />
-              <animate 
-                attributeName="opacity" 
-                from="0.3" 
-                to="0" 
-                dur="2s" 
-                repeatCount="indefinite"
-              />
-            </circle>
-          </>
-        )}
-      </svg>
-    )
-  }
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 30 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
 
   return (
     <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+      height: '100vh',
+      backgroundColor: '#111827',
       color: 'white',
-      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      overflow: 'hidden'
     }}>
-      {/* Header */}
-      <div style={{
-        padding: '16px 20px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        background: 'rgba(0, 0, 0, 0.3)',
-        backdropFilter: 'blur(10px)'
+      {/* ヘッダー - チャット画面と統一 */}
+      <div style={{ 
+        background: `linear-gradient(180deg, ${currentCharacter.color}10 0%, #111827 100%)`,
+        borderBottom: '1px solid #374151', 
+        flexShrink: 0 
       }}>
-        <div>
-          <h1 style={{
-            ...getTypographyStyles('h3'),
-            margin: 0,
-            fontWeight: '700',
-            color: currentCharacter.color
-          }}>
-            {currentCharacter.name}と対話
-          </h1>
-          <p style={{
-            ...getTypographyStyles('small'),
-            color: '#94a3b8',
-            margin: '4px 0 0 0'
-          }}>
-            {connectionState === 'disconnected' && 'マイクボタンをタップ'}
-            {connectionState === 'connecting' && '接続中...'}
-            {connectionState === 'connected' && '認証中...'}
-            {connectionState === 'authenticated' && '準備完了'}
-            {connectionState === 'listening' && '聞いています...'}
-            {connectionState === 'speaking' && '話しています...'}
-            {connectionState === 'error' && 'エラーが発生しました'}
-          </p>
-        </div>
-        
-        {/* Character Selector */}
-        <div style={{
+        <div style={{ 
+          padding: '12px 16px',
           display: 'flex',
-          gap: '8px',
-          padding: '8px',
-          background: 'rgba(0, 0, 0, 0.4)',
-          borderRadius: '24px'
+          alignItems: 'center',
+          gap: '12px'
         }}>
-          {Object.entries(characters).map(([key, char]) => (
-            <button
-              key={key}
-              onClick={() => {
-                if (!isSessionActive) {
-                  setSelectedCharacter(key)
-                }
-              }}
-              disabled={isSessionActive}
-              style={{
-                width: '40px',
-                height: '40px',
+          {/* メインキャラクターアバター（SPサイズ調整） */}
+          <div style={{
+            width: '56px',
+            height: '56px',
+            backgroundColor: currentCharacter.color + '20',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: `2px solid ${currentCharacter.color}`,
+            boxShadow: `0 4px 12px ${currentCharacter.color}30`,
+            animation: 'float 3s ease-in-out infinite',
+            flexShrink: 0
+          }}>
+            <BirdCharacter 
+              bodyColor={currentCharacter.bodyColor} 
+              bellyColor={currentCharacter.bellyColor}
+              size={40}
+            />
+          </div>
+          
+          {/* キャラクター情報と切り替え */}
+          <div style={{ 
+            flex: 1,
+            minWidth: 0
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '6px'
+            }}>
+              <h2 style={{
+                ...getTypographyStyles('base'),
+                fontWeight: '700',
+                color: currentCharacter.color,
+                margin: 0,
+                fontSize: '16px'
+              }}>
+                {currentCharacter.name}と音声対話
+              </h2>
+              <div style={{
+                width: '5px',
+                height: '5px',
+                backgroundColor: isSessionActive ? '#a3e635' : '#6b7280',
                 borderRadius: '50%',
-                background: selectedCharacter === key 
-                  ? `linear-gradient(135deg, ${char.color}, ${char.color}dd)` 
-                  : 'rgba(255, 255, 255, 0.1)',
-                border: 'none',
-                color: '#1e293b',
-                fontSize: '12px',
-                fontWeight: '600',
-                cursor: isSessionActive ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transform: selectedCharacter === key ? 'scale(1.1)' : 'scale(1)',
-                opacity: isSessionActive ? 0.5 : 1
-              }}
-              title={char.name}
-            >
-              {char.name.slice(0, 2)}
-            </button>
-          ))}
+                animation: isSessionActive ? 'pulse 2s ease-in-out infinite' : 'none',
+                flexShrink: 0
+              }}></div>
+            </div>
+            
+            {/* キャラクター切り替えボタン（SP最適化） */}
+            <div style={{
+              display: 'flex',
+              gap: '4px',
+              flexWrap: 'wrap'
+            }}>
+              {Object.entries(characters).filter(([key]) => key !== selectedCharacter).map(([key, char]) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    if (!isSessionActive) {
+                      setSelectedCharacter(key)
+                    }
+                  }}
+                  disabled={isSessionActive}
+                  style={{
+                    padding: '3px 6px',
+                    backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                    color: '#9ca3af',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(55, 65, 81, 0.5)',
+                    fontSize: '10px',
+                    fontWeight: '500',
+                    cursor: isSessionActive ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    whiteSpace: 'nowrap',
+                    opacity: isSessionActive ? 0.5 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSessionActive) {
+                      e.currentTarget.style.backgroundColor = char.color + '30'
+                      e.currentTarget.style.borderColor = char.color
+                      e.currentTarget.style.color = '#f3f4f6'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(55, 65, 81, 0.5)'
+                    e.currentTarget.style.color = '#9ca3af'
+                  }}
+                >
+                  <BirdCharacter 
+                    bodyColor={char.bodyColor} 
+                    bellyColor={char.bellyColor}
+                    size={14}
+                  />
+                  <span>{char.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - スクロール不要に最適化 */}
       <div style={{
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '20px 20px 100px 20px',
-        gap: '20px'
+        padding: '40px 20px 20px 20px',
+        minHeight: 0,
+        position: 'relative',
+        background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
-        {/* Character Avatar */}
+        {/* Upper Section - Character and Status */}
         <div style={{
-          position: 'relative'
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '24px'
         }}>
-          <BirdCharacter size={180} />
+          {/* Character Avatar with speech bubble style */}
+          <div style={{
+            position: 'relative'
+          }}>
+            {/* Speech bubble when speaking */}
+            {isSpeaking && (
+              <div style={{
+                position: 'absolute',
+                top: '-40px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: currentCharacter.color,
+                color: '#0f172a',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '600',
+                whiteSpace: 'nowrap',
+                animation: 'bounce 1s ease-in-out infinite'
+              }}>
+                {['なるほど！', 'そうなんですね', 'いいですね！'][Math.floor(Date.now() / 2000) % 3]}
+              </div>
+            )}
+            
+            <div style={{
+              width: '100px',
+              height: '100px',
+              backgroundColor: currentCharacter.color + '20',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: `2px solid ${currentCharacter.color}`,
+              boxShadow: `0 6px 20px ${currentCharacter.color}30`,
+              position: 'relative',
+              animation: isSessionActive ? 'float 3s ease-in-out infinite' : 'none'
+            }}>
+              <BirdCharacter 
+                bodyColor={currentCharacter.bodyColor} 
+                bellyColor={currentCharacter.bellyColor}
+                size={70}
+              />
+              {/* Active indicator */}
+              {isSessionActive && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-4px',
+                  right: '-4px',
+                  width: '24px',
+                  height: '24px',
+                  backgroundColor: isListening ? '#a3e635' : '#ef4444',
+                  borderRadius: '50%',
+                  border: '3px solid #111827',
+                  animation: 'pulse 2s ease-in-out infinite'
+                }} />
+              )}
+            </div>
+          </div>
+
+          {/* Status Card */}
+          <div style={{
+            background: 'rgba(31, 41, 55, 0.6)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '16px',
+            padding: '16px 24px',
+            border: `1px solid ${isSessionActive ? currentCharacter.color + '30' : 'rgba(55, 65, 81, 0.3)'}`,
+            textAlign: 'center',
+            minWidth: '200px'
+          }}>
+            <p style={{
+              ...getTypographyStyles('base'),
+              color: isSessionActive ? currentCharacter.color : '#9ca3af',
+              fontWeight: '600',
+              margin: 0
+            }}>
+              {connectionState === 'disconnected' && '🎙️ 音声対話を開始'}
+              {connectionState === 'connecting' && '⏳ 接続中...'}
+              {connectionState === 'connected' && '🔐 認証中...'}
+              {connectionState === 'authenticated' && '✅ 準備完了'}
+              {connectionState === 'listening' && '👂 聞いています'}
+              {connectionState === 'speaking' && '💬 話しています'}
+              {connectionState === 'error' && '❌ エラー'}
+            </p>
+          </div>
         </div>
 
-        {/* Audio Waveform */}
+        {/* Center Section - Waveform */}
         <div style={{
+          width: '100%',
+          maxWidth: '300px',
+          height: '60px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '60px',
           gap: '3px',
-          padding: '0 40px'
+          padding: '10px',
+          background: 'rgba(31, 41, 55, 0.3)',
+          borderRadius: '30px',
+          border: '1px solid rgba(55, 65, 81, 0.2)'
         }}>
           {Array.from({ length: 20 }).map((_, i) => {
             const height = isListening 
-              ? Math.max(4, audioLevel * 50 + Math.random() * 20)
+              ? Math.max(8, audioLevel * 40 + Math.random() * 20)
               : isSpeaking
-              ? Math.max(8, Math.sin(Date.now() / 100 + i) * 20 + 20)
-              : 4
+              ? Math.max(10, Math.sin(Date.now() / 100 + i) * 20 + 20)
+              : 8
             
             return (
               <div
                 key={i}
                 style={{
-                  width: '3px',
+                  width: '4px',
                   height: `${height}px`,
-                  background: (isListening || isSpeaking) ? currentCharacter.color : 'rgba(255, 255, 255, 0.2)',
+                  background: (isListening || isSpeaking) 
+                    ? `linear-gradient(180deg, ${currentCharacter.color}, ${currentCharacter.color}60)`
+                    : 'rgba(156, 163, 175, 0.2)',
                   borderRadius: '2px',
-                  transition: 'all 0.1s ease'
+                  transition: 'height 0.1s ease'
                 }}
               />
             )
           })}
         </div>
 
-        {/* Session Control Button */}
-        <button
-          onClick={toggleSession}
-          style={{
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: isSessionActive 
-              ? `linear-gradient(135deg, #ef4444, #dc2626)`
-              : `linear-gradient(135deg, ${currentCharacter.color}, ${currentCharacter.color}dd)`,
-            border: 'none',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: isSessionActive 
-              ? '0 0 0 0 rgba(239, 68, 68, 0.4), 0 0 0 15px rgba(239, 68, 68, 0.2), 0 0 0 30px rgba(239, 68, 68, 0.1)'
-              : `0 4px 20px ${currentCharacter.color}40`,
-            transition: 'all 0.3s ease',
-            transform: isSessionActive ? 'scale(1.1)' : 'scale(1)'
-          }}
-        >
-          {isSessionActive ? (
-            <div style={{
-              width: '30px',
-              height: '30px',
-              background: 'white',
-              borderRadius: '6px'
-            }} />
-          ) : (
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-              <rect x="9" y="2" width="6" height="12" rx="3" 
-                fill="white"
-              />
-              <path d="M5 10V12C5 15.866 8.13401 19 12 19C15.866 19 19 15.866 19 12V10" 
-                stroke="white" 
-                strokeWidth="2.5" 
-                strokeLinecap="round"
-              />
-              <path d="M12 19V22M8 22H16" 
-                stroke="white" 
-                strokeWidth="2.5" 
-                strokeLinecap="round"
-              />
-            </svg>
+        {/* Bottom Section - Control Button */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
+          <button
+            onClick={toggleSession}
+            style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              background: isSessionActive 
+                ? 'linear-gradient(135deg, #ef4444, #dc2626)'
+                : `linear-gradient(135deg, ${currentCharacter.color}, ${currentCharacter.color}dd)`,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: isSessionActive 
+                ? '0 0 40px rgba(239, 68, 68, 0.4), inset 0 2px 4px rgba(0,0,0,0.2)'
+                : `0 0 40px ${currentCharacter.color}40, inset 0 2px 4px rgba(255,255,255,0.2)`,
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              transform: isSessionActive ? 'scale(1.1)' : 'scale(1)',
+              position: 'relative'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.15)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = isSessionActive ? 'scale(1.1)' : 'scale(1)'
+            }}
+          >
+            {isSessionActive ? (
+              // Modern stop icon
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                <rect x="7" y="7" width="10" height="10" rx="1" />
+              </svg>
+            ) : (
+              // Beautiful mic icon with gradient
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+                <defs>
+                  <linearGradient id="micGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="white" stopOpacity="1" />
+                    <stop offset="100%" stopColor="white" stopOpacity="0.8" />
+                  </linearGradient>
+                </defs>
+                <path d="M12 2C10.9 2 10 2.9 10 4V12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12V4C14 2.9 13.1 2 12 2Z" fill="url(#micGradient)"/>
+                <path d="M17 11V12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12V11" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                <path d="M12 17V21M9 21H15" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            )}
+            
+            {/* Pulse rings */}
+            {isSessionActive && (
+              <>
+                <div style={{
+                  position: 'absolute',
+                  top: '-4px',
+                  left: '-4px',
+                  right: '-4px',
+                  bottom: '-4px',
+                  border: '2px solid #ef4444',
+                  borderRadius: '50%',
+                  animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite'
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '-8px',
+                  right: '-8px',
+                  bottom: '-8px',
+                  border: '1px solid #ef4444',
+                  borderRadius: '50%',
+                  animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite 0.5s',
+                  opacity: 0.5
+                }} />
+              </>
+            )}
+          </button>
+          
+          {!isSessionActive && (
+            <p style={{
+              ...getTypographyStyles('small'),
+              color: '#6b7280',
+              textAlign: 'center'
+            }}>
+              タップして音声対話を開始
+            </p>
           )}
-        </button>
-
-        {!isSessionActive && (
-          <p style={{
-            ...getTypographyStyles('small'),
-            color: '#64748b',
-            textAlign: 'center'
-          }}>
-            マイクボタンをタップして対話を開始
-          </p>
-        )}
+        </div>
         
         {/* エラーメッセージ */}
         {errorMessage && (
           <div style={{
+            position: 'absolute',
+            bottom: '20px',
+            left: '20px',
+            right: '20px',
             background: 'rgba(239, 68, 68, 0.1)',
             border: '1px solid rgba(239, 68, 68, 0.3)',
             borderRadius: '12px',
-            padding: '12px 16px',
-            marginTop: '16px'
+            padding: '12px 16px'
           }}>
             <p style={{
               ...getTypographyStyles('small'),
               color: '#ef4444',
-              margin: 0
+              margin: 0,
+              textAlign: 'center'
             }}>
               {errorMessage}
             </p>
@@ -742,11 +828,14 @@ export default function VoiceChatPage() {
         {/* フォールバックモード通知 */}
         {useFallback && isSessionActive && (
           <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            right: '20px',
             background: 'rgba(251, 191, 36, 0.1)',
             border: '1px solid rgba(251, 191, 36, 0.3)',
             borderRadius: '12px',
-            padding: '8px 12px',
-            marginTop: '16px'
+            padding: '8px 12px'
           }}>
             <p style={{
               ...getTypographyStyles('caption'),
@@ -754,13 +843,55 @@ export default function VoiceChatPage() {
               margin: 0,
               textAlign: 'center'
             }}>
-              シンプルモードで動作中（OpenAI APIキーが未設定）
+              シンプルモードで動作中
             </p>
           </div>
         )}
       </div>
 
       <MobileBottomNav />
+      
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+        
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(0.95);
+          }
+        }
+        
+        @keyframes bounce {
+          0%, 100% {
+            transform: translateX(-50%) translateY(0);
+          }
+          50% {
+            transform: translateX(-50%) translateY(-5px);
+          }
+        }
+        
+        @keyframes ping {
+          0% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          75%, 100% {
+            transform: scale(1.3);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   )
 }
