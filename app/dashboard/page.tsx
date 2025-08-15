@@ -409,43 +409,91 @@ export default function Dashboard() {
       </div>
 
 
-      {/* 簡潔なキャラクター案内 */}
-      <div style={{ padding: '0 24px', marginBottom: '12px' }}>
+      {/* キャラクター案内 - 世界観を作る重要な要素 */}
+      <div style={{ padding: '24px 24px 0' }}>
         <div style={{
           backgroundColor: '#1f2937',
-          borderRadius: '8px',
-          padding: '8px 12px',
-          border: '1px solid #374151',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          fontSize: '12px'
+          borderRadius: '20px',
+          padding: '20px',
+          border: '2px solid #a3e635',
+          boxShadow: '0 8px 32px rgba(163, 230, 53, 0.15)',
+          position: 'relative',
+          overflow: 'hidden'
         }}>
-          <span style={{ fontSize: '14px' }}>
-            {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
-          </span>
-          <span style={{ color: '#9ca3af', flex: 1 }}>
-            {getCharacterMessage()}
-          </span>
-          <button
-            onClick={() => {
-              const characters: CharacterId[] = ['luna', 'aria', 'zen']
-              const currentIndex = characters.indexOf(selectedCharacter)
-              const nextIndex = (currentIndex + 1) % characters.length
-              setSelectedCharacter(characters[nextIndex])
-              localStorage.setItem('selectedCharacter', characters[nextIndex])
-            }}
-            style={{
-              fontSize: '10px',
-              color: '#6b7280',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '2px 4px'
-            }}
-          >
-            切替
-          </button>
+          {/* 背景グロー効果 */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(45deg, rgba(163, 230, 53, 0.05) 0%, transparent 50%, rgba(163, 230, 53, 0.05) 100%)',
+            animation: 'gentleGlow 3s ease-in-out infinite',
+            pointerEvents: 'none'
+          }}></div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', position: 'relative' }}>
+            {/* 大きなキャラクターアバター */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: '#a3e635',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '40px',
+              animation: 'characterBounce 2s ease-in-out infinite',
+              boxShadow: '0 8px 24px rgba(163, 230, 53, 0.4)',
+              border: '3px solid #84cc16',
+              flexShrink: 0
+            }}>
+              {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
+            </div>
+
+            {/* メッセージ部分 */}
+            <div style={{
+              backgroundColor: '#374151',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              position: 'relative',
+              flex: 1,
+              border: '1px solid #4b5563'
+            }}>
+              {/* セリフの三角 */}
+              <div style={{
+                position: 'absolute',
+                left: '-8px',
+                top: '20px',
+                width: 0,
+                height: 0,
+                borderTop: '8px solid transparent',
+                borderBottom: '8px solid transparent',
+                borderRight: '8px solid #374151'
+              }}></div>
+
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#a3e635',
+                marginBottom: '4px',
+                textTransform: 'capitalize'
+              }}>
+                {selectedCharacter === 'luna' ? 'Luna' : selectedCharacter === 'aria' ? 'Aria' : 'Zen'}
+              </div>
+              
+              <div style={{
+                fontSize: '16px',
+                color: '#f3f4f6',
+                lineHeight: '1.5',
+                fontWeight: '500'
+              }}>
+                {getCharacterMessage()}
+              </div>
+            </div>
+          </div>
+
+          {/* キャラクター切り替えは削除 - チャット画面で行う */}
         </div>
       </div>
 

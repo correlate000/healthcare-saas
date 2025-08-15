@@ -229,94 +229,133 @@ export default function ChatPage() {
         borderBottom: '1px solid #374151', 
         flexShrink: 0 
       }}>
-        {/* Character selection tabs */}
+        {/* キャラクター選択カード - より目立つ形式 */}
         <div style={{ 
-          padding: '12px 16px 0',
+          padding: '16px',
           display: 'flex',
-          gap: '4px'
+          gap: '8px',
+          justifyContent: 'center'
         }}>
           {characters.map((character) => (
             <button
               key={character.id}
               onClick={() => handleCharacterChange(character.id)}
               style={{
-                flex: 1,
-                padding: '10px 8px',
+                padding: '12px',
                 backgroundColor: selectedCharacter === character.id 
-                  ? 'rgba(31, 41, 55, 0.8)' 
-                  : 'transparent',
+                  ? character.color + '20' 
+                  : 'rgba(31, 41, 55, 0.6)',
                 color: selectedCharacter === character.id ? '#f3f4f6' : '#9ca3af',
-                borderRadius: '12px 12px 0 0',
-                border: 'none',
+                borderRadius: '16px',
+                border: selectedCharacter === character.id 
+                  ? `2px solid ${character.color}` 
+                  : '2px solid transparent',
                 ...getTypographyStyles('small'),
-                fontWeight: selectedCharacter === character.id ? '600' : '500',
+                fontWeight: selectedCharacter === character.id ? '700' : '500',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
+                transition: 'all 0.3s ease',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '6px',
+                minWidth: '80px',
+                boxShadow: selectedCharacter === character.id 
+                  ? `0 4px 16px ${character.color}40` 
+                  : 'none',
+                transform: selectedCharacter === character.id ? 'translateY(-2px)' : 'translateY(0)'
+              }}
+              onMouseEnter={(e) => {
+                if (selectedCharacter !== character.id) {
+                  e.currentTarget.style.backgroundColor = 'rgba(55, 65, 81, 0.8)'
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedCharacter !== character.id) {
+                  e.currentTarget.style.backgroundColor = 'rgba(31, 41, 55, 0.6)'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }
               }}
             >
               <BirdCharacter 
                 bodyColor={character.bodyColor} 
                 bellyColor={character.bellyColor}
-                size={20}
+                size={32}
               />
-              {character.name}
+              <span style={{ fontSize: '12px' }}>{character.name}</span>
+              {selectedCharacter === character.id && (
+                <div style={{
+                  width: '6px',
+                  height: '6px',
+                  backgroundColor: character.color,
+                  borderRadius: '50%',
+                  animation: 'pulse 2s ease-in-out infinite'
+                }}></div>
+              )}
             </button>
           ))}
         </div>
         
-        {/* Compact character display */}
+        {/* メインキャラクター表示 - 世界観を強化 */}
         <div style={{ 
-          padding: '12px 20px',
+          padding: '16px 20px 20px',
           display: 'flex',
           alignItems: 'center',
-          gap: '12px'
+          gap: '16px'
         }}>
           <div style={{
-            width: '50px',
-            height: '50px',
-            background: `radial-gradient(circle, ${currentCharacter.color}20 0%, transparent 70%)`,
+            width: '80px',
+            height: '80px',
+            background: `radial-gradient(circle, ${currentCharacter.color}30 0%, ${currentCharacter.color}10 50%, transparent 100%)`,
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            animation: 'float 3s ease-in-out infinite'
+            animation: 'float 3s ease-in-out infinite',
+            border: `3px solid ${currentCharacter.color}`,
+            boxShadow: `0 8px 24px ${currentCharacter.color}40`
           }}>
             <BirdCharacter 
               bodyColor={currentCharacter.bodyColor} 
               bellyColor={currentCharacter.bellyColor}
-              size={40}
+              size={60}
             />
           </div>
           <div style={{ flex: 1 }}>
             <h2 style={{ 
-              ...getTypographyStyles('h4'), 
+              ...getTypographyStyles('h3'), 
               fontWeight: '700', 
               color: currentCharacter.color,
-              marginBottom: '2px'
+              marginBottom: '4px'
             }}>
               {currentCharacter.name}
             </h2>
+            <div style={{
+              ...getTypographyStyles('base'),
+              color: '#d1d5db',
+              marginBottom: '6px',
+              lineHeight: '1.4'
+            }}>
+              {getCharacterPersonality(selectedCharacter)}
+            </div>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px'
             }}>
               <div style={{
-                width: '6px',
-                height: '6px',
+                width: '8px',
+                height: '8px',
                 backgroundColor: '#a3e635',
                 borderRadius: '50%',
                 animation: 'pulse 2s ease-in-out infinite'
               }}></div>
               <span style={{ 
                 ...getTypographyStyles('small'), 
-                color: '#9ca3af' 
+                color: '#9ca3af',
+                fontWeight: '500'
               }}>
-                {getCharacterPersonality(selectedCharacter)}
+                話し相手として待機中
               </span>
             </div>
           </div>
