@@ -679,39 +679,55 @@ export default function Dashboard() {
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 pointerEvents: 'none',
-                animation: 'xpFloat 2s ease-out forwards',
+                animation: 'xpFloat 2.5s ease-out forwards',
                 zIndex: 100
               }}>
                 <div style={{
-                  backgroundColor: '#fbbf24',
-                  color: '#0f172a',
-                  padding: '12px 24px',
-                  borderRadius: '20px',
-                  fontSize: '24px',
-                  fontWeight: '800',
-                  boxShadow: '0 8px 32px rgba(251, 191, 36, 0.5)',
-                  animation: 'xpPulse 0.5s ease-out',
+                  background: 'linear-gradient(135deg, #ff6b6b 0%, #feca57 25%, #48dbfb 50%, #ff9ff3 75%, #54a0ff 100%)',
+                  color: 'white',
+                  padding: '16px 32px',
+                  borderRadius: '50px',
+                  fontSize: '28px',
+                  fontWeight: '900',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                  letterSpacing: '1px',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+                  boxShadow: '0 20px 40px rgba(255, 107, 107, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.1)',
+                  animation: 'xpPulse 0.6s ease-out, rainbowGlow 2s ease-in-out infinite',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '12px',
+                  border: '3px solid rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)'
                 }}>
-                  <span style={{ fontSize: '28px' }}>⭐</span>
-                  <span>+{xpAnimationAmount} XP</span>
+                  <span style={{ 
+                    fontSize: '36px',
+                    animation: 'starSpin 1s ease-in-out infinite',
+                    filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))'
+                  }}>✨</span>
+                  <span style={{
+                    background: 'linear-gradient(45deg, #fff, #f1c40f, #fff)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'textShine 1.5s ease-in-out infinite'
+                  }}>+{xpAnimationAmount} XP</span>
                 </div>
                 
-                {/* パーティクルエフェクト */}
+                {/* 改善されたパーティクルエフェクト */}
                 <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                  {[...Array(8)].map((_, i) => (
+                  {[...Array(12)].map((_, i) => (
                     <div
                       key={i}
                       style={{
                         position: 'absolute',
-                        width: '8px',
-                        height: '8px',
-                        backgroundColor: '#fbbf24',
+                        width: `${Math.random() * 8 + 4}px`,
+                        height: `${Math.random() * 8 + 4}px`,
+                        background: ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd'][i % 6],
                         borderRadius: '50%',
-                        animation: `particle${i} 1.5s ease-out forwards`,
-                        animationDelay: `${i * 0.1}s`
+                        animation: `enhancedParticle${i % 8} 2s ease-out forwards`,
+                        animationDelay: `${i * 0.08}s`,
+                        boxShadow: '0 0 10px currentColor'
                       }}
                     />
                   ))}
@@ -739,28 +755,71 @@ export default function Dashboard() {
         
         @keyframes xpFloat {
           0% {
-            opacity: 1;
-            transform: translate(-50%, -50%) translateY(0) scale(0.5);
+            opacity: 0;
+            transform: translate(-50%, -50%) translateY(20px) scale(0.3);
           }
-          50% {
+          20% {
             opacity: 1;
-            transform: translate(-50%, -50%) translateY(-30px) scale(1.2);
+            transform: translate(-50%, -50%) translateY(0) scale(1.1);
+          }
+          80% {
+            opacity: 1;
+            transform: translate(-50%, -50%) translateY(-40px) scale(1);
           }
           100% {
             opacity: 0;
-            transform: translate(-50%, -50%) translateY(-60px) scale(1);
+            transform: translate(-50%, -50%) translateY(-80px) scale(0.8);
           }
         }
         
         @keyframes xpPulse {
           0% {
-            transform: scale(0.8);
+            transform: scale(0.6);
           }
-          50% {
-            transform: scale(1.1);
+          30% {
+            transform: scale(1.15);
+          }
+          60% {
+            transform: scale(0.95);
           }
           100% {
             transform: scale(1);
+          }
+        }
+        
+        @keyframes rainbowGlow {
+          0%, 100% {
+            filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.8));
+          }
+          25% {
+            filter: drop-shadow(0 0 20px rgba(254, 202, 87, 0.8));
+          }
+          50% {
+            filter: drop-shadow(0 0 20px rgba(72, 219, 251, 0.8));
+          }
+          75% {
+            filter: drop-shadow(0 0 20px rgba(255, 159, 243, 0.8));
+          }
+        }
+        
+        @keyframes starSpin {
+          0% {
+            transform: rotate(0deg) scale(1);
+          }
+          50% {
+            transform: rotate(180deg) scale(1.2);
+          }
+          100% {
+            transform: rotate(360deg) scale(1);
+          }
+        }
+        
+        @keyframes textShine {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
           }
         }
         
@@ -795,6 +854,47 @@ export default function Dashboard() {
         @keyframes particle7 {
           0% { transform: translate(0, 0) scale(1); opacity: 1; }
           100% { transform: translate(42px, -42px) scale(0); opacity: 0; }
+        }
+        
+        @keyframes enhancedParticle0 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(80px, -20px) scale(1.2) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(120px, -60px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle1 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(60px, 60px) scale(1.1) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(100px, 100px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle2 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(-20px, 80px) scale(1.3) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(-40px, 120px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle3 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(-60px, 40px) scale(1.0) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(-100px, 80px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle4 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(-80px, -30px) scale(1.4) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(-120px, -80px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle5 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(-40px, -70px) scale(1.1) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(-80px, -120px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle6 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(30px, -80px) scale(1.2) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(60px, -140px) scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes enhancedParticle7 {
+          0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: translate(70px, -50px) scale(1.3) rotate(180deg); opacity: 0.8; }
+          100% { transform: translate(110px, -100px) scale(0) rotate(360deg); opacity: 0; }
         }
       `}</style>
 
