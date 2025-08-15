@@ -104,19 +104,19 @@ export const streakWarnings: StreakWarning[] = [
   {
     hoursRemaining: 6,
     level: 'warning',
-    message: 'ストリークまであと6時間！',
+    message: '継続記録が途切れるまであと6時間！',
     icon: '⚠️'
   },
   {
     hoursRemaining: 3,
     level: 'danger',
-    message: 'ストリークが危険！あと3時間！',
+    message: '継続記録が危険！あと3時間でリセット！',
     icon: '🔥'
   },
   {
     hoursRemaining: 1,
     level: 'critical',
-    message: '緊急！あと1時間でストリークが消えます！',
+    message: '緊急！あと1時間で継続記録が途切れます！',
     icon: '🚨'
   }
 ]

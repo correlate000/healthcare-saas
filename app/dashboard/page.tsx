@@ -572,8 +572,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 7日継続達成バナー - 7日達成時のみ表示 */}
-      {streakDays >= 7 && (
+      {/* 7日継続達成バナー - 常に表示 */}
+      {true && (
         <div style={{ padding: '0 24px', marginBottom: '24px' }}>
           <div style={{ 
             backgroundColor: '#1f2937', 
