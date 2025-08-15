@@ -151,6 +151,18 @@ export default function CheckIn() {
   const currentStepData = steps[currentStep]
   const progress = ((currentStep + 1) / steps.length) * 100
 
+  // Get step-by-step guidance messages
+  const getStepGuidanceMessage = (stepIndex: number) => {
+    const guidanceMessages = [
+      "今日の気分を教えてくださいね。正直な気持ちが一番大切です✨",
+      "からだの調子はいかがですか？心とからだは繋がっています💫",
+      "ストレスは誰にでもあるもの。感じたままを選んでください🌱",
+      "今日何をしたか、楽しくお話しましょう！複数選択もOKです🎈",
+      "最後に、今日の特別な思い出があれば教えてください。なくても大丈夫！💝"
+    ]
+    return guidanceMessages[stepIndex] || "一緒にがんばりましょう！"
+  }
+
   // Get personalized message based on mood
   const getPersonalizedMessage = () => {
     const mood = responses.mood
@@ -537,19 +549,58 @@ export default function CheckIn() {
         height: `calc(100vh - ${MOBILE_PAGE_PADDING_BOTTOM}px)`,
         maxHeight: `calc(100vh - ${MOBILE_PAGE_PADDING_BOTTOM}px)`
       }}>
-        {/* Character */}
-        <div style={{ 
-          width: '80px', 
-          height: '80px', 
-          backgroundColor: '#a3e635', 
-          borderRadius: '20px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          margin: '0 auto 16px',
-          flexShrink: 0
-        }}>
-          <span style={{ color: '#0f172a', ...getTypographyStyles('small'), fontWeight: '600' }}>るな</span>
+        {/* Character with guidance message */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '16px', flexShrink: 0 }}>
+          {/* Character Avatar */}
+          <div style={{ 
+            width: '80px', 
+            height: '80px', 
+            backgroundColor: '#374151',
+            borderRadius: '50%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            marginBottom: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            animation: 'characterBounce 2s ease-in-out infinite'
+          }}>
+            <BirdCharacter 
+              bodyColor="#a3e635" 
+              bellyColor="#ecfccb"
+              size={60}
+            />
+          </div>
+          
+          {/* Character guidance message */}
+          <div style={{
+            backgroundColor: '#1f2937',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            position: 'relative',
+            maxWidth: '280px',
+            textAlign: 'center'
+          }}>
+            {/* Speech bubble arrow */}
+            <div style={{
+              position: 'absolute',
+              top: '-6px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 0,
+              height: 0,
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+              borderBottom: '6px solid #1f2937'
+            }}></div>
+            <p style={{
+              ...getTypographyStyles('small'),
+              color: '#f3f4f6',
+              margin: 0,
+              fontWeight: '500'
+            }}>
+              {getStepGuidanceMessage(currentStep)}
+            </p>
+          </div>
         </div>
 
         {/* Progress bar */}
@@ -759,6 +810,15 @@ export default function CheckIn() {
           0% { transform: scale(0.8); opacity: 0; }
           50% { transform: scale(1.1); }
           100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes characterBounce {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
         }
       `}</style>
     </div>

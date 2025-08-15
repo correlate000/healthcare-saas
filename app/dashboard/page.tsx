@@ -177,6 +177,54 @@ export default function Dashboard() {
     { id: 3, title: 'チーム投稿が10いいね！', icon: HappyFaceIcon, new: false },
   ]
 
+  // キャラクターメッセージシステム
+  const getCharacterMessage = () => {
+    const hour = new Date().getHours()
+    const messages = {
+      'luna': {
+        morning: ['おはよう！今日もがんばろうね💫', '朝のチェックイン、忘れないでね！', 'るな、今日もあなたと一緒だよ✨'],
+        afternoon: ['お疲れさま！調子はどう？', '今日のチャレンジ、挑戦してみない？', 'るな、あなたを応援してるよ🌟'],
+        evening: ['今日もおつかれさま！', '夜のリラックスタイムだね', '今日の振り返り、一緒にしよう🌙'],
+        night: ['もう遅いね...無理しないで', 'ゆっくり休んでね💤', 'るな、明日も待ってるよ'],
+        streak: ['すごい！継続記録が伸びてる！', '毎日続けてるなんて素晴らしい✨', 'るな、とっても誇らしいよ！'],
+        reward: ['報酬がもらえるよ！', 'がんばった成果だね🎉', 'るな、一緒にお祝いしよう！']
+      },
+      'aria': {
+        morning: ['きゃー！おはよう〜✨', '今日もキラキラしていこう！', 'あーりあ、テンション上がってる〜💕'],
+        afternoon: ['お昼だよ〜！元気？', 'チャレンジで遊ぼうよ！', 'あーりあと一緒に楽しもう🎵'],
+        evening: ['夕方だね〜まだまだ元気！', '今日はどんな一日だった？', 'あーりあ、お話聞かせて〜💫'],
+        night: ['夜更かしは体に悪いよ〜', 'ちゃんと寝なきゃダメ！', 'あーりあ、心配になっちゃう😴'],
+        streak: ['わあ！継続記録すごーい！', 'キラキラ輝いてる〜✨', 'あーりあ、超感動してる！'],
+        reward: ['プレゼントタイム〜🎁', 'ご褒美だよ〜やったね！', 'あーりあも嬉しい〜💕']
+      },
+      'zen': {
+        morning: ['おはようございます。新しい一日ですね', '穏やかな朝をお過ごしください', '今日も心静かに過ごしましょう'],
+        afternoon: ['いかがお過ごしでしょうか', 'バランスの取れた一日を', '深呼吸をして、リフレッシュを'],
+        evening: ['一日お疲れ様でした', '心を整える時間ですね', '今日の学びを振り返りましょう'],
+        night: ['良い休息を取ってください', '明日への準備を整えて', '穏やかな眠りを'],
+        streak: ['継続は力なり。素晴らしいですね', '着実な歩みを感じます', '心の成長を実感しています'],
+        reward: ['努力の成果です。おめでとうございます', '達成感を味わってください', '次のステップへ進みましょう']
+      }
+    }
+
+    const character = messages[selectedCharacter]
+    
+    // 状況に応じてメッセージを選択
+    if (streakDays >= 7) {
+      return character.reward[Math.floor(Math.random() * character.reward.length)]
+    } else if (streakDays >= 3) {
+      return character.streak[Math.floor(Math.random() * character.streak.length)]
+    } else if (hour < 11) {
+      return character.morning[Math.floor(Math.random() * character.morning.length)]
+    } else if (hour < 17) {
+      return character.afternoon[Math.floor(Math.random() * character.afternoon.length)]
+    } else if (hour < 21) {
+      return character.evening[Math.floor(Math.random() * character.evening.length)]
+    } else {
+      return character.night[Math.floor(Math.random() * character.night.length)]
+    }
+  }
+
   // Show loading state
   if (isLoading) {
     return (
@@ -358,6 +406,127 @@ export default function Dashboard() {
           lastCheckin={lastCheckinDate}
           onCheckinClick={() => router.push('/checkin')}
         />
+      </div>
+
+      {/* キャラクターメッセージ - Duolingo風の可愛い案内 */}
+      <div style={{ padding: '24px 24px 0' }}>
+        <div 
+          onClick={() => {
+            // バイブレーション
+            if ('vibrate' in navigator) {
+              navigator.vibrate(50)
+            }
+            // キャラクター切り替え
+            const characters: CharacterId[] = ['luna', 'aria', 'zen']
+            const currentIndex = characters.indexOf(selectedCharacter)
+            const nextIndex = (currentIndex + 1) % characters.length
+            setSelectedCharacter(characters[nextIndex])
+            localStorage.setItem('selectedCharacter', characters[nextIndex])
+          }}
+          style={{
+            backgroundColor: '#1f2937',
+            borderRadius: '20px',
+            padding: '24px',
+            position: 'relative',
+            overflow: 'hidden',
+            border: '2px solid #a3e635',
+            boxShadow: '0 8px 32px rgba(163, 230, 53, 0.15)',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.02)'
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(163, 230, 53, 0.25)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'scale(1)'
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(163, 230, 53, 0.15)'
+          }}>
+          {/* 背景アニメーション */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'linear-gradient(45deg, rgba(163, 230, 53, 0.05) 0%, transparent 50%, rgba(163, 230, 53, 0.05) 100%)',
+            animation: 'gentleGlow 3s ease-in-out infinite',
+            pointerEvents: 'none'
+          }}></div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', position: 'relative' }}>
+            {/* 大きなキャラクターアバター */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              backgroundColor: '#a3e635',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '40px',
+              animation: 'characterBounce 2s ease-in-out infinite',
+              boxShadow: '0 8px 24px rgba(163, 230, 53, 0.4)',
+              border: '3px solid #84cc16',
+              flexShrink: 0
+            }}>
+              {selectedCharacter === 'luna' ? '🌙' : selectedCharacter === 'aria' ? '✨' : '🧘‍♂️'}
+            </div>
+
+            {/* セリフバルーン */}
+            <div style={{
+              backgroundColor: '#374151',
+              borderRadius: '16px',
+              padding: '16px 20px',
+              position: 'relative',
+              flex: 1,
+              border: '1px solid #4b5563'
+            }}>
+              {/* セリフの三角 */}
+              <div style={{
+                position: 'absolute',
+                left: '-8px',
+                top: '20px',
+                width: 0,
+                height: 0,
+                borderTop: '8px solid transparent',
+                borderBottom: '8px solid transparent',
+                borderRight: '8px solid #374151'
+              }}></div>
+
+              <div style={{
+                fontSize: '18px',
+                fontWeight: '600',
+                color: '#a3e635',
+                marginBottom: '4px',
+                textTransform: 'capitalize'
+              }}>
+                {selectedCharacter === 'luna' ? 'Luna' : selectedCharacter === 'aria' ? 'Aria' : 'Zen'}
+              </div>
+              
+              <div style={{
+                fontSize: '16px',
+                color: '#f3f4f6',
+                lineHeight: '1.5',
+                fontWeight: '500'
+              }}>
+                {getCharacterMessage()}
+              </div>
+            </div>
+          </div>
+
+          {/* タップでキャラクター切り替え */}
+          <div style={{
+            position: 'absolute',
+            bottom: '12px',
+            right: '16px',
+            fontSize: '12px',
+            color: '#9ca3af',
+            opacity: 0.7
+          }}>
+            タップでキャラクター変更
+          </div>
+        </div>
       </div>
 
       {/* キャラクター感情表示 */}
@@ -857,6 +1026,26 @@ export default function Dashboard() {
         @keyframes simpleParticle2 {
           0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
           100% { transform: translate(20px, -40px) scale(0); opacity: 0; }
+        }
+        
+        @keyframes characterBounce {
+          0%, 100% { 
+            transform: translateY(0) scale(1); 
+          }
+          50% { 
+            transform: translateY(-8px) scale(1.05); 
+          }
+        }
+        
+        @keyframes gentleGlow {
+          0%, 100% { 
+            opacity: 0.3; 
+            transform: translateX(-100%);
+          }
+          50% { 
+            opacity: 0.6; 
+            transform: translateX(100%);
+          }
         }
       `}</style>
 

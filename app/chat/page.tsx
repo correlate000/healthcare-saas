@@ -66,6 +66,16 @@ export default function ChatPage() {
     'もっと聞きたい'
   ]
 
+  // Get character personality description
+  const getCharacterPersonality = (character: string): string => {
+    const personalities = {
+      'luna': '💫 優しく寄り添ってくれる癒し系パートナー',
+      'aria': '✨ いつも明るく元気づけてくれる太陽のような存在',
+      'zen': '🧘 静かで穏やかな心の平安をもたらしてくれる賢者'
+    }
+    return personalities[character as keyof typeof personalities] || '話し相手になります'
+  }
+
   // Character responses based on personality
   const getCharacterResponse = (character: string, userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase()
@@ -180,15 +190,18 @@ export default function ChatPage() {
     setSelectedCharacter(characterId)
     const character = characters.find(c => c.id === characterId)
     
+    // Enhanced character-specific greetings with guidance
+    const greetingMessages = {
+      'luna': 'こんにちは！るなです🌱 今日の調子はいかがですか？疲れていたり悩みがあったりしても大丈夫。あなたのペースで、ゆっくりとお話しを聞かせてくださいね。私はいつでもあなたのそばにいます。',
+      'aria': 'やっほー！あーりあだよ✨ 今日も素敵な一日にしよう！何か楽しいことがあったら教えて！もし元気が出ない時でも、一緒にワクワクすることを見つけましょう！私があなたを応援します！',
+      'zen': '静寂の中へようこそ。ぜんです🧘 今この瞬間に意識を向けて、心を落ち着けましょう。深呼吸をして、ゆっくりと話していきませんか。答えは既にあなたの心の中にあります。一緒に見つけていきましょう。'
+    }
+    
     // Clear messages and add new greeting
     setMessages([{
       id: 1,
       type: 'character',
-      content: characterId === 'luna' 
-        ? 'こんにちは！るなです。今日の調子はいかがですか？何でもお話しくださいね。'
-        : characterId === 'aria'
-        ? 'やっほー！あーりあだよ！今日も元気いっぱいにいこう！何か楽しいことあった？'
-        : '静寂の中へようこそ。ぜんです。心を落ち着けて、ゆっくりと話していきましょう。',
+      content: greetingMessages[characterId as keyof typeof greetingMessages] || 'こんにちは！',
       time: new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })
     }])
     
@@ -303,7 +316,7 @@ export default function ChatPage() {
                 ...getTypographyStyles('small'), 
                 color: '#9ca3af' 
               }}>
-                話し相手になります
+                {getCharacterPersonality(selectedCharacter)}
               </span>
             </div>
           </div>

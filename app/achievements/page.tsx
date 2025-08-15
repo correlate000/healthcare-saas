@@ -161,6 +161,38 @@ export default function AchievementsPage() {
     ? achievements 
     : achievements.filter(a => a.category === selectedCategory)
 
+  // Get motivational message based on achievement progress
+  const getMotivationalMessage = () => {
+    const completionRate = (userStats.totalBadges / achievements.length) * 100
+    const messages = {
+      high: [
+        'すごいですね！✨',
+        'その調子です！🎉',
+        '素晴らしい成長！🌟',
+        'みんなの目標です！👑'
+      ],
+      medium: [
+        '頑張っていますね！💪',
+        '着実に成長中！🌱',
+        'もう少しです！🔥',
+        '順調な歩み！⭐'
+      ],
+      low: [
+        '一緒に頑張ろう！🌈',
+        '最初の一歩が大切！🦶',
+        '小さな積み重ねから！💫',
+        'あなたならできる！💝'
+      ]
+    }
+    
+    let category = 'low'
+    if (completionRate >= 70) category = 'high'
+    else if (completionRate >= 40) category = 'medium'
+    
+    const categoryMessages = messages[category as keyof typeof messages]
+    return categoryMessages[Math.floor(Math.random() * categoryMessages.length)]
+  }
+
   // Bird character component
   const BirdCharacter = ({ emotion = 'happy' }: { emotion?: string }) => (
     <div style={{
@@ -295,7 +327,37 @@ export default function AchievementsPage() {
                 gap: '12px',
                 marginBottom: '8px'
               }}>
-                <BirdCharacter emotion="happy" />
+                <div style={{ position: 'relative' }}>
+                  <BirdCharacter emotion="happy" />
+                  {/* Motivational speech bubble */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '-45px',
+                    left: '70px',
+                    backgroundColor: '#1f2937',
+                    color: '#f3f4f6',
+                    padding: '8px 12px',
+                    borderRadius: '12px',
+                    ...getTypographyStyles('small'),
+                    fontWeight: '500',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    animation: 'float 3s ease-in-out infinite'
+                  }}>
+                    {getMotivationalMessage()}
+                    {/* Speech bubble arrow */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '-6px',
+                      left: '20px',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '6px solid transparent',
+                      borderRight: '6px solid transparent',
+                      borderTop: '6px solid #1f2937'
+                    }}></div>
+                  </div>
+                </div>
                 <div>
                   <div style={{ 
                     ...getTypographyStyles('base'),
@@ -707,6 +769,15 @@ export default function AchievementsPage() {
           50% {
             filter: drop-shadow(0 8px 16px #fbbf2460);
             transform: scale(1.05);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
           }
         }
       `}</style>
