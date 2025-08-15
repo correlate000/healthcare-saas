@@ -2,8 +2,8 @@
 
 import React from 'react'
 
-export type CharacterId = 'luna' | 'aria' | 'zen'
-export type CharacterMood = 'happy' | 'normal' | 'worried' | 'sad' | 'angry' | 'disappointed' | 'sleeping'
+type CharacterId = 'luna' | 'aria' | 'zen'
+type CharacterMood = 'happy' | 'normal' | 'worried' | 'sad' | 'angry' | 'disappointed' | 'sleeping'
 
 interface CharacterAvatarProps {
   characterId: CharacterId
@@ -360,7 +360,7 @@ export function CharacterAvatar({
         {getMouth()}
         
         {/* 頬の赤み（感情による） */}
-        {(mood === 'happy' || mood === 'embarrassed') && (
+        {mood === 'happy' && (
           <>
             <circle 
               cx={size * 0.3} 
@@ -380,7 +380,7 @@ export function CharacterAvatar({
         )}
         
         {/* 汗（心配や困った時） */}
-        {(mood === 'worried' || mood === 'nervous') && (
+        {mood === 'worried' && (
           <ellipse 
             cx={size * 0.75} 
             cy={size * 0.35} 

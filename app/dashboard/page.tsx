@@ -327,10 +327,9 @@ export default function Dashboard() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '18px',
               backdropFilter: 'blur(10px)'
             }}>
-              💬
+              <BubbleIcon size={18} />
             </div>
             <span style={{ letterSpacing: '0.3px', fontSize: '14px', fontWeight: '600' }}>キャラクターと話す</span>
             <span style={{ 

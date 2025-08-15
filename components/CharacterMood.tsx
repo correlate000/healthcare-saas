@@ -150,7 +150,7 @@ export function CharacterMood({ characterId, lastCheckin, streakDays, compact = 
         }}>
           <CharacterAvatar
             characterId={characterId}
-            mood={currentMood}
+            mood={currentMood as any}
             size={48}
             animate={true}
           />
@@ -213,20 +213,16 @@ export function CharacterMood({ characterId, lastCheckin, streakDays, compact = 
       border: currentMood === 'angry' || currentMood === 'sad' ? '2px solid rgba(239, 68, 68, 0.3)' : 'none'
     }}>
       <div style={{
-        width: '100px',
-        height: '100px',
-        backgroundColor: config.primaryColor,
-        borderRadius: '50%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         margin: '0 auto 16px',
-        fontSize: '48px',
-        animation: `${getAnimation()} 2s ease-in-out infinite`,
         position: 'relative',
-        boxShadow: `0 8px 24px ${config.primaryColor}33`
+        display: 'inline-block'
       }}>
-        {getExpression()}
+        <CharacterAvatar
+          characterId={characterId}
+          mood={currentMood as any}
+          size={100}
+          animate={true}
+        />
         {missedDays > 0 && (
           <div style={{
             position: 'absolute',
