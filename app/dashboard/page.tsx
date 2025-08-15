@@ -33,6 +33,9 @@ export default function Dashboard() {
   const [streakDays, setStreakDays] = useState(0)
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterId>('luna')
   const [calculatedLevel, setCalculatedLevel] = useState(1)
+  const [showXPAnimation, setShowXPAnimation] = useState(false)
+  const [xpAnimationAmount, setXpAnimationAmount] = useState(0)
+  const [rewardClaimed, setRewardClaimed] = useState(false)
   
   // Load data from localStorage using storage utility
   useEffect(() => {
@@ -105,6 +108,12 @@ export default function Dashboard() {
             setTodayProgress(progressData.value)
           }
         }
+        
+        // Load reward claimed status
+        const claimed = localStorage.getItem('7dayRewardClaimed')
+        if (claimed === 'true') {
+          setRewardClaimed(true)
+        }
       } catch (error) {
         console.error('Error loading user data:', error)
       } finally {
@@ -136,8 +145,6 @@ export default function Dashboard() {
     }
   }, [isLoading, lastCheckinDate, streakDays])
   
-  
-
   const todaysChallenges = [
     { id: 1, title: '朝の気分チェック', xp: 20, time: '1分', difficulty: '簡単' },
     { id: 2, title: '感謝の記録', xp: 30, time: '1分', difficulty: '簡単' },
@@ -162,7 +169,7 @@ export default function Dashboard() {
       default: return '#65a30d'
     }
   }
-
+  
   const achievements = [
     { id: 1, title: '7日継続達成！', icon: FireIcon, new: true },
     { id: 2, title: 'Lunaとのフレンドレベルアップ', icon: EnergyIcon, new: true },
@@ -170,21 +177,21 @@ export default function Dashboard() {
   ]
 
   // Show loading state
-  if (isLoading) {
-    return (
-      <div style={{ 
-        minHeight: '100vh', 
-        backgroundColor: '#111827', 
-        color: 'white',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-      }}>
-        <LoadingSpinner size="large" message="ダッシュボードを読み込んでいます..." />
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div style={{ 
+  //       minHeight: '100vh', 
+  //       backgroundColor: '#111827', 
+  //       color: 'white',
+  //       display: 'flex',
+  //       alignItems: 'center',
+  //       justifyContent: 'center',
+  //       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  //     }}>
+  //       <LoadingSpinner size="large" message="ダッシュボードを読み込んでいます..." />
+  //     </div>
+  //   )
+  // }
 
   return (
     <div style={{ 
@@ -565,7 +572,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 7日継続達成バナー */}
+      {/* 7日継続達成バナー - 7日達成時のみ表示 */}
+      {weeklyContinuation >= 7 && (
       <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
@@ -596,47 +604,122 @@ export default function Dashboard() {
           <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#a3e635', margin: '0 0 8px 0', position: 'relative' }}>7日継続達成！</h3>
           <p style={{ fontSize: '14px', color: '#d1d5db', margin: '0 0 16px 0', position: 'relative' }}>新しいバッジと限定スタンプをゲット！</p>
           <button 
-            onClick={() => {
-              // 報酬アニメーション
-              const button = event?.currentTarget as HTMLElement
-              if (button) {
-                button.style.animation = 'celebrate 0.5s ease-out'
-                setTimeout(() => {
-                  button.style.animation = ''
-                  button.textContent = '受け取り済み ✓'
-                  button.style.backgroundColor = '#4b5563'
-                  button.style.cursor = 'default'
-                }, 500)
+            onClick={(e) => {
+              if (rewardClaimed) return
+              
+              // バイブレーション（可能であれば）
+              if ('vibrate' in navigator) {
+                navigator.vibrate([50, 30, 100])
               }
+              
+              // 報酬アニメーション
+              const button = e.currentTarget as HTMLButtonElement
+              
+              // XPアニメーションを表示
+              setXpAnimationAmount(200) // 7日継続報酬のXP
+              setShowXPAnimation(true)
+              
+              // XPを実際に追加
+              const newXp = totalXP + 200
+              setTotalXP(newXp)
+              UserDataStorage.setXP(newXp)
+              
+              // レベルを再計算
+              const levelData = calculateLevel(newXp)
+              setCalculatedLevel(levelData.level)
+              
+              // ボタンアニメーション
+              button.style.animation = 'celebrate 0.5s ease-out'
+              
+              setTimeout(() => {
+                button.style.animation = ''
+                setRewardClaimed(true)
+                // 状態を保存
+                localStorage.setItem('7dayRewardClaimed', 'true')
+              }, 500)
+              
+              // XPアニメーションを隠す
+              setTimeout(() => {
+                setShowXPAnimation(false)
+              }, 2000)
             }}
             style={{
-              backgroundColor: '#a3e635',
-              color: '#0f172a',
+              backgroundColor: rewardClaimed ? '#4b5563' : '#a3e635',
+              color: rewardClaimed ? '#9ca3af' : '#0f172a',
               padding: '12px 24px',
               borderRadius: '8px',
               border: 'none',
               fontSize: '14px',
               fontWeight: '600',
-              cursor: 'pointer',
+              cursor: rewardClaimed ? 'default' : 'pointer',
               position: 'relative',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => { 
-              if (e.currentTarget.textContent !== '受け取り済み ✓') {
+              if (!rewardClaimed) {
                 e.currentTarget.style.backgroundColor = '#84cc16'
                 e.currentTarget.style.transform = 'scale(1.05)'
               }
             }}
             onMouseLeave={(e) => { 
-              if (e.currentTarget.textContent !== '受け取り済み ✓') {
-                e.currentTarget.style.backgroundColor = '#a3e635'
+              if (!rewardClaimed) {
+                e.currentTarget.style.backgroundColor = rewardClaimed ? '#4b5563' : '#a3e635'
                 e.currentTarget.style.transform = 'scale(1)'
               }
             }}
           >
-            報酬を受け取る
+            {rewardClaimed ? '受け取り済み ✓' : '報酬を受け取る'}
           </button>
+          
+          {/* XP獲得アニメーション */}
+          {showXPAnimation && (
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              pointerEvents: 'none',
+              animation: 'xpFloat 2s ease-out forwards',
+              zIndex: 100
+            }}>
+              <div style={{
+                backgroundColor: '#fbbf24',
+                color: '#0f172a',
+                padding: '12px 24px',
+                borderRadius: '20px',
+                fontSize: '24px',
+                fontWeight: '800',
+                boxShadow: '0 8px 32px rgba(251, 191, 36, 0.5)',
+                animation: 'xpPulse 0.5s ease-out',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ fontSize: '28px' }}>⭐</span>
+                <span>+{xpAnimationAmount} XP</span>
+              </div>
+              
+              {/* パーティクルエフェクト */}
+              <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                {[...Array(8)].map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      position: 'absolute',
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#fbbf24',
+                      borderRadius: '50%',
+                      animation: `particle${i} 1.5s ease-out forwards`,
+                      animationDelay: `${i * 0.1}s`
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+      )}
         
         <style jsx>{`
           @keyframes pulse {
@@ -691,6 +774,66 @@ export default function Dashboard() {
               transform: scale(1) rotate(0deg);
               opacity: 1;
             }
+          }
+          
+          @keyframes xpFloat {
+            0% {
+              opacity: 1;
+              transform: translate(-50%, -50%) translateY(0) scale(0.5);
+            }
+            50% {
+              opacity: 1;
+              transform: translate(-50%, -50%) translateY(-30px) scale(1.2);
+            }
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -50%) translateY(-60px) scale(1);
+            }
+          }
+          
+          @keyframes xpPulse {
+            0% {
+              transform: scale(0.8);
+            }
+            50% {
+              transform: scale(1.1);
+            }
+            100% {
+              transform: scale(1);
+            }
+          }
+          
+          @keyframes particle0 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(60px, 0px) scale(0); opacity: 0; }
+          }
+          @keyframes particle1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(42px, 42px) scale(0); opacity: 0; }
+          }
+          @keyframes particle2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(0px, 60px) scale(0); opacity: 0; }
+          }
+          @keyframes particle3 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-42px, 42px) scale(0); opacity: 0; }
+          }
+          @keyframes particle4 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-60px, 0px) scale(0); opacity: 0; }
+          }
+          @keyframes particle5 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(-42px, -42px) scale(0); opacity: 0; }
+          }
+          @keyframes particle6 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(0px, -60px) scale(0); opacity: 0; }
+          }
+          @keyframes particle7 {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(42px, -42px) scale(0); opacity: 0; }
           }
           
           @keyframes fadeInScale {
