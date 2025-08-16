@@ -9,12 +9,15 @@ import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function ExportPage() {
   const router = useRouter()
-  const [selectedFormat, setSelectedFormat] = useState<'json' | 'csv' | 'pdf'>('json')
+  const [selectedFormat, setSelectedFormat] = useState<'json' | 'csv' | 'pdf' | 'xlsx'>('json')
   const [selectedDataTypes, setSelectedDataTypes] = useState<string[]>(['mood', 'activities'])
   const [dateRange, setDateRange] = useState({
     from: '2025-07-01',
     to: '2025-08-08'
   })
+  const [exportMode, setExportMode] = useState<'download' | 'cloud' | 'schedule'>('download')
+  const [isExporting, setIsExporting] = useState(false)
+  const [exportProgress, setExportProgress] = useState(0)
 
   const dataTypes = [
     { id: 'mood', label: '気分データ', icon: <MoodHappyIcon size={20} color="#a3e635" />, size: '2.3 MB' },
@@ -26,9 +29,10 @@ export default function ExportPage() {
   ]
 
   const formats = [
-    { id: 'json', label: 'JSON', description: '開発者向け', icon: <CodeIcon size={20} color="#60a5fa" /> },
-    { id: 'csv', label: 'CSV', description: 'Excel対応', icon: <ChartIcon size={20} primaryColor="#10b981" /> },
-    { id: 'pdf', label: 'PDF', description: '印刷用', icon: <DocumentIcon size={20} color="#ef4444" /> }
+    { id: 'json', label: 'JSON', description: '開発者向け', icon: <CodeIcon size={20} color="#60a5fa" />, features: ['完全なデータ構造', 'メタデータ含む'] },
+    { id: 'csv', label: 'CSV', description: 'Excel対応', icon: <ChartIcon size={20} primaryColor="#10b981" />, features: ['表形式', 'グラフ作成可能'] },
+    { id: 'pdf', label: 'PDF', description: '印刷用', icon: <DocumentIcon size={20} color="#ef4444" />, features: ['レポート形式', 'グラフ付き'] },
+    { id: 'xlsx', label: 'Excel', description: '分析用', icon: <ChartIcon size={20} primaryColor="#22c55e" />, features: ['複数シート', 'ピボット対応'] }
   ]
 
   const toggleDataType = (typeId: string) => {
@@ -48,9 +52,26 @@ export default function ExportPage() {
     return total.toFixed(1)
   }
 
-  const handleExport = () => {
-    // Simulate export
-    alert(`エクスポート処理を開始しました。\nフォーマット: ${selectedFormat.toUpperCase()}\nサイズ: ${getTotalSize()} MB`)
+  const handleExport = async () => {
+    setIsExporting(true)
+    setExportProgress(0)
+    
+    // Simulate export progress
+    const interval = setInterval(() => {
+      setExportProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          setIsExporting(false)
+          // Success notification
+          setTimeout(() => {
+            alert(`エクスポートが完了しました！\nフォーマット: ${selectedFormat.toUpperCase()}\nサイズ: ${getTotalSize()} MB`)
+            setExportProgress(0)
+          }, 500)
+          return 100
+        }
+        return prev + 10
+      })
+    }, 200)
   }
 
   return (
@@ -257,6 +278,73 @@ export default function ExportPage() {
           </div>
         </div>
 
+        {/* Export Mode Selection */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{
+            ...getTypographyStyles('large'),
+            fontWeight: '600',
+            color: '#f3f4f6',
+            marginBottom: '12px'
+          }}>
+            エクスポート方法
+          </h3>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '12px',
+            marginBottom: '20px'
+          }}>
+            <button
+              onClick={() => setExportMode('download')}
+              style={{
+                padding: '12px',
+                backgroundColor: exportMode === 'download' ? 'rgba(96, 165, 250, 0.2)' : 'rgba(31, 41, 55, 0.6)',
+                border: exportMode === 'download' ? '2px solid rgba(96, 165, 250, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                textAlign: 'center'
+              }}
+            >
+              <span style={{ fontSize: '20px', display: 'block', marginBottom: '4px' }}>💾</span>
+              <div style={{ ...getTypographyStyles('small'), fontWeight: '600', color: exportMode === 'download' ? '#60a5fa' : '#f3f4f6' }}>
+                ダウンロード
+              </div>
+            </button>
+            <button
+              onClick={() => setExportMode('cloud')}
+              style={{
+                padding: '12px',
+                backgroundColor: exportMode === 'cloud' ? 'rgba(167, 139, 250, 0.2)' : 'rgba(31, 41, 55, 0.6)',
+                border: exportMode === 'cloud' ? '2px solid rgba(167, 139, 250, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                textAlign: 'center'
+              }}
+            >
+              <span style={{ fontSize: '20px', display: 'block', marginBottom: '4px' }}>☁️</span>
+              <div style={{ ...getTypographyStyles('small'), fontWeight: '600', color: exportMode === 'cloud' ? '#a78bfa' : '#f3f4f6' }}>
+                クラウド保存
+              </div>
+            </button>
+            <button
+              onClick={() => setExportMode('schedule')}
+              style={{
+                padding: '12px',
+                backgroundColor: exportMode === 'schedule' ? 'rgba(251, 191, 36, 0.2)' : 'rgba(31, 41, 55, 0.6)',
+                border: exportMode === 'schedule' ? '2px solid rgba(251, 191, 36, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)',
+                borderRadius: '12px',
+                cursor: 'pointer',
+                textAlign: 'center'
+              }}
+            >
+              <span style={{ fontSize: '20px', display: 'block', marginBottom: '4px' }}>⏰</span>
+              <div style={{ ...getTypographyStyles('small'), fontWeight: '600', color: exportMode === 'schedule' ? '#fbbf24' : '#f3f4f6' }}>
+                定期バックアップ
+              </div>
+            </button>
+          </div>
+        </div>
+
         {/* Format Selection */}
         <div style={{ marginBottom: '24px' }}>
           <h3 style={{
@@ -269,7 +357,7 @@ export default function ExportPage() {
           </h3>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(2, 1fr)',
             gap: '12px'
           }}>
             {formats.map((format) => (
@@ -287,22 +375,39 @@ export default function ExportPage() {
                   borderRadius: '12px',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
-                  textAlign: 'center'
+                  textAlign: 'left'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px', height: '20px' }}>{format.icon}</div>
-                <div style={{
-                  ...getTypographyStyles('label'),
-                  fontWeight: '600',
-                  color: selectedFormat === format.id ? '#a3e635' : '#f3f4f6'
-                }}>
-                  {format.label}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '20px' }}>{format.icon}</div>
+                  <div>
+                    <div style={{
+                      ...getTypographyStyles('label'),
+                      fontWeight: '600',
+                      color: selectedFormat === format.id ? '#a3e635' : '#f3f4f6'
+                    }}>
+                      {format.label}
+                    </div>
+                    <div style={{
+                      ...getTypographyStyles('caption'),
+                      color: '#9ca3af'
+                    }}>
+                      {format.description}
+                    </div>
+                  </div>
                 </div>
-                <div style={{
-                  ...getTypographyStyles('caption'),
-                  color: '#9ca3af'
-                }}>
-                  {format.description}
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                  {format.features.map((feature, idx) => (
+                    <span key={idx} style={{
+                      ...getTypographyStyles('caption'),
+                      backgroundColor: 'rgba(55, 65, 81, 0.4)',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      color: '#9ca3af'
+                    }}>
+                      {feature}
+                    </span>
+                  ))}
                 </div>
               </button>
             ))}
@@ -359,26 +464,63 @@ export default function ExportPage() {
           </div>
         </div>
 
-        {/* Export Button */}
+        {/* Export Button with Progress */}
+        {isExporting && (
+          <div style={{
+            marginBottom: '16px',
+            backgroundColor: 'rgba(31, 41, 55, 0.6)',
+            borderRadius: '12px',
+            padding: '16px'
+          }}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '8px'
+            }}>
+              <span style={{ ...getTypographyStyles('small'), color: '#9ca3af' }}>
+                エクスポート中...
+              </span>
+              <span style={{ ...getTypographyStyles('small'), fontWeight: '600', color: '#a3e635' }}>
+                {exportProgress}%
+              </span>
+            </div>
+            <div style={{
+              width: '100%',
+              height: '8px',
+              backgroundColor: 'rgba(55, 65, 81, 0.6)',
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${exportProgress}%`,
+                background: 'linear-gradient(90deg, #a3e635, #84cc16)',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} />
+            </div>
+          </div>
+        )}
+        
         <button
           onClick={handleExport}
-          disabled={selectedDataTypes.length === 0}
+          disabled={selectedDataTypes.length === 0 || isExporting}
           style={{
             width: '100%',
             padding: '16px',
-            background: selectedDataTypes.length > 0
+            background: selectedDataTypes.length > 0 && !isExporting
               ? 'linear-gradient(135deg, #a3e635 0%, #84cc16 100%)'
               : 'rgba(55, 65, 81, 0.6)',
-            color: selectedDataTypes.length > 0 ? '#111827' : '#6b7280',
+            color: selectedDataTypes.length > 0 && !isExporting ? '#111827' : '#6b7280',
             border: 'none',
             borderRadius: '12px',
             ...getTypographyStyles('large'),
             fontWeight: '600',
-            cursor: selectedDataTypes.length > 0 ? 'pointer' : 'not-allowed',
+            cursor: selectedDataTypes.length > 0 && !isExporting ? 'pointer' : 'not-allowed',
             transition: 'all 0.3s ease'
           }}
         >
-          エクスポート開始
+          {isExporting ? 'エクスポート中...' : 'エクスポート開始'}
         </button>
 
         {/* Privacy Note */}

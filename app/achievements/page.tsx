@@ -56,20 +56,28 @@ export default function AchievementsPage() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  const [showLevelUpAnimation, setShowLevelUpAnimation] = useState(false)
+  const [showNewBadgeAnimation, setShowNewBadgeAnimation] = useState(false)
+  const [selectedBadge, setSelectedBadge] = useState<any>(null)
+  
   const userStats = {
     level: 8,
     currentXP: 850,
     maxXP: 1000,
     totalBadges: 12,
     recentBadges: 3,
-    rank: 'シルバー'
+    rank: 'シルバー',
+    nextRankXP: 2000,
+    weeklyProgress: 75,
+    globalRanking: 1234
   }
 
   const categories = [
-    { id: 'all', label: 'すべて', count: 12 },
-    { id: 'daily', label: 'デイリー', count: 5 },
-    { id: 'weekly', label: 'ウィークリー', count: 4 },
-    { id: 'special', label: 'スペシャル', count: 3 }
+    { id: 'all', label: 'すべて', count: 12, icon: '✨' },
+    { id: 'daily', label: 'デイリー', count: 5, icon: '☀️' },
+    { id: 'weekly', label: 'ウィークリー', count: 4, icon: '📅' },
+    { id: 'special', label: 'スペシャル', count: 3, icon: '⭐' },
+    { id: 'hidden', label: 'シークレット', count: '?', icon: '🔒' }
   ]
 
   const achievements = [
@@ -144,6 +152,31 @@ export default function AchievementsPage() {
       xp: 120,
       date: null,
       rarity: 'rare'
+    },
+    {
+      id: 7,
+      title: '伝説の探求者',
+      description: '全てのレジェンダリーバッジを獲得',
+      icon: '👑',
+      category: 'hidden',
+      unlocked: false,
+      progress: 15,
+      xp: 1000,
+      date: null,
+      rarity: 'legendary',
+      isSecret: true
+    },
+    {
+      id: 8,
+      title: 'マインドフルマスター',
+      description: '100日間の瞑想を達成',
+      icon: '🎯',
+      category: 'special',
+      unlocked: false,
+      progress: 35,
+      xp: 500,
+      date: null,
+      rarity: 'epic'
     }
   ]
 
@@ -158,8 +191,10 @@ export default function AchievementsPage() {
   }
 
   const filteredAchievements = selectedCategory === 'all' 
-    ? achievements 
-    : achievements.filter(a => a.category === selectedCategory)
+    ? achievements.filter(a => !a.isSecret) 
+    : selectedCategory === 'hidden'
+    ? achievements.filter(a => a.isSecret)
+    : achievements.filter(a => a.category === selectedCategory && !a.isSecret)
 
   // Get motivational message based on achievement progress
   const getMotivationalMessage = () => {
@@ -431,6 +466,74 @@ export default function AchievementsPage() {
           </div>
         </div>
 
+        {/* Weekly Progress & Global Ranking */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '12px',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            background: 'rgba(96, 165, 250, 0.1)',
+            borderRadius: '12px',
+            padding: '12px',
+            border: '1px solid rgba(96, 165, 250, 0.3)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px'
+            }}>
+              <span style={{ fontSize: '20px' }}>📈</span>
+              <div style={{
+                ...getTypographyStyles('small'),
+                color: '#60a5fa',
+                fontWeight: '600'
+              }}>
+                週間進捗
+              </div>
+            </div>
+            <div style={{
+              ...getTypographyStyles('h3'),
+              fontWeight: '700',
+              color: '#f3f4f6'
+            }}>
+              {userStats.weeklyProgress}%
+            </div>
+          </div>
+          
+          <div style={{
+            background: 'rgba(251, 191, 36, 0.1)',
+            borderRadius: '12px',
+            padding: '12px',
+            border: '1px solid rgba(251, 191, 36, 0.3)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px'
+            }}>
+              <span style={{ fontSize: '20px' }}>🌍</span>
+              <div style={{
+                ...getTypographyStyles('small'),
+                color: '#fbbf24',
+                fontWeight: '600'
+              }}>
+                グローバルランキング
+              </div>
+            </div>
+            <div style={{
+              ...getTypographyStyles('h3'),
+              fontWeight: '700',
+              color: '#f3f4f6'
+            }}>
+              #{userStats.globalRanking}
+            </div>
+          </div>
+        </div>
+
         {/* Category Tabs */}
         <div style={{ 
           display: 'flex', 
@@ -469,6 +572,7 @@ export default function AchievementsPage() {
                 transform: selectedCategory === category.id ? 'translateY(-2px)' : 'translateY(0)'
               }}
             >
+              <span style={{ fontSize: '16px' }}>{category.icon}</span>
               {category.label}
               <span style={{
                 backgroundColor: selectedCategory === category.id ? 'rgba(17,24,39,0.2)' : 'rgba(255,255,255,0.1)',

@@ -43,12 +43,12 @@ export default function Dashboard() {
     // オンボーディングチェック
     const userSettings = localStorage.getItem('userSettings')
     if (!userSettings) {
-      router.push('/onboarding/welcome')
+      router.push('/onboarding')
       return
     } else {
       const settings = JSON.parse(userSettings)
       if (!settings.onboardingCompleted) {
-        router.push('/onboarding/welcome')
+        router.push('/onboarding')
         return
       }
     }
