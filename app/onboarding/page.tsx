@@ -13,7 +13,8 @@ export default function OnboardingPage() {
     goals: [] as string[],
     conditions: [] as string[],
     preferredTime: '',
-    notifications: true
+    notifications: true,
+    selectedCharacter: 'luna'
   })
 
   const steps = [
@@ -28,6 +29,13 @@ export default function OnboardingPage() {
       subtitle: 'ニックネームでもOKです（スキップ可）',
       field: 'name',
       placeholder: '例: ゆうた'
+    },
+    {
+      id: 'character',
+      type: 'character',
+      title: 'パートナーを選んでください',
+      subtitle: 'あなたをサポートするキャラクターです',
+      field: 'selectedCharacter'
     },
     {
       id: 'age',
@@ -108,14 +116,30 @@ export default function OnboardingPage() {
   const handleComplete = () => {
     localStorage.setItem('onboardingComplete', 'true')
     localStorage.setItem('userData', JSON.stringify(formData))
+    // Save as userSettings for consistency
+    localStorage.setItem('userSettings', JSON.stringify({
+      ...formData,
+      onboardingCompleted: true,
+      completedAt: new Date().toISOString()
+    }))
     router.push('/dashboard')
   }
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: any, autoAdvance: boolean = false) => {
     setFormData({ ...formData, [field]: value })
     // Save user name to localStorage immediately when entered
     if (field === 'name' && value) {
       localStorage.setItem('userName', value)
+    }
+    // Save selected character
+    if (field === 'selectedCharacter') {
+      localStorage.setItem('selectedCharacter', value)
+    }
+    // Auto advance for select/radio type inputs
+    if (autoAdvance && value) {
+      setTimeout(() => {
+        handleNext()
+      }, 300)
     }
   }
 
