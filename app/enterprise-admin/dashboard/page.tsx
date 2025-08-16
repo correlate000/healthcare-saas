@@ -187,6 +187,15 @@ function EnterpriseDashboardContent() {
               更新
             </Button>
             
+            <Button 
+              onClick={() => window.location.href = '/enterprise-admin/roi'}
+              variant="outline"
+              size="sm"
+            >
+              <BarChart3 className="h-4 w-4 mr-2" />
+              ROI分析
+            </Button>
+            
             <Button onClick={exportReport} size="sm">
               <Download className="h-4 w-4 mr-2" />
               レポート出力

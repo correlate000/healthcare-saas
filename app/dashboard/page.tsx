@@ -40,6 +40,19 @@ export default function Dashboard() {
   
   // Load data from localStorage using storage utility
   useEffect(() => {
+    // オンボーディングチェック
+    const userSettings = localStorage.getItem('userSettings')
+    if (!userSettings) {
+      router.push('/onboarding/welcome')
+      return
+    } else {
+      const settings = JSON.parse(userSettings)
+      if (!settings.onboardingCompleted) {
+        router.push('/onboarding/welcome')
+        return
+      }
+    }
+    
     const loadUserData = () => {
       try {
         // Load user name
