@@ -12,6 +12,7 @@ export default function TeamConnectPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [showTeamChallenge, setShowTeamChallenge] = useState(false)
 
   // Check for mobile view
   useEffect(() => {
@@ -166,6 +167,55 @@ export default function TeamConnectPage() {
       daysLeft: 5,
       progress: 40,
       reward: '100 XP'
+    }
+  ]
+
+  // チーム対抗チャレンジのデータ
+  const teamChallenges = [
+    {
+      id: 1,
+      title: '営業 vs エンジニア',
+      description: '今週のストレス軽減対決',
+      teamA: {
+        name: '営業チーム',
+        score: 342,
+        members: 24,
+        color: '#60a5fa',
+        progress: 68
+      },
+      teamB: {
+        name: 'エンジニアチーム',
+        score: 318,
+        members: 31,
+        color: '#a3e635',
+        progress: 62
+      },
+      timeLeft: '2日',
+      prize: '優勝チームに特別バッジ',
+      isJoined: true,
+      myTeam: 'teamA'
+    },
+    {
+      id: 2,
+      title: '部門対抗ウェルネス',
+      description: '月間健康チャレンジ',
+      teamA: {
+        name: '人事・総務',
+        score: 892,
+        members: 18,
+        color: '#a78bfa',
+        progress: 75
+      },
+      teamB: {
+        name: 'マーケティング',
+        score: 856,
+        members: 22,
+        color: '#fbbf24',
+        progress: 71
+      },
+      timeLeft: '5日',
+      prize: '200 XP + 限定称号',
+      isJoined: false
     }
   ]
 
@@ -579,6 +629,219 @@ export default function TeamConnectPage() {
         {/* Groups Tab */}
         {activeTab === 'groups' && (
           <>
+            {/* Team Battles Section - 新規追加 */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '20px',
+              padding: '20px',
+              marginBottom: '24px',
+              border: '1px solid rgba(239, 68, 68, 0.2)'
+            }}>
+              <h3 style={{
+                ...getTypographyStyles('large'),
+                fontWeight: '600',
+                color: '#f3f4f6',
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span>⚔️</span>
+                チーム対抗バトル
+              </h3>
+              
+              {teamChallenges.map((battle) => (
+                <div
+                  key={battle.id}
+                  style={{
+                    backgroundColor: 'rgba(31, 41, 55, 0.6)',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    marginBottom: '12px',
+                    border: battle.isJoined ? '2px solid rgba(163, 230, 53, 0.3)' : '1px solid rgba(55, 65, 81, 0.3)'
+                  }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '12px'
+                  }}>
+                    <div>
+                      <div style={{
+                        ...getTypographyStyles('base'),
+                        fontWeight: '700',
+                        color: '#f3f4f6',
+                        marginBottom: '4px'
+                      }}>
+                        {battle.title}
+                      </div>
+                      <div style={{
+                        ...getTypographyStyles('small'),
+                        color: '#9ca3af'
+                      }}>
+                        {battle.description}
+                      </div>
+                    </div>
+                    <div style={{
+                      ...getTypographyStyles('small'),
+                      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                      color: '#ef4444',
+                      padding: '4px 8px',
+                      borderRadius: '8px',
+                      fontWeight: '600'
+                    }}>
+                      ⏱️ {battle.timeLeft}
+                    </div>
+                  </div>
+                  
+                  {/* Team Scores */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '8px',
+                    marginBottom: '12px'
+                  }}>
+                    <div style={{
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      <div style={{
+                        ...getTypographyStyles('small'),
+                        color: battle.teamA.color,
+                        fontWeight: '600',
+                        marginBottom: '4px'
+                      }}>
+                        {battle.teamA.name}
+                      </div>
+                      <div style={{
+                        ...getTypographyStyles('h3'),
+                        fontWeight: '700',
+                        color: '#f3f4f6'
+                      }}>
+                        {battle.teamA.score}
+                      </div>
+                      <div style={{
+                        ...getTypographyStyles('caption'),
+                        color: '#6b7280'
+                      }}>
+                        {battle.teamA.members}人
+                      </div>
+                    </div>
+                    
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 8px'
+                    }}>
+                      <span style={{
+                        ...getTypographyStyles('h4'),
+                        color: '#ef4444',
+                        fontWeight: '700'
+                      }}>VS</span>
+                    </div>
+                    
+                    <div style={{
+                      flex: 1,
+                      textAlign: 'center'
+                    }}>
+                      <div style={{
+                        ...getTypographyStyles('small'),
+                        color: battle.teamB.color,
+                        fontWeight: '600',
+                        marginBottom: '4px'
+                      }}>
+                        {battle.teamB.name}
+                      </div>
+                      <div style={{
+                        ...getTypographyStyles('h3'),
+                        fontWeight: '700',
+                        color: '#f3f4f6'
+                      }}>
+                        {battle.teamB.score}
+                      </div>
+                      <div style={{
+                        ...getTypographyStyles('caption'),
+                        color: '#6b7280'
+                      }}>
+                        {battle.teamB.members}人
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div style={{
+                    height: '8px',
+                    backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                    borderRadius: '4px',
+                    overflow: 'hidden',
+                    marginBottom: '12px'
+                  }}>
+                    <div style={{
+                      height: '100%',
+                      display: 'flex'
+                    }}>
+                      <div 
+                        style={{
+                          width: `${battle.teamA.progress}%`,
+                          backgroundColor: battle.teamA.color,
+                          transition: 'width 0.5s ease'
+                        }}
+                      />
+                      <div 
+                        style={{
+                          width: `${100 - battle.teamA.progress}%`,
+                          backgroundColor: battle.teamB.color,
+                          transition: 'width 0.5s ease'
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div style={{
+                      ...getTypographyStyles('small'),
+                      color: '#fbbf24'
+                    }}>
+                      🏆 {battle.prize}
+                    </div>
+                    {battle.isJoined ? (
+                      <div style={{
+                        ...getTypographyStyles('small'),
+                        backgroundColor: battle.myTeam === 'teamA' ? battle.teamA.color + '20' : battle.teamB.color + '20',
+                        color: battle.myTeam === 'teamA' ? battle.teamA.color : battle.teamB.color,
+                        padding: '4px 12px',
+                        borderRadius: '8px',
+                        fontWeight: '600'
+                      }}>
+                        参加中
+                      </div>
+                    ) : (
+                      <button
+                        style={{
+                          padding: '6px 16px',
+                          backgroundColor: 'rgba(163, 230, 53, 0.2)',
+                          color: '#a3e635',
+                          border: '1px solid rgba(163, 230, 53, 0.3)',
+                          borderRadius: '8px',
+                          ...getTypographyStyles('small'),
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        参加する
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {/* Active Challenges */}
             <div style={{
               background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(31, 41, 55, 0.8) 100%)',

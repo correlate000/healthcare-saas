@@ -1,61 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
 import { getTypographyStyles } from '@/styles/typography'
-import { 
-  ArrowRight, 
-  Heart, 
-  Brain, 
-  Target, 
-  Users, 
-  Sparkles,
-  CheckCircle,
-  Clock,
-  TrendingUp,
-  Shield,
-  Award
-} from 'lucide-react'
-
-interface OnboardingStep {
-  id: number
-  title: string
-  description: string
-  icon: React.ReactNode
-  color: string
-}
-
-const steps: OnboardingStep[] = [
-  {
-    id: 1,
-    title: 'ようこそMindCareへ',
-    description: 'あなたの心の健康をサポートする旅が始まります',
-    icon: <Sparkles className="h-12 w-12" />,
-    color: '#a3e635'
-  },
-  {
-    id: 2,
-    title: 'パーソナライズされたケア',
-    description: 'AIがあなたに最適なサポートを提供します',
-    icon: <Brain className="h-12 w-12" />,
-    color: '#60a5fa'
-  },
-  {
-    id: 3,
-    title: '目標を設定しましょう',
-    description: 'あなたが達成したいことを教えてください',
-    icon: <Target className="h-12 w-12" />,
-    color: '#a78bfa'
-  },
-  {
-    id: 4,
-    title: 'チームとつながる',
-    description: '仲間と一緒に成長しましょう',
-    icon: <Users className="h-12 w-12" />,
-    color: '#fbbf24'
-  }
-]
+import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
+import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 
 export default function WelcomePage() {
   const router = useRouter()
@@ -63,558 +12,427 @@ export default function WelcomePage() {
   const [selectedGoals, setSelectedGoals] = useState<string[]>([])
   const [selectedTime, setSelectedTime] = useState('')
   const [userName, setUserName] = useState('')
-  const [isCompleting, setIsCompleting] = useState(false)
+  const [selectedCharacter, setSelectedCharacter] = useState('luna')
+
+  const characters = [
+    { id: 'luna', name: 'るな', icon: '🌙', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb' },
+    { id: 'aria', name: 'あーりあ', icon: '✨', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe' },
+    { id: 'zen', name: 'ぜん', icon: '🧘', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa' }
+  ]
 
   const goals = [
-    { id: 'stress', label: 'ストレス管理', icon: '😌', description: '日々のストレスと上手に付き合う' },
-    { id: 'sleep', label: '睡眠改善', icon: '😴', description: '質の良い睡眠を確保する' },
-    { id: 'focus', label: '集中力向上', icon: '🎯', description: '仕事の生産性を高める' },
-    { id: 'mood', label: '気分改善', icon: '😊', description: 'ポジティブな気持ちを維持' },
-    { id: 'exercise', label: '運動習慣', icon: '💪', description: '定期的な運動を続ける' },
-    { id: 'mindfulness', label: 'マインドフルネス', icon: '🧘', description: '今この瞬間に集中する' },
-    { id: 'relationship', label: '人間関係', icon: '🤝', description: 'より良い関係を築く' },
-    { id: 'work-life', label: 'ワークライフバランス', icon: '⚖️', description: '仕事と生活の調和' }
+    { id: 'stress', label: 'ストレス管理', icon: '😌' },
+    { id: 'sleep', label: '睡眠改善', icon: '😴' },
+    { id: 'focus', label: '集中力向上', icon: '🎯' },
+    { id: 'mood', label: '気分改善', icon: '😊' },
+    { id: 'exercise', label: '運動習慣', icon: '💪' },
+    { id: 'mindfulness', label: 'マインドフルネス', icon: '🧘' }
   ]
 
   const timePreferences = [
-    { id: 'morning', label: '朝（6:00-9:00）', icon: '🌅' },
-    { id: 'lunch', label: '昼休み（12:00-13:00）', icon: '☀️' },
-    { id: 'evening', label: '夕方（18:00-20:00）', icon: '🌆' },
-    { id: 'night', label: '夜（20:00-22:00）', icon: '🌙' }
+    { id: 'morning', label: '朝 (6:00-9:00)', icon: '🌅' },
+    { id: 'lunch', label: '昼 (12:00-13:00)', icon: '☀️' },
+    { id: 'evening', label: '夕方 (18:00-20:00)', icon: '🌆' },
+    { id: 'night', label: '夜 (20:00-22:00)', icon: '🌙' }
   ]
 
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-    } else {
-      completeOnboarding()
-    }
-  }
+  const currentCharacter = characters.find(c => c.id === selectedCharacter) || characters[0]
 
-  const handleGoalToggle = (goalId: string) => {
-    setSelectedGoals(prev => 
-      prev.includes(goalId) 
-        ? prev.filter(id => id !== goalId)
-        : [...prev, goalId]
-    )
-  }
-
-  const completeOnboarding = async () => {
-    setIsCompleting(true)
-    
-    // 設定を保存
+  const handleComplete = () => {
     const settings = {
       userName,
       goals: selectedGoals,
       preferredTime: selectedTime,
+      selectedCharacter,
       onboardingCompleted: true,
       completedAt: new Date().toISOString()
     }
     
     localStorage.setItem('userSettings', JSON.stringify(settings))
-    
-    // アニメーション後にダッシュボードへ
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 1500)
+    localStorage.setItem('selectedCharacter', selectedCharacter)
+    router.push('/dashboard')
   }
 
-  const renderStepContent = () => {
+  const canProceed = () => {
     switch (currentStep) {
-      case 0:
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="text-center"
-          >
-            <div className="mb-8">
-              <div 
-                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: steps[0].color + '20' }}
-              >
-                <Sparkles className="h-12 w-12" style={{ color: steps[0].color }} />
-              </div>
-              <h1 style={{
-                ...getTypographyStyles('h1'),
-                fontWeight: '800',
-                marginBottom: '16px',
-                background: `linear-gradient(135deg, ${steps[0].color} 0%, #60a5fa 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text'
-              }}>
-                ようこそ、MindCareへ！
-              </h1>
-              <p style={{
-                ...getTypographyStyles('large'),
-                color: '#6b7280',
-                marginBottom: '32px',
-                maxWidth: '400px',
-                margin: '0 auto'
-              }}>
-                あなたの心の健康をサポートする
-                パーソナルアシスタントです
-              </p>
-            </div>
-            
-            <div className="mb-8">
-              <input
-                type="text"
-                placeholder="お名前を教えてください"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-                style={{
-                  width: '100%',
-                  maxWidth: '300px',
-                  padding: '12px 20px',
-                  fontSize: '16px',
-                  borderRadius: '12px',
-                  border: '2px solid #e5e7eb',
-                  outline: 'none',
-                  textAlign: 'center',
-                  transition: 'all 0.3s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = steps[0].color
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb'
-                }}
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto mb-8">
-              <div className="bg-green-50 rounded-xl p-4">
-                <Shield className="h-8 w-8 text-green-600 mb-2" />
-                <div style={getTypographyStyles('small')}>
-                  <div className="font-semibold text-gray-800">プライバシー保護</div>
-                  <div className="text-gray-600">データは暗号化されます</div>
-                </div>
-              </div>
-              <div className="bg-blue-50 rounded-xl p-4">
-                <Award className="h-8 w-8 text-blue-600 mb-2" />
-                <div style={getTypographyStyles('small')}>
-                  <div className="font-semibold text-gray-800">科学的根拠</div>
-                  <div className="text-gray-600">エビデンスベースのケア</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )
-      
-      case 1:
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="text-center"
-          >
-            <div className="mb-8">
-              <div 
-                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: steps[1].color + '20' }}
-              >
-                <Brain className="h-12 w-12" style={{ color: steps[1].color }} />
-              </div>
-              <h2 style={{
-                ...getTypographyStyles('h2'),
-                fontWeight: '700',
-                marginBottom: '16px'
-              }}>
-                {userName ? `${userName}さんに` : 'あなたに'}最適化
-              </h2>
-              <p style={{
-                ...getTypographyStyles('base'),
-                color: '#6b7280',
-                maxWidth: '400px',
-                margin: '0 auto 32px'
-              }}>
-                AIがあなたの状態を理解し、
-                パーソナライズされたサポートを提供します
-              </p>
-            </div>
-            
-            <div className="space-y-4 max-w-md mx-auto">
-              <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-purple-600" />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold text-gray-800">AI対話サポート</div>
-                  <div className="text-sm text-gray-600">24時間いつでも相談可能</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                  <TrendingUp className="h-6 w-6 text-green-600" />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold text-gray-800">進捗トラッキング</div>
-                  <div className="text-sm text-gray-600">あなたの成長を可視化</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
-                  <Target className="h-6 w-6 text-yellow-600" />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold text-gray-800">カスタマイズ</div>
-                  <div className="text-sm text-gray-600">目標に合わせた最適化</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )
-      
-      case 2:
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <div className="text-center mb-8">
-              <div 
-                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: steps[2].color + '20' }}
-              >
-                <Target className="h-12 w-12" style={{ color: steps[2].color }} />
-              </div>
-              <h2 style={{
-                ...getTypographyStyles('h2'),
-                fontWeight: '700',
-                marginBottom: '16px'
-              }}>
-                目標を選びましょう
-              </h2>
-              <p style={{
-                ...getTypographyStyles('base'),
-                color: '#6b7280'
-              }}>
-                達成したいことを3つまで選んでください
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 mb-8">
-              {goals.map((goal) => (
-                <button
-                  key={goal.id}
-                  onClick={() => handleGoalToggle(goal.id)}
-                  disabled={!selectedGoals.includes(goal.id) && selectedGoals.length >= 3}
-                  style={{
-                    padding: '12px',
-                    borderRadius: '12px',
-                    border: selectedGoals.includes(goal.id) 
-                      ? `2px solid ${steps[2].color}`
-                      : '2px solid #e5e7eb',
-                    backgroundColor: selectedGoals.includes(goal.id)
-                      ? steps[2].color + '10'
-                      : 'white',
-                    cursor: !selectedGoals.includes(goal.id) && selectedGoals.length >= 3 
-                      ? 'not-allowed' 
-                      : 'pointer',
-                    opacity: !selectedGoals.includes(goal.id) && selectedGoals.length >= 3 
-                      ? 0.5 
-                      : 1,
-                    transition: 'all 0.3s ease',
-                    textAlign: 'left'
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <span style={{ fontSize: '24px' }}>{goal.icon}</span>
-                    <div>
-                      <div style={{
-                        ...getTypographyStyles('base'),
-                        fontWeight: '600',
-                        color: selectedGoals.includes(goal.id) ? steps[2].color : '#374151'
-                      }}>
-                        {goal.label}
-                      </div>
-                      <div style={{
-                        ...getTypographyStyles('small'),
-                        color: '#6b7280',
-                        marginTop: '2px'
-                      }}>
-                        {goal.description}
-                      </div>
-                    </div>
-                    {selectedGoals.includes(goal.id) && (
-                      <CheckCircle 
-                        className="h-5 w-5 flex-shrink-0" 
-                        style={{ color: steps[2].color }}
-                      />
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-            
-            {selectedGoals.length > 0 && (
-              <div className="text-center">
-                <div style={{
-                  ...getTypographyStyles('small'),
-                  color: steps[2].color,
-                  fontWeight: '600'
-                }}>
-                  {selectedGoals.length}/3 目標を選択中
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )
-      
-      case 3:
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <div className="text-center mb-8">
-              <div 
-                className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: steps[3].color + '20' }}
-              >
-                <Clock className="h-12 w-12" style={{ color: steps[3].color }} />
-              </div>
-              <h2 style={{
-                ...getTypographyStyles('h2'),
-                fontWeight: '700',
-                marginBottom: '16px'
-              }}>
-                いつ利用しますか？
-              </h2>
-              <p style={{
-                ...getTypographyStyles('base'),
-                color: '#6b7280'
-              }}>
-                リマインダーを送る最適な時間帯を教えてください
-              </p>
-            </div>
-            
-            <div className="space-y-3 max-w-md mx-auto mb-8">
-              {timePreferences.map((time) => (
-                <button
-                  key={time.id}
-                  onClick={() => setSelectedTime(time.id)}
-                  style={{
-                    width: '100%',
-                    padding: '16px',
-                    borderRadius: '12px',
-                    border: selectedTime === time.id 
-                      ? `2px solid ${steps[3].color}`
-                      : '2px solid #e5e7eb',
-                    backgroundColor: selectedTime === time.id
-                      ? steps[3].color + '10'
-                      : 'white',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px'
-                  }}
-                >
-                  <span style={{ fontSize: '28px' }}>{time.icon}</span>
-                  <div style={{ flex: 1, textAlign: 'left' }}>
-                    <div style={{
-                      ...getTypographyStyles('base'),
-                      fontWeight: '600',
-                      color: selectedTime === time.id ? steps[3].color : '#374151'
-                    }}>
-                      {time.label}
-                    </div>
-                  </div>
-                  {selectedTime === time.id && (
-                    <CheckCircle 
-                      className="h-6 w-6" 
-                      style={{ color: steps[3].color }}
-                    />
-                  )}
-                </button>
-              ))}
-            </div>
-            
-            <div className="bg-blue-50 rounded-xl p-4 max-w-md mx-auto">
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <div style={{
-                    ...getTypographyStyles('small'),
-                    fontWeight: '600',
-                    color: '#1e40af',
-                    marginBottom: '4px'
-                  }}>
-                    スマートリマインダー
-                  </div>
-                  <div style={{
-                    ...getTypographyStyles('small'),
-                    color: '#3b82f6'
-                  }}>
-                    あなたの利用パターンを学習して、最適なタイミングで通知します
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )
-      
-      default:
-        return null
+      case 0: return userName.length > 0
+      case 1: return true
+      case 2: return selectedGoals.length > 0
+      case 3: return selectedTime !== ''
+      default: return false
     }
   }
+
+  // Bird character SVG component
+  const BirdCharacter = ({ bodyColor, bellyColor, size = 60 }: { bodyColor: string, bellyColor: string, size?: number }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
+      <ellipse cx="50" cy="60" rx="25" ry="28" fill={bellyColor} />
+      <ellipse cx="25" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(-20 25 50)" />
+      <ellipse cx="75" cy="50" rx="15" ry="25" fill={bodyColor} transform="rotate(20 75 50)" />
+      <circle cx="40" cy="45" r="6" fill="white" />
+      <circle cx="42" cy="45" r="4" fill="#111827" />
+      <circle cx="43" cy="44" r="2" fill="white" />
+      <circle cx="60" cy="45" r="6" fill="white" />
+      <circle cx="58" cy="45" r="4" fill="#111827" />
+      <circle cx="59" cy="44" r="2" fill="white" />
+      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+    </svg>
+  )
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #f0fdf4 0%, #dbeafe 50%, #fef3c7 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      padding: '20px'
+      background: 'linear-gradient(135deg, #111827 0%, #0f172a 50%, #111827 100%)',
+      color: 'white',
+      paddingBottom: `${MOBILE_PAGE_PADDING_BOTTOM}px`,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
-      {!isCompleting ? (
-        <>
-          {/* Progress Bar */}
-          <div className="max-w-2xl mx-auto w-full mb-8">
-            <div className="flex items-center justify-between mb-4">
-              {steps.map((step, index) => (
-                <div
-                  key={step.id}
-                  className="flex items-center"
-                  style={{ flex: index < steps.length - 1 ? 1 : 0 }}
-                >
-                  <div
+      {/* Header */}
+      <div style={{
+        padding: '20px',
+        borderBottom: '1px solid rgba(55, 65, 81, 0.5)',
+        background: 'rgba(31, 41, 55, 0.4)',
+        backdropFilter: 'blur(10px)'
+      }}>
+        <h1 style={{
+          ...getTypographyStyles('h3'),
+          fontWeight: '700',
+          color: '#f3f4f6',
+          margin: 0
+        }}>
+          はじめに設定
+        </h1>
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          marginTop: '12px'
+        }}>
+          {[0, 1, 2, 3].map((step) => (
+            <div
+              key={step}
+              style={{
+                flex: 1,
+                height: '3px',
+                backgroundColor: step <= currentStep ? '#a3e635' : 'rgba(55, 65, 81, 0.6)',
+                borderRadius: '2px',
+                transition: 'all 0.3s ease'
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: '20px' }}>
+        {/* Step 0: 名前入力 */}
+        {currentStep === 0 && (
+          <div>
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              borderRadius: '20px',
+              padding: '24px',
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                ...getTypographyStyles('h2'),
+                fontWeight: '700',
+                color: '#a3e635',
+                marginBottom: '12px'
+              }}>
+                ようこそ MindCare へ
+              </div>
+              <p style={{
+                ...getTypographyStyles('base'),
+                color: '#9ca3af',
+                marginBottom: '24px'
+              }}>
+                あなたのお名前を教えてください
+              </p>
+              <input
+                type="text"
+                placeholder="お名前"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '14px 20px',
+                  backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                  border: '1px solid rgba(55, 65, 81, 0.5)',
+                  borderRadius: '12px',
+                  color: '#f3f4f6',
+                  fontSize: '16px',
+                  outline: 'none',
+                  textAlign: 'center'
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: キャラクター選択 */}
+        {currentStep === 1 && (
+          <div>
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              borderRadius: '20px',
+              padding: '24px',
+              marginBottom: '20px',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                ...getTypographyStyles('h3'),
+                fontWeight: '700',
+                color: '#f3f4f6',
+                marginBottom: '20px'
+              }}>
+                パートナーを選ぶ
+              </div>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '12px'
+              }}>
+                {characters.map((char) => (
+                  <button
+                    key={char.id}
+                    onClick={() => setSelectedCharacter(char.id)}
                     style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      backgroundColor: index <= currentStep ? step.color : '#e5e7eb',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      backgroundColor: selectedCharacter === char.id 
+                        ? char.color + '20' 
+                        : 'rgba(55, 65, 81, 0.4)',
+                      border: selectedCharacter === char.id 
+                        ? `2px solid ${char.color}` 
+                        : '2px solid rgba(55, 65, 81, 0.3)',
+                      borderRadius: '16px',
+                      padding: '16px 8px',
+                      cursor: 'pointer',
                       transition: 'all 0.3s ease'
                     }}
                   >
-                    {index < currentStep ? (
-                      <CheckCircle className="h-6 w-6 text-white" />
-                    ) : (
-                      <span style={{
-                        color: index === currentStep ? 'white' : '#9ca3af',
-                        fontWeight: '600'
-                      }}>
-                        {index + 1}
-                      </span>
-                    )}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div
-                      style={{
-                        flex: 1,
-                        height: '2px',
-                        backgroundColor: index < currentStep ? step.color : '#e5e7eb',
-                        margin: '0 8px',
-                        transition: 'all 0.3s ease'
-                      }}
-                    />
-                  )}
-                </div>
-              ))}
+                    <div style={{
+                      width: '60px',
+                      height: '60px',
+                      margin: '0 auto 8px',
+                      backgroundColor: char.color + '20',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <BirdCharacter 
+                        bodyColor={char.bodyColor} 
+                        bellyColor={char.bellyColor}
+                        size={45}
+                      />
+                    </div>
+                    <div style={{
+                      ...getTypographyStyles('base'),
+                      fontWeight: '600',
+                      color: selectedCharacter === char.id ? char.color : '#f3f4f6'
+                    }}>
+                      {char.name}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          
-          {/* Content */}
-          <div className="max-w-2xl mx-auto w-full bg-white rounded-2xl shadow-xl p-8">
-            <AnimatePresence mode="wait">
-              {renderStepContent()}
-            </AnimatePresence>
-            
-            {/* Navigation */}
-            <div className="flex justify-between items-center mt-8">
-              <button
-                onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-                disabled={currentStep === 0}
-                style={{
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  border: '2px solid #e5e7eb',
-                  backgroundColor: 'white',
-                  color: currentStep === 0 ? '#9ca3af' : '#374151',
-                  fontWeight: '600',
-                  cursor: currentStep === 0 ? 'not-allowed' : 'pointer',
-                  opacity: currentStep === 0 ? 0.5 : 1,
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                戻る
-              </button>
-              
-              <button
-                onClick={handleNext}
-                disabled={
-                  (currentStep === 0 && !userName) ||
-                  (currentStep === 2 && selectedGoals.length === 0) ||
-                  (currentStep === 3 && !selectedTime)
-                }
-                style={{
-                  padding: '12px 32px',
-                  borderRadius: '12px',
-                  backgroundColor: steps[currentStep].color,
-                  color: 'white',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  opacity: 
-                    (currentStep === 0 && !userName) ||
-                    (currentStep === 2 && selectedGoals.length === 0) ||
-                    (currentStep === 3 && !selectedTime) 
-                      ? 0.5 : 1,
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                {currentStep === steps.length - 1 ? '始める' : '次へ'}
-                <ArrowRight className="h-5 w-5" />
-              </button>
+        )}
+
+        {/* Step 2: 目標選択 */}
+        {currentStep === 2 && (
+          <div>
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              borderRadius: '20px',
+              padding: '24px',
+              marginBottom: '20px'
+            }}>
+              <div style={{
+                ...getTypographyStyles('h3'),
+                fontWeight: '700',
+                color: '#f3f4f6',
+                marginBottom: '8px',
+                textAlign: 'center'
+              }}>
+                目標を選ぶ
+              </div>
+              <p style={{
+                ...getTypographyStyles('small'),
+                color: '#9ca3af',
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}>
+                3つまで選択できます
+              </p>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '10px'
+              }}>
+                {goals.map((goal) => (
+                  <button
+                    key={goal.id}
+                    onClick={() => {
+                      if (selectedGoals.includes(goal.id)) {
+                        setSelectedGoals(selectedGoals.filter(g => g !== goal.id))
+                      } else if (selectedGoals.length < 3) {
+                        setSelectedGoals([...selectedGoals, goal.id])
+                      }
+                    }}
+                    disabled={!selectedGoals.includes(goal.id) && selectedGoals.length >= 3}
+                    style={{
+                      padding: '12px',
+                      backgroundColor: selectedGoals.includes(goal.id)
+                        ? currentCharacter.color + '20'
+                        : 'rgba(55, 65, 81, 0.4)',
+                      border: selectedGoals.includes(goal.id)
+                        ? `2px solid ${currentCharacter.color}`
+                        : '2px solid rgba(55, 65, 81, 0.3)',
+                      borderRadius: '12px',
+                      cursor: !selectedGoals.includes(goal.id) && selectedGoals.length >= 3
+                        ? 'not-allowed'
+                        : 'pointer',
+                      opacity: !selectedGoals.includes(goal.id) && selectedGoals.length >= 3
+                        ? 0.5
+                        : 1,
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>{goal.icon}</span>
+                    <span style={{
+                      ...getTypographyStyles('small'),
+                      fontWeight: '600',
+                      color: selectedGoals.includes(goal.id) ? currentCharacter.color : '#f3f4f6'
+                    }}>
+                      {goal.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="bg-white rounded-2xl shadow-xl p-12 max-w-md mx-auto">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, ease: "linear" }}
-              className="w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center"
+        )}
+
+        {/* Step 3: 時間設定 */}
+        {currentStep === 3 && (
+          <div>
+            <div style={{
+              background: 'rgba(31, 41, 55, 0.6)',
+              borderRadius: '20px',
+              padding: '24px',
+              marginBottom: '20px'
+            }}>
+              <div style={{
+                ...getTypographyStyles('h3'),
+                fontWeight: '700',
+                color: '#f3f4f6',
+                marginBottom: '8px',
+                textAlign: 'center'
+              }}>
+                通知時間
+              </div>
+              <p style={{
+                ...getTypographyStyles('small'),
+                color: '#9ca3af',
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}>
+                リマインダーの時間帯
+              </p>
+              <div style={{
+                display: 'grid',
+                gap: '10px'
+              }}>
+                {timePreferences.map((time) => (
+                  <button
+                    key={time.id}
+                    onClick={() => setSelectedTime(time.id)}
+                    style={{
+                      padding: '14px',
+                      backgroundColor: selectedTime === time.id
+                        ? currentCharacter.color + '20'
+                        : 'rgba(55, 65, 81, 0.4)',
+                      border: selectedTime === time.id
+                        ? `2px solid ${currentCharacter.color}`
+                        : '2px solid rgba(55, 65, 81, 0.3)',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}
+                  >
+                    <span style={{ fontSize: '24px' }}>{time.icon}</span>
+                    <span style={{
+                      ...getTypographyStyles('base'),
+                      fontWeight: '600',
+                      color: selectedTime === time.id ? currentCharacter.color : '#f3f4f6'
+                    }}>
+                      {time.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '12px',
+          marginTop: '24px'
+        }}>
+          {currentStep > 0 && (
+            <button
+              onClick={() => setCurrentStep(currentStep - 1)}
+              style={{
+                flex: 1,
+                padding: '14px',
+                backgroundColor: 'rgba(55, 65, 81, 0.6)',
+                border: '1px solid rgba(55, 65, 81, 0.5)',
+                borderRadius: '12px',
+                color: '#f3f4f6',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
             >
-              <CheckCircle className="h-12 w-12 text-white" />
-            </motion.div>
-            <h2 style={{
-              ...getTypographyStyles('h2'),
+              戻る
+            </button>
+          )}
+          <button
+            onClick={() => {
+              if (currentStep < 3) {
+                setCurrentStep(currentStep + 1)
+              } else {
+                handleComplete()
+              }
+            }}
+            disabled={!canProceed()}
+            style={{
+              flex: 2,
+              padding: '14px',
+              backgroundColor: canProceed() ? currentCharacter.color : 'rgba(55, 65, 81, 0.4)',
+              border: 'none',
+              borderRadius: '12px',
+              color: canProceed() ? '#0f172a' : '#6b7280',
               fontWeight: '700',
-              marginBottom: '16px'
-            }}>
-              準備完了！
-            </h2>
-            <p style={{
-              ...getTypographyStyles('base'),
-              color: '#6b7280'
-            }}>
-              {userName ? `${userName}さんの` : 'あなたの'}
-              パーソナライズされた体験を開始します
-            </p>
-          </div>
-        </motion.div>
-      )}
+              cursor: canProceed() ? 'pointer' : 'not-allowed',
+              opacity: canProceed() ? 1 : 0.5
+            }}
+          >
+            {currentStep === 3 ? '始める' : '次へ'}
+          </button>
+        </div>
+      </div>
+
+      <MobileBottomNav />
     </div>
   )
 }
