@@ -27,7 +27,16 @@ export interface OptimizedChallenge {
 
 export class AIChallengeOptimizer {
   private static instance: AIChallengeOptimizer
-  private userProfile: UserProfile
+  private userProfile: UserProfile = {
+    preferredCategories: ['mindfulness', 'exercise'],
+    completionRates: new Map(),
+    timeOfDayPreference: ['morning'],
+    difficultyLevel: 'easy',
+    stressLevel: 5,
+    energyLevel: 5,
+    recentActivities: [],
+    goals: []
+  }
   private completionHistory: Map<string, number[]> = new Map()
   
   private constructor() {
