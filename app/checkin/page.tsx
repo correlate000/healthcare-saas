@@ -560,18 +560,22 @@ export default function CheckIn() {
       }}>
         {/* Character */}
         <div style={{ 
-          width: '60px', 
-          height: '60px', 
-          backgroundColor: '#a3e635', 
-          borderRadius: '20px', 
+          width: '80px', 
+          height: '80px', 
+          backgroundColor: selectedCharacter.color + '20', 
+          borderRadius: '50%', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
           margin: '0 auto 8px',
           flexShrink: 0,
-          fontSize: '30px'
+          padding: '10px'
         }}>
-          🌙
+          <BirdCharacter 
+            bodyColor={selectedCharacter.bodyColor} 
+            bellyColor={selectedCharacter.bellyColor}
+            size={60}
+          />
         </div>
 
         {/* Guidance message */}
