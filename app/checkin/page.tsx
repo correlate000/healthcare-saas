@@ -15,14 +15,29 @@ export default function CheckIn() {
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false)
   const [streakDays] = useState(15) // TODO: Get from user data
   const [isMobile, setIsMobile] = useState(false)
+  const [selectedCharacter, setSelectedCharacter] = useState<{ id: string, color: string, bodyColor: string, bellyColor: string, name: string }>(
+    { id: 'luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb', name: 'るな' }
+  )
   
-  // Check for mobile view
+  // Check for mobile view and load selected character
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 480)
     }
     checkMobile()
     window.addEventListener('resize', checkMobile)
+    
+    // Load selected character from localStorage
+    const savedCharacter = localStorage.getItem('selectedCharacter')
+    if (savedCharacter) {
+      const characters = {
+        luna: { id: 'luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb', name: 'るな' },
+        aria: { id: 'aria', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe', name: 'あーりあ' },
+        zen: { id: 'zen', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa', name: 'ぜん' }
+      }
+      setSelectedCharacter(characters[savedCharacter as keyof typeof characters] || characters.luna)
+    }
+    
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
@@ -167,13 +182,9 @@ export default function CheckIn() {
   const getPersonalizedMessage = () => {
     const mood = responses.mood
     const physical = responses.physical
-    
-    // Select character based on mood
-    let character = { name: 'るな', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
     let message = ''
     
     if (mood === '素晴らしい' || mood === 'いい感じ') {
-      character = { name: 'あーりあ', bodyColor: '#60a5fa', bellyColor: '#dbeafe' }
       const messages = [
         'すごい！今日も絶好調ですね！この調子を維持していきましょう！',
         'キラキラ輝いていますね！あなたのポジティブなエネルギーが周りも明るくします！',
@@ -182,7 +193,6 @@ export default function CheckIn() {
       ]
       message = messages[Math.floor(Math.random() * messages.length)]
     } else if (mood === '普通') {
-      character = { name: 'るな', bodyColor: '#a3e635', bellyColor: '#ecfccb' }
       const messages = [
         'お疲れ様です。普通の日こそ、実は大切な一日なんですよ。',
         '今日も一歩ずつ前進していますね。それで十分素晴らしいです。',
@@ -191,7 +201,6 @@ export default function CheckIn() {
       ]
       message = messages[Math.floor(Math.random() * messages.length)]
     } else {
-      character = { name: 'ぜん', bodyColor: '#f59e0b', bellyColor: '#fed7aa' }
       const messages = [
         '今日は休息が必要かもしれません。自分を大切にする時間を作りましょう。',
         'お疲れ様です。しっかり記録することが、明日への第一歩です。',
@@ -201,11 +210,11 @@ export default function CheckIn() {
       message = messages[Math.floor(Math.random() * messages.length)]
     }
     
-    return { character, message }
+    return message
   }
 
   if (currentStep === -1) {
-    const { character, message } = getPersonalizedMessage()
+    const message = getPersonalizedMessage()
     
     // Completion screen with character message
     return (
@@ -241,8 +250,8 @@ export default function CheckIn() {
               boxShadow: '0 8px 24px rgba(0,0,0,0.3)'
             }}>
               <BirdCharacter 
-                bodyColor={character.bodyColor} 
-                bellyColor={character.bellyColor}
+                bodyColor={selectedCharacter.bodyColor} 
+                bellyColor={selectedCharacter.bellyColor}
                 size={100}
               />
             </div>
@@ -250,7 +259,7 @@ export default function CheckIn() {
 
           {/* Character name */}
           <div style={{
-            backgroundColor: character.bodyColor,
+            backgroundColor: selectedCharacter.color,
             color: '#0f172a',
             padding: '4px 12px',
             borderRadius: '12px',
@@ -258,7 +267,7 @@ export default function CheckIn() {
             fontWeight: '600',
             marginBottom: '16px'
           }}>
-            {character.name}
+            {selectedCharacter.name}
           </div>
 
           {/* Personalized message */}

@@ -522,6 +522,102 @@ export default function OnboardingPage() {
           />
         )}
 
+        {/* Character selection */}
+        {currentStepData.type === 'character' && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '16px',
+            marginBottom: '32px'
+          }}>
+            {[
+              { id: 'luna', name: 'るな', icon: '🌙', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb', description: '穏やかで優しい' },
+              { id: 'aria', name: 'あーりあ', icon: '✨', color: '#60a5fa', bodyColor: '#60a5fa', bellyColor: '#dbeafe', description: '明るく元気' },
+              { id: 'zen', name: 'ぜん', icon: '🧘', color: '#f59e0b', bodyColor: '#f59e0b', bellyColor: '#fed7aa', description: '落ち着いた雰囲気' }
+            ].map((character) => {
+              const isSelected = formData.selectedCharacter === character.id
+              return (
+                <button
+                  key={character.id}
+                  onClick={() => handleInputChange('selectedCharacter', character.id, true)}
+                  style={{
+                    padding: '20px 16px',
+                    background: isSelected
+                      ? `linear-gradient(135deg, ${character.color}40, ${character.color}20)`
+                      : 'rgba(31, 41, 55, 0.6)',
+                    backdropFilter: 'blur(12px)',
+                    border: isSelected
+                      ? `2px solid ${character.color}`
+                      : '1px solid rgba(55, 65, 81, 0.3)',
+                    borderRadius: '16px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: isSelected
+                      ? `0 4px 20px ${character.color}40`
+                      : '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '12px'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.transform = 'scale(1.02)'
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.2)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSelected) {
+                      e.currentTarget.style.transform = 'scale(1)'
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)'
+                    }
+                  }}
+                >
+                  {/* Bird SVG */}
+                  <div style={{
+                    width: '60px',
+                    height: '60px',
+                    backgroundColor: character.color + '20',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <svg width="45" height="45" viewBox="0 0 100 100" style={{ display: 'block' }}>
+                      <ellipse cx="50" cy="55" rx="35" ry="38" fill={character.bodyColor} />
+                      <ellipse cx="50" cy="60" rx="25" ry="28" fill={character.bellyColor} />
+                      <ellipse cx="25" cy="50" rx="15" ry="25" fill={character.bodyColor} transform="rotate(-20 25 50)" />
+                      <ellipse cx="75" cy="50" rx="15" ry="25" fill={character.bodyColor} transform="rotate(20 75 50)" />
+                      <circle cx="40" cy="45" r="6" fill="white" />
+                      <circle cx="42" cy="45" r="4" fill="#111827" />
+                      <circle cx="43" cy="44" r="2" fill="white" />
+                      <circle cx="60" cy="45" r="6" fill="white" />
+                      <circle cx="58" cy="45" r="4" fill="#111827" />
+                      <circle cx="59" cy="44" r="2" fill="white" />
+                      <path d="M50 52 L45 57 L55 57 Z" fill="#fbbf24" />
+                    </svg>
+                  </div>
+                  <div style={{
+                    ...getTypographyStyles('base'),
+                    fontWeight: '700',
+                    color: isSelected ? character.color : '#f3f4f6'
+                  }}>
+                    {character.name}
+                  </div>
+                  <div style={{
+                    ...getTypographyStyles('caption'),
+                    color: '#9ca3af',
+                    fontSize: '11px'
+                  }}>
+                    {character.description}
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         {/* Select options */}
         {currentStepData.type === 'select' && (
           <div style={{
@@ -535,7 +631,7 @@ export default function OnboardingPage() {
               return (
                 <button
                   key={option}
-                  onClick={() => handleInputChange(currentStepData.field!, option)}
+                  onClick={() => handleInputChange(currentStepData.field!, option, true)}
                   style={{
                     padding: '16px',
                     background: isSelected
