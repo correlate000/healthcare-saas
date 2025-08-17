@@ -46,6 +46,9 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.55.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -63,6 +66,7 @@
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.168.0",
     "typescript": "^5",
+    "web-push": "^3.6.7",
     "ws": "^8.18.3",
     "zod": "^3.25.67"
   },

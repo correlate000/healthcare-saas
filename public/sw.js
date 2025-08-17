@@ -1,27 +1,60 @@
-// Service Worker for Healthcare SaaS
-const CACHE_NAME = 'healthcare-saas-v1.0.0'
-const urlsToCache = [
+// Enhanced Service Worker for Healthcare SaaS PWA
+const CACHE_VERSION = 'v2.0.0'
+const CACHE_NAME = `healthcare-saas-${CACHE_VERSION}`
+const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`
+
+// Static resources to cache
+const STATIC_CACHE_URLS = [
   '/',
   '/dashboard',
   '/checkin', 
   '/chat',
+  '/voice-chat',
   '/analytics',
-  '/booking',
+  '/achievements',
+  '/daily-challenge',
   '/settings',
-  '/manifest.json'
+  '/offline',
+  '/manifest.json',
+  '/icon.svg'
 ]
+
+// Cache strategies
+const CACHE_STRATEGIES = {
+  networkFirst: [
+    '/api/',
+    '/auth/'
+  ],
+  cacheFirst: [
+    '/static/',
+    '/_next/static/',
+    '/images/',
+    '/fonts/'
+  ],
+  staleWhileRevalidate: [
+    '/',
+    '/dashboard',
+    '/checkin',
+    '/chat'
+  ]
+}
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing')
+  console.log(`Service Worker ${CACHE_VERSION}: Installing`)
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: Caching app shell')
-        return cache.addAll(urlsToCache.map(url => new Request(url, {cache: 'reload'})))
-      })
-      .catch((error) => {
-        console.error('Service Worker: Cache failed', error)
+        console.log('Service Worker: Pre-caching app shell')
+        // Cache static resources with error handling
+        return Promise.allSettled(
+          STATIC_CACHE_URLS.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`Failed to cache ${url}:`, err)
+            })
+          )
+        )
       })
       .then(() => {
         console.log('Service Worker: Skip waiting')
@@ -32,12 +65,13 @@ self.addEventListener('install', (event) => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating')
+  console.log(`Service Worker ${CACHE_VERSION}: Activating`)
+  
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
+          if (cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE) {
             console.log('Service Worker: Deleting old cache', cacheName)
             return caches.delete(cacheName)
           }
@@ -50,174 +84,279 @@ self.addEventListener('activate', (event) => {
   )
 })
 
-// Fetch event - network first, then cache
+// Fetch event - implement cache strategies
 self.addEventListener('fetch', (event) => {
-  // Skip chrome-extension requests
-  if (event.request.url.startsWith('chrome-extension://')) {
+  const { request } = event
+  const url = new URL(request.url)
+  
+  // Skip non-HTTP(S) requests
+  if (!url.protocol.startsWith('http')) {
+    return
+  }
+  
+  // Skip cross-origin requests
+  if (url.origin !== self.location.origin && !url.href.includes('supabase')) {
     return
   }
   
   // Skip non-GET requests
-  if (event.request.method !== 'GET') {
+  if (request.method !== 'GET') {
     return
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Check if we received a valid response
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response
-        }
-
-        // Clone and cache successful responses for navigation and static assets
-        if (event.request.destination === 'document' || 
-            event.request.destination === 'script' ||
-            event.request.destination === 'style' ||
-            event.request.destination === 'image') {
-          const responseToCache = response.clone()
-          caches.open(CACHE_NAME)
-            .then((cache) => {
-              cache.put(event.request, responseToCache)
-            })
-            .catch((error) => {
-              console.log('Service Worker: Cache put failed', error)
-            })
-        }
-        
-        return response
-      })
-      .catch(() => {
-        console.log('Service Worker: Network failed, trying cache')
-        // Only use cache as fallback for specific requests
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              console.log('Service Worker: Serving from cache', event.request.url)
-              return response
-            }
-            // For navigation requests, return a basic fallback
-            if (event.request.destination === 'document') {
-              return new Response(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                  <title>オフライン - Healthcare SaaS</title>
-                  <meta charset="utf-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1">
-                  <style>
-                    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; text-align: center; padding: 50px; background: #1f2937; color: white; }
-                    .container { max-width: 400px; margin: 0 auto; }
-                    h1 { color: #10b981; }
-                  </style>
-                </head>
-                <body>
-                  <div class="container">
-                    <h1>オフライン</h1>
-                    <p>インターネット接続を確認してください</p>
-                    <button onclick="location.reload()">再試行</button>
-                  </div>
-                </body>
-                </html>
-              `, {
-                headers: { 'Content-Type': 'text/html' }
-              })
-            }
-            // For other requests, just reject
-            return new Response('Network error', { status: 503 })
-          })
-      })
-  )
-})
-
-// Background sync for check-ins
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'background-checkin') {
-    event.waitUntil(doBackgroundSync())
+  // Determine cache strategy
+  const strategy = getCacheStrategy(url.pathname)
+  
+  switch (strategy) {
+    case 'networkFirst':
+      event.respondWith(networkFirst(request))
+      break
+    case 'cacheFirst':
+      event.respondWith(cacheFirst(request))
+      break
+    case 'staleWhileRevalidate':
+      event.respondWith(staleWhileRevalidate(request))
+      break
+    default:
+      event.respondWith(networkFirst(request))
   }
 })
+
+// Cache strategies implementation
+async function networkFirst(request) {
+  try {
+    const networkResponse = await fetch(request)
+    
+    if (networkResponse.ok) {
+      const cache = await caches.open(RUNTIME_CACHE)
+      cache.put(request, networkResponse.clone())
+    }
+    
+    return networkResponse
+  } catch (error) {
+    const cachedResponse = await caches.match(request)
+    
+    if (cachedResponse) {
+      return cachedResponse
+    }
+    
+    // Return offline page for navigation requests
+    if (request.destination === 'document') {
+      return caches.match('/offline')
+    }
+    
+    throw error
+  }
+}
+
+async function cacheFirst(request) {
+  const cachedResponse = await caches.match(request)
+  
+  if (cachedResponse) {
+    return cachedResponse
+  }
+  
+  try {
+    const networkResponse = await fetch(request)
+    
+    if (networkResponse.ok) {
+      const cache = await caches.open(RUNTIME_CACHE)
+      cache.put(request, networkResponse.clone())
+    }
+    
+    return networkResponse
+  } catch (error) {
+    // Return a fallback response for images
+    if (request.destination === 'image') {
+      return new Response('', { status: 404 })
+    }
+    throw error
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cachedResponse = await caches.match(request)
+  
+  const fetchPromise = fetch(request).then(networkResponse => {
+    if (networkResponse.ok) {
+      const cache = caches.open(RUNTIME_CACHE)
+      cache.then(c => c.put(request, networkResponse.clone()))
+    }
+    return networkResponse
+  })
+  
+  return cachedResponse || fetchPromise
+}
+
+function getCacheStrategy(pathname) {
+  for (const [strategy, patterns] of Object.entries(CACHE_STRATEGIES)) {
+    if (patterns.some(pattern => pathname.includes(pattern))) {
+      return strategy
+    }
+  }
+  return 'networkFirst'
+}
 
 // Push notification handling
 self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'チェックインの時間です',
+  console.log('Push notification received')
+  
+  let notificationData = {
+    title: 'MindCare',
+    body: 'メッセージがあります',
     icon: '/icon-192x192.png',
-    badge: '/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    },
-    actions: [
-      {
-        action: 'checkin',
-        title: 'チェックイン',
-        icon: '/icon-checkin.png'
-      },
-      {
-        action: 'close',
-        title: '閉じる'
-      }
-    ]
+    badge: '/icon-192x192.png',
+    tag: 'mindcare-notification',
+    data: { url: '/' }
   }
-
+  
+  if (event.data) {
+    try {
+      const data = event.data.json()
+      notificationData = { ...notificationData, ...data }
+    } catch (e) {
+      notificationData.body = event.data.text()
+    }
+  }
+  
   event.waitUntil(
-    self.registration.showNotification('MindCare', options)
+    self.registration.showNotification(notificationData.title, {
+      body: notificationData.body,
+      icon: notificationData.icon,
+      badge: notificationData.badge,
+      tag: notificationData.tag,
+      vibrate: [200, 100, 200],
+      data: notificationData.data,
+      actions: [
+        {
+          action: 'open',
+          title: '開く',
+          icon: '/icon-192x192.png'
+        },
+        {
+          action: 'close',
+          title: '閉じる'
+        }
+      ]
+    })
   )
 })
 
 // Notification click handling
 self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked:', event.action)
   event.notification.close()
+  
+  if (event.action === 'close') {
+    return
+  }
+  
+  const urlToOpen = event.notification.data?.url || '/'
+  
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(windowClients => {
+        // Check if app is already open
+        for (const client of windowClients) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            client.navigate(urlToOpen)
+            return client.focus()
+          }
+        }
+        // Open new window if not open
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen)
+        }
+      })
+  )
+})
 
-  if (event.action === 'checkin') {
-    event.waitUntil(
-      clients.openWindow('/checkin')
-    )
-  } else if (event.action === 'close') {
-    // Just close the notification
-  } else {
-    // Default action - open the app
-    event.waitUntil(
-      clients.openWindow('/')
-    )
+// Background sync for offline actions
+self.addEventListener('sync', (event) => {
+  console.log('Background sync triggered:', event.tag)
+  
+  if (event.tag === 'sync-checkins') {
+    event.waitUntil(syncCheckins())
+  } else if (event.tag === 'sync-conversations') {
+    event.waitUntil(syncConversations())
   }
 })
 
-// Background sync function
-async function doBackgroundSync() {
+// Sync functions
+async function syncCheckins() {
   try {
-    // Get pending check-ins from IndexedDB
-    const pendingCheckins = await getPendingCheckins()
+    // Get offline checkins from IndexedDB
+    const db = await openDB()
+    const tx = db.transaction('pending_checkins', 'readonly')
+    const store = tx.objectStore('pending_checkins')
+    const checkins = await store.getAll()
     
-    for (const checkin of pendingCheckins) {
+    for (const checkin of checkins) {
       try {
-        await fetch('/api/checkin', {
+        const response = await fetch('/api/checkin', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(checkin)
         })
         
-        // Remove from pending after successful sync
-        await removePendingCheckin(checkin.id)
+        if (response.ok) {
+          // Remove from pending after successful sync
+          const deleteTx = db.transaction('pending_checkins', 'readwrite')
+          await deleteTx.objectStore('pending_checkins').delete(checkin.id)
+        }
       } catch (error) {
         console.error('Failed to sync checkin:', error)
       }
     }
   } catch (error) {
-    console.error('Background sync failed:', error)
+    console.error('Sync checkins failed:', error)
   }
 }
 
-// IndexedDB helpers (simplified)
-async function getPendingCheckins() {
-  // In a real implementation, this would use IndexedDB
-  return []
+async function syncConversations() {
+  try {
+    // Similar to syncCheckins but for conversations
+    console.log('Syncing conversations...')
+  } catch (error) {
+    console.error('Sync conversations failed:', error)
+  }
 }
 
-async function removePendingCheckin(id) {
-  // In a real implementation, this would remove from IndexedDB
-  console.log('Removing pending checkin:', id)
+// IndexedDB helper
+async function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('mindcare_offline', 1)
+    
+    request.onerror = () => reject(request.error)
+    request.onsuccess = () => resolve(request.result)
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result
+      
+      if (!db.objectStoreNames.contains('pending_checkins')) {
+        db.createObjectStore('pending_checkins', { keyPath: 'id' })
+      }
+      
+      if (!db.objectStoreNames.contains('pending_conversations')) {
+        db.createObjectStore('pending_conversations', { keyPath: 'id' })
+      }
+    }
+  })
 }
+
+// Message handling for client communication
+self.addEventListener('message', (event) => {
+  console.log('Service Worker received message:', event.data)
+  
+  if (event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  } else if (event.data.type === 'CLEAR_CACHE') {
+    event.waitUntil(
+      caches.keys().then(cacheNames => 
+        Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)))
+      )
+    )
+  }
+})
+
+console.log(`Service Worker ${CACHE_VERSION} loaded`)

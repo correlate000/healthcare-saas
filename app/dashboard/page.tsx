@@ -422,9 +422,81 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* 今週の記録 - 統合版 */}
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
+        <div style={{ 
+          backgroundColor: '#1f2937', 
+          borderRadius: '12px', 
+          padding: '20px',
+          cursor: 'pointer',
+          transition: 'all 0.2s ease'
+        }}
+        onClick={() => router.push('/analytics')}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
+          
+          {/* 統計サマリー */}
+          <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center', marginBottom: '20px' }}>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>{todayProgress}%</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>今日の達成度</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa' }}>78%</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>幸福度</div>
+            </div>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#f472b6' }}>{streakDays}日</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>継続日数</div>
+            </div>
+          </div>
+
+          {/* 今週のチェックイン */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週のチェックイン</span>
+              <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>{weeklyContinuation}/7日達成</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', justifyContent: 'space-between' }}>
+              {['月', '火', '水', '木', '金', '土', '日'].map((day, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '4px',
+                    flex: 1
+                  }}
+                >
+                  <span style={{ fontSize: '10px', color: '#6b7280' }}>{day}</span>
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: '32px',
+                      height: '32px',
+                      borderRadius: '6px',
+                      backgroundColor: index < weeklyContinuation ? '#a3e635' : '#374151',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      border: index === weeklyContinuation ? '2px solid #a3e635' : 'none'
+                    }}
+                  >
+                    {index < weeklyContinuation && (
+                      <Check style={{ width: '16px', height: '16px', color: '#0f172a' }} />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* キャラクター案内 - 世界観を作る重要な要素 */}
-      <div style={{ padding: '24px 24px 0' }}>
+      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div 
           onClick={() => router.push('/chat')}
           style={{
@@ -516,79 +588,6 @@ export default function Dashboard() {
               }}>
                 タップして話す →
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 今週の記録 - 統合版 */}
-      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-        <div style={{ 
-          backgroundColor: '#1f2937', 
-          borderRadius: '12px', 
-          padding: '20px',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease'
-        }}
-        onClick={() => router.push('/analytics')}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)' }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
-          
-          {/* 統計サマリー */}
-          <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center', marginBottom: '20px' }}>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>{todayProgress}%</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>今日の達成度</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa' }}>78%</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>幸福度</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#f472b6' }}>{streakDays}日</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>継続日数</div>
-            </div>
-          </div>
-
-          {/* 今週のチェックイン */}
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週のチェックイン</span>
-              <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>{weeklyContinuation}/7日達成</span>
-            </div>
-            <div style={{ display: 'flex', gap: '6px', justifyContent: 'space-between' }}>
-              {['月', '火', '水', '木', '金', '土', '日'].map((day, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '4px',
-                    flex: 1
-                  }}
-                >
-                  <span style={{ fontSize: '10px', color: '#6b7280' }}>{day}</span>
-                  <div
-                    style={{
-                      width: '100%',
-                      maxWidth: '32px',
-                      height: '32px',
-                      borderRadius: '6px',
-                      backgroundColor: index < weeklyContinuation ? '#a3e635' : '#374151',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: index === weeklyContinuation ? '2px solid #a3e635' : 'none'
-                    }}
-                  >
-                    {index < weeklyContinuation && (
-                      <Check style={{ width: '16px', height: '16px', color: '#0f172a' }} />
-                    )}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </div>
