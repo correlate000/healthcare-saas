@@ -521,7 +521,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 今週の記録 */}
+      {/* 今週の記録 - 統合版 */}
       <div style={{ padding: '0 24px', marginBottom: '24px' }}>
         <div style={{ 
           backgroundColor: '#1f2937', 
@@ -535,38 +535,29 @@ export default function Dashboard() {
         onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
           
-          {/* 今日の達成度 */}
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今日の達成度</span>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>2/4 タスク完了</span>
+          {/* 統計サマリー */}
+          <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center', marginBottom: '20px' }}>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>{todayProgress}%</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>今日の達成度</div>
             </div>
-            <div style={{ height: '8px', backgroundColor: '#374151', borderRadius: '4px', position: 'relative' }}>
-              <div style={{ 
-                position: 'absolute', 
-                height: '100%', 
-                width: `${todayProgress}%`, 
-                backgroundColor: '#a3e635', 
-                borderRadius: '4px' 
-              }}></div>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#60a5fa' }}>78%</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>幸福度</div>
             </div>
-            <div style={{ textAlign: 'center', marginTop: '4px' }}>
-              <span style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>{todayProgress}%</span>
-            </div>
-          </div>
-
-          {/* 継続日数 */}
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '14px', color: '#9ca3af' }}>継続日数</span>
-              <span style={{ fontSize: '16px', color: '#a3e635', fontWeight: '600' }}>12日</span>
+            <div>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#f472b6' }}>{streakDays}日</div>
+              <div style={{ fontSize: '12px', color: '#9ca3af' }}>継続日数</div>
             </div>
           </div>
 
           {/* 今週のチェックイン */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週のチェックイン</span>
-            <div style={{ display: 'flex', gap: '6px' }}>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '14px', color: '#9ca3af' }}>今週のチェックイン</span>
+              <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>{weeklyContinuation}/7日達成</span>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', justifyContent: 'space-between' }}>
               {['月', '火', '水', '木', '金', '土', '日'].map((day, index) => (
                 <div
                   key={index}
@@ -574,14 +565,16 @@ export default function Dashboard() {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '4px'
+                    gap: '4px',
+                    flex: 1
                   }}
                 >
                   <span style={{ fontSize: '10px', color: '#6b7280' }}>{day}</span>
                   <div
                     style={{
-                      width: '28px',
-                      height: '28px',
+                      width: '100%',
+                      maxWidth: '32px',
+                      height: '32px',
                       borderRadius: '6px',
                       backgroundColor: index < weeklyContinuation ? '#a3e635' : '#374151',
                       display: 'flex',
@@ -591,16 +584,12 @@ export default function Dashboard() {
                     }}
                   >
                     {index < weeklyContinuation && (
-                      <Check style={{ width: '14px', height: '14px', color: '#0f172a' }} />
+                      <Check style={{ width: '16px', height: '16px', color: '#0f172a' }} />
                     )}
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-          
-          <div style={{ textAlign: 'right', marginTop: '12px' }}>
-            <span style={{ fontSize: '14px', color: '#a3e635', fontWeight: '600' }}>{weeklyContinuation}/7日達成</span>
           </div>
         </div>
       </div>
@@ -671,26 +660,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 今週の記録サマリー */}
-      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-        <div style={{ backgroundColor: '#1f2937', borderRadius: '12px', padding: '20px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#f3f4f6', marginBottom: '16px', margin: '0 0 16px 0' }}>今週の記録</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-around', textAlign: 'center' }}>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>85%</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>エネルギー</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>78%</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>幸福度</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '24px', fontWeight: '700', color: '#a3e635' }}>4/5</div>
-              <div style={{ fontSize: '12px', color: '#9ca3af' }}>週間目標</div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* 7日継続達成バナー - 常に表示 */}
       {true && (
