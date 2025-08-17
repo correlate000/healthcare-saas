@@ -176,14 +176,21 @@ export class PushNotificationService {
     
     if (permission === 'granted') {
       if (this.registration) {
-        await this.registration.showNotification(title, {
+        // Service Worker notification supports vibrate
+        const swOptions: any = {
           icon: '/icon-192x192.png',
           badge: '/icon-192x192.png',
           vibrate: [200, 100, 200],
           ...options
-        })
+        }
+        await this.registration.showNotification(title, swOptions)
       } else {
-        new Notification(title, options)
+        // Regular notification doesn't support vibrate
+        new Notification(title, {
+          icon: '/icon-192x192.png',
+          badge: '/icon-192x192.png',
+          ...options
+        })
       }
     }
   }
