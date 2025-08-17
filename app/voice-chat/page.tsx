@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { MobileBottomNav } from '@/components/navigation/MobileBottomNav'
 import { getTypographyStyles } from '@/styles/typography'
-import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
 import { RealtimeService, ConnectionState } from '@/lib/realtime-service'
+import { conversationStorage, ConversationMessage, EmotionAnalysis } from '@/lib/conversation-storage'
 
 export default function VoiceChatPage() {
   const [connectionState, setConnectionState] = useState<ConnectionState>('disconnected')
@@ -13,6 +13,15 @@ export default function VoiceChatPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isRealtimeAvailable, setIsRealtimeAvailable] = useState(false)
   const [useFallback, setUseFallback] = useState(false)
+  const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
+  const [currentEmotion, setCurrentEmotion] = useState<EmotionAnalysis | null>(null)
+  const [currentTranscript, setCurrentTranscript] = useState('')
+  const [sessionId, setSessionId] = useState<string>('')
+  
+  // ユーザーID（ローカルストレージから取得または生成）
+  const userId = typeof window !== 'undefined' ? 
+    'user-' + (localStorage.getItem('userId') || Date.now()) : 
+    'user-' + Date.now()
   
   // Realtime API Service
   const realtimeService = useRef<RealtimeService | null>(null)
@@ -31,8 +40,9 @@ export default function VoiceChatPage() {
   const isListening = connectionState === 'listening'
   const isSpeaking = connectionState === 'speaking'
   const isSessionActive = ['connected', 'authenticated', 'listening', 'speaking'].includes(connectionState)
+  const [screenSize, setScreenSize] = useState<'xs' | 'sm' | 'md' | 'lg'>('lg')
 
-  // キャラクター設定（チャットページと統一）
+  // キャラクター設定（感情に応じた応答を追加）
   const characters = {
     luna: {
       id: 'luna',
@@ -42,11 +52,17 @@ export default function VoiceChatPage() {
       bellyColor: '#ecfccb',
       pitch: 1.2,
       rate: 0.95,
+      personality: 'empathetic', // 共感的
       responses: {
         greeting: ['こんにちは！今日の調子はいかがですか？', '元気でしたか？お話を聞かせてください'],
         encouragement: ['それは素晴らしいですね！', 'いいですね、その調子です'],
         advice: ['ゆっくり休息を取ることも大切ですよ', '深呼吸をして、リラックスしてみましょう'],
-        listening: ['なるほど', 'そうなんですね', 'うんうん', 'へぇ〜']
+        listening: ['なるほど', 'そうなんですね', 'うんうん', 'へぇ〜'],
+        // 感情別の応答
+        sadness: ['辛い気持ち、よく分かります。', '今は無理をせず、ゆっくり過ごしてくださいね。'],
+        anxiety: ['不安な気持ちを抱えているんですね。一緒に考えていきましょう。'],
+        joy: ['とても嬉しそうですね！その気持ちを大切にしてください。'],
+        anger: ['イライラする気持ち、よく分かります。少し深呼吸しましょう。']
       }
     },
     aria: {
@@ -57,11 +73,16 @@ export default function VoiceChatPage() {
       bellyColor: '#dbeafe',
       pitch: 1.3,
       rate: 1.05,
+      personality: 'cheerful', // 元気
       responses: {
         greeting: ['やっほー！元気してた？', 'わーい！今日も楽しく話そう！'],
         encouragement: ['やったー！その調子！', 'すごいすごい！'],
         advice: ['大丈夫！きっと明日はもっと良い日になるよ！', '一緒に頑張ろう！'],
-        listening: ['うんうん！', 'へぇ〜すごい！', 'それで？それで？', 'わくわく！']
+        listening: ['うんうん！', 'へぇ〜すごい！', 'それで？それで？', 'わくわく！'],
+        sadness: ['大丈夫だよ！私がついてるから！', '明日はきっと良いことあるよ！'],
+        anxiety: ['心配しないで！なんとかなるよ！', '一緒に乗り越えよう！'],
+        joy: ['わーい！嬉しいね！', 'やったね！一緒に喜ぼう！'],
+        anger: ['そっかー、それは嫌だったね。でも大丈夫！']
       }
     },
     zen: {
@@ -72,27 +93,131 @@ export default function VoiceChatPage() {
       bellyColor: '#fed7aa',
       pitch: 0.95,
       rate: 0.85,
+      personality: 'calm', // 落ち着いた
       responses: {
         greeting: ['こんにちは。今日はゆっくり話しましょう', '心を落ち着けて、お話ししませんか'],
         encouragement: ['素晴らしい気づきですね', '良い流れを感じます'],
         advice: ['今この瞬間に意識を向けてみましょう', '呼吸に集中してみてください'],
-        listening: ['ふむふむ', 'なるほど...', 'そうですか', '興味深いですね']
+        listening: ['ふむふむ', 'なるほど...', 'そうですか', '興味深いですね'],
+        sadness: ['その気持ちを認めることから始めましょう。', '感情は波のように来て、去っていきます。'],
+        anxiety: ['不安は未来への警告です。今に集中しましょう。', '一歩ずつ進んでいきましょう。'],
+        joy: ['喜びを感じることは大切です。', 'その瞬間を大切にしてください。'],
+        anger: ['怒りも大切な感情です。まず認めましょう。', '感情を観察してみましょう。']
       }
     }
   }
 
   const currentCharacter = characters[selectedCharacter as keyof typeof characters]
 
+  // 初期化時にユーザーIDを保存し、会話履歴を読み込む
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('userId', userId.replace('user-', ''))
+      loadConversationHistory()
+    }
+  }, [])
+
+  // 会話履歴を読み込む
+  const loadConversationHistory = async () => {
+    try {
+      await conversationStorage.initialize()
+      const history = await conversationStorage.getConversationHistory(userId, 20)
+      setConversationHistory(history)
+      
+      // 最新の感情状態を取得
+      const recentEmotions = await conversationStorage.getEmotionTrends(userId, 7)
+      if (recentEmotions.length > 0) {
+        setCurrentEmotion(recentEmotions[recentEmotions.length - 1])
+      }
+    } catch (error) {
+      console.error('Failed to load conversation history:', error)
+    }
+  }
+
+  // 感情分析を行う
+  const analyzeEmotion = async (text: string): Promise<EmotionAnalysis | null> => {
+    try {
+      const response = await fetch('/api/analyze-emotion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, userId })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        return data.analysis
+      }
+    } catch (error) {
+      console.error('Emotion analysis failed:', error)
+    }
+    return null
+  }
+
+  // パーソナライズされた応答を取得
+  const getPersonalizedResponse = async (
+    userMessage: string,
+    emotion: EmotionAnalysis | null
+  ): Promise<string> => {
+    try {
+      // 会話履歴の最新5件を送信
+      const recentHistory = conversationHistory.slice(-5).map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }))
+
+      const response = await fetch('/api/personalized-response', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          message: userMessage,
+          emotion,
+          conversationHistory: recentHistory,
+          responseStyle: currentCharacter.personality
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        return data.response
+      }
+    } catch (error) {
+      console.error('Failed to get personalized response:', error)
+    }
+
+    // フォールバック：キャラクターの感情別応答
+    if (emotion) {
+      const emotionResponses = currentCharacter.responses[emotion.primary as keyof typeof currentCharacter.responses]
+      if (emotionResponses && Array.isArray(emotionResponses)) {
+        return emotionResponses[Math.floor(Math.random() * emotionResponses.length)]
+      }
+    }
+    
+    return currentCharacter.responses.listening[0]
+  }
+
+  // Check screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const width = window.innerWidth
+      if (width <= 320) setScreenSize('xs')
+      else if (width <= 375) setScreenSize('sm')
+      else if (width <= 480) setScreenSize('md')
+      else setScreenSize('lg')
+    }
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
   // Realtime API利用可能チェック
   useEffect(() => {
     const checkRealtimeAvailability = async () => {
       try {
-        // 直接メインのエンドポイントを試す
         const response = await fetch('/api/realtime', { method: 'GET' })
         
         if (response.ok) {
           const data = await response.json()
-          console.log('API Response:', data)
           
           if (data.client_secret || data.url) {
             setIsRealtimeAvailable(true)
@@ -100,10 +225,8 @@ export default function VoiceChatPage() {
           } else {
             setIsRealtimeAvailable(false)
             setUseFallback(true)
-            console.log('API response missing required fields')
           }
         } else {
-          console.log('API returned error status:', response.status)
           setIsRealtimeAvailable(false)
           setUseFallback(true)
         }
@@ -138,7 +261,7 @@ export default function VoiceChatPage() {
         }
         
         if (finalTranscript) {
-          console.log('User said:', finalTranscript, 'Session active:', isSessionActiveRef.current)
+          setCurrentTranscript(finalTranscript)
           if (isSessionActiveRef.current) {
             handleUserMessage(finalTranscript)
           }
@@ -147,22 +270,15 @@ export default function VoiceChatPage() {
       
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error)
-        if (event.error === 'no-speech') {
-          // 無音の場合は継続
-          if (isSessionActiveRef.current) {
-            console.log('No speech detected, playing listening response')
-            playListeningResponse()
-          }
+        if (event.error === 'no-speech' && isSessionActiveRef.current) {
+          playListeningResponse()
         }
       }
       
       recognition.onend = () => {
-        console.log('Recognition ended, session active:', isSessionActiveRef.current)
-        // セッション中は自動的に再開
         if (isSessionActiveRef.current) {
           try {
             recognition.start()
-            console.log('Recognition restarted')
           } catch (e) {
             console.log('Recognition restart failed:', e)
           }
@@ -180,11 +296,10 @@ export default function VoiceChatPage() {
         clearTimeout(sessionTimeoutRef.current)
       }
     }
-  }, [])
+  }, [useFallback])
 
   // 相槌を打つ
   const playListeningResponse = () => {
-    console.log('playListeningResponse called, isSpeaking:', isSpeaking, 'isSessionActive:', isSessionActiveRef.current)
     if (!isSpeaking && isSessionActiveRef.current) {
       const responses = currentCharacter.responses.listening
       const response = responses[Math.floor(Math.random() * responses.length)]
@@ -192,54 +307,62 @@ export default function VoiceChatPage() {
     }
   }
 
-  // ユーザーメッセージの処理
-  const handleUserMessage = (text: string) => {
-    console.log('=== handleUserMessage called with:', text)
+  // ユーザーメッセージの処理（パーソナライズ機能追加）
+  const handleUserMessage = async (text: string) => {
+    console.log('User message:', text)
     
     // セッションタイムアウトをリセット
     if (sessionTimeoutRef.current) {
       clearTimeout(sessionTimeoutRef.current)
     }
+
+    // 感情分析を実行
+    const emotion = await analyzeEmotion(text)
+    setCurrentEmotion(emotion)
+
+    // ユーザーメッセージを保存
+    const userMessage: ConversationMessage = {
+      id: Date.now().toString(),
+      userId,
+      content: text,
+      role: 'user',
+      timestamp: new Date(),
+      emotion: emotion || undefined
+    }
     
-    // AI応答を生成（即座に）
-    setTimeout(() => {
-      generateAIResponse(text)
+    await conversationStorage.saveMessage(userMessage)
+    setConversationHistory(prev => [...prev, userMessage])
+    
+    // パーソナライズされたAI応答を生成
+    setTimeout(async () => {
+      const response = await getPersonalizedResponse(text, emotion)
+      
+      // アシスタントメッセージを保存
+      const assistantMessage: ConversationMessage = {
+        id: (Date.now() + 1).toString(),
+        userId,
+        content: response,
+        role: 'assistant',
+        timestamp: new Date()
+      }
+      
+      await conversationStorage.saveMessage(assistantMessage)
+      setConversationHistory(prev => [...prev, assistantMessage])
+      
+      // 音声で応答
+      speakText(response, true)
     }, 300)
     
     // 10秒間無音だったら相槌を打つ
     sessionTimeoutRef.current = setTimeout(() => {
       if (isSessionActiveRef.current && !isSpeaking) {
-        console.log('10 seconds of silence, playing listening response')
         playListeningResponse()
       }
     }, 10000)
   }
 
-  // AI応答の生成
-  const generateAIResponse = (userInput: string) => {
-    console.log('=== generateAIResponse called with:', userInput)
-    const input = userInput.toLowerCase()
-    let responseType: keyof typeof currentCharacter.responses = 'listening'
-    
-    if (input.includes('こんにちは') || input.includes('はじめ') || input.includes('ハロー')) {
-      responseType = 'greeting'
-    } else if (input.includes('疲れ') || input.includes('つらい') || input.includes('しんどい')) {
-      responseType = 'advice'
-    } else if (input.includes('頑張') || input.includes('元気') || input.includes('楽しい')) {
-      responseType = 'encouragement'
-    }
-    
-    console.log('Response type:', responseType)
-    const responses = currentCharacter.responses[responseType]
-    const response = responses[Math.floor(Math.random() * responses.length)]
-    console.log('Selected response:', response)
-    
-    speakText(response, true)
-  }
-
   // テキストを音声で読み上げ
   const speakText = (text: string, isMainResponse: boolean = true) => {
-    console.log('speakText called:', text, 'isMainResponse:', isMainResponse, 'isSessionActive:', isSessionActiveRef.current)
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel()
       
@@ -252,20 +375,15 @@ export default function VoiceChatPage() {
         
         utterance.onstart = () => {
           setConnectionState('speaking')
-          console.log('Speaking:', text)
         }
         
         utterance.onend = () => {
           setConnectionState('listening')
-          console.log('Finished speaking')
           
-          // メイン応答後は少し待ってから次の相槌の準備
           if (isMainResponse && isSessionActiveRef.current) {
             setTimeout(() => {
               if (isSessionActiveRef.current && !isSpeaking) {
-                // 5秒後に相槌を打つ
                 sessionTimeoutRef.current = setTimeout(() => {
-                  console.log('5 seconds after main response, playing listening response')
                   playListeningResponse()
                 }, 5000)
               }
@@ -273,8 +391,7 @@ export default function VoiceChatPage() {
           }
         }
         
-        utterance.onerror = (event) => {
-          console.error('Speech synthesis error:', event)
+        utterance.onerror = () => {
           setConnectionState('listening')
         }
         
@@ -343,7 +460,6 @@ export default function VoiceChatPage() {
         await realtimeService.current.disconnect()
         realtimeService.current = null
       } else if (useFallback) {
-        // フォールバック時の終了処理
         isSessionActiveRef.current = false
         if (recognitionRef.current) {
           recognitionRef.current.stop()
@@ -358,10 +474,23 @@ export default function VoiceChatPage() {
       }
       setConnectionState('disconnected')
       setErrorMessage(null)
-      console.log('Session ended')
+      
+      // セッション終了時にセッションを保存
+      if (sessionId) {
+        await conversationStorage.saveSession({
+          id: sessionId,
+          userId,
+          messages: conversationHistory,
+          startTime: new Date(parseInt(sessionId)),
+          endTime: new Date(),
+          overallEmotion: currentEmotion || undefined
+        })
+      }
     } else {
       // セッション開始
       setErrorMessage(null)
+      const newSessionId = Date.now().toString()
+      setSessionId(newSessionId)
       
       if (isRealtimeAvailable && !useFallback) {
         // Realtime API使用
@@ -375,14 +504,12 @@ export default function VoiceChatPage() {
           await realtimeService.current.connect(
             (state) => {
               setConnectionState(state)
-              console.log('Connection state:', state)
             },
             (error) => {
               console.error('Realtime error:', error)
               setErrorMessage(error.message)
               setConnectionState('error')
               
-              // エラー時はフォールバックに切り替え
               setTimeout(() => {
                 setUseFallback(true)
                 setConnectionState('disconnected')
@@ -402,12 +529,29 @@ export default function VoiceChatPage() {
           try {
             recognitionRef.current.start()
             startAudioAnalyser()
-            // 初回の挨拶
-            setTimeout(() => {
-              console.log('Playing initial greeting')
-              generateAIResponse('こんにちは')
+            
+            // パーソナライズされた初回の挨拶
+            setTimeout(async () => {
+              let greeting = currentCharacter.responses.greeting[0]
+              
+              // 過去の会話履歴がある場合はカスタマイズ
+              if (conversationHistory.length > 0) {
+                greeting = `おかえりなさい！また${currentCharacter.name}とお話しできて嬉しいです。`
+              }
+              
+              speakText(greeting, true)
+              
+              // 挨拶を保存
+              const greetingMessage: ConversationMessage = {
+                id: (Date.now() + 1).toString(),
+                userId,
+                content: greeting,
+                role: 'assistant',
+                timestamp: new Date()
+              }
+              await conversationStorage.saveMessage(greetingMessage)
+              setConversationHistory(prev => [...prev, greetingMessage])
             }, 500)
-            console.log('Fallback session started')
           } catch (error) {
             console.error('Failed to start recognition:', error)
             isSessionActiveRef.current = false
@@ -418,7 +562,7 @@ export default function VoiceChatPage() {
     }
   }
 
-  // 鳥キャラクターコンポーネント（チャットページと同じデザイン）
+  // 鳥キャラクターコンポーネント
   const BirdCharacter = ({ bodyColor, bellyColor, size = 30 }: { bodyColor: string, bellyColor: string, size?: number }) => (
     <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
       <ellipse cx="50" cy="55" rx="35" ry="38" fill={bodyColor} />
@@ -435,6 +579,65 @@ export default function VoiceChatPage() {
     </svg>
   )
 
+  // 感情インジケーター
+  const EmotionIndicator = () => {
+    if (!currentEmotion) return null
+
+    const emotionColors = {
+      joy: '#fbbf24',
+      sadness: '#60a5fa',
+      anger: '#ef4444',
+      fear: '#a78bfa',
+      surprise: '#f472b6',
+      love: '#f87171',
+      neutral: '#9ca3af'
+    }
+
+    const emotionEmojis = {
+      joy: '😊',
+      sadness: '😢',
+      anger: '😠',
+      fear: '😰',
+      surprise: '😮',
+      love: '❤️',
+      neutral: '😐'
+    }
+
+    return (
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        background: 'rgba(31, 41, 55, 0.8)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: '12px',
+        padding: '8px 12px',
+        border: `1px solid ${emotionColors[currentEmotion.primary]}40`,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        <span style={{ fontSize: '20px' }}>
+          {emotionEmojis[currentEmotion.primary]}
+        </span>
+        <div style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: emotionColors[currentEmotion.primary],
+          animation: 'pulse 2s infinite'
+        }} />
+        <span style={{
+          fontSize: '12px',
+          color: emotionColors[currentEmotion.primary],
+          fontWeight: '500'
+        }}>
+          {Math.round(currentEmotion.confidence * 100)}%
+        </span>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       height: '100vh',
@@ -445,19 +648,23 @@ export default function VoiceChatPage() {
       flexDirection: 'column',
       overflow: 'hidden'
     }}>
-      {/* ヘッダー - チャット画面と統一 */}
+      {/* ヘッダー */}
       <div style={{ 
         background: `linear-gradient(180deg, ${currentCharacter.color}10 0%, #111827 100%)`,
         borderBottom: '1px solid #374151', 
-        flexShrink: 0 
+        flexShrink: 0,
+        position: 'relative'
       }}>
+        {/* 感情インジケーター */}
+        <EmotionIndicator />
+        
         <div style={{ 
           padding: '12px 16px',
           display: 'flex',
           alignItems: 'center',
           gap: '12px'
         }}>
-          {/* メインキャラクターアバター（SPサイズ調整） */}
+          {/* メインキャラクターアバター */}
           <div style={{
             width: '56px',
             height: '56px',
@@ -508,7 +715,7 @@ export default function VoiceChatPage() {
               }}></div>
             </div>
             
-            {/* キャラクター切り替えボタン（SP最適化） */}
+            {/* キャラクター切り替えボタン */}
             <div style={{
               display: 'flex',
               gap: '4px',
@@ -565,9 +772,9 @@ export default function VoiceChatPage() {
         </div>
       </div>
 
-      {/* Main Content - スクロール不要に最適化 */}
+      {/* Main Content */}
       <div style={{
-        height: 'calc(85vh - 88px)', // 85vh minus header height
+        height: 'calc(85vh - 88px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -576,6 +783,29 @@ export default function VoiceChatPage() {
         position: 'relative',
         background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
+        {/* 現在の文字起こし表示 */}
+        {currentTranscript && (
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            right: '20px',
+            background: 'rgba(31, 41, 55, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            border: '1px solid rgba(55, 65, 81, 0.5)'
+          }}>
+            <p style={{
+              ...getTypographyStyles('small'),
+              color: '#f3f4f6',
+              margin: 0
+            }}>
+              「{currentTranscript}」
+            </p>
+          </div>
+        )}
+
         {/* Upper Section - Character and Status */}
         <div style={{
           display: 'flex',
@@ -604,7 +834,7 @@ export default function VoiceChatPage() {
                 animation: 'bounce 1s ease-in-out infinite',
                 boxShadow: `0 4px 12px ${currentCharacter.color}40`
               }}>
-                {['なるほど！', 'そうなんですね', 'いいですね！'][Math.floor(Date.now() / 2000) % 3]}
+                話しています...
               </div>
             )}
             
@@ -744,12 +974,10 @@ export default function VoiceChatPage() {
             }}
           >
             {isSessionActive ? (
-              // Modern stop icon
               <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                 <rect x="7" y="7" width="10" height="10" rx="1" />
               </svg>
             ) : (
-              // Beautiful mic icon with gradient
               <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
                 <defs>
                   <linearGradient id="micGradient" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -829,7 +1057,7 @@ export default function VoiceChatPage() {
         {useFallback && isSessionActive && (
           <div style={{
             position: 'absolute',
-            top: '20px',
+            top: '60px',
             left: '20px',
             right: '20px',
             background: 'rgba(251, 191, 36, 0.1)',
