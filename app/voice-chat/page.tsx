@@ -184,6 +184,7 @@ export default function VoiceChatPage() {
       }
     } catch (error) {
       console.error('Failed to get personalized response:', error)
+    }
 
     // フォールバック：キャラクターの感情別応答
     if (emotion) {
