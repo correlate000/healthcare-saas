@@ -803,9 +803,10 @@ export default function VoiceChatPage() {
         height: 'calc(90vh - 88px)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: '12px 20px',
+        gap: '20px',
         position: 'relative',
         background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
@@ -912,7 +913,9 @@ export default function VoiceChatPage() {
           padding: '8px',
           background: 'rgba(31, 41, 55, 0.3)',
           borderRadius: '25px',
-          border: '1px solid rgba(55, 65, 81, 0.2)'
+          border: '1px solid rgba(55, 65, 81, 0.2)',
+          marginTop: '-10px',
+          marginBottom: '-10px'
         }}>
           {Array.from({ length: 20 }).map((_, i) => {
             const height = isListening 
