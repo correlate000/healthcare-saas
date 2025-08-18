@@ -83,8 +83,7 @@ export function AdminNavigation() {
     // Update auth context
     auth.setUser({
       ...auth.user!,
-      role: adminType,
-      isAdmin: true
+      role: adminType
     })
     
     toast({
