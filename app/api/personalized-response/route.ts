@@ -196,7 +196,7 @@ function generateLocalResponse(
   }
 
   const primaryEmotion = emotion?.primary || 'neutral'
-  const responseArray = responses[primaryEmotion] || responses.neutral
+  const responseArray = contextResponses[primaryEmotion] || contextResponses.general
   const baseResponse = responseArray[Math.floor(Math.random() * responseArray.length)]
 
   // メッセージの内容に基づいて追加のアドバイス

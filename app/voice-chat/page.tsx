@@ -843,26 +843,7 @@ export default function VoiceChatPage() {
           <div style={{
             position: 'relative'
           }}>
-            {/* Speech bubble when speaking */}
-            {isSpeaking && (
-              <div style={{
-                position: 'absolute',
-                top: '-45px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: currentCharacter.color,
-                color: '#0f172a',
-                padding: '10px 20px',
-                borderRadius: '24px',
-                fontSize: '15px',
-                fontWeight: '600',
-                whiteSpace: 'nowrap',
-                animation: 'bounce 1s ease-in-out infinite',
-                boxShadow: `0 4px 12px ${currentCharacter.color}40`
-              }}>
-                話しています...
-              </div>
-            )}
+            {/* Remove speech bubble */}
             
             <div style={{
               width: '140px',
@@ -882,48 +863,41 @@ export default function VoiceChatPage() {
                 bellyColor={currentCharacter.bellyColor}
                 size={100}
               />
-              {/* Active indicator */}
+              {/* Active indicator - more subtle */}
               {isSessionActive && (
                 <div style={{
                   position: 'absolute',
-                  bottom: '0px',
-                  right: '0px',
-                  width: '32px',
-                  height: '32px',
-                  backgroundColor: isListening ? '#a3e635' : '#ef4444',
+                  bottom: '5px',
+                  right: '5px',
+                  width: '24px',
+                  height: '24px',
+                  backgroundColor: isListening ? '#10b981' : isSpeaking ? currentCharacter.color : '#6b7280',
                   borderRadius: '50%',
-                  border: '3px solid #111827',
-                  animation: 'pulse 2s ease-in-out infinite'
+                  border: '2px solid #111827',
+                  animation: isListening ? 'pulse 2s ease-in-out infinite' : 'none',
+                  transition: 'background-color 0.3s ease'
                 }} />
               )}
             </div>
           </div>
 
-          {/* Status Card */}
-          <div style={{
-            background: 'rgba(31, 41, 55, 0.6)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '16px',
-            padding: '16px 24px',
-            border: `1px solid ${isSessionActive ? currentCharacter.color + '30' : 'rgba(55, 65, 81, 0.3)'}`,
-            textAlign: 'center',
-            minWidth: '200px'
-          }}>
-            <p style={{
-              ...getTypographyStyles('base'),
-              color: isSessionActive ? currentCharacter.color : '#9ca3af',
-              fontWeight: '600',
-              margin: 0
+          {/* Status Text - Only show when connecting or error */}
+          {(connectionState === 'connecting' || connectionState === 'error') && (
+            <div style={{
+              marginTop: '12px'
             }}>
-              {connectionState === 'disconnected' && '🎙️ 音声対話を開始'}
-              {connectionState === 'connecting' && '⏳ 接続中...'}
-              {connectionState === 'connected' && '🔐 認証中...'}
-              {connectionState === 'authenticated' && '✅ 準備完了'}
-              {connectionState === 'listening' && '👂 聞いています'}
-              {connectionState === 'speaking' && '💬 話しています'}
-              {connectionState === 'error' && '❌ エラー'}
-            </p>
-          </div>
+              <p style={{
+                ...getTypographyStyles('small'),
+                color: connectionState === 'error' ? '#ef4444' : currentCharacter.color,
+                fontWeight: '500',
+                margin: 0,
+                opacity: 0.9
+              }}>
+                {connectionState === 'connecting' && '接続中...'}
+                {connectionState === 'error' && 'エラー'}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Center Section - Waveform */}
@@ -990,7 +964,8 @@ export default function VoiceChatPage() {
                 : `0 0 40px ${currentCharacter.color}40, inset 0 2px 4px rgba(255,255,255,0.2)`,
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               transform: isSessionActive ? 'scale(1.1)' : 'scale(1)',
-              position: 'relative'
+              position: 'relative',
+              animation: !isSessionActive ? 'gentlePulse 3s ease-in-out infinite' : 'none'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'scale(1.15)'
@@ -1045,15 +1020,7 @@ export default function VoiceChatPage() {
             )}
           </button>
           
-          {!isSessionActive && (
-            <p style={{
-              ...getTypographyStyles('small'),
-              color: '#6b7280',
-              textAlign: 'center'
-            }}>
-              タップして音声対話を開始
-            </p>
-          )}
+          {/* Remove the tap instruction text */}
         </div>
         
         {/* エラーメッセージ */}
@@ -1123,6 +1090,17 @@ export default function VoiceChatPage() {
           50% {
             opacity: 0.7;
             transform: scale(0.95);
+          }
+        }
+        
+        @keyframes gentlePulse {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 40px ${currentCharacter.color}40;
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px ${currentCharacter.color}60;
           }
         }
         
