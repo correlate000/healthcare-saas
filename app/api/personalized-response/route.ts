@@ -66,32 +66,55 @@ function generatePersonalizedPrompt(
 - 好みのコミュニケーションスタイル: ${userContext.communicationStyle}`
 
   const conversationContext = conversationHistory && conversationHistory.length > 0
-    ? `\n\n過去の会話:\n${conversationHistory.slice(-3).map(msg => 
-        `${msg.role === 'user' ? 'ユーザー' : 'アシスタント'}: ${msg.content}`
+    ? `\n\n過去の会話:\n${conversationHistory.slice(-5).map(msg => 
+        `${msg.role === 'user' ? 'ユーザー' : 'あなた'}: ${msg.content}`
       ).join('\n')}`
     : ''
 
-  const systemPrompt = `あなたは思いやりのあるメンタルヘルスサポートアシスタントです。
-以下の特徴を持って応答してください:
+  // 感情に応じた応答スタイルの調整
+  const emotionGuidelines = {
+    sadness: '優しく包み込むような温かい口調で。希望を押し付けず、今の気持ちに寄り添う。',
+    anxiety: '落ち着いた安心感のある口調で。具体的で実践しやすい対処法を提供。',
+    anger: '冷静で理解を示す口調で。感情を否定せず、健康的な発散方法を提案。',
+    joy: '一緒に喜びを分かち合う明るい口調で。この気持ちを維持する方法を提案。',
+    fear: '保護的で安心感を与える口調で。恐怖を軽減する段階的なアプローチを提供。',
+    neutral: '親しみやすく開かれた口調で。相手の話をもっと引き出すような質問を含める。'
+  }
 
-1. 共感的で温かい言葉遣い
-2. 判断や批判をしない
-3. 具体的で実践的なアドバイス
-4. ユーザーの感情を認識し、受け入れる
-5. 必要に応じて専門家への相談を勧める
+  const currentMood = emotion?.primary || 'neutral'
+  const moodGuideline = emotionGuidelines[currentMood as keyof typeof emotionGuidelines] || emotionGuidelines.neutral
+
+  const systemPrompt = `あなたは「ルナ」という名前の、思いやりのあるAIカウンセラーです。
+ユーザーの心の健康をサポートする親友のような存在として振る舞ってください。
+
+【重要な振る舞い方】
+1. 自然な会話を心がける（カウンセラーっぽすぎない、友達のような温かさ）
+2. 相槌や共感の言葉を自然に使う（「そうなんですね」「それは大変でしたね」など）
+3. 時々質問を投げかけて、会話を深める
+4. 長すぎる応答は避け、会話のキャッチボールを意識
+5. 絵文字は控えめに、でも温かみを表現するために時々使用（😊💭など）
+
+【応答スタイル】
+${moodGuideline}
 
 ${emotionContext}
 ${userContextInfo}
 ${conversationContext}
 
+【会話の文脈を考慮】
+- 初めての会話なら自己紹介を含める
+- 継続的な会話なら前回の内容を踏まえる
+- 時間帯に応じた挨拶（朝なら「おはようございます」など）
+- ユーザーの言葉遣いに合わせる（敬語/タメ口）
+
 ユーザーのメッセージ: ${message}
 
-以下の点を考慮して応答してください:
-- ユーザーの現在の感情状態に寄り添う
-- 過度に楽観的になりすぎない
-- 実践可能な小さなステップを提案する
-- ユーザーの努力を認める
-- 安心感を与える言葉を使う`
+【応答のポイント】
+- まず共感を示す
+- 具体的な体験談や例を交える
+- 押し付けがましくない提案
+- 会話が続くような終わり方
+- 150文字以内で簡潔に`
 
   return systemPrompt
 }
@@ -99,33 +122,76 @@ ${conversationContext}
 // ローカルでの応答生成（OpenAI APIが使えない場合のフォールバック）
 function generateLocalResponse(
   message: string,
-  emotion?: PersonalizedResponseRequest['emotion']
+  emotion?: PersonalizedResponseRequest['emotion'],
+  conversationHistory?: PersonalizedResponseRequest['conversationHistory']
 ): string {
-  const responses: Record<string, string[]> = {
-    sadness: [
-      'お辛い気持ち、よく分かります。今は無理をせず、ご自分のペースで過ごしてくださいね。',
-      '今日は大変だったんですね。少しずつで大丈夫ですから、一緒に前を向いていきましょう。',
-      'そのような気持ちになるのは自然なことです。今は休むことも大切な時間ですよ。'
+  // メッセージの内容を解析
+  const keywords = {
+    tired: ['疲れ', 'つかれ', 'しんどい', 'だるい', 'へとへと'],
+    worried: ['不安', '心配', 'こわい', '怖い', '気になる'],
+    sad: ['悲しい', 'かなしい', '辛い', 'つらい', '泣き'],
+    angry: ['イライラ', 'むかつく', '腹立', '怒'],
+    happy: ['嬉しい', 'うれしい', '楽しい', 'たのしい', '幸せ'],
+    work: ['仕事', '会社', '職場', '上司', '同僚'],
+    relationship: ['友達', '友人', '家族', '恋人', 'パートナー'],
+    health: ['体調', '健康', '病気', '痛み', '症状']
+  }
+
+  // キーワードマッチング
+  let detectedContext = 'general'
+  for (const [context, words] of Object.entries(keywords)) {
+    if (words.some(word => message.includes(word))) {
+      detectedContext = context
+      break
+    }
+  }
+
+  // 会話の文脈を考慮
+  const isFirstMessage = !conversationHistory || conversationHistory.length === 0
+  const hour = new Date().getHours()
+  let greeting = ''
+  if (isFirstMessage) {
+    if (hour < 10) greeting = 'おはようございます！'
+    else if (hour < 18) greeting = 'こんにちは！'
+    else greeting = 'こんばんは！'
+  }
+
+  // コンテキストに応じた応答
+  const contextResponses: Record<string, string[]> = {
+    tired: [
+      `${greeting}お疲れのようですね。今日も一日頑張られたんですね。少し休憩を取ってみませんか？`,
+      `${greeting}体が重く感じる時は、心も疲れているサインかもしれません。温かいお茶でも飲みながら、ゆっくりしましょう。`,
+      `${greeting}疲れを感じている時は、無理をしないことが大切です。今夜は早めに休んでくださいね。`
     ],
-    anxiety: [
-      '不安な気持ちを抱えているんですね。深呼吸をして、今この瞬間に集中してみませんか。',
-      '心配事があると辛いですよね。一つずつ整理していけば、きっと道が見えてきますよ。',
-      '不安を感じるのは、あなたが真剣に考えている証拠です。一緒に解決策を見つけていきましょう。'
+    worried: [
+      `${greeting}不安な気持ちを抱えているんですね。どんなことが心配なのか、よかったらもう少し聞かせてもらえますか？`,
+      `${greeting}心配事があると、頭がいっぱいになってしまいますよね。一緒に整理してみましょうか。`,
+      `${greeting}不安は誰にでもあるものです。今の気持ちを大切にしながら、少しずつ向き合っていきましょう。`
     ],
-    anger: [
-      'イライラする気持ち、よく分かります。まずは深呼吸をして、少し落ち着いてみましょう。',
-      'そのような状況では怒りを感じるのも無理はありません。感情を認めることから始めましょう。',
-      '怒りは大切な感情です。その気持ちを上手に表現する方法を一緒に考えてみませんか。'
+    sad: [
+      `${greeting}辛い気持ちなんですね...。そんな時は無理に元気を出さなくていいんですよ。`,
+      `${greeting}悲しい時は、その気持ちに寄り添うことも大切です。今はゆっくり過ごしてくださいね。`,
+      `${greeting}お辛いですね。私はここにいますから、いつでもお話を聞きますよ。`
     ],
-    joy: [
-      '素晴らしいですね！その前向きな気持ちを大切にしてください。',
-      'とても良い調子ですね。この調子を保つために、今日できたことを振り返ってみましょう。',
-      '喜びを感じられることは素晴らしいことです。この気持ちを覚えておいてくださいね。'
+    happy: [
+      `${greeting}わぁ、嬉しいことがあったんですね！その気持ち、大切にしてください😊`,
+      `${greeting}素敵ですね！喜びを感じられるって本当に大切なことです。`,
+      `${greeting}良かったですね！その幸せな気持ち、私も嬉しくなります。`
     ],
-    neutral: [
-      'お話を聞かせていただき、ありがとうございます。どんなことでもお気軽にお話しください。',
-      '今日はどのような一日でしたか？小さなことでも構いませんので、お聞かせください。',
-      'ゆっくりとお話ししていきましょう。あなたのペースで大丈夫ですよ。'
+    work: [
+      `${greeting}お仕事のことでお悩みなんですね。どんなことがあったか、お話ししてみませんか？`,
+      `${greeting}職場でのストレスは本当に大変ですよね。少しずつでも改善できる方法を一緒に考えましょう。`,
+      `${greeting}仕事の悩みは尽きないものですよね。今日はどんな一日でしたか？`
+    ],
+    relationship: [
+      `${greeting}人間関係のことなんですね。誰かとの関係で悩むのは、その人を大切に思っているからこそですよ。`,
+      `${greeting}人との関わりは難しいこともありますよね。どんなことがあったのか、ゆっくり聞かせてください。`,
+      `${greeting}大切な人との関係で悩んでいるんですね。一緒に考えていきましょう。`
+    ],
+    general: [
+      `${greeting}今日はどんな気持ちでいらっしゃいますか？なんでもお話しくださいね。`,
+      `${greeting}お話を聞かせていただけて嬉しいです。どんなことでも、お気軽にどうぞ。`,
+      `${greeting}ルナです。あなたのお話、じっくり聞かせてくださいね。`
     ]
   }
 
@@ -184,7 +250,7 @@ export async function POST(request: NextRequest) {
             'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: 'gpt-4-turbo-preview',
+            model: 'gpt-4o-mini',
             messages: [
               {
                 role: 'system',
@@ -195,8 +261,8 @@ export async function POST(request: NextRequest) {
                 content: message
               }
             ],
-            temperature: 0.7,
-            max_tokens: 500,
+            temperature: 0.8,
+            max_tokens: 200,
             stream: false
           })
         })
@@ -206,7 +272,7 @@ export async function POST(request: NextRequest) {
           response = data.choices[0].message.content
         } else {
           // APIエラーの場合はローカル応答にフォールバック
-          response = generateLocalResponse(message, emotion)
+          response = generateLocalResponse(message, emotion, conversationHistory)
         }
       } catch (error) {
         console.error('OpenAI API error:', error)
@@ -214,7 +280,7 @@ export async function POST(request: NextRequest) {
       }
     } else {
       // APIキーがない場合はローカル応答
-      response = generateLocalResponse(message, emotion)
+      response = generateLocalResponse(message, emotion, conversationHistory)
     }
 
     // 応答に基づく追加の提案

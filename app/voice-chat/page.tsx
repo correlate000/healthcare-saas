@@ -159,8 +159,8 @@ export default function VoiceChatPage() {
     emotion: EmotionAnalysis | null
   ): Promise<string> => {
     try {
-      // 会話履歴の最新5件を送信
-      const recentHistory = conversationHistory.slice(-5).map(msg => ({
+      // 会話履歴の最新10件を送信（コンテキストを増やす）
+      const recentHistory = conversationHistory.slice(-10).map(msg => ({
         role: msg.role,
         content: msg.content
       }))
@@ -173,7 +173,8 @@ export default function VoiceChatPage() {
           message: userMessage,
           emotion,
           conversationHistory: recentHistory,
-          responseStyle: currentCharacter.personality
+          responseStyle: currentCharacter.personality,
+          characterName: currentCharacter.name
         })
       })
 
@@ -183,7 +184,6 @@ export default function VoiceChatPage() {
       }
     } catch (error) {
       console.error('Failed to get personalized response:', error)
-    }
 
     // フォールバック：キャラクターの感情別応答
     if (emotion) {
@@ -301,7 +301,21 @@ export default function VoiceChatPage() {
   // 相槌を打つ
   const playListeningResponse = () => {
     if (!isSpeaking && isSessionActiveRef.current) {
-      const responses = currentCharacter.responses.listening
+      // 感情に応じた相槌を選択
+      let responses = currentCharacter.responses.listening
+      
+      // 前回の感情を考慮した相槌
+      if (currentEmotion) {
+        const emotionResponses = {
+          sadness: ['うんうん...', 'そうなんですね...', 'つらかったですね...'],
+          anxiety: ['なるほど...', 'そうですか...', 'ふむふむ...'],
+          anger: ['そうですね...', 'わかります...', 'うーん...'],
+          joy: ['いいですね！', 'そうなんですか！', 'へぇー！'],
+          neutral: currentCharacter.responses.listening
+        }
+        responses = emotionResponses[currentEmotion.primary as keyof typeof emotionResponses] || responses
+      }
+      
       const response = responses[Math.floor(Math.random() * responses.length)]
       speakText(response, false)
     }
@@ -334,7 +348,17 @@ export default function VoiceChatPage() {
     setConversationHistory(prev => [...prev, userMessage])
     
     // パーソナライズされたAI応答を生成
+    // 応答までの遅延をランダム化して自然に
+    const responseDelay = Math.random() * 500 + 300 // 300-800ms
     setTimeout(async () => {
+      // 考え中の相槌を入れる（短い場合のみ）
+      if (text.length < 20) {
+        const thinkingResponses = ['えーっと...', 'そうですね...', 'ふむふむ...']
+        const thinkingResponse = thinkingResponses[Math.floor(Math.random() * thinkingResponses.length)]
+        speakText(thinkingResponse, false)
+        await new Promise(resolve => setTimeout(resolve, 800))
+      }
+      
       const response = await getPersonalizedResponse(text, emotion)
       
       // アシスタントメッセージを保存
@@ -351,14 +375,15 @@ export default function VoiceChatPage() {
       
       // 音声で応答
       speakText(response, true)
-    }, 300)
+    }, responseDelay)
     
-    // 10秒間無音だったら相槌を打つ
+    // 相槌のタイミングをランダム化（7-12秒）
+    const listeningTimeout = Math.random() * 5000 + 7000
     sessionTimeoutRef.current = setTimeout(() => {
       if (isSessionActiveRef.current && !isSpeaking) {
         playListeningResponse()
       }
-    }, 10000)
+    }, listeningTimeout)
   }
 
   // テキストを音声で読み上げ
