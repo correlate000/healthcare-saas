@@ -1,5 +1,5 @@
 // Enhanced Service Worker for Healthcare SaaS PWA
-const CACHE_VERSION = 'v2.0.0'
+const CACHE_VERSION = 'v2.0.1'
 const CACHE_NAME = `healthcare-saas-${CACHE_VERSION}`
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`
 
@@ -128,8 +128,10 @@ async function networkFirst(request) {
     const networkResponse = await fetch(request)
     
     if (networkResponse.ok) {
+      // Clone the response before using it
+      const responseToCache = networkResponse.clone()
       const cache = await caches.open(RUNTIME_CACHE)
-      cache.put(request, networkResponse.clone())
+      await cache.put(request, responseToCache)
     }
     
     return networkResponse
@@ -160,8 +162,10 @@ async function cacheFirst(request) {
     const networkResponse = await fetch(request)
     
     if (networkResponse.ok) {
+      // Clone the response before using it
+      const responseToCache = networkResponse.clone()
       const cache = await caches.open(RUNTIME_CACHE)
-      cache.put(request, networkResponse.clone())
+      await cache.put(request, responseToCache)
     }
     
     return networkResponse
@@ -177,12 +181,21 @@ async function cacheFirst(request) {
 async function staleWhileRevalidate(request) {
   const cachedResponse = await caches.match(request)
   
-  const fetchPromise = fetch(request).then(networkResponse => {
+  const fetchPromise = fetch(request).then(async networkResponse => {
     if (networkResponse.ok) {
-      const cache = caches.open(RUNTIME_CACHE)
-      cache.then(c => c.put(request, networkResponse.clone()))
+      // Clone the response before using it
+      const responseToCache = networkResponse.clone()
+      const cache = await caches.open(RUNTIME_CACHE)
+      await cache.put(request, responseToCache)
     }
     return networkResponse
+  }).catch(error => {
+    console.error('Fetch failed:', error)
+    // Return cached response if network fails
+    if (cachedResponse) {
+      return cachedResponse
+    }
+    throw error
   })
   
   return cachedResponse || fetchPromise
