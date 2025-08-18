@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
@@ -27,11 +27,13 @@ import {
   UserPlus,
   LogIn,
   Chrome,
-  Apple
+  Apple,
+  Github
 } from 'lucide-react'
 import { RippleButton, FloatingNotification } from '@/components/ui/micro-interactions'
 import { useAuth } from '@/contexts/AuthContext'
 import { toast } from '@/hooks/use-toast'
+import { createClient } from '@/lib/supabase/client'
 
 interface AuthForm {
   email: string
@@ -78,6 +80,18 @@ export default function AuthPage() {
     rememberMe: false
   })
   const [errors, setErrors] = useState<AuthFormErrors>({})
+  const supabase = createClient()
+
+  // Check for existing session
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        router.push('/dashboard')
+      }
+    }
+    checkSession()
+  }, [])
 
   // Redirect if already authenticated
   if (isAuthenticated) {
@@ -136,9 +150,21 @@ export default function AuthPage() {
 
     try {
       if (activeTab === 'login') {
-        const success = await login(formData.email, formData.password, formData.rememberMe)
+        // Supabase Login
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        })
         
-        if (success) {
+        if (!error && data.user) {
+          // Set remember me preference
+          if (formData.rememberMe) {
+            localStorage.setItem('mindcare-remember-me', 'true')
+          }
+          
+          // Update auth context
+          await login(formData.email, formData.password, formData.rememberMe)
+          
           setNotificationMessage('ログインしました！')
           setShowNotification(true)
           
@@ -155,23 +181,41 @@ export default function AuthPage() {
           }, 1500)
         } else {
           // Login failed
-          setErrors({ general: 'メールアドレスまたはパスワードが正しくありません' })
+          setErrors({ general: error?.message || 'メールアドレスまたはパスワードが正しくありません' })
           setNotificationMessage('ログインに失敗しました')
           setShowNotification(true)
         }
       } else {
-        // Registration
-        const success = await register({
+        // Supabase Registration
+        const { data, error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
-          name: formData.name!,
-          company: formData.company,
-          department: formData.department,
-          agreeTerms: formData.agreeTerms,
-          agreePrivacy: formData.agreePrivacy
+          options: {
+            data: {
+              full_name: formData.name,
+              company: formData.company,
+              department: formData.department,
+            },
+            emailRedirectTo: `${window.location.origin}/auth/callback`
+          }
         })
         
-        if (success) {
+        if (!error && data.user) {
+          // Save additional user data
+          if (data.user) {
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: data.user.id,
+                username: formData.email.split('@')[0],
+                full_name: formData.name,
+              })
+            
+            if (profileError) {
+              console.error('Profile creation error:', profileError)
+            }
+          }
+          
           setNotificationMessage('アカウントが作成されました！メール認証を確認してください。')
           setShowNotification(true)
           
@@ -180,7 +224,7 @@ export default function AuthPage() {
           }, 2000)
         } else {
           // Registration failed
-          setErrors({ general: 'アカウントの作成に失敗しました。別のメールアドレスをお試しください。' })
+          setErrors({ general: error?.message || 'アカウントの作成に失敗しました。別のメールアドレスをお試しください。' })
           setNotificationMessage('登録に失敗しました')
           setShowNotification(true)
         }
@@ -195,13 +239,37 @@ export default function AuthPage() {
     }
   }
 
-  const handleSocialLogin = (provider: 'google' | 'apple') => {
-    // For now, show a message that social login is not implemented
-    toast({
-      title: "準備中",
-      description: `${provider === 'google' ? 'Google' : 'Apple'}ログインは準備中です。メールアドレスでの登録をお試しください。`,
-      variant: "default",
-    })
+  const handleSocialLogin = async (provider: 'google' | 'apple' | 'github') => {
+    setIsLoading(true)
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: provider === 'apple' ? 'apple' : provider === 'github' ? 'github' : 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+      
+      if (error) {
+        toast({
+          title: "エラー",
+          description: `${provider}ログインに失敗しました: ${error.message}`,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error('Social login error:', error)
+      toast({
+        title: "エラー",
+        description: `ソーシャルログイン中にエラーが発生しました`,
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const updateFormData = (field: keyof AuthForm, value: string | boolean) => {

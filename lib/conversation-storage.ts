@@ -1,3 +1,5 @@
+import { createClient } from '@/lib/supabase/client'
+
 export interface ConversationMessage {
   id: string
   userId: string
@@ -98,6 +100,34 @@ class ConversationStorage {
   async saveMessage(message: ConversationMessage): Promise<void> {
     if (!this.db) await this.initialize()
     
+    // Save to Supabase
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        const { error } = await supabase.from('conversations').insert({
+          user_id: user.id,
+          content: message.content,
+          role: message.role,
+          emotion_primary: message.emotion?.primary,
+          emotion_confidence: message.emotion?.confidence,
+          sentiment_score: message.emotion?.sentimentScore,
+          keywords: message.emotion?.keywords,
+          topics: message.emotion?.topics,
+          metadata: message.metadata ? JSON.stringify(message.metadata) : null
+        })
+        
+        if (error) {
+          console.error('Failed to save to Supabase:', error)
+        }
+      }
+    } catch (error) {
+      console.error('Supabase save error:', error)
+    }
+    
+    // Also save to IndexedDB as backup
+    
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['conversations'], 'readwrite')
       const store = transaction.objectStore('conversations')
@@ -111,6 +141,42 @@ class ConversationStorage {
   async getConversationHistory(userId: string, limit: number = 50): Promise<ConversationMessage[]> {
     if (!this.db) await this.initialize()
 
+    // Try to get from Supabase first
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (user) {
+        const { data, error } = await supabase
+          .from('conversations')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(limit)
+        
+        if (!error && data) {
+          return data.map(msg => ({
+            id: msg.id,
+            userId: msg.user_id,
+            content: msg.content,
+            role: msg.role as 'user' | 'assistant',
+            timestamp: new Date(msg.created_at),
+            emotion: msg.emotion_primary ? {
+              primary: msg.emotion_primary,
+              confidence: msg.emotion_confidence || 0,
+              sentimentScore: msg.sentiment_score || 0,
+              keywords: msg.keywords || [],
+              topics: msg.topics || []
+            } : undefined,
+            metadata: msg.metadata ? JSON.parse(msg.metadata) : undefined
+          }))
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch from Supabase:', error)
+    }
+
+    // Fallback to IndexedDB
     return new Promise((resolve, reject) => {
       const transaction = this.db!.transaction(['conversations'], 'readonly')
       const store = transaction.objectStore('conversations')

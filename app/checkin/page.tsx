@@ -7,13 +7,14 @@ import { HappyFaceIcon, SadFaceIcon, CalmIcon, StressedIcon, EnergeticIcon, Thin
 import { typographyPresets, getTypographyStyles } from '@/styles/typography'
 import { UserDataStorage } from '@/utils/storage'
 import { MOBILE_PAGE_PADDING_BOTTOM } from '@/utils/constants'
+import { createClient } from '@/lib/supabase/client'
 
 export default function CheckIn() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(0)
   const [responses, setResponses] = useState<Record<string, any>>({})
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false)
-  const [streakDays] = useState(15) // TODO: Get from user data
+  const [streakDays, setStreakDays] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState<{ id: string, color: string, bodyColor: string, bellyColor: string, name: string }>(
     { id: 'luna', color: '#a3e635', bodyColor: '#a3e635', bellyColor: '#ecfccb', name: 'るな' }
@@ -38,8 +39,35 @@ export default function CheckIn() {
       setSelectedCharacter(characters[savedCharacter as keyof typeof characters] || characters.luna)
     }
     
+    // Load streak from Supabase
+    loadStreak()
+    
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+  
+  const loadStreak = async () => {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (user) {
+      // Get user stats from Supabase
+      const { data: stats } = await supabase
+        .from('user_stats')
+        .select('streak_days')
+        .eq('user_id', user.id)
+        .single()
+      
+      if (stats) {
+        setStreakDays(stats.streak_days || 0)
+      }
+    } else {
+      // Fallback to localStorage for demo
+      const storedStreak = localStorage.getItem('mindcare-streak')
+      if (storedStreak) {
+        setStreakDays(parseInt(storedStreak) || 0)
+      }
+    }
+  }
 
   // Bird character SVG component
   const BirdCharacter = ({ bodyColor, bellyColor, size = 100 }: { bodyColor: string, bellyColor: string, size?: number }) => (
@@ -127,7 +155,7 @@ export default function CheckIn() {
     }
   }
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     // Validate required fields
     if (steps[currentStep].type !== 'textarea' && !responses[steps[currentStep].id]) {
       return // Don't complete if current step has no response
@@ -140,20 +168,67 @@ export default function CheckIn() {
       timestamp: Date.now()
     }
     
-    // Save to localStorage using storage utility
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (user) {
+      try {
+        // Save to Supabase
+        const { error: checkinError } = await supabase
+          .from('checkins')
+          .insert({
+            user_id: user.id,
+            mood: responses.mood || 'neutral',
+            energy_level: responses.energy || 3,
+            stress_level: responses.stress || 3,
+            sleep_hours: responses.sleep ? parseFloat(responses.sleep) : null,
+            activities: responses.activities ? [responses.activities] : [],
+            notes: responses.journal || ''
+          })
+        
+        if (checkinError) {
+          console.error('Failed to save checkin to Supabase:', checkinError)
+        } else {
+          // Update streak
+          await supabase.rpc('update_user_streak', { p_user_id: user.id })
+          
+          // Update XP
+          const { data: stats } = await supabase
+            .from('user_stats')
+            .select('total_xp')
+            .eq('user_id', user.id)
+            .single()
+          
+          if (stats) {
+            await supabase
+              .from('user_stats')
+              .update({ total_xp: (stats.total_xp || 0) + 50 })
+              .eq('user_id', user.id)
+          }
+          
+          // Reload streak to show updated value
+          await loadStreak()
+        }
+      } catch (error) {
+        console.error('Failed to save checkin to Supabase:', error)
+      }
+    }
+    
+    // Save to localStorage as backup
     try {
       UserDataStorage.setCheckinData(checkinData)
       UserDataStorage.setLastCheckin(new Date().toDateString())
       
-      // Update streak
+      // Update local streak
       const currentStreak = UserDataStorage.getStreak()
       UserDataStorage.setStreak(currentStreak + 1)
+      localStorage.setItem('mindcare-streak', String(currentStreak + 1))
       
-      // Add XP for checkin
+      // Add XP locally
       const currentXP = UserDataStorage.getXP()
       UserDataStorage.setXP(currentXP + 50)
     } catch (error) {
-      console.error('Failed to save checkin data:', error)
+      console.error('Failed to save checkin data locally:', error)
     }
     
     setCurrentStep(-1) // Show completion screen
