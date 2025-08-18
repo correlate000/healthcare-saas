@@ -27,6 +27,7 @@ interface AuthContextType extends AuthState {
   isEnterpriseAdmin: () => boolean
   isSuperAdmin: () => boolean
   hasPermission: (permission: string) => boolean
+  setUser: (user: User | null) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -398,6 +399,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return authState.user?.permissions?.includes(permission) || false
   }
 
+  const setUser = (user: User | null) => {
+    setAuthState(prev => ({
+      ...prev,
+      user,
+      isAuthenticated: !!user
+    }))
+  }
+
   const value: AuthContextType = {
     ...authState,
     login,
@@ -414,7 +423,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAdmin,
     isEnterpriseAdmin,
     isSuperAdmin,
-    hasPermission
+    hasPermission,
+    setUser
   }
 
   return (
