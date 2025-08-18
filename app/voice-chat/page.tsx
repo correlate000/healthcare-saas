@@ -800,12 +800,12 @@ export default function VoiceChatPage() {
 
       {/* Main Content */}
       <div style={{
-        height: 'calc(85vh - 88px)',
+        height: 'calc(90vh - 88px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '24px 20px',
+        padding: '12px 20px',
         position: 'relative',
         background: 'linear-gradient(180deg, transparent 0%, rgba(31, 41, 55, 0.2) 100%)'
       }}>
@@ -813,13 +813,13 @@ export default function VoiceChatPage() {
         {currentTranscript && (
           <div style={{
             position: 'absolute',
-            top: '20px',
+            top: '10px',
             left: '20px',
             right: '20px',
             background: 'rgba(31, 41, 55, 0.8)',
             backdropFilter: 'blur(10px)',
             borderRadius: '12px',
-            padding: '12px 16px',
+            padding: '10px 14px',
             border: '1px solid rgba(55, 65, 81, 0.5)'
           }}>
             <p style={{
@@ -837,7 +837,7 @@ export default function VoiceChatPage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '20px'
+          gap: '8px'
         }}>
           {/* Character Avatar with speech bubble style */}
           <div style={{
@@ -884,7 +884,7 @@ export default function VoiceChatPage() {
           {/* Status Text - Only show when connecting or error */}
           {(connectionState === 'connecting' || connectionState === 'error') && (
             <div style={{
-              marginTop: '12px'
+              marginTop: '4px'
             }}>
               <p style={{
                 ...getTypographyStyles('small'),
@@ -943,7 +943,7 @@ export default function VoiceChatPage() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '16px'
+          gap: '8px'
         }}>
           <button
             onClick={toggleSession}
