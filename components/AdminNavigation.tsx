@@ -70,12 +70,29 @@ export function AdminNavigation() {
   }
 
   const handleAdminLogin = async (adminType: 'admin' | 'enterprise-admin' | 'super-admin') => {
-    // TODO: Implement loginAsAdmin in AuthContext
-    // const success = await auth.loginAsAdmin(adminType)
-    // if (success) {
-    //   router.refresh()
-    // }
-    console.log('Admin login for:', adminType)
+    // Set admin role in localStorage for demo purposes
+    const adminRoles = {
+      'admin': { role: 'admin', name: '管理者', permissions: ['view', 'edit'] },
+      'enterprise-admin': { role: 'enterprise-admin', name: '企業管理者', permissions: ['view', 'edit', 'manage'] },
+      'super-admin': { role: 'super-admin', name: 'スーパー管理者', permissions: ['view', 'edit', 'manage', 'delete', 'system'] }
+    }
+    
+    const adminData = adminRoles[adminType]
+    localStorage.setItem('adminRole', JSON.stringify(adminData))
+    
+    // Update auth context
+    auth.setUser({
+      ...auth.user!,
+      role: adminType,
+      isAdmin: true
+    })
+    
+    toast({
+      title: "管理者ログイン成功",
+      description: `${adminData.name}としてログインしました`,
+    })
+    
+    router.refresh()
   }
 
   return (
