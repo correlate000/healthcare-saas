@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import EnvironmentBanner from '@/components/EnvironmentBanner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,6 +40,7 @@ export default function RootLayout({
         <ErrorBoundary>
           <AuthProvider>
             <div className="min-h-screen bg-gray-50">
+              <EnvironmentBanner />
               {children}
             </div>
           </AuthProvider>
