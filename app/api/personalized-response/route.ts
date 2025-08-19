@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { DemoService } from '@/lib/demo-service'
 
 export const runtime = 'edge'
 
@@ -216,6 +217,12 @@ export async function POST(request: NextRequest) {
   try {
     const body: PersonalizedResponseRequest = await request.json()
     const { userId, message, emotion, conversationHistory, responseStyle } = body
+
+    // デモ環境での応答
+    if (DemoService.isDemo()) {
+      const demoResponse = await DemoService.mockApiResponse('/api/personalized-response', { message })
+      return NextResponse.json(demoResponse)
+    }
 
     if (!userId || !message) {
       return NextResponse.json(
